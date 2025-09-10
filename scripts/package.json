@@ -1,0 +1,23 @@
+{
+  "name": "performile-scripts",
+  "version": "1.0.0",
+  "description": "Database setup and maintenance scripts for Performile",
+  "main": "setup-db.js",
+  "scripts": {
+    "setup-db": "node setup-db.js",
+    "migrate": "node migrate-db.js",
+    "seed": "node seed-db.js",
+    "apply-migrations": "node apply-migrations.js",
+    "reset-db": "node reset-database.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "dotenv": "^16.0.3",
+    "pg": "^8.11.0",
+    "pg-format": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0"
+  },
+  "type": "commonjs"
+}

@@ -1,29 +1,31 @@
 #!/bin/bash
-
-# Exit on error
 set -e
 
-echo "🚀 Starting Performile deployment..."
+echo "🚀 Starting Performile deployment to Vercel..."
 
-# Install Vercel CLI if not installed
+# Check if Vercel CLI is installed
 if ! command -v vercel &> /dev/null; then
-  echo "Installing Vercel CLI..."
-  npm install -g vercel
+    echo "Vercel CLI is not installed. Installing now..."
+    npm install -g vercel
 fi
 
-# Set environment variables
-export NODE_ENV=production
+# Check if user is logged in to Vercel
+if ! vercel whoami &> /dev/null; then
+    echo "You need to log in to Vercel first. Please run 'vercel login'"
+    exit 1
+fi
 
-# Build the frontend
-echo "🔨 Building frontend..."
-cd frontend
-npm install
+# Install dependencies
+echo "📦 Installing dependencies..."
+npm ci
+
+# Build the application
+echo "🔨 Building application..."
 npm run build
-cd ..
 
 # Deploy to Vercel
 echo "🚀 Deploying to Vercel..."
 vercel --prod --confirm
 
 echo "✅ Deployment complete!"
-echo "🔗 Production URL: https://performile-platform.vercel.app"
+echo "🔗 Your application is now live at: https://performile.vercel.app"

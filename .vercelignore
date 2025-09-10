@@ -1,9 +1,16 @@
-# Ignore everything in the root except the frontend and necessary config files
+# Ignore everything by default
 */
+
+# Include necessary files
 !frontend/
+!api/
 !vercel.json
 !package.json
 !package-lock.json
+!tsconfig.json
+
+# Include environment variables (will be handled by Vercel)
+!.env.production
 
 # Ignore development and test files
 **/*.test.*
@@ -11,13 +18,38 @@
 **/test/**
 **/tests/**
 **/__tests__/**
+**/__mocks__/**
+**/*.md
+**/*.mdx
 
-# Ignore environment files (except .env.example)
+# Ignore local development files
 .env
-.env.*
-!.env.example
+.env.local
+.env.development
+.env.test
 
-# Ignore build outputs
+# Ignore build outputs and caches
+/dist
+/build
+/.next
+/.vercel
+/.git
+/.github
+/.vscode
+
+# Ignore logs and debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 **/dist
 **/build
 **/node_modules

@@ -3,45 +3,68 @@
   "name": "performile",
   "version": "1.0.0",
   "description": "Comprehensive logistics performance platform",
-  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "api"
+  ],
   "scripts": {
-    "dev": "cd frontend && npm run dev",
-    "build": "cd frontend && npm install && npm run build",
-    "preview": "cd frontend && npm run preview",
-    "test": "cd frontend && npm test",
-    "type-check": "cd frontend && npm run type-check",
-    "lint": "cd frontend && npm run lint",
-    "lint:fix": "cd frontend && npm run lint:fix",
-    "vercel:dev": "cd frontend && vercel dev",
-    "vercel:deploy": "cd frontend && vercel --prod",
-    "setup": "cd frontend && npm install",
-    "start": "cd frontend && npm run preview -- --host",
-    "vercel-build": "npm run build"
+    "dev": "npm run dev:frontend",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:api": "cd api && npm run dev",
+    "build": "npm run build:frontend && npm run build:api",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:api": "cd api && npm install && npm run build",
+    "preview": "npm run preview:frontend",
+    "preview:frontend": "cd frontend && npm run preview",
+    "test": "npm run test:frontend && npm run test:api",
+    "test:frontend": "cd frontend && npm test",
+    "test:api": "cd api && npm test",
+    "lint": "npm run lint:frontend && npm run lint:api",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:api": "cd api && npm run lint",
+    "lint:fix": "npm run lint:fix:frontend && npm run lint:fix:api",
+    "lint:fix:frontend": "cd frontend && npm run lint:fix",
+    "lint:fix:api": "cd api && npm run lint:fix",
+    "type-check": "npm run type-check:frontend && npm run type-check:api",
+    "type-check:frontend": "cd frontend && npm run type-check",
+    "type-check:api": "cd api && npm run type-check",
+    "setup": "npm install && npm run setup:frontend && npm run setup:api && npm run setup:db",
+    "setup:frontend": "cd frontend && npm install",
+    "setup:api": "cd api && npm install",
+    "setup:db": "cd scripts && npm install && npm run setup-db",
+    "db:migrate": "node scripts/apply-migrations.js",
+    "db:reset": "node scripts/reset-database.js",
+    "db:seed": "node scripts/seed-database.js",
+    "vercel:dev": "vercel dev",
+    "vercel:deploy": "node scripts/vercel-deploy.js",
+    "vercel:build": "npm run build",
+    "deploy": "npm run build && npm run vercel:deploy",
+    "deploy:ci": "npm ci && npm run build && npm run vercel:deploy"
   },
   "engines": {
     "node": ">=18.0.0",
-    "npm": ">=8.0.0"
+    "npm": ">=9.0.0"
   },
   "keywords": [
     "logistics",
     "delivery",
     "performance",
     "tracking",
-    "analytics"
+    "analytics",
+    "e-commerce",
+    "shipping",
+    "supply chain"
   ],
   "author": "Performile Team",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0",
-    "vercel": "^41.0.2",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vercel": "^41.0.2"
   },
   "dependencies": {
     "@vercel/node": "^2.3.0",
-    "dotenv": "^17.2.2",
-    "jsonwebtoken": "^9.0.0",
-    "pg": "^8.11.0",
-    "resend": "^6.0.2"
+    "dotenv": "^17.2.2"
   }
 }
