@@ -3,8 +3,7 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/frontend/' : '/',
+export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
@@ -17,6 +16,7 @@ export default defineConfig(({ mode }) => ({
     strictPort: true
   },
   build: {
+    target: 'esnext',
     outDir: 'dist',
     sourcemap: true,
     emptyOutDir: true,
@@ -32,5 +32,7 @@ export default defineConfig(({ mode }) => ({
         assetFileNames: 'assets/[ext]/[name]-[hash][ext]'
       }
     }
-  }
-}));
+  },
+  // Ensure Vite uses the correct base path for Vercel
+  base: process.env.NODE_ENV === 'production' ? '/frontend/' : '/'
+});

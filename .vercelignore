@@ -1,7 +1,7 @@
 # Ignore everything by default
 */
 
-# Include necessary files
+# Include necessary files and directories
 !frontend/
 !api/
 !vercel.json
@@ -9,7 +9,7 @@
 !package-lock.json
 !tsconfig.json
 
-# Include environment variables (will be handled by Vercel)
+# Include environment variables
 !.env.production
 
 # Ignore development and test files
