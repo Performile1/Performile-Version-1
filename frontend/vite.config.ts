@@ -9,10 +9,15 @@ export default defineConfig(({ mode }) => {
   // Load environment variables with VITE_ prefix
   const env = loadEnv(mode, process.cwd(), '');
   
+  const isProduction = mode === 'production';
+  
   return {
     base: env.VITE_BASE_URL || '/',
     root: process.cwd(),
     publicDir: 'public',
+    define: {
+      'process.env': {}
+    },
     plugins: [
       react(),
       tsconfigPaths({
@@ -58,11 +63,12 @@ export default defineConfig(({ mode }) => {
       host: true
     },
     build: {
+      outDir: '.vercel/output/static',
       assetsDir: 'assets',
+      sourcemap: !isProduction,
+      minify: isProduction ? 'esbuild' : false,
       emptyOutDir: true,
       target: 'es2020',
-      minify: 'esbuild',
-      sourcemap: true,
       rollupOptions: {
         output: {
           manualChunks: (id: string) => {

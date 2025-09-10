@@ -52,7 +52,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3",
-    "vite": "^7.1.5",
+    "vite": "^5.0.0",
     "vite-tsconfig-paths": "^4.2.2"
   },
   "resolutions": {
@@ -61,8 +61,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "vercel-build": "tsc -p tsconfig.vercel.json && vite build --outDir .vercel/output/static --base=/",
+    "build": "vite build",
+    "vercel-build": "vite build",
     "preview": "vite preview --port 3000 --host",
     "test": "vitest",
     "type-check": "tsc --noEmit",
