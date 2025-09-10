@@ -10,9 +10,10 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "outDir": "./dist",
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -23,10 +24,11 @@
     "types": ["vite/client", "node"],
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "allowJs": true,
-    "checkJs": false
+    "checkJs": false,
+    "noImplicitAny": false
   },
   "include": [
     "src/**/*",

@@ -50,10 +50,7 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "npm-force-resolutions": "^0.0.10",
     "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.0",
-    "vite-tsconfig-paths": "^4.2.2"
+    "tsconfig-paths": "^4.2.0"
   },
   "resolutions": {
     "esbuild": "^0.24.3",
@@ -68,7 +65,7 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
-    "start": "vite preview --port 3000 --host"
+    "start": "vite preview --port 3000 --host --config vite.config.new.ts"
   },
   "browserslist": {
     "production": [

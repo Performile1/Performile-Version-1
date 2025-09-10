@@ -7,31 +7,19 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }: { mode: string }) => {
-  // Load environment variables with VITE_ prefix
+export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  
   const isProduction = mode === 'production';
-  
+
   return {
     base: env.VITE_BASE_URL || '/',
     root: __dirname,
     publicDir: path.resolve(__dirname, 'public'),
-    define: {
-      'process.env': {}
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, 'src'),
-        '~': path.resolve(__dirname, 'node_modules')
-      }
-    },
+    define: { 'process.env': {} },
+    
     plugins: [
       react(),
-      tsconfigPaths({
-        loose: true
-      }),
+      tsconfigPaths({ loose: true }),
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
@@ -55,22 +43,19 @@ export default defineConfig(({ mode }: { mode: string }) => {
         }
       })
     ],
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src')
-      },
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
-    },
+
     server: {
       port: 3000,
       strictPort: true,
       host: true
     },
+
     preview: {
       port: 3000,
       strictPort: true,
       host: true
     },
+
     build: {
       outDir: path.resolve(__dirname, '.vercel/output/static'),
       assetsDir: 'assets',
