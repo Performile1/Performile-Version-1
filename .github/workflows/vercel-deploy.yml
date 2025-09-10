@@ -1,0 +1,93 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  VERCEL_DEBUG: true
+
+jobs:
+  Deploy-Preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+      
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      
+      - name: Pull Vercel environment
+        run: |
+          echo "Pulling Vercel environment..."
+          # Create vercel.json if it doesn't exist
+          if [ ! -f vercel.json ]; then
+            echo '{"projectId": "'${{ secrets.VERCEL_PROJECT_ID }}'"}' > vercel.json
+          fi
+          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
+      
+      - name: Build project
+        run: |
+          cd frontend
+          npm run build
+      
+      - name: Deploy to Vercel (Preview)
+        run: |
+          cd frontend
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --yes
+
+  Deploy-Production:
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+      
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      
+      - name: Pull Vercel environment
+        run: |
+          echo "Pulling Vercel environment..."
+          # Create vercel.json if it doesn't exist
+          if [ ! -f vercel.json ]; then
+            echo '{"projectId": "'${{ secrets.VERCEL_PROJECT_ID }}'"}' > vercel.json
+          fi
+          vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
+      
+      - name: Build project
+        run: |
+          cd frontend
+          npm run build
+      
+      - name: Deploy to Vercel (Production)
+        run: |
+          cd frontend
+          vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes

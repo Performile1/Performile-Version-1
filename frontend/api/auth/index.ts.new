@@ -1,0 +1,115 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+const jwt = require('jsonwebtoken');
+const { Pool } = require('pg');
+const crypto = require('crypto');
+
+// Initialize database connection
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+// JWT configuration
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_EXPIRES_IN = '1d';
+const REFRESH_TOKEN_EXPIRES_IN = '7d';
+
+// Helper functions
+function generateToken(user: any, expiresIn: string = JWT_EXPIRES_IN) {
+  return jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    JWT_SECRET,
+    { expiresIn }
+  );
+}
+
+function verifyToken(token: string) {
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    return null;
+  }
+}
+
+function hashPassword(password: string) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto
+    .pbkdf2Sync(password, salt, 1000, 64, 'sha512')
+    .toString('hex');
+  return { salt, hash };
+}
+
+function verifyPassword(password: string, hash: string, salt: string) {
+  const hashVerify = crypto
+    .pbkdf2Sync(password, salt, 1000, 64, 'sha512')
+    .toString('hex');
+  return hash === hashVerify;
+}
+
+// Handler functions
+async function handleLogin(req: VercelRequest, res: VercelResponse) {
+  const { email, password } = req.body;
+  
+  if (!email || !password) {
+    res.status(400).json({ success: false, message: 'Email and password are required' });
+    return;
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
+    const user = result.rows[0];
+    
+    if (!user || !verifyPassword(password, user.password_hash, user.password_salt)) {
+      res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return;
+    }
+
+    const accessToken = generateToken(user);
+    const refreshToken = generateToken(user, REFRESH_TOKEN_EXPIRES_IN);
+
+    await pool.query('UPDATE users SET refresh_token = $1 WHERE id = $2', [refreshToken, user.id]);
+    
+    const { password_hash, password_salt, refresh_token, ...userData } = user;
+
+    res.setHeader('Set-Cookie', [
+      `refreshToken=${refreshToken}; HttpOnly; Path=/; SameSite=Strict; Max-Age=${7 * 24 * 60 * 60}${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: { user: userData, token: accessToken }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
+
+// Main handler
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // Route requests
+  if (req.method === 'POST') {
+    const path = req.url || '';
+    
+    if (path.endsWith('/login')) {
+      return handleLogin(req, res);
+    }
+    // Add other routes as needed
+  }
+
+  // Handle 404 for unknown routes
+  res.status(404).json({ success: false, message: 'Not Found' });
+}

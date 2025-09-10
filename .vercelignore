@@ -1,0 +1,37 @@
+# Ignore everything in the root except the frontend and necessary config files
+*/
+!frontend/
+!vercel.json
+!package.json
+!package-lock.json
+
+# Ignore development and test files
+**/*.test.*
+**/*.spec.*
+**/test/**
+**/tests/**
+**/__tests__/**
+
+# Ignore environment files (except .env.example)
+.env
+.env.*
+!.env.example
+
+# Ignore build outputs
+**/dist
+**/build
+**/node_modules
+
+# Ignore logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

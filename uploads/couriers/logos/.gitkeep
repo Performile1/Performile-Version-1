@@ -1,0 +1,5 @@
+# This file ensures the directory is tracked by git
+# Courier logos will be uploaded to this directory
+# Recommended size: 160x160 pixels
+# Supported formats: JPEG, PNG, GIF, WebP
+# Max file size: 5MB

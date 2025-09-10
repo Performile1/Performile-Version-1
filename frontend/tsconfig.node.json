@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "types": ["node"],
+    "noEmit": true,
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "sourceMap": true
+  },
+  "include": ["vite.config.ts", "vercel-build.js"],
+  "exclude": ["node_modules", "dist"]
+}

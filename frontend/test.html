@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Page</title>
+</head>
+<body>
+    <h1>Test Page</h1>
+    <p>If you can see this, the web server is working!</p>
+    <p>Node.js test: <span id="node-test">Not working</span></p>
+    <script>
+        try {
+            document.getElementById('node-test').textContent = 'Working!';
+        } catch (e) {
+            document.getElementById('node-test').textContent = 'Error: ' + e.message;
+        }
+    </script>
+</body>
+</html>

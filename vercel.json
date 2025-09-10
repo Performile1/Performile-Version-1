@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "projectId": "$VERCEL_PROJECT_ID",
+  "orgId": "$VERCEL_ORG_ID",
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist",
+        "installCommand": "cd frontend && npm install",
+        "buildCommand": "cd frontend && npm run build"
+      }
+    },
+    {
+      "src": "frontend/api/**/*.ts",
+      "use": "@vercel/node",
+      "config": {
+        "include": ["frontend/api/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "status": 200,
+      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "continue": true
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html",
+      "check": true
+    }
+  ],
+  "buildCommand": "npm run build",
+  "outputDirectory": "frontend/dist"
+}

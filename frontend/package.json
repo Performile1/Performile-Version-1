@@ -1,0 +1,89 @@
+{
+  "name": "performile-frontend",
+  "version": "1.0.0",
+  "packageManager": "npm@9.8.1",
+  "description": "Performile Frontend - Logistics Performance Platform",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@hookform/resolvers": "^3.3.4",
+    "@mui/icons-material": "^5.15.6",
+    "@mui/material": "^5.15.6",
+    "@mui/x-charts": "^6.19.2",
+    "@stripe/stripe-js": "^2.4.0",
+    "@tanstack/react-query": "^5.17.19",
+    "axios": "^1.6.7",
+    "date-fns": "^3.6.0",
+    "formik": "^2.4.5",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "pg": "^8.11.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.2",
+    "react-hot-toast": "^2.4.1",
+    "react-query": "^3.39.3",
+    "react-router-dom": "^6.20.0",
+    "recharts": "^2.12.7",
+    "resend": "^2.1.0",
+    "stripe": "^14.9.0",
+    "vite-plugin-pwa": "^1.0.3",
+    "yup": "^1.7.0",
+    "zustand": "^4.4.6"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.10.0",
+    "@types/pg": "^8.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vercel/node": "^5.3.21",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "npm-force-resolutions": "^0.0.10",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.3",
+    "vite": "^7.1.5",
+    "vite-tsconfig-paths": "^4.2.2"
+  },
+  "resolutions": {
+    "esbuild": "^0.24.3",
+    "path-to-regexp": "^6.2.4"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "vercel-build": "tsc -p tsconfig.vercel.json && vite build --outDir .vercel/output/static --base=/",
+    "preview": "vite preview --port 3000 --host",
+    "test": "vitest",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "start": "vite preview --port 3000 --host"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

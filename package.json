@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "performile",
+  "version": "1.0.0",
+  "description": "Comprehensive logistics performance platform",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm install && npm run build",
+    "preview": "cd frontend && npm run preview",
+    "test": "cd frontend && npm test",
+    "type-check": "cd frontend && npm run type-check",
+    "lint": "cd frontend && npm run lint",
+    "lint:fix": "cd frontend && npm run lint:fix",
+    "vercel:dev": "cd frontend && vercel dev",
+    "vercel:deploy": "cd frontend && vercel --prod",
+    "setup": "cd frontend && npm install",
+    "start": "cd frontend && npm run preview -- --host",
+    "vercel-build": "npm run build"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "logistics",
+    "delivery",
+    "performance",
+    "tracking",
+    "analytics"
+  ],
+  "author": "Performile Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vercel": "^41.0.2",
+    "vite-tsconfig-paths": "^5.1.4"
+  },
+  "dependencies": {
+    "@vercel/node": "^2.3.0",
+    "dotenv": "^17.2.2",
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.11.0",
+    "resend": "^6.0.2"
+  }
+}

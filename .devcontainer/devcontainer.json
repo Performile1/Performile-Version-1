@@ -1,0 +1,42 @@
+{
+  "name": "Performile Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:18",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "forwardPorts": [3000, 3001, 5432, 6379],
+  "portsAttributes": {
+    "3000": {
+      "label": "Frontend",
+      "onAutoForward": "notify"
+    },
+    "3001": {
+      "label": "Backend API",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "6379": {
+      "label": "Redis",
+      "onAutoForward": "silent"
+    }
+  },
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-json"
+      ],
+      "settings": {
+        "typescript.preferences.importModuleSpecifier": "relative"
+      }
+    }
+  },
+  "remoteUser": "node"
+}
