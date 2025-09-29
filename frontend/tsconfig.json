@@ -20,7 +20,7 @@
     "typeRoots": [
       "./node_modules/@types"
     ],
-    "types": ["vite/client"],
+    "types": [],
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": false,
