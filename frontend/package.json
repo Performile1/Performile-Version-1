@@ -20,12 +20,11 @@
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
-    "pg": "^8.11.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.49.2",
     "react-hot-toast": "^2.4.1",
-    "react-query": "^3.39.3",
+    "react-query": "npm:@tanstack/react-query@^5.17.19",
     "react-router-dom": "^6.20.0",
     "recharts": "^2.12.7",
     "resend": "^2.1.0",
@@ -65,7 +64,7 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
-    "start": "vite preview --port 3000 --host --config vite.config.new.ts"
+    "start": "vite preview --port 3000 --host"
   },
   "browserslist": {
     "production": [

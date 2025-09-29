@@ -30,10 +30,6 @@ jobs:
       - name: Pull Vercel environment
         run: |
           echo "Pulling Vercel environment..."
-          # Create vercel.json if it doesn't exist
-          if [ ! -f vercel.json ]; then
-            echo '{"projectId": "'${{ secrets.VERCEL_PROJECT_ID }}'"}' > vercel.json
-          fi
           vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       
       - name: Install dependencies
@@ -71,10 +67,6 @@ jobs:
       - name: Pull Vercel environment
         run: |
           echo "Pulling Vercel environment..."
-          # Create vercel.json if it doesn't exist
-          if [ ! -f vercel.json ]; then
-            echo '{"projectId": "'${{ secrets.VERCEL_PROJECT_ID }}'"}' > vercel.json
-          fi
           vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       
       - name: Install dependencies

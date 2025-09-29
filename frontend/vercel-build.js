@@ -39,6 +39,3 @@ try {
   console.error(error);
   process.exit(1);
 }
-  console.error('Build failed:', error);
-  process.exit(1);
-}
