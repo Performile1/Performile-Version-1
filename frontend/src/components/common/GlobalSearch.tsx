@@ -76,19 +76,17 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
   };
 
   // Search API call
-  const { data: searchResults = [], isLoading } = useQuery(
-    ['globalSearch', query],
-    async () => {
+  const { data: searchResults = [], isLoading } = useQuery({
+    queryKey: ['globalSearch', query],
+    queryFn: async () => {
       if (!query.trim() || query.length < 2) return [];
-      
+
       const response = await apiClient.get(`/search?q=${encodeURIComponent(query)}&limit=10`);
       return response.data.results || [];
     },
-    {
-      enabled: query.length >= 2,
-      staleTime: 30000,
-    }
-  );
+    enabled: query.length >= 2,
+    staleTime: 30000,
+  });
 
   const getIcon = (type: string) => {
     switch (type) {

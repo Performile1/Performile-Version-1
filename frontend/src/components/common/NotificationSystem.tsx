@@ -51,17 +51,15 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
   const queryClient = useQueryClient();
 
   // Fetch notifications
-  const { data: notificationsData, refetch } = useQuery(
-    ['notifications'],
-    async () => {
+  const { data: notificationsData, refetch } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: async () => {
       const response = await apiClient.get('/notifications');
       return response.data;
     },
-    {
-      enabled: !!user,
-      refetchInterval: 30000, // Refetch every 30 seconds as fallback
-    }
-  );
+    enabled: !!user,
+    refetchInterval: 30000, // Refetch every 30 seconds as fallback
+  });
 
   // Update local state when data changes
   useEffect(() => {
@@ -105,8 +103,8 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
             showToastNotification(notification);
             
             // Invalidate related queries
-            queryClient.invalidateQueries(['orders']);
-            queryClient.invalidateQueries(['dashboard']);
+            queryClient.invalidateQueries({ queryKey: ['orders'] });
+            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
             
           } catch (error) {
             console.error('Failed to parse notification:', error);
