@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '@/store/authStore';

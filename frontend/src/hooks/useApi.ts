@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { ApiResponse, PaginationParams } from '@/types';
 import toast from 'react-hot-toast';
@@ -13,19 +13,17 @@ export const useApiQuery = <T>(
     staleTime?: number;
   }
 ) => {
-  return useQuery<ApiResponse<T>>(
-    key,
-    async () => {
+  return useQuery<ApiResponse<T>>({
+    queryKey: Array.isArray(key) ? key : [key],
+    queryFn: async () => {
       const response = await apiClient.get<ApiResponse<T>>(url);
       return response.data;
     },
-    {
-      retry: 1,
-      refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      ...options,
-    }
-  );
+    retry: 1,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    ...options,
+  });
 };
 
 // Generic API hook for mutations
@@ -39,29 +37,27 @@ export const useApiMutation = <TData, TVariables>(
 ) => {
   const queryClient = useQueryClient();
 
-  return useMutation<ApiResponse<TData>, Error, TVariables>(
-    mutationFn,
-    {
-      onSuccess: (data) => {
-        if (data.success && data.message) {
-          toast.success(data.message);
-        }
-        
-        // Invalidate specified queries
-        if (options?.invalidateQueries) {
-          options.invalidateQueries.forEach(key => {
-            queryClient.invalidateQueries(key);
-          });
-        }
-        
-        options?.onSuccess?.(data);
-      },
-      onError: (error) => {
-        toast.error(error.message || 'An error occurred');
-        options?.onError?.(error);
-      },
-    }
-  );
+  return useMutation<ApiResponse<TData>, Error, TVariables>({
+    mutationFn: mutationFn,
+    onSuccess: (data) => {
+      if (data.success && data.message) {
+        toast.success(data.message);
+      }
+
+      // Invalidate specified queries
+      if (options?.invalidateQueries) {
+        options.invalidateQueries.forEach(key => {
+          queryClient.invalidateQueries({ queryKey: [key] });
+        });
+      }
+
+      options?.onSuccess?.(data);
+    },
+    onError: (error) => {
+      toast.error(error.message || 'An error occurred');
+      options?.onError?.(error);
+    },
+  });
 };
 
 // Paginated query hook
@@ -72,9 +68,9 @@ export const usePaginatedQuery = <T>(
 ) => {
   const queryKey = [key, params];
   
-  return useQuery<ApiResponse<T[]>>(
-    queryKey,
-    async () => {
+  return useQuery<ApiResponse<T[]>>({
+    queryKey: queryKey,
+    queryFn: async () => {
       const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -87,9 +83,7 @@ export const usePaginatedQuery = <T>(
       );
       return response.data;
     },
-    {
-      keepPreviousData: true,
-      staleTime: 30000, // 30 seconds
-    }
-  );
+    placeholderData: keepPreviousData,
+    staleTime: 30000, // 30 seconds
+  });
 };
