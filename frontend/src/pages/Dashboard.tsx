@@ -74,16 +74,14 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, trend, s
 export const Dashboard: React.FC = () => {
   const { user } = useAuthStore();
 
-  const { data: dashboardData, isLoading } = useQuery(
-    'dashboard-stats',
-    async () => {
+  const { data: dashboardData, isLoading } = useQuery({
+    queryKey: ['dashboard-stats'],
+    queryFn: async () => {
       const response = await apiClient.get('/trustscore/dashboard');
       return response.data.data;
     },
-    {
-      refetchInterval: 30000, // Refresh every 30 seconds
-    }
-  );
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
 
   const stats = dashboardData?.statistics as DashboardStats;
   const topCouriers = dashboardData?.couriers?.slice(0, 5) || [];

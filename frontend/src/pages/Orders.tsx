@@ -42,7 +42,7 @@ import {
   Refresh,
   FileDownload,
 } from '@mui/icons-material';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { toast } from 'react-hot-toast';
 
@@ -132,9 +132,9 @@ const Orders: React.FC = () => {
   });
 
   // Fetch orders
-  const { data: orders = [], isLoading, error, refetch } = useQuery(
-    ['orders', page, rowsPerPage, searchTerm, statusFilter, dateFilter],
-    async () => {
+  const { data: orders = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['orders', page, rowsPerPage, searchTerm, statusFilter, dateFilter],
+    queryFn: async () => {
       const params = new URLSearchParams({
         page: (page + 1).toString(),
         limit: rowsPerPage.toString(),
@@ -142,79 +142,77 @@ const Orders: React.FC = () => {
         ...(statusFilter !== 'all' && { status: statusFilter }),
         ...(dateFilter !== 'all' && { date_filter: dateFilter }),
       });
-      
+
       const response = await apiClient.get(`/orders?${params}`);
       return response.data.orders || [];
     },
-    {
-      keepPreviousData: true,
-      staleTime: 30000, // 30 seconds
-    }
-  );
-
-  // Fetch stores and couriers for form dropdowns
-  const { data: stores = [] } = useQuery('stores', async () => {
-    const response = await apiClient.get('/stores');
-    return response.data.stores || [];
+    placeholderData: keepPreviousData,
+    staleTime: 30000, // 30 seconds
   });
 
-  const { data: couriers = [] } = useQuery('couriers', async () => {
-    const response = await apiClient.get('/couriers');
-    return response.data.couriers || [];
+  // Fetch stores and couriers for form dropdowns
+  const { data: stores = [] } = useQuery({
+    queryKey: ['stores'],
+    queryFn: async () => {
+      const response = await apiClient.get('/stores');
+      return response.data.stores || [];
+    }
+  });
+
+  const { data: couriers = [] } = useQuery({
+    queryKey: ['couriers'],
+    queryFn: async () => {
+      const response = await apiClient.get('/couriers');
+      return response.data.couriers || [];
+    }
   });
 
   // Create order mutation
-  const createOrderMutation = useMutation(
-    async (orderData: OrderFormData) => {
+  const createOrderMutation = useMutation({
+    mutationFn: async (orderData: OrderFormData) => {
       const response = await apiClient.post('/orders', orderData);
       return response.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('orders');
-        toast.success('Order created successfully');
-        handleCloseDialog();
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || 'Failed to create order');
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      toast.success('Order created successfully');
+      handleCloseDialog();
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to create order');
+    },
+  });
 
   // Update order mutation
-  const updateOrderMutation = useMutation(
-    async ({ orderId, orderData }: { orderId: string; orderData: Partial<OrderFormData> }) => {
+  const updateOrderMutation = useMutation({
+    mutationFn: async ({ orderId, orderData }: { orderId: string; orderData: Partial<OrderFormData> }) => {
       const response = await apiClient.put(`/orders/${orderId}`, orderData);
       return response.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('orders');
-        toast.success('Order updated successfully');
-        handleCloseDialog();
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || 'Failed to update order');
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      toast.success('Order updated successfully');
+      handleCloseDialog();
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to update order');
+    },
+  });
 
   // Delete order mutation
-  const deleteOrderMutation = useMutation(
-    async (orderId: string) => {
+  const deleteOrderMutation = useMutation({
+    mutationFn: async (orderId: string) => {
       await apiClient.delete(`/orders/${orderId}`);
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('orders');
-        toast.success('Order deleted successfully');
-        setAnchorEl(null);
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || 'Failed to delete order');
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      toast.success('Order deleted successfully');
+      setAnchorEl(null);
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to delete order');
+    },
+  });
 
   // Event handlers
   const handleOpenDialog = (order?: Order) => {
@@ -666,7 +664,7 @@ const Orders: React.FC = () => {
           <Button
             onClick={handleSubmit}
             variant="contained"
-            disabled={createOrderMutation.isLoading || updateOrderMutation.isLoading}
+            disabled={createOrderMutation.isPending || updateOrderMutation.isPending}
           >
             {editingOrder ? 'Update' : 'Create'}
           </Button>
