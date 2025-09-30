@@ -140,7 +140,10 @@ export const TeamManagement: React.FC = () => {
     );
   }
 
-  const availableTabs = [];
+  const availableTabs: Array<{
+    type: 'courier' | 'store';
+    entities: any[];
+  }> = [];
   if (userEntities.couriers.length > 0) {
     availableTabs.push({ type: 'courier' as const, entities: userEntities.couriers });
   }
