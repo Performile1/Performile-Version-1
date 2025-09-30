@@ -36,7 +36,7 @@ import {
   LocationOn,
   Business,
 } from '@mui/icons-material';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -98,66 +98,60 @@ export const ManageStores: React.FC = () => {
   const [editingStore, setEditingStore] = useState<EcommerceStore | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: stores } = useQuery(
-    'admin-stores',
-    async () => {
+  const { data: stores } = useQuery({
+    queryKey: ['admin-stores'],
+    queryFn: async () => {
       const response = await apiClient.get('/admin/stores');
       return response.data.data;
     }
-  );
+  });
 
-  const createStoreMutation = useMutation(
-    async (data: StoreFormData) => {
+  const createStoreMutation = useMutation({
+    mutationFn: async (data: StoreFormData) => {
       const response = await apiClient.post('/admin/stores', data);
       return response.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('admin-stores');
-        setDialogOpen(false);
-        reset();
-        toast.success('Store created successfully');
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || 'Failed to create store');
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-stores'] });
+      setDialogOpen(false);
+      reset();
+      toast.success('Store created successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to create store');
+    },
+  });
 
-  const updateStoreMutation = useMutation(
-    async ({ id, data }: { id: string; data: StoreFormData }) => {
+  const updateStoreMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: StoreFormData }) => {
       const response = await apiClient.put(`/admin/stores/${id}`, data);
       return response.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('admin-stores');
-        setDialogOpen(false);
-        setEditingStore(null);
-        reset();
-        toast.success('Store updated successfully');
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || 'Failed to update store');
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-stores'] });
+      setDialogOpen(false);
+      setEditingStore(null);
+      reset();
+      toast.success('Store updated successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to update store');
+    },
+  });
 
-  const deleteStoreMutation = useMutation(
-    async (id: string) => {
+  const deleteStoreMutation = useMutation({
+    mutationFn: async (id: string) => {
       const response = await apiClient.delete(`/admin/stores/${id}`);
       return response.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('admin-stores');
-        toast.success('Store deleted successfully');
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || 'Failed to delete store');
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-stores'] });
+      toast.success('Store deleted successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to delete store');
+    },
+  });
 
   const {
     control,
@@ -495,7 +489,7 @@ export const ManageStores: React.FC = () => {
           <Button
             onClick={handleSubmit(onSubmit as any)}
             variant="contained"
-            disabled={createStoreMutation.isLoading || updateStoreMutation.isLoading}
+            disabled={createStoreMutation.isPending || updateStoreMutation.isPending}
           >
             {editingStore ? 'Update' : 'Create'}
           </Button>
