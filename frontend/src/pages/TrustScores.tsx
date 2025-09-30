@@ -58,19 +58,17 @@ export const TrustScores: React.FC = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const { user } = useAuthStore();
 
-  const { data: trustScoresData, isLoading } = useQuery(
-    ['trust-scores', searchTerm],
-    async () => {
+  const { data: trustScoresData, isLoading } = useQuery({
+    queryKey: ['trust-scores', searchTerm],
+    queryFn: async () => {
       const params = new URLSearchParams();
       if (searchTerm) params.append('search', searchTerm);
-      
+
       const response = await apiClient.get(`/trustscore?${params.toString()}`);
       return response.data;
     },
-    {
-      refetchInterval: 60000, // Refresh every minute
-    }
-  );
+    refetchInterval: 60000, // Refresh every minute
+  });
 
   const couriers = trustScoresData?.data || [];
 

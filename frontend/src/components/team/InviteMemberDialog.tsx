@@ -64,15 +64,15 @@ export const InviteMemberDialog: React.FC<InviteMemberDialogProps> = ({
 
   const getRoleDescription = (role: TeamRole) => {
     const permissions = ROLE_PERMISSIONS[role];
-    const actions = [];
-    
+    const actions: string[] = [];
+
     if (permissions.canManageSettings) actions.push('Manage settings');
     if (permissions.canInvite) actions.push('Invite members');
     if (permissions.canUpdateRoles) actions.push('Update roles');
     if (permissions.canRemove) actions.push('Remove members');
     if (permissions.canEdit) actions.push('Edit content');
     if (permissions.canViewAll) actions.push('View all data');
-    
+
     return actions.join(', ');
   };
 

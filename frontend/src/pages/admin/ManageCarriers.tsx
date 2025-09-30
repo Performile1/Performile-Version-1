@@ -31,7 +31,7 @@ import {
   LocalShipping,
   Star
 } from '@mui/icons-material';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -71,16 +71,16 @@ export const ManageCarriers: React.FC = () => {
   const [editingCarrier, setEditingCarrier] = useState<Carrier | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: carriers = [] } = useQuery<Carrier[]>(
-    'admin-carriers',
-    async () => {
+  const { data: carriers = [] } = useQuery({
+    queryKey: ['admin-carriers'],
+    queryFn: async () => {
       const response = await apiClient.get<{ data: Carrier[] }>('/admin/carriers');
       return response.data.data;
     }
-  );
+  });
 
-  const createCarrierMutation = useMutation(
-    async (data: CarrierFormData) => {
+  const createCarrierMutation = useMutation({
+    mutationFn: async (data: CarrierFormData) => {
       const payload = {
         ...data,
         service_areas: data.service_areas.split(',').map(area => area.trim()),
@@ -88,21 +88,19 @@ export const ManageCarriers: React.FC = () => {
       const response = await apiClient.post('/admin/carriers', payload);
       return response.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('admin-carriers');
-        setDialogOpen(false);
-        reset();
-        toast.success('Carrier created successfully');
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || 'Failed to create carrier');
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-carriers'] });
+      setDialogOpen(false);
+      reset();
+      toast.success('Carrier created successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to create carrier');
+    },
+  });
 
-  const updateCarrierMutation = useMutation(
-    async ({ id, data }: { id: string; data: CarrierFormData }) => {
+  const updateCarrierMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: CarrierFormData }) => {
       const payload = {
         ...data,
         service_areas: data.service_areas.split(',').map(area => area.trim()),
@@ -110,35 +108,31 @@ export const ManageCarriers: React.FC = () => {
       const response = await apiClient.put(`/admin/carriers/${id}`, payload);
       return response.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('admin-carriers');
-        setDialogOpen(false);
-        setEditingCarrier(null);
-        reset();
-        toast.success('Carrier updated successfully');
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || 'Failed to update carrier');
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-carriers'] });
+      setDialogOpen(false);
+      setEditingCarrier(null);
+      reset();
+      toast.success('Carrier updated successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to update carrier');
+    },
+  });
 
-  const deleteCarrierMutation = useMutation(
-    async (id: string) => {
+  const deleteCarrierMutation = useMutation({
+    mutationFn: async (id: string) => {
       const response = await apiClient.delete(`/admin/carriers/${id}`);
       return response.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('admin-carriers');
-        toast.success('Carrier deleted successfully');
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || 'Failed to delete carrier');
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-carriers'] });
+      toast.success('Carrier deleted successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Failed to delete carrier');
+    },
+  });
 
   const {
     control,
@@ -394,7 +388,7 @@ export const ManageCarriers: React.FC = () => {
           <Button
             onClick={handleSubmit(onSubmit)}
             variant="contained"
-            disabled={createCarrierMutation.isLoading || updateCarrierMutation.isLoading}
+            disabled={createCarrierMutation.isPending || updateCarrierMutation.isPending}
           >
             {editingCarrier ? 'Update' : 'Create'}
           </Button>
