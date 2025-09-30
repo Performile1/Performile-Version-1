@@ -1,28 +1,10 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "frontend/dist",
-        "installCommand": "cd frontend && npm install --legacy-peer-deps",
-        "buildCommand": "cd frontend && npm run build"
-      }
-    },
-    {
-      "src": "api/**/*.ts",
-      "use": "@vercel/node"
-    }
-  ],
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/.vercel/output/static",
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/assets/(.*)", "dest": "/frontend/assets/$1" },
-    { "src": "/favicon.ico", "dest": "/frontend/favicon.ico" },
-    { "src": "/robots.txt", "dest": "/frontend/robots.txt" },
-    { "src": "/(.*)", "dest": "/frontend/index.html" }
-  ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/frontend/index.html" }
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

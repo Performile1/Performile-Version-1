@@ -133,7 +133,7 @@ Last updated: 2025-01-05
 
 ### Environment Variables (Vercel)
 ```bash
-DATABASE_URL=postgresql://postgres.project:[password]@aws-1-eu-north-1.pooler.supabase.com:6543/postgres
+DATABASE_URL=postgresql://postgres.project:[M3nv]@aws-1-eu-north-1.pooler.supabase.com:6543/postgres
 JWT_SECRET=your_32_byte_hex_string
 JWT_REFRESH_SECRET=your_32_byte_hex_string
 NODE_ENV=production
