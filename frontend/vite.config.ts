@@ -66,21 +66,10 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: path.resolve(__dirname, 'index.html'),
         output: {
-          manualChunks: (id: string) => {
-            if (id.includes('node_modules')) {
-              if (id.includes('@mui')) return 'vendor_mui';
-              if (id.includes('react')) return 'vendor_react';
-              if (id.includes('@stripe')) return 'vendor_stripe';
-              return 'vendor';
-            }
-            return null;
-          },
+          manualChunks: undefined,
           chunkFileNames: 'assets/js/[name]-[hash].js',
           entryFileNames: 'assets/js/[name]-[hash].js',
-          assetFileNames: 'assets/[ext]/[name]-[hash][ext]',
-          paths: {
-            '@/*': './src/*'
-          }
+          assetFileNames: 'assets/[ext]/[name]-[hash][ext]'
         }
       }
     }
