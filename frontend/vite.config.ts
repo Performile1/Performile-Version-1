@@ -57,7 +57,7 @@ export default defineConfig(({ mode }) => {
     },
 
     build: {
-      outDir: path.resolve(__dirname, '.vercel/output/static'),
+      outDir: path.resolve(__dirname, 'dist'),
       assetsDir: 'assets',
       sourcemap: !isProduction,
       minify: isProduction ? 'esbuild' : false,
