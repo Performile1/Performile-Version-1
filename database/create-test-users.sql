@@ -67,8 +67,9 @@ DELETE FROM Users WHERE email IN (
     'courier@performile.com'
 );
 
--- Insert test users with passwords hashed using pgcrypto
+-- Insert test users with passwords hashed using pgcrypto (bcrypt compatible)
 -- Password for all users: Test1234!
+-- Using bcrypt algorithm which is compatible with bcryptjs
 INSERT INTO Users (
     email,
     password_hash,
@@ -82,7 +83,7 @@ INSERT INTO Users (
     -- Admin User
     (
         'admin@performile.com',
-        crypt('Test1234!', gen_salt('bf', 10)),
+        crypt('Test1234!', gen_salt('bf')),
         'admin',
         'Admin',
         'User',
@@ -93,7 +94,7 @@ INSERT INTO Users (
     -- Merchant User
     (
         'merchant@performile.com',
-        crypt('Test1234!', gen_salt('bf', 10)),
+        crypt('Test1234!', gen_salt('bf')),
         'merchant',
         'Merchant',
         'Demo',
@@ -104,7 +105,7 @@ INSERT INTO Users (
     -- Courier User
     (
         'courier@performile.com',
-        crypt('Test1234!', gen_salt('bf', 10)),
+        crypt('Test1234!', gen_salt('bf')),
         'courier',
         'Courier',
         'Demo',
