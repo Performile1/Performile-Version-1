@@ -1,7 +1,18 @@
 {
-  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build",
-  "outputDirectory": "frontend/.vercel/output/static",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": ".vercel/output/static"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/$1"
+    }
   ]
 }
