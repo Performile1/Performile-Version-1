@@ -29,7 +29,7 @@
     "recharts": "^2.12.7",
     "resend": "^2.1.0",
     "stripe": "^14.9.0",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vite": "^7.1.7",
     "vite-plugin-pwa": "^1.0.3",
     "vite-tsconfig-paths": "^5.1.4",
