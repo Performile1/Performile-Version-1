@@ -1,13 +1,11 @@
-# Ignore everything by default
-*/
-
 # Include necessary files and directories
-!frontend/
-!api/
-!vercel.json
-!package.json
-!package-lock.json
-!tsconfig.json
+# (Don't use */ to ignore everything - it breaks nested folders)
+
+# Ignore specific directories
+backend/
+scripts/
+docs/
+.devcontainer/
 
 # Include environment variables
 !.env.production
