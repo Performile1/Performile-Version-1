@@ -167,8 +167,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(400).json({ message: 'Invalid action' });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Auth error:', error);
-    return res.status(500).json({ message: 'Internal server error', error: error.message });
+    console.error('Error stack:', error.stack);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      name: error.name
+    });
+    return res.status(500).json({ 
+      message: 'Internal server error', 
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 }
