@@ -13,8 +13,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     base: env.VITE_BASE_URL || '/',
-    root: __dirname,
-    publicDir: path.resolve(__dirname, 'public'),
+    publicDir: 'public',
     define: { 'process.env': {} },
     
     plugins: [
@@ -57,14 +56,14 @@ export default defineConfig(({ mode }) => {
     },
 
     build: {
-      outDir: path.resolve(__dirname, 'dist'),
+      outDir: 'dist',
       assetsDir: 'assets',
       sourcemap: !isProduction,
       minify: isProduction ? 'esbuild' : false,
       emptyOutDir: true,
       target: 'es2020',
       rollupOptions: {
-        input: path.resolve(__dirname, 'index.html'),
+        input: 'index.html',
         output: {
           manualChunks: undefined,
           chunkFileNames: 'assets/js/[name]-[hash].js',
