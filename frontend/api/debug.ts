@@ -15,7 +15,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       environment: envCheck,
       timestamp: new Date().toISOString()
     });
-  } catch (error) {
+  } catch (error: any) {
     return res.status(500).json({
       error: error.message,
       stack: error.stack
