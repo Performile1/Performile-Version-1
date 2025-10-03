@@ -10,14 +10,42 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================================================
--- 1. CREATE COURIER COMPANIES
+-- CLEANUP - Delete existing demo data in correct order (respecting foreign keys)
 -- ============================================================================
 
--- Delete existing demo couriers if they exist
+-- Delete reviews first (references orders, couriers, stores)
+DELETE FROM Reviews WHERE courier_id IN (
+    SELECT courier_id FROM Couriers WHERE courier_name IN (
+        'DHL Express', 'DHL Freight', 'DHL eCommerce', 'Bring', 'PostNord',
+        'Airmee', 'Earlybird', 'Budbee', 'Instabox', 'Schenker'
+    )
+);
+
+-- Delete orders (references couriers and stores)
+DELETE FROM Orders WHERE courier_id IN (
+    SELECT courier_id FROM Couriers WHERE courier_name IN (
+        'DHL Express', 'DHL Freight', 'DHL eCommerce', 'Bring', 'PostNord',
+        'Airmee', 'Earlybird', 'Budbee', 'Instabox', 'Schenker'
+    )
+);
+
+-- Delete trust score cache (references couriers)
+DELETE FROM TrustScoreCache WHERE courier_id IN (
+    SELECT courier_id FROM Couriers WHERE courier_name IN (
+        'DHL Express', 'DHL Freight', 'DHL eCommerce', 'Bring', 'PostNord',
+        'Airmee', 'Earlybird', 'Budbee', 'Instabox', 'Schenker'
+    )
+);
+
+-- Now safe to delete couriers
 DELETE FROM Couriers WHERE courier_name IN (
     'DHL Express', 'DHL Freight', 'DHL eCommerce', 'Bring', 'PostNord',
     'Airmee', 'Earlybird', 'Budbee', 'Instabox', 'Schenker'
 );
+
+-- ============================================================================
+-- 1. CREATE COURIER COMPANIES
+-- ============================================================================
 
 -- Create courier user accounts
 INSERT INTO Users (email, password_hash, user_role, first_name, last_name, phone, is_verified, is_active)
@@ -52,7 +80,16 @@ VALUES
 -- 2. CREATE STORES
 -- ============================================================================
 
--- Delete existing demo stores if they exist
+-- Delete orders and reviews for demo stores first
+DELETE FROM Orders WHERE store_id IN (
+    SELECT store_id FROM Stores WHERE store_name IN (
+        'Nordic Fashion AB', 'TechHub Stockholm', 'HomeDesign Oslo', 'GreenLife Copenhagen',
+        'SportMax Sweden', 'BeautyBox Nordic', 'BookWorld Scandinavia', 'PetParadise AB',
+        'KidsCorner Denmark', 'ToolPro Norway'
+    )
+);
+
+-- Now safe to delete stores
 DELETE FROM Stores WHERE store_name IN (
     'Nordic Fashion AB', 'TechHub Stockholm', 'HomeDesign Oslo', 'GreenLife Copenhagen',
     'SportMax Sweden', 'BeautyBox Nordic', 'BookWorld Scandinavia', 'PetParadise AB',
