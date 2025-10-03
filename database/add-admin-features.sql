@@ -25,6 +25,52 @@ WHERE merchant_prefix IS NULL;
 -- ============================================================================
 
 CREATE OR REPLACE VIEW admin_users_overview AS
+WITH user_stats AS (
+    SELECT 
+        u.user_id,
+        COALESCE(store_counts.store_count, 0) as entity_count,
+        COALESCE(order_counts.order_count, 0) as total_orders
+    FROM Users u
+    LEFT JOIN (
+        SELECT owner_user_id, COUNT(*) as store_count
+        FROM Stores
+        GROUP BY owner_user_id
+    ) store_counts ON u.user_id = store_counts.owner_user_id AND u.user_role = 'merchant'
+    LEFT JOIN (
+        SELECT s.owner_user_id, COUNT(o.order_id) as order_count
+        FROM Orders o
+        JOIN Stores s ON o.store_id = s.store_id
+        GROUP BY s.owner_user_id
+    ) order_counts ON u.user_id = order_counts.owner_user_id AND u.user_role = 'merchant'
+    
+    UNION ALL
+    
+    SELECT 
+        u.user_id,
+        COALESCE(courier_counts.courier_count, 0) as entity_count,
+        COALESCE(courier_order_counts.order_count, 0) as total_orders
+    FROM Users u
+    LEFT JOIN (
+        SELECT user_id, COUNT(*) as courier_count
+        FROM Couriers
+        GROUP BY user_id
+    ) courier_counts ON u.user_id = courier_counts.user_id AND u.user_role = 'courier'
+    LEFT JOIN (
+        SELECT c.user_id, COUNT(o.order_id) as order_count
+        FROM Orders o
+        JOIN Couriers c ON o.courier_id = c.courier_id
+        GROUP BY c.user_id
+    ) courier_order_counts ON u.user_id = courier_order_counts.user_id AND u.user_role = 'courier'
+    
+    UNION ALL
+    
+    SELECT 
+        user_id,
+        0 as entity_count,
+        0 as total_orders
+    FROM Users
+    WHERE user_role NOT IN ('merchant', 'courier')
+)
 SELECT 
     u.user_id,
     u.email,
@@ -47,22 +93,17 @@ SELECT
     us.auto_renew,
     
     -- Role-specific counts
-    CASE 
-        WHEN u.user_role = 'merchant' THEN (SELECT COUNT(*) FROM Stores WHERE owner_user_id = u.user_id)
-        WHEN u.user_role = 'courier' THEN (SELECT COUNT(*) FROM Couriers WHERE user_id = u.user_id)
-        ELSE 0
-    END as entity_count,
-    
-    CASE 
-        WHEN u.user_role = 'merchant' THEN (SELECT COUNT(*) FROM Orders o JOIN Stores s ON o.store_id = s.store_id WHERE s.owner_user_id = u.user_id)
-        WHEN u.user_role = 'courier' THEN (SELECT COUNT(*) FROM Orders o JOIN Couriers c ON o.courier_id = c.courier_id WHERE c.user_id = u.user_id)
-        ELSE 0
-    END as total_orders
+    COALESCE(MAX(stats.entity_count), 0) as entity_count,
+    COALESCE(MAX(stats.total_orders), 0) as total_orders
 
 FROM Users u
 LEFT JOIN UserSubscriptions us ON u.user_id = us.user_id AND us.status = 'active'
 LEFT JOIN SubscriptionPlans sp ON us.plan_id = sp.plan_id
-ORDER BY u.created_at DESC;
+LEFT JOIN user_stats stats ON u.user_id = stats.user_id
+GROUP BY u.user_id, u.email, u.user_role, u.first_name, u.last_name, u.phone, 
+         u.is_verified, u.is_active, u.created_at, u.last_login,
+         sp.plan_name, sp.price_monthly, sp.price_yearly, us.status, 
+         us.start_date, us.end_date, us.auto_renew;
 
 -- ============================================================================
 -- ADMIN VIEW: Review Validation (Reviews without valid tracking)
