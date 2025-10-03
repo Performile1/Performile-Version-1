@@ -18,7 +18,7 @@ import {
   CheckCircle,
 } from '@mui/icons-material';
 import { useAuthStore } from '@/store/authStore';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 
 interface DashboardStats {
