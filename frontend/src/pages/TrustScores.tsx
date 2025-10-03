@@ -33,7 +33,7 @@ import {
   CheckCircle,
   ThumbUp,
 } from '@mui/icons-material';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
 

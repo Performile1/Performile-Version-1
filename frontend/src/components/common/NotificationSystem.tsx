@@ -22,7 +22,7 @@ import {
   Close,
   MarkEmailRead,
 } from '@mui/icons-material';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
 import toast from 'react-hot-toast';

@@ -24,7 +24,7 @@ import {
   Close,
   History,
 } from '@mui/icons-material';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useNavigate } from 'react-router-dom';
 
