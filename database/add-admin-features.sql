@@ -145,6 +145,15 @@ ORDER BY r.created_at DESC;
 -- ============================================================================
 
 CREATE OR REPLACE VIEW admin_courier_performance AS
+WITH country_counts AS (
+    SELECT 
+        courier_id,
+        COALESCE(SUBSTRING(delivery_address FROM '([A-Z]{2})$'), 'Unknown') as country,
+        COUNT(DISTINCT order_id) as order_count
+    FROM Orders
+    WHERE delivery_address IS NOT NULL
+    GROUP BY courier_id, COALESCE(SUBSTRING(delivery_address FROM '([A-Z]{2})$'), 'Unknown')
+)
 SELECT 
     c.courier_id,
     c.courier_name,
@@ -167,11 +176,10 @@ SELECT
     AVG(r.package_condition_rating) as avg_package_condition,
     AVG(r.communication_rating) as avg_communication,
     
-    -- Geographic distribution
-    jsonb_object_agg(
-        COALESCE(SUBSTRING(o.delivery_address FROM '([A-Z]{2})$'), 'Unknown'),
-        COUNT(DISTINCT o.order_id)
-    ) FILTER (WHERE o.delivery_address IS NOT NULL) as orders_by_country,
+    -- Geographic distribution (pre-aggregated)
+    (SELECT jsonb_object_agg(country, order_count) 
+     FROM country_counts cc 
+     WHERE cc.courier_id = c.courier_id) as orders_by_country,
     
     -- Time period
     MIN(o.order_date) as first_order_date,
