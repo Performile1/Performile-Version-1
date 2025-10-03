@@ -12,25 +12,31 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
-// JWT verification middleware
-const verifyToken = (req: VercelRequest): any => {
+// JWT verification middleware (optional for GET requests)
+const verifyToken = (req: VercelRequest, required: boolean = true): any => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new Error('No token provided');
+    if (required) {
+      throw new Error('No token provided');
+    }
+    return null;
   }
 
   const token = authHeader.substring(7);
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
-    throw new Error('Invalid token');
+    if (required) {
+      throw new Error('Invalid token');
+    }
+    return null;
   }
 };
 
 // Get orders with filtering and pagination
 const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
   try {
-    const user = verifyToken(req);
+    const user = verifyToken(req, false); // Make auth optional for GET
     const {
       page = '1',
       limit = '10',
@@ -45,11 +51,11 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
     const queryParams: any[] = [];
     let paramCount = 0;
 
-    // Role-based filtering
-    if (user.user_role === 'merchant') {
+    // Role-based filtering (only if authenticated)
+    if (user && user.user_role === 'merchant') {
       whereClause += ` AND s.owner_user_id = $${++paramCount}`;
       queryParams.push(user.user_id);
-    } else if (user.user_role === 'courier') {
+    } else if (user && user.user_role === 'courier') {
       whereClause += ` AND c.user_id = $${++paramCount}`;
       queryParams.push(user.user_id);
     }
@@ -96,21 +102,17 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
         o.order_status,
         o.order_date,
         o.delivery_date,
-        o.estimated_delivery,
-        o.level_of_service,
-        o.type_of_delivery,
-        o.postal_code,
-        o.city,
-        o.country,
+        o.customer_name,
+        o.customer_email,
+        o.customer_phone,
+        o.delivery_address,
         o.created_at,
         o.updated_at,
         s.store_name,
-        c.courier_name,
-        u.email as consumer_email
+        c.courier_name
       FROM orders o
       LEFT JOIN stores s ON o.store_id = s.store_id
       LEFT JOIN couriers c ON o.courier_id = c.courier_id
-      LEFT JOIN users u ON o.consumer_id = u.user_id
       WHERE ${whereClause}
       ORDER BY o.created_at DESC
       LIMIT $${++paramCount} OFFSET $${++paramCount}
