@@ -1,0 +1,47 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { Pool } from 'pg';
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  try {
+    const client = await pool.connect();
+    try {
+      const result = await client.query(`
+        SELECT 
+          c.courier_id,
+          c.courier_name,
+          t.overall_score,
+          t.total_reviews,
+          t.avg_delivery_speed,
+          t.avg_package_condition,
+          t.avg_communication,
+          t.last_updated
+        FROM Couriers c
+        LEFT JOIN TrustScoreCache t ON c.courier_id = t.courier_id
+        WHERE c.is_active = TRUE
+        ORDER BY t.overall_score DESC NULLS LAST
+      `);
+
+      return res.status(200).json({
+        success: true,
+        data: result.rows
+      });
+    } finally {
+      client.release();
+    }
+  } catch (error: any) {
+    console.error('TrustScore API error:', error);
+    return res.status(500).json({ 
+      message: 'Internal server error',
+      error: error.message 
+    });
+  }
+}
