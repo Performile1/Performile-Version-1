@@ -10,38 +10,54 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================================================
--- CLEANUP - Delete existing demo data in correct order (respecting foreign keys)
+-- CLEANUP - Delete ALL existing demo data in correct order (respecting foreign keys)
 -- ============================================================================
 
--- Delete reviews first (references orders, couriers, stores)
-DELETE FROM Reviews WHERE courier_id IN (
-    SELECT courier_id FROM Couriers WHERE courier_name IN (
+-- Get IDs of demo couriers and stores
+DO $$
+DECLARE
+    demo_courier_ids UUID[];
+    demo_store_ids UUID[];
+BEGIN
+    -- Get demo courier IDs
+    SELECT ARRAY_AGG(courier_id) INTO demo_courier_ids
+    FROM Couriers WHERE courier_name IN (
         'DHL Express', 'DHL Freight', 'DHL eCommerce', 'Bring', 'PostNord',
         'Airmee', 'Earlybird', 'Budbee', 'Instabox', 'Schenker'
-    )
-);
-
--- Delete orders (references couriers and stores)
-DELETE FROM Orders WHERE courier_id IN (
-    SELECT courier_id FROM Couriers WHERE courier_name IN (
-        'DHL Express', 'DHL Freight', 'DHL eCommerce', 'Bring', 'PostNord',
-        'Airmee', 'Earlybird', 'Budbee', 'Instabox', 'Schenker'
-    )
-);
-
--- Delete trust score cache (references couriers)
-DELETE FROM TrustScoreCache WHERE courier_id IN (
-    SELECT courier_id FROM Couriers WHERE courier_name IN (
-        'DHL Express', 'DHL Freight', 'DHL eCommerce', 'Bring', 'PostNord',
-        'Airmee', 'Earlybird', 'Budbee', 'Instabox', 'Schenker'
-    )
-);
-
--- Now safe to delete couriers
-DELETE FROM Couriers WHERE courier_name IN (
-    'DHL Express', 'DHL Freight', 'DHL eCommerce', 'Bring', 'PostNord',
-    'Airmee', 'Earlybird', 'Budbee', 'Instabox', 'Schenker'
-);
+    );
+    
+    -- Get demo store IDs
+    SELECT ARRAY_AGG(store_id) INTO demo_store_ids
+    FROM Stores WHERE store_name IN (
+        'Nordic Fashion AB', 'TechHub Stockholm', 'HomeDesign Oslo', 'GreenLife Copenhagen',
+        'SportMax Sweden', 'BeautyBox Nordic', 'BookWorld Scandinavia', 'PetParadise AB',
+        'KidsCorner Denmark', 'ToolPro Norway'
+    );
+    
+    -- Delete reviews (references orders, couriers, stores)
+    DELETE FROM Reviews 
+    WHERE courier_id = ANY(demo_courier_ids) 
+    OR store_id = ANY(demo_store_ids);
+    
+    -- Delete ALL orders for demo couriers or stores
+    DELETE FROM Orders 
+    WHERE courier_id = ANY(demo_courier_ids) 
+    OR store_id = ANY(demo_store_ids);
+    
+    -- Delete trust score cache (references couriers)
+    DELETE FROM TrustScoreCache 
+    WHERE courier_id = ANY(demo_courier_ids);
+    
+    -- Delete couriers
+    DELETE FROM Couriers 
+    WHERE courier_id = ANY(demo_courier_ids);
+    
+    -- Delete stores
+    DELETE FROM Stores 
+    WHERE store_id = ANY(demo_store_ids);
+    
+    RAISE NOTICE 'Cleanup completed successfully';
+END $$;
 
 -- ============================================================================
 -- 1. CREATE COURIER COMPANIES
@@ -79,22 +95,6 @@ VALUES
 -- ============================================================================
 -- 2. CREATE STORES
 -- ============================================================================
-
--- Delete orders and reviews for demo stores first
-DELETE FROM Orders WHERE store_id IN (
-    SELECT store_id FROM Stores WHERE store_name IN (
-        'Nordic Fashion AB', 'TechHub Stockholm', 'HomeDesign Oslo', 'GreenLife Copenhagen',
-        'SportMax Sweden', 'BeautyBox Nordic', 'BookWorld Scandinavia', 'PetParadise AB',
-        'KidsCorner Denmark', 'ToolPro Norway'
-    )
-);
-
--- Now safe to delete stores
-DELETE FROM Stores WHERE store_name IN (
-    'Nordic Fashion AB', 'TechHub Stockholm', 'HomeDesign Oslo', 'GreenLife Copenhagen',
-    'SportMax Sweden', 'BeautyBox Nordic', 'BookWorld Scandinavia', 'PetParadise AB',
-    'KidsCorner Denmark', 'ToolPro Norway'
-);
 
 INSERT INTO Stores (store_name, owner_user_id, website_url, description, is_active)
 SELECT 
