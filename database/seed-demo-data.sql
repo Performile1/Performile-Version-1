@@ -176,7 +176,14 @@ BEGIN
                 v_statuses[1 + floor(random() * array_length(v_statuses, 1))::int]::order_status,
                 NOW() - (random() * 30 || ' days')::INTERVAL,
                 CASE 
-                    WHEN random() < 0.7 THEN NOW() - (random() * 20 || ' days')::INTERVAL
+                    WHEN random() < 0.7 THEN 
+                        -- Delivered: order_date + realistic delivery time (12-72 hours for standard, 4-24 for express)
+                        (NOW() - (random() * 30 || ' days')::INTERVAL) + 
+                        (CASE 
+                            WHEN random() < 0.3 THEN (4 + random() * 20)::INT || ' hours'  -- Express: 4-24 hours
+                            WHEN random() < 0.6 THEN (12 + random() * 36)::INT || ' hours' -- Standard: 12-48 hours
+                            ELSE (24 + random() * 48)::INT || ' hours'                     -- Economy: 24-72 hours
+                        END)::INTERVAL
                     ELSE NULL
                 END,
                 'TRK-' || LPAD(floor(random() * 1000000)::TEXT, 10, '0')
