@@ -77,12 +77,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       roles: ['admin', 'merchant', 'courier', 'consumer'],
     },
     {
-      label: 'Messages',
-      path: '/messages',
-      icon: Message,
-      roles: ['admin', 'merchant', 'courier', 'consumer'],
-    },
-    {
       label: 'Trust Scores',
       path: '/trustscores',
       icon: Assessment,
