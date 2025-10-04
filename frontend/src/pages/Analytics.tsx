@@ -559,7 +559,7 @@ export const Analytics: React.FC = () => {
 
             {/* Lead Generation Tab (Merchants only) */}
             <TabPanel value={activeTab} index={3}>
-              {user?.user_role === 'merchant' ? (
+              {(user?.user_role === 'merchant' || user?.user_role === 'admin') ? (
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <Card>
@@ -571,13 +571,13 @@ export const Analytics: React.FC = () => {
                           Research and connect with couriers in your area. Send leads to potential partners.
                         </Typography>
                         
-                        {user?.user_role !== 'admin' && (
+                        {user.user_role !== 'admin' && (
                           <Alert severity="info" sx={{ mb: 2 }}>
                             Your {user?.subscription_tier || 'Tier 1'} subscription allows{' '}
                             {user?.subscription_tier === 'tier3' ? '8' : user?.subscription_tier === 'tier2' ? '3' : '1'} courier connection(s)
                           </Alert>
                         )}
-                        {user?.user_role === 'admin' && (
+                        {user.user_role === 'admin' && (
                           <Alert severity="success" sx={{ mb: 2 }}>
                             Admin Access - Unlimited courier connections
                           </Alert>
