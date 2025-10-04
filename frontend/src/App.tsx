@@ -12,6 +12,7 @@ import { ManageCarriers } from '@/pages/admin/ManageCarriers';
 import { ManageStores } from '@/pages/admin/ManageStores';
 import { ManageMerchants } from '@/pages/admin/ManageMerchants';
 import { ManageCouriers } from '@/pages/admin/ManageCouriers';
+import { CourierDirectory } from '@/pages/courier/CourierDirectory';
 import { TeamManagement } from '@/pages/team/TeamManagement';
 import { AcceptInvitation } from '@/pages/team/AcceptInvitation';
 import { Analytics } from './pages/Analytics';
@@ -162,7 +163,9 @@ const App: React.FC = () => {
               path="/couriers"
               element={
                 <ProtectedRoute requiredRoles={['admin', 'courier']}>
-                  <ManageCouriers />
+                  {/* Show anonymized directory for couriers, full management for admin */}
+                  {/* This will be handled by checking user role in the component */}
+                  <CourierDirectory />
                 </ProtectedRoute>
               }
             />
