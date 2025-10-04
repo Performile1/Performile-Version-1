@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, Paper, Fade } from '@mui/material';
+import { Box, Container, Fade } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { LoginForm } from '@/components/auth/LoginForm';
@@ -28,21 +28,13 @@ export const AuthPage: React.FC = () => {
     >
       <Container maxWidth="sm">
         <Fade in timeout={800}>
-          <Paper
-            elevation={24}
-            sx={{
-              borderRadius: 3,
-              overflow: 'hidden',
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-            }}
-          >
+          <Box>
             {isLogin ? (
               <LoginForm onSwitchToRegister={() => setIsLogin(false)} />
             ) : (
               <RegisterForm onSwitchToLogin={() => setIsLogin(true)} />
             )}
-          </Paper>
+          </Box>
         </Fade>
       </Container>
     </Box>
