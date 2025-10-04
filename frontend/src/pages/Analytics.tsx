@@ -37,6 +37,8 @@ import {
 } from 'recharts';
 import { AnalyticsFilters } from '@/types/analytics';
 import { useAuthStore } from '@/store/authStore';
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@/services/apiClient';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // import { TimeFilter } from '../components/analytics/TimeFilter';
 
@@ -64,8 +66,35 @@ export const Analytics: React.FC = () => {
     timeRange: 'month',
     city: '',
     postalCode: '',
-    country: ''
+    country: '',
+    startDate: '',
+    endDate: ''
   });
+
+  // Fetch analytics data from API
+  const { data: analyticsData, isLoading } = useQuery({
+    queryKey: ['analytics', user?.user_role, filters],
+    queryFn: async () => {
+      // Admin uses admin analytics endpoint with full data
+      if (user?.user_role === 'admin') {
+        const response = await apiClient.get('/admin/analytics', {
+          params: {
+            compare: 'true',
+            start_date: filters.startDate,
+            end_date: filters.endDate,
+            postal_code: filters.postalCode,
+            country: filters.country
+          }
+        });
+        return response.data;
+      }
+      // Other roles would use different endpoints
+      return null;
+    },
+    enabled: !!user
+  });
+
+  const courierData = analyticsData?.data || [];
 
   // Mock data for demonstration
   const performanceData = [
@@ -259,7 +288,61 @@ export const Analytics: React.FC = () => {
               </Typography>
             </>
           )}
+          {user?.user_role === 'admin' && courierData.length > 0 && (
+            <>
+              <br />
+              <Typography variant="caption">
+                Viewing {courierData.length} courier(s) | Full transparency mode - All data visible
+              </Typography>
+            </>
+          )}
         </Alert>
+
+        {/* Admin: Real-time Courier Data */}
+        {user?.user_role === 'admin' && courierData.length > 0 && (
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Courier Performance Overview (Live Data)
+              </Typography>
+              <Grid container spacing={2}>
+                {courierData.slice(0, 5).map((courier: any, index: number) => (
+                  <Grid item xs={12} md={6} lg={4} key={courier.courier_id}>
+                    <Card variant="outlined">
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          {courier.courier_name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                          📧 {courier.contact_email} | 📞 {courier.contact_phone}
+                        </Typography>
+                        <Box sx={{ mt: 2 }}>
+                          <Typography variant="caption" display="block">
+                            Total Orders: <strong>{courier.total_orders}</strong> | 
+                            Delivered: <strong>{courier.delivered_orders}</strong> | 
+                            Success Rate: <strong>{courier.delivery_success_rate}%</strong>
+                          </Typography>
+                          <Typography variant="caption" display="block">
+                            Avg Delivery: <strong>{courier.avg_delivery_hours}h</strong> | 
+                            Rating: <strong>{courier.avg_rating}/5</strong> | 
+                            Reviews: <strong>{courier.total_reviews}</strong>
+                          </Typography>
+                          <Typography variant="caption" display="block">
+                            Customers: <strong>{courier.unique_customers}</strong> | 
+                            Stores: <strong>{courier.total_stores_served}</strong>
+                          </Typography>
+                          <Typography variant="caption" display="block" color="primary">
+                            Since: {new Date(courier.courier_since).toLocaleDateString()}
+                          </Typography>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Filters */}
         <Card sx={{ mb: 3 }}>
