@@ -7,6 +7,11 @@ export function getJWTSecret(): string {
   const secret = process.env.JWT_SECRET;
   
   if (!secret) {
+    // TEMPORARY: Allow fallback in development only
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️  WARNING: Using fallback JWT_SECRET in development');
+      return 'development-fallback-secret-min-32-chars-long-for-testing';
+    }
     console.error('CRITICAL: JWT_SECRET environment variable is not configured');
     throw new Error('Server configuration error - JWT_SECRET missing');
   }
@@ -23,6 +28,11 @@ export function getJWTRefreshSecret(): string {
   const secret = process.env.JWT_REFRESH_SECRET;
   
   if (!secret) {
+    // TEMPORARY: Allow fallback in development only
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️  WARNING: Using fallback JWT_REFRESH_SECRET in development');
+      return 'development-fallback-refresh-secret-min-32-chars-for-testing';
+    }
     console.error('CRITICAL: JWT_REFRESH_SECRET environment variable is not configured');
     throw new Error('Server configuration error - JWT_REFRESH_SECRET missing');
   }
