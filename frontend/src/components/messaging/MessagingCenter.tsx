@@ -87,7 +87,8 @@ export const MessagingCenter: React.FC = () => {
       const response = await apiClient.get('/messages/conversations');
       return response.data;
     },
-    refetchInterval: 5000, // Poll every 5 seconds
+    refetchInterval: 30000, // Poll every 30 seconds
+    retry: false,
   });
 
   const conversations: Conversation[] = conversationsData?.data || [];
@@ -103,7 +104,8 @@ export const MessagingCenter: React.FC = () => {
       return response.data;
     },
     enabled: !!selectedConversation,
-    refetchInterval: 3000, // Poll every 3 seconds
+    refetchInterval: 10000, // Poll every 10 seconds
+    retry: false,
   });
 
   const messages: Message[] = messagesData?.data || [];
