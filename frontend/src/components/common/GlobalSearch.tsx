@@ -160,6 +160,11 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
         onFocus={() => setIsOpen(true)}
         onKeyDown={handleKeyDown}
         autoFocus={autoFocus}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            bgcolor: 'white',
+          }
+        }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
