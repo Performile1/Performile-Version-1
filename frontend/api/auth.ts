@@ -28,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const client = await pool.connect();
       try {
-        const userQuery = 'SELECT user_id, email, password_hash, user_role, first_name, last_name, is_active FROM users WHERE email = $1';
+        const userQuery = 'SELECT user_id, email, password_hash, user_role, first_name, last_name, is_active, is_verified, created_at, updated_at FROM users WHERE email = $1';
         const userResult = await client.query(userQuery, [email]);
 
         if (userResult.rows.length === 0) {
@@ -67,11 +67,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           success: true,
           data: {
             user: {
-              id: user.user_id,
+              user_id: user.user_id,
               email: user.email,
-              role: user.user_role,
-              firstName: user.first_name,
-              lastName: user.last_name
+              user_role: user.user_role,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              is_verified: user.is_verified || false,
+              is_active: user.is_active,
+              created_at: user.created_at || new Date().toISOString(),
+              updated_at: user.updated_at || new Date().toISOString()
             },
             tokens: {
               accessToken,
