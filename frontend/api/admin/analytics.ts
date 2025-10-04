@@ -93,12 +93,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         SELECT 
           c.courier_id,
           c.courier_name,
+          c.contact_email,
+          c.contact_phone,
+          c.description,
           c.is_active,
+          c.created_at as courier_since,
           
-          -- Order statistics
+          -- Order statistics (FULL TRANSPARENCY - NO ANONYMIZATION)
           COUNT(DISTINCT o.order_id) as total_orders,
           COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders,
           COUNT(DISTINCT CASE WHEN o.order_status = 'cancelled' THEN o.order_id END) as cancelled_orders,
+          COUNT(DISTINCT CASE WHEN o.order_status = 'pending' THEN o.order_id END) as pending_orders,
+          COUNT(DISTINCT CASE WHEN o.order_status = 'in_transit' THEN o.order_id END) as in_transit_orders,
           ROUND(
             (COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END)::NUMERIC / 
             NULLIF(COUNT(DISTINCT o.order_id), 0) * 100), 2
@@ -126,10 +132,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           COUNT(CASE WHEN r.rating = 2 THEN 1 END) as two_star_count,
           COUNT(CASE WHEN r.rating = 1 THEN 1 END) as one_star_count,
           
-          -- Geographic distribution
+          -- Geographic distribution (DETAILED - Admin sees exact numbers)
           COUNT(DISTINCT CASE WHEN o.delivery_address ILIKE '%Sweden%' THEN o.order_id END) as orders_sweden,
           COUNT(DISTINCT CASE WHEN o.delivery_address ILIKE '%Norway%' THEN o.order_id END) as orders_norway,
           COUNT(DISTINCT CASE WHEN o.delivery_address ILIKE '%Denmark%' THEN o.order_id END) as orders_denmark,
+          
+          -- Customer details (ADMIN ONLY - Full transparency)
+          COUNT(DISTINCT o.customer_email) as unique_customers,
+          ARRAY_AGG(DISTINCT s.store_name) FILTER (WHERE s.store_name IS NOT NULL) as stores_served,
+          COUNT(DISTINCT s.store_id) as total_stores_served,
           
           -- Time distribution
           COUNT(DISTINCT CASE WHEN EXTRACT(HOUR FROM o.order_date) BETWEEN 6 AND 11 THEN o.order_id END) as orders_morning,
@@ -147,10 +158,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           
         FROM Couriers c
         LEFT JOIN Orders o ON c.courier_id = o.courier_id
+        LEFT JOIN Stores s ON o.store_id = s.store_id
         LEFT JOIN Reviews r ON c.courier_id = r.courier_id AND r.order_id = o.order_id
         LEFT JOIN TrustScoreCache t ON c.courier_id = t.courier_id
         WHERE ${whereClause}
-        GROUP BY c.courier_id, c.courier_name, c.is_active, t.overall_score, t.total_reviews
+        GROUP BY c.courier_id, c.courier_name, c.contact_email, c.contact_phone, 
+                 c.description, c.is_active, c.created_at, t.overall_score, t.total_reviews
         ORDER BY 
           CASE WHEN $${++paramCount} = 'true' THEN avg_rating ELSE NULL END DESC NULLS LAST,
           c.courier_name
