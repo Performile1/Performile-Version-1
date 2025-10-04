@@ -154,7 +154,7 @@ const App: React.FC = () => {
               path="/stores"
               element={
                 <ProtectedRoute requiredRoles={['admin', 'merchant']}>
-                  <div>Stores Page - Coming Soon</div>
+                  <ManageMerchants />
                 </ProtectedRoute>
               }
             />
@@ -162,7 +162,7 @@ const App: React.FC = () => {
               path="/couriers"
               element={
                 <ProtectedRoute requiredRoles={['admin', 'courier']}>
-                  <div>Couriers Page - Coming Soon</div>
+                  <ManageCouriers />
                 </ProtectedRoute>
               }
             />
