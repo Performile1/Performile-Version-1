@@ -2,7 +2,37 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Pool } from 'pg';
-import { getJWTSecret, getJWTRefreshSecret } from '../utils/env';
+
+// Inline environment helpers to avoid ES module issues
+function getJWTSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️  WARNING: Using fallback JWT_SECRET in development');
+      return 'development-fallback-secret-min-32-chars-long-for-testing';
+    }
+    throw new Error('JWT_SECRET not configured');
+  }
+  if (secret.length < 32) {
+    throw new Error('JWT_SECRET too short (min 32 chars)');
+  }
+  return secret;
+}
+
+function getJWTRefreshSecret(): string {
+  const secret = process.env.JWT_REFRESH_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️  WARNING: Using fallback JWT_REFRESH_SECRET in development');
+      return 'development-fallback-refresh-secret-min-32-chars-for-testing';
+    }
+    throw new Error('JWT_REFRESH_SECRET not configured');
+  }
+  if (secret.length < 32) {
+    throw new Error('JWT_REFRESH_SECRET too short (min 32 chars)');
+  }
+  return secret;
+}
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
