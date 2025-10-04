@@ -198,6 +198,15 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               <Search />
             </IconButton>
 
+            {/* Messages Icon */}
+            <IconButton
+              color="inherit"
+              onClick={() => navigate('/messages')}
+              sx={{ display: { xs: 'none', sm: 'flex' } }}
+            >
+              <Message />
+            </IconButton>
+
             {/* Notification System */}
             <NotificationSystem maxVisible={50} />
 
