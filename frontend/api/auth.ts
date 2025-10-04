@@ -15,6 +15,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    // Log environment status for debugging
+    console.log('Auth API called:', {
+      action: req.body?.action,
+      hasJWTSecret: !!process.env.JWT_SECRET,
+      hasRefreshSecret: !!process.env.JWT_REFRESH_SECRET,
+      hasDatabase: !!process.env.DATABASE_URL,
+      nodeEnv: process.env.NODE_ENV
+    });
+
     const { action, email, password, first_name, last_name, phone, user_role } = req.body;
 
     if (!action) {
@@ -175,19 +184,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(400).json({ message: 'Invalid action' });
-
   } catch (error: any) {
-    console.error('Auth error:', error);
+    console.error('Auth API error:', error);
     console.error('Error stack:', error.stack);
-    console.error('Error details:', {
-      message: error.message,
-      code: error.code,
-      name: error.name
-    });
     return res.status(500).json({ 
-      message: 'Internal server error', 
-      error: error.message,
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      message: error.message || 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+      details: {
+        hasJWTSecret: !!process.env.JWT_SECRET,
+        hasRefreshSecret: !!process.env.JWT_REFRESH_SECRET,
+        hasDatabase: !!process.env.DATABASE_URL
+      }
     });
   }
 }
