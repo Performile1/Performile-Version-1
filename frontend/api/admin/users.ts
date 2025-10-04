@@ -1,11 +1,22 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Pool } from 'pg';
 import jwt from 'jsonwebtoken';
-import { getJWTSecret } from '../../utils/env';
+
+// Inline JWT helper
+function getJWTSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'development') {
+      return 'development-fallback-secret-min-32-chars-long-for-testing';
+    }
+    throw new Error('JWT_SECRET not configured');
+  }
+  return secret;
+}
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 // Verify admin token
@@ -61,11 +72,68 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         whereClause += ` AND is_active = false`;
       }
 
-      const result = await client.query(`
-        SELECT * FROM admin_users_overview
+      // Query users with aggregated stats
+      const query = `
+        SELECT 
+          u.*,
+          COALESCE(s.store_count, 0) as store_count,
+          COALESCE(l.leads_posted, 0) as leads_posted,
+          COALESCE(l.active_leads, 0) as active_leads,
+          COALESCE(ld.leads_downloaded, 0) as leads_downloaded,
+          COALESCE(o.total_deliveries, 0) as total_deliveries,
+          COALESCE(o.successful_deliveries, 0) as successful_deliveries,
+          COALESCE(r.avg_rating, 0) as avg_rating,
+          COALESCE(r.total_reviews, 0) as total_reviews,
+          COALESCE(ts.trust_score, 0) as trust_score,
+          COALESCE(us.subscription_tier, 'none') as subscription_tier,
+          0 as revenue_generated
+        FROM Users u
+        LEFT JOIN (
+          SELECT owner_user_id, COUNT(*) as store_count
+          FROM Stores
+          GROUP BY owner_user_id
+        ) s ON u.user_id = s.owner_user_id
+        LEFT JOIN (
+          SELECT merchant_id, 
+                 COUNT(*) as leads_posted,
+                 COUNT(*) FILTER (WHERE status = 'active') as active_leads
+          FROM LeadsMarketplace
+          GROUP BY merchant_id
+        ) l ON u.user_id = l.merchant_id
+        LEFT JOIN (
+          SELECT lead_id, COUNT(*) as leads_downloaded
+          FROM LeadDownloads
+          GROUP BY lead_id
+        ) ld ON l.leads_posted > 0
+        LEFT JOIN (
+          SELECT c.user_id,
+                 COUNT(*) as total_deliveries,
+                 COUNT(*) FILTER (WHERE o.order_status = 'delivered') as successful_deliveries
+          FROM Couriers c
+          LEFT JOIN Orders o ON c.courier_id = o.courier_id
+          GROUP BY c.user_id
+        ) o ON u.user_id = o.user_id
+        LEFT JOIN (
+          SELECT courier_id,
+                 AVG(rating) as avg_rating,
+                 COUNT(*) as total_reviews
+          FROM Reviews
+          GROUP BY courier_id
+        ) r ON u.user_id = r.courier_id
+        LEFT JOIN (
+          SELECT entity_id, score as trust_score
+          FROM TrustScoreCache
+        ) ts ON u.user_id = ts.entity_id
+        LEFT JOIN (
+          SELECT user_id, 'tier1' as subscription_tier
+          FROM UserSubscriptions
+          WHERE status = 'active'
+        ) us ON u.user_id = us.user_id
         WHERE ${whereClause}
-        ORDER BY created_at DESC
-      `, params);
+        ORDER BY u.created_at DESC
+      `;
+
+      const result = await client.query(query, params);
 
       return res.status(200).json({
         success: true,
