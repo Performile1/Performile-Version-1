@@ -19,15 +19,10 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Chip,
   Box,
   Tab,
-  Tabs,
-  Alert
+  Tabs
 } from '@mui/material';
 import {
   Edit,
@@ -39,7 +34,7 @@ import {
 } from '@mui/icons-material';
 
 interface TabPanelProps {
-  children?: React.Node;
+  children?: React.ReactNode;
   index: number;
   value: number;
 }
