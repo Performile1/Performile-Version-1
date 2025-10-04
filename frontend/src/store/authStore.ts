@@ -165,7 +165,7 @@ export const useAuthStore = create<AuthStore>()(
       name: 'performile-auth',
       partialize: (state) => ({
         user: state.user,
-        // tokens: state.tokens, // SECURITY: Tokens now in httpOnly cookies - not stored in localStorage
+        tokens: state.tokens, // TEMPORARY: Store tokens until HttpOnly cookies are implemented
         isAuthenticated: state.isAuthenticated,
       }),
     }
