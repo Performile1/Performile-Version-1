@@ -26,6 +26,12 @@ ALTER TABLE LeadDownloads ENABLE ROW LEVEL SECURITY;
 -- 2. CREATE RLS POLICIES FOR USERS TABLE
 -- ============================================================================
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS users_select_own ON Users;
+DROP POLICY IF EXISTS users_update_own ON Users;
+DROP POLICY IF EXISTS users_select_admin ON Users;
+DROP POLICY IF EXISTS users_update_admin ON Users;
+
 -- Users can view their own data
 CREATE POLICY users_select_own ON Users
   FOR SELECT
@@ -50,6 +56,11 @@ CREATE POLICY users_update_admin ON Users
 -- 3. CREATE RLS POLICIES FOR ORDERS TABLE
 -- ============================================================================
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS orders_select_merchant ON Orders;
+DROP POLICY IF EXISTS orders_select_courier ON Orders;
+DROP POLICY IF EXISTS orders_select_admin ON Orders;
+
 -- Merchants can view their store's orders
 CREATE POLICY orders_select_merchant ON Orders
   FOR SELECT
@@ -73,6 +84,12 @@ CREATE POLICY orders_select_admin ON Orders
 -- ============================================================================
 -- 4. CREATE RLS POLICIES FOR REVIEWS TABLE
 -- ============================================================================
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS reviews_select_public ON Reviews;
+DROP POLICY IF EXISTS reviews_select_store_owner ON Reviews;
+DROP POLICY IF EXISTS reviews_select_courier ON Reviews;
+DROP POLICY IF EXISTS reviews_select_admin ON Reviews;
 
 -- Anyone can view public reviews
 CREATE POLICY reviews_select_public ON Reviews
@@ -103,6 +120,12 @@ CREATE POLICY reviews_select_admin ON Reviews
 -- 5. CREATE RLS POLICIES FOR LEADS MARKETPLACE
 -- ============================================================================
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS leads_select_merchant ON LeadsMarketplace;
+DROP POLICY IF EXISTS leads_select_courier ON LeadsMarketplace;
+DROP POLICY IF EXISTS leads_select_admin ON LeadsMarketplace;
+DROP POLICY IF EXISTS leads_insert_merchant ON LeadsMarketplace;
+
 -- Merchants can view their own leads
 CREATE POLICY leads_select_merchant ON LeadsMarketplace
   FOR SELECT
@@ -129,6 +152,10 @@ CREATE POLICY leads_insert_merchant ON LeadsMarketplace
 -- ============================================================================
 -- 6. CREATE RLS POLICIES FOR TRUST SCORE CACHE
 -- ============================================================================
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS trustscore_select_all ON TrustScoreCache;
+DROP POLICY IF EXISTS trustscore_update_admin ON TrustScoreCache;
 
 -- Anyone can view trust scores (public data)
 CREATE POLICY trustscore_select_all ON TrustScoreCache
