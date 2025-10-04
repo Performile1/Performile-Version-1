@@ -15,13 +15,19 @@ const verifyAdmin = (req: VercelRequest): any => {
   }
 
   const token = authHeader.substring(7);
-  const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
-  
-  if (decoded.role !== 'admin') {
-    throw new Error('Admin access required');
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+    
+    // Check role field (JWT uses 'role' not 'user_role')
+    if (decoded.role !== 'admin') {
+      throw new Error('Admin access required');
+    }
+    
+    return decoded;
+  } catch (error: any) {
+    console.error('Token verification error:', error);
+    throw new Error('Invalid or expired token');
   }
-  
-  return decoded;
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -212,8 +218,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   } catch (error: any) {
     console.error('Admin analytics API error:', error);
-    return res.status(error.message.includes('Admin') ? 403 : 500).json({ 
-      message: error.message || 'Internal server error'
+    console.error('Error stack:', error.stack);
+    
+    // Return appropriate status code
+    if (error.message.includes('token') || error.message.includes('Admin')) {
+      return res.status(403).json({ 
+        success: false,
+        message: error.message || 'Access denied'
+      });
+    }
+    
+    return res.status(500).json({ 
+      success: false,
+      message: error.message || 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 }
