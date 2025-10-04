@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Pool } from 'pg';
 import jwt from 'jsonwebtoken';
+import { getJWTSecret } from '../../utils/env';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -16,7 +17,7 @@ const verifyAdmin = (req: VercelRequest): any => {
 
   const token = authHeader.substring(7);
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+    const decoded = jwt.verify(token, getJWTSecret()) as any;
     
     // Check role field (JWT uses 'role' not 'user_role')
     if (decoded.role !== 'admin') {

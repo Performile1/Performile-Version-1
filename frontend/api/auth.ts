@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Pool } from 'pg';
+import { getJWTSecret, getJWTRefreshSecret } from '../utils/env';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -46,8 +47,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
-        const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret';
+        const jwtSecret = getJWTSecret();
+        const jwtRefreshSecret = getJWTRefreshSecret();
 
         const accessToken = jwt.sign(
           { userId: user.user_id, email: user.email, role: user.user_role },
@@ -136,8 +137,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const newUser = result.rows[0];
 
-        const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
-        const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret';
+        const jwtSecret = getJWTSecret();
+        const jwtRefreshSecret = getJWTRefreshSecret();
 
         const accessToken = jwt.sign(
           { userId: newUser.user_id, email: newUser.email, role: newUser.user_role },

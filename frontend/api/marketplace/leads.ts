@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Pool } from 'pg';
 import jwt from 'jsonwebtoken';
+import { getJWTSecret } from '../../utils/env';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -15,7 +16,7 @@ const verifyToken = (req: VercelRequest): any => {
   }
 
   const token = authHeader.substring(7);
-  return jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+  return jwt.verify(token, getJWTSecret());
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
