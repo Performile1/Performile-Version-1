@@ -25,6 +25,9 @@ import {
   Logout,
   AccountCircle,
   Search,
+  Message,
+  Business,
+  DirectionsCar,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -74,6 +77,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       roles: ['admin', 'merchant', 'courier', 'consumer'],
     },
     {
+      label: 'Messages',
+      path: '/messages',
+      icon: Message,
+      roles: ['admin', 'merchant', 'courier', 'consumer'],
+    },
+    {
       label: 'Trust Scores',
       path: '/trustscores',
       icon: Assessment,
@@ -101,6 +110,18 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       label: 'Users',
       path: '/users',
       icon: People,
+      roles: ['admin'],
+    },
+    {
+      label: 'Manage Merchants',
+      path: '/admin/merchants',
+      icon: Business,
+      roles: ['admin'],
+    },
+    {
+      label: 'Manage Couriers',
+      path: '/admin/couriers',
+      icon: DirectionsCar,
       roles: ['admin'],
     },
     {
