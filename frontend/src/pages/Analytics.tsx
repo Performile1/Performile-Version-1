@@ -17,6 +17,7 @@ import {
   Tabs,
   Tab
 } from '@mui/material';
+import { Assessment } from '@mui/icons-material';
 import {
   LineChart,
   Line,
