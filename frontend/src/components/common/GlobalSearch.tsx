@@ -163,6 +163,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
         sx={{
           '& .MuiOutlinedInput-root': {
             bgcolor: 'white',
+            borderRadius: 2,
           }
         }}
         InputProps={{
@@ -188,11 +189,6 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
               )}
             </InputAdornment>
           ),
-        }}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            borderRadius: 2,
-          },
         }}
       />
 
