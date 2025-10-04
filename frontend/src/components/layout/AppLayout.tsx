@@ -18,7 +18,6 @@ import {
   Dashboard,
   Assessment,
   LocalShipping,
-  Store,
   People,
   Group,
   Settings,
