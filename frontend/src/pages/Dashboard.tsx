@@ -27,7 +27,7 @@ interface DashboardStats {
   avg_on_time_rate: number;
   avg_completion_rate: number;
   total_orders_processed: number;
-  total_reviews_count: number;
+  total_reviews: number;
 }
 
 interface StatCardProps {
@@ -108,7 +108,7 @@ export const Dashboard: React.FC = () => {
             <Grid item xs={12} sm={6} md={3}>
               <StatCard
                 title="Avg Trust Score"
-                value={stats?.avg_trust_score?.toFixed(1) || '0.0'}
+                value={stats?.avg_trust_score ? Number(stats.avg_trust_score).toFixed(1) : '0.0'}
                 icon={<Star />}
                 color="warning.main"
                 subtitle="Out of 100"
@@ -117,7 +117,7 @@ export const Dashboard: React.FC = () => {
             <Grid item xs={12} sm={6} md={3}>
               <StatCard
                 title="Total Orders"
-                value={stats?.total_orders_processed?.toLocaleString() || '0'}
+                value={stats?.total_orders_processed ? Number(stats.total_orders_processed).toLocaleString() : '0'}
                 icon={<Assessment />}
                 color="success.main"
               />
@@ -125,7 +125,7 @@ export const Dashboard: React.FC = () => {
             <Grid item xs={12} sm={6} md={3}>
               <StatCard
                 title="Total Reviews"
-                value={stats?.total_reviews_count?.toLocaleString() || '0'}
+                value={stats?.total_reviews ? Number(stats.total_reviews).toLocaleString() : '0'}
                 icon={<TrendingUp />}
                 color="info.main"
               />
@@ -139,7 +139,7 @@ export const Dashboard: React.FC = () => {
             <Grid item xs={12} sm={6} md={4}>
               <StatCard
                 title="On-Time Rate"
-                value={`${stats?.avg_on_time_rate?.toFixed(1) || '0'}%`}
+                value={stats?.avg_on_time_rate ? `${Number(stats.avg_on_time_rate).toFixed(1)}%` : '0%'}
                 icon={<Schedule />}
                 color="success.main"
               />
@@ -147,7 +147,7 @@ export const Dashboard: React.FC = () => {
             <Grid item xs={12} sm={6} md={4}>
               <StatCard
                 title="Completion Rate"
-                value={`${stats?.avg_completion_rate?.toFixed(1) || '0'}%`}
+                value={stats?.avg_completion_rate ? `${Number(stats.avg_completion_rate).toFixed(1)}%` : '0%'}
                 icon={<CheckCircle />}
                 color="primary.main"
               />
@@ -272,7 +272,7 @@ export const Dashboard: React.FC = () => {
                           {courier.courier_name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Trust Score: {courier.trust_score?.toFixed(1) || '0.0'}
+                          Trust Score: {courier.overall_score ? Number(courier.overall_score).toFixed(1) : '0.0'}
                         </Typography>
                       </Box>
                       <Chip
@@ -284,7 +284,7 @@ export const Dashboard: React.FC = () => {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                       <Typography variant="caption">On-Time Rate</Typography>
                       <Typography variant="caption">
-                        {courier.on_time_rate?.toFixed(1) || '0'}%
+                        {courier.avg_delivery_speed ? Number(courier.avg_delivery_speed * 20).toFixed(1) : '0'}%
                       </Typography>
                     </Box>
                     <LinearProgress
