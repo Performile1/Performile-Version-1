@@ -66,13 +66,11 @@ export const Analytics: React.FC = () => {
     timeRange: 'month',
     city: '',
     postalCode: '',
-    country: '',
-    startDate: '',
-    endDate: ''
+    country: ''
   });
 
   // Fetch analytics data from API
-  const { data: analyticsData, isLoading } = useQuery({
+  const { data: analyticsData } = useQuery({
     queryKey: ['analytics', user?.user_role, filters],
     queryFn: async () => {
       // Admin uses admin analytics endpoint with full data
@@ -80,8 +78,8 @@ export const Analytics: React.FC = () => {
         const response = await apiClient.get('/admin/analytics', {
           params: {
             compare: 'true',
-            start_date: filters.startDate,
-            end_date: filters.endDate,
+            start_date: filters.customStartDate,
+            end_date: filters.customEndDate,
             postal_code: filters.postalCode,
             country: filters.country
           }
