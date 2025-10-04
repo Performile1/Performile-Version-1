@@ -129,6 +129,67 @@ export const Analytics: React.FC = () => {
     return restrictions[userTier]?.includes(feature) || false;
   };
 
+  // Determine what couriers/data the user can see based on role and subscription
+  const getDataAccessLevel = () => {
+    if (!user) return { courierLimit: 0, marketLimit: 0, canSeeAllCouriers: false };
+
+    // Admin: Full access to everything
+    if (user.user_role === 'admin') {
+      return {
+        courierLimit: Infinity,
+        marketLimit: Infinity,
+        canSeeAllCouriers: true,
+        canSeeCompetitors: true,
+        canExportData: true,
+        description: 'Full admin access to all data and features'
+      };
+    }
+
+    // Merchant: Access based on subscription tier
+    if (user.user_role === 'merchant') {
+      const tier = user.subscription_tier || 'tier1';
+      const tierLimits = {
+        tier1: { courierLimit: 3, marketLimit: 1, canSeeCompetitors: false },
+        tier2: { courierLimit: 10, marketLimit: 3, canSeeCompetitors: false },
+        tier3: { courierLimit: Infinity, marketLimit: 8, canSeeCompetitors: true }
+      };
+      return {
+        ...tierLimits[tier as keyof typeof tierLimits] || tierLimits.tier1,
+        canSeeAllCouriers: false,
+        canExportData: tier !== 'tier1',
+        description: `Merchant ${tier} - View couriers you work with and marketplace`
+      };
+    }
+
+    // Courier: See own performance + limited competitor data based on tier
+    if (user.user_role === 'courier') {
+      const tier = user.subscription_tier || 'tier1';
+      const tierLimits = {
+        tier1: { courierLimit: 1, marketLimit: 1, canSeeCompetitors: false }, // Only own data
+        tier2: { courierLimit: 5, marketLimit: 3, canSeeCompetitors: true },  // Limited competitor view
+        tier3: { courierLimit: 20, marketLimit: 8, canSeeCompetitors: true }  // Extended competitor view
+      };
+      return {
+        ...tierLimits[tier as keyof typeof tierLimits] || tierLimits.tier1,
+        canSeeAllCouriers: false,
+        canExportData: tier !== 'tier1',
+        description: `Courier ${tier} - Your performance ${tier !== 'tier1' ? '+ competitor insights' : ''}`
+      };
+    }
+
+    // Consumer: Very limited access
+    return {
+      courierLimit: 0,
+      marketLimit: 0,
+      canSeeAllCouriers: false,
+      canSeeCompetitors: false,
+      canExportData: false,
+      description: 'Consumer - No analytics access'
+    };
+  };
+
+  const dataAccess = getDataAccessLevel();
+
   return (
     <Container maxWidth="xl">
       <Box sx={{ py: 4 }}>
@@ -138,6 +199,26 @@ export const Analytics: React.FC = () => {
         <Typography variant="body1" color="text.secondary" paragraph>
           Comprehensive performance analytics and market insights
         </Typography>
+
+        {/* Access Level Indicator */}
+        <Alert 
+          severity={user?.user_role === 'admin' ? 'success' : 'info'} 
+          sx={{ mb: 3 }}
+          icon={user?.user_role === 'admin' ? <Assessment /> : undefined}
+        >
+          <strong>{dataAccess.description}</strong>
+          {user?.user_role !== 'admin' && (
+            <>
+              <br />
+              <Typography variant="caption">
+                Courier Access: {dataAccess.courierLimit === Infinity ? 'Unlimited' : dataAccess.courierLimit} | 
+                Markets: {dataAccess.marketLimit === Infinity ? 'Unlimited' : dataAccess.marketLimit} | 
+                Competitor Data: {dataAccess.canSeeCompetitors ? 'Yes' : 'No'} | 
+                Export: {dataAccess.canExportData ? 'Yes' : 'No'}
+              </Typography>
+            </>
+          )}
+        </Alert>
 
         {/* Filters */}
         <Card sx={{ mb: 3 }}>
@@ -557,9 +638,9 @@ export const Analytics: React.FC = () => {
               </Grid>
             </TabPanel>
 
-            {/* Lead Generation Tab (Merchants only) */}
+            {/* Lead Generation Tab (Merchants and Admin) */}
             <TabPanel value={activeTab} index={3}>
-              {(user?.user_role === 'merchant' || user?.user_role === 'admin') ? (
+              {(user?.user_role === 'merchant' || user?.user_role === 'admin' || user?.user_role === 'courier') ? (
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <Card>
