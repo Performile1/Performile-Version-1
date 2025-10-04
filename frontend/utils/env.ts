@@ -72,5 +72,46 @@ export function validateEnvironment(): void {
     throw error;
   }
   
+  // Validate NODE_ENV
+  const nodeEnv = process.env.NODE_ENV;
+  if (nodeEnv !== 'development' && nodeEnv !== 'production' && nodeEnv !== 'test') {
+    console.warn('WARNING: NODE_ENV should be "development", "production", or "test"');
+  }
+  
+  // Check database URL format
+  const dbUrl = process.env.DATABASE_URL;
+  if (dbUrl && !dbUrl.startsWith('postgres://') && !dbUrl.startsWith('postgresql://')) {
+    console.warn('WARNING: DATABASE_URL should start with postgres:// or postgresql://');
+  }
+  
   console.log('✅ Environment variables validated successfully');
+  console.log(`   - NODE_ENV: ${nodeEnv}`);
+  console.log(`   - Database: ${dbUrl ? 'Configured' : 'Missing'}`);
+  console.log(`   - JWT Secrets: Configured and validated`);
+}
+
+/**
+ * Get all required environment variables for documentation
+ */
+export function getRequiredEnvVars(): string[] {
+  return [
+    'DATABASE_URL',
+    'JWT_SECRET',
+    'JWT_REFRESH_SECRET',
+    'NODE_ENV'
+  ];
+}
+
+/**
+ * Check if running in production
+ */
+export function isProduction(): boolean {
+  return process.env.NODE_ENV === 'production';
+}
+
+/**
+ * Check if running in development
+ */
+export function isDevelopment(): boolean {
+  return process.env.NODE_ENV === 'development';
 }
