@@ -136,8 +136,8 @@ BEGIN
                 ELSE 25.00
             END,
             0, -- Will be updated by downloads
-            NOW() + ((30 + random() * 30)::INT || ' days')::INTERVAL,
-            NOW() - ((random() * 14)::INT || ' days')::INTERVAL
+            NOW() + INTERVAL '30 days' + (random() * 30 || ' days')::INTERVAL,
+            NOW() - (random() * 14 || ' days')::INTERVAL
         ) RETURNING lead_id INTO v_lead_id;
 
         -- Randomly add downloads from couriers (0-5 downloads per lead)
@@ -150,7 +150,7 @@ BEGIN
                 VALUES (
                     v_lead_id,
                     v_random_courier,
-                    NOW() - ((random() * 10)::INT || ' days')::INTERVAL,
+                    NOW() - (random() * 10 || ' days')::INTERVAL,
                     CASE 
                         WHEN random() < 0.2 THEN 'won'
                         WHEN random() < 0.4 THEN 'contacted'
