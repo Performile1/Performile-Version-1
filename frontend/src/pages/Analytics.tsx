@@ -150,15 +150,34 @@ export const Analytics: React.FC = () => {
     if (user.user_role === 'merchant') {
       const tier = user.subscription_tier || 'tier1';
       const tierLimits = {
-        tier1: { courierLimit: 3, marketLimit: 1, canSeeCompetitors: false },
-        tier2: { courierLimit: 10, marketLimit: 3, canSeeCompetitors: false },
-        tier3: { courierLimit: Infinity, marketLimit: 8, canSeeCompetitors: true }
+        tier1: { 
+          courierLimit: 2, 
+          marketLimit: 2, 
+          canSeeCompetitors: false,
+          canBuyAddons: true,
+          postalCodeAccess: false
+        },
+        tier2: { 
+          courierLimit: 4, 
+          marketLimit: 4, 
+          canSeeCompetitors: false,
+          canBuyAddons: true,
+          postalCodeAccess: false
+        },
+        tier3: { 
+          courierLimit: Infinity, 
+          marketLimit: Infinity, 
+          canSeeCompetitors: true,
+          canBuyAddons: false,
+          postalCodeAccess: true
+        }
       };
       return {
         ...tierLimits[tier as keyof typeof tierLimits] || tierLimits.tier1,
         canSeeAllCouriers: false,
         canExportData: tier !== 'tier1',
-        description: `Merchant ${tier} - View couriers you work with and marketplace`
+        canBuyLeads: true,
+        description: `Merchant ${tier.toUpperCase()} - ${tier === 'tier3' ? 'Unlimited' : tierLimits[tier as keyof typeof tierLimits].courierLimit + ' couriers, ' + tierLimits[tier as keyof typeof tierLimits].marketLimit + ' markets'}`
       };
     }
 
@@ -166,15 +185,36 @@ export const Analytics: React.FC = () => {
     if (user.user_role === 'courier') {
       const tier = user.subscription_tier || 'tier1';
       const tierLimits = {
-        tier1: { courierLimit: 1, marketLimit: 1, canSeeCompetitors: false }, // Only own data
-        tier2: { courierLimit: 5, marketLimit: 3, canSeeCompetitors: true },  // Limited competitor view
-        tier3: { courierLimit: 20, marketLimit: 8, canSeeCompetitors: true }  // Extended competitor view
+        tier1: { 
+          courierLimit: 1, 
+          marketLimit: 1, 
+          canSeeCompetitors: false,
+          canBuyAddons: true,
+          postalCodeAccess: false
+        },
+        tier2: { 
+          courierLimit: 1, 
+          marketLimit: 4, 
+          canSeeCompetitors: false,
+          canBuyAddons: true,
+          postalCodeAccess: false
+        },
+        tier3: { 
+          courierLimit: 1, 
+          marketLimit: Infinity, 
+          canSeeCompetitors: false,
+          canBuyAddons: true,
+          postalCodeAccess: false
+        }
       };
       return {
         ...tierLimits[tier as keyof typeof tierLimits] || tierLimits.tier1,
         canSeeAllCouriers: false,
         canExportData: tier !== 'tier1',
-        description: `Courier ${tier} - Your performance ${tier !== 'tier1' ? '+ competitor insights' : ''}`
+        canBuyLeads: true,
+        canBuyCompetitorData: true,
+        canBuyPostalCodeData: true,
+        description: `Courier ${tier.toUpperCase()} - Your performance, ${tierLimits[tier as keyof typeof tierLimits].marketLimit === Infinity ? 'unlimited' : tierLimits[tier as keyof typeof tierLimits].marketLimit} market${tierLimits[tier as keyof typeof tierLimits].marketLimit !== 1 ? 's' : ''}`
       };
     }
 
