@@ -41,15 +41,35 @@ class ApiClient {
     this.setupInterceptors();
   }
 
+  private getTokenFromCookie(name: string): string | null {
+    if (typeof document === 'undefined') return null;
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop()?.split(';').shift() || null;
+    }
+    return null;
+  }
+
   private setupInterceptors(): void {
     // Request interceptor to add auth token
     this.client.interceptors.request.use(
       (config) => {
-        const { tokens } = useAuthStore.getState();
+        // Try to get token from cookies first (production)
+        const cookieToken = this.getTokenFromCookie('accessToken');
         
-        if (tokens?.accessToken) {
-          config.headers.Authorization = `Bearer ${tokens.accessToken}`;
+        if (cookieToken) {
+          config.headers.Authorization = `Bearer ${cookieToken}`;
+        } else {
+          // Fallback to localStorage for development
+          const { tokens } = useAuthStore.getState();
+          if (tokens?.accessToken) {
+            config.headers.Authorization = `Bearer ${tokens.accessToken}`;
+          }
         }
+        
+        // Always send credentials (cookies)
+        config.withCredentials = true;
         
         return config;
       },

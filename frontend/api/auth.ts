@@ -63,6 +63,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         await client.query('UPDATE users SET last_login = NOW() WHERE user_id = $1', [user.user_id]);
 
+        // Set httpOnly cookies for security (prevents XSS attacks)
+        const isProduction = process.env.NODE_ENV === 'production';
+        res.setHeader('Set-Cookie', [
+          `accessToken=${accessToken}; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=3600`,
+          `refreshToken=${refreshToken}; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=604800`
+        ]);
+
         return res.status(200).json({
           success: true,
           data: {
@@ -76,11 +83,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               is_active: user.is_active,
               created_at: user.created_at || new Date().toISOString(),
               updated_at: user.updated_at || new Date().toISOString()
-            },
-            tokens: {
-              accessToken,
-              refreshToken
             }
+            // Tokens now in httpOnly cookies - not returned in response
           }
         });
 
