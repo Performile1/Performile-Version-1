@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Card,
-  Grid,
   List,
   ListItem,
   ListItemAvatar,
@@ -12,8 +11,6 @@ import {
   TextField,
   IconButton,
   Badge,
-  Chip,
-  Divider,
   InputAdornment,
   Menu,
   MenuItem,
@@ -32,12 +29,11 @@ import {
   MoreVert as MoreIcon,
   Archive as ArchiveIcon,
   Delete as DeleteIcon,
-  Edit as EditIcon,
   Check as CheckIcon,
   DoneAll as DoneAllIcon,
   Add as AddIcon,
 } from '@mui/icons-material';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
 import { formatDistanceToNow } from 'date-fns';
@@ -76,7 +72,6 @@ interface Message {
 
 export const MessagingCenter: React.FC = () => {
   const { user } = useAuthStore();
-  const queryClient = useQueryClient();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
@@ -127,18 +122,18 @@ export const MessagingCenter: React.FC = () => {
     },
   });
 
-  // Create conversation mutation
-  const createConversationMutation = useMutation({
-    mutationFn: async (data: { participant_ids: string[]; subject: string }) => {
-      const response = await apiClient.post('/messages/conversations', data);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      setNewConversationOpen(false);
-      setSelectedConversation(data.data.conversation_id);
-      refetchConversations();
-    },
-  });
+  // Create conversation mutation (for future use)
+  // const createConversationMutation = useMutation({
+  //   mutationFn: async (data: { participant_ids: string[]; subject: string }) => {
+  //     const response = await apiClient.post('/messages/conversations', data);
+  //     return response.data;
+  //   },
+  //   onSuccess: (data) => {
+  //     setNewConversationOpen(false);
+  //     setSelectedConversation(data.data.conversation_id);
+  //     refetchConversations();
+  //   },
+  // });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

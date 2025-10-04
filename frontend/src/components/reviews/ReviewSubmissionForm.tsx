@@ -8,7 +8,6 @@ import {
   TextField,
   Button,
   Grid,
-  Chip,
   Alert,
   Divider,
   FormGroup,
@@ -17,7 +16,6 @@ import {
   LinearProgress,
 } from '@mui/material';
 import {
-  Star as StarIcon,
   Send as SendIcon,
   CheckCircle as SuccessIcon,
 } from '@mui/icons-material';

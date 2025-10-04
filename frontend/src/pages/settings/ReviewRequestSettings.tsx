@@ -25,7 +25,6 @@ import {
 } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
-import { useAuthStore } from '@/store/authStore';
 
 interface ReviewSettings {
   auto_request_enabled: boolean;
@@ -45,7 +44,6 @@ interface ReviewSettings {
 }
 
 export const ReviewRequestSettings: React.FC = () => {
-  const { user } = useAuthStore();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState<ReviewSettings>({
     auto_request_enabled: true,
@@ -65,18 +63,20 @@ export const ReviewRequestSettings: React.FC = () => {
   });
 
   // Fetch settings
-  const { data: settingsData, isLoading } = useQuery({
+  const { data: settingsData } = useQuery({
     queryKey: ['review-settings'],
     queryFn: async () => {
       const response = await apiClient.get('/review-requests/settings');
       return response.data;
     },
-    onSuccess: (data) => {
-      if (data?.data) {
-        setSettings(data.data);
-      }
-    },
   });
+
+  // Update settings when data is fetched
+  React.useEffect(() => {
+    if (settingsData?.data) {
+      setSettings(settingsData.data);
+    }
+  }, [settingsData]);
 
   // Save settings mutation
   const saveSettingsMutation = useMutation({
