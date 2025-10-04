@@ -75,7 +75,6 @@ export const Analytics: React.FC = () => {
     queryFn: async () => {
       // Admin uses admin analytics endpoint with full data
       if (user?.user_role === 'admin') {
-        console.log('Fetching admin analytics...');
         const response = await apiClient.get('/admin/analytics', {
           params: {
             compare: 'true',
@@ -85,7 +84,6 @@ export const Analytics: React.FC = () => {
             country: filters.country
           }
         });
-        console.log('Admin analytics response:', response.data);
         return response.data;
       }
       // Other roles would use different endpoints
@@ -95,14 +93,6 @@ export const Analytics: React.FC = () => {
   });
 
   const courierData = analyticsData?.data || [];
-  
-  // Debug logging
-  if (user?.user_role === 'admin') {
-    console.log('Analytics Data:', analyticsData);
-    console.log('Courier Data:', courierData);
-    console.log('Loading:', analyticsLoading);
-    console.log('Error:', analyticsError);
-  }
 
   // Mock data for demonstration
   const performanceData = [
@@ -146,7 +136,7 @@ export const Analytics: React.FC = () => {
   };
 
   const handleUnlockFeature = (featureId: number) => {
-    console.log(`Unlock feature ${featureId}`);
+    // TODO: Implement feature unlock
   };
 
   const isFeatureRestricted = (feature: string) => {
