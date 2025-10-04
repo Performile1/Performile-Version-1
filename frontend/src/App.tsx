@@ -10,9 +10,13 @@ import { Dashboard } from '@/pages/Dashboard';
 import { TrustScores } from '@/pages/TrustScores';
 import { ManageCarriers } from '@/pages/admin/ManageCarriers';
 import { ManageStores } from '@/pages/admin/ManageStores';
+import { ManageMerchants } from '@/pages/admin/ManageMerchants';
+import { ManageCouriers } from '@/pages/admin/ManageCouriers';
 import { TeamManagement } from '@/pages/team/TeamManagement';
 import { AcceptInvitation } from '@/pages/team/AcceptInvitation';
 import { Analytics } from './pages/Analytics';
+import { ReviewRequestSettings } from './pages/settings/ReviewRequestSettings';
+import { MessagingCenter } from './components/messaging/MessagingCenter';
 import Settings from './pages/Settings';
 import Orders from './pages/Orders';
 import ServiceRatingForm from './components/rating/ServiceRatingForm';
@@ -183,6 +187,38 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute requiredRoles={['admin']}>
                   <ManageStores />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/merchants"
+              element={
+                <ProtectedRoute requiredRoles={['admin']}>
+                  <ManageMerchants />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/couriers"
+              element={
+                <ProtectedRoute requiredRoles={['admin']}>
+                  <ManageCouriers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/messages"
+              element={
+                <ProtectedRoute>
+                  <MessagingCenter />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/review-requests"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant', 'courier']}>
+                  <ReviewRequestSettings />
                 </ProtectedRoute>
               }
             />
