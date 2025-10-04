@@ -162,8 +162,11 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({
         autoFocus={autoFocus}
         sx={{
           '& .MuiOutlinedInput-root': {
-            bgcolor: 'white',
+            bgcolor: 'white !important',
             borderRadius: 2,
+          },
+          '& .MuiInputBase-input': {
+            bgcolor: 'white !important',
           }
         }}
         InputProps={{
