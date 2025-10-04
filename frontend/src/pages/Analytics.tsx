@@ -70,11 +70,12 @@ export const Analytics: React.FC = () => {
   });
 
   // Fetch analytics data from API
-  const { data: analyticsData } = useQuery({
+  const { data: analyticsData, isLoading: analyticsLoading, error: analyticsError } = useQuery({
     queryKey: ['analytics', user?.user_role, filters],
     queryFn: async () => {
       // Admin uses admin analytics endpoint with full data
       if (user?.user_role === 'admin') {
+        console.log('Fetching admin analytics...');
         const response = await apiClient.get('/admin/analytics', {
           params: {
             compare: 'true',
@@ -84,6 +85,7 @@ export const Analytics: React.FC = () => {
             country: filters.country
           }
         });
+        console.log('Admin analytics response:', response.data);
         return response.data;
       }
       // Other roles would use different endpoints
@@ -93,6 +95,14 @@ export const Analytics: React.FC = () => {
   });
 
   const courierData = analyticsData?.data || [];
+  
+  // Debug logging
+  if (user?.user_role === 'admin') {
+    console.log('Analytics Data:', analyticsData);
+    console.log('Courier Data:', courierData);
+    console.log('Loading:', analyticsLoading);
+    console.log('Error:', analyticsError);
+  }
 
   // Mock data for demonstration
   const performanceData = [
@@ -297,12 +307,31 @@ export const Analytics: React.FC = () => {
         </Alert>
 
         {/* Admin: Real-time Courier Data */}
-        {user?.user_role === 'admin' && courierData.length > 0 && (
+        {user?.user_role === 'admin' && (
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Courier Performance Overview (Live Data)
               </Typography>
+              
+              {analyticsLoading && (
+                <Alert severity="info">Loading courier data...</Alert>
+              )}
+              
+              {analyticsError && (
+                <Alert severity="error">
+                  Error loading data: {analyticsError instanceof Error ? analyticsError.message : 'Unknown error'}
+                </Alert>
+              )}
+              
+              {!analyticsLoading && !analyticsError && courierData.length === 0 && (
+                <Alert severity="warning">
+                  No courier data available. Make sure you've run the seed-demo-data.sql script in Supabase.
+                </Alert>
+              )}
+              
+              {courierData.length > 0 && (
+                <>
               <Grid container spacing={2}>
                 {courierData.slice(0, 5).map((courier: any, index: number) => (
                   <Grid item xs={12} md={6} lg={4} key={courier.courier_id}>
@@ -338,6 +367,8 @@ export const Analytics: React.FC = () => {
                   </Grid>
                 ))}
               </Grid>
+                </>
+              )}
             </CardContent>
           </Card>
         )}
