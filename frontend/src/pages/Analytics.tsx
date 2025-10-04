@@ -112,8 +112,13 @@ export const Analytics: React.FC = () => {
   };
 
   const isFeatureRestricted = (feature: string) => {
+    // Admin users have access to ALL features
+    if (user?.user_role === 'admin') {
+      return false;
+    }
+    
     // Mock subscription check - would integrate with actual subscription system
-    const userTier = 'tier1'; // user?.subscription_tier || 'tier1';
+    const userTier = user?.subscription_tier || 'tier1';
     
     const restrictions: Record<string, string[]> = {
       tier1: ['competitor_analysis', 'advanced_filters', 'custom_reports'],
@@ -517,10 +522,17 @@ export const Analytics: React.FC = () => {
                       <Alert severity="info" sx={{ mb: 2 }}>
                         Upgrade to Pro to access advanced analytics features.
                       </Alert>
-                      <Alert severity="info" sx={{ mb: 2 }}>
-                        Your {user?.subscription_tier || 'Tier 1'} subscription allows access to{' '}
-                        {user?.subscription_tier === 'tier3' ? '8' : user?.subscription_tier === 'tier2' ? '3' : '1'} market(s)
-                      </Alert>
+                      {user?.user_role !== 'admin' && (
+                        <Alert severity="info" sx={{ mb: 2 }}>
+                          Your {user?.subscription_tier || 'Tier 1'} subscription allows access to{' '}
+                          {user?.subscription_tier === 'tier3' ? '8' : user?.subscription_tier === 'tier2' ? '3' : '1'} market(s)
+                        </Alert>
+                      )}
+                      {user?.user_role === 'admin' && (
+                        <Alert severity="success" sx={{ mb: 2 }}>
+                          Admin Access - Full access to all markets and features
+                        </Alert>
+                      )}
                       
                       {/* Market cards would be rendered here */}
                       <Typography variant="body2" color="text.secondary">
@@ -559,10 +571,17 @@ export const Analytics: React.FC = () => {
                           Research and connect with couriers in your area. Send leads to potential partners.
                         </Typography>
                         
-                        <Alert severity="info" sx={{ mb: 2 }}>
-                          Your {user?.subscription_tier || 'Tier 1'} subscription allows{' '}
-                          {user?.subscription_tier === 'tier3' ? '8' : user?.subscription_tier === 'tier2' ? '3' : '1'} courier connection(s)
-                        </Alert>
+                        {user?.user_role !== 'admin' && (
+                          <Alert severity="info" sx={{ mb: 2 }}>
+                            Your {user?.subscription_tier || 'Tier 1'} subscription allows{' '}
+                            {user?.subscription_tier === 'tier3' ? '8' : user?.subscription_tier === 'tier2' ? '3' : '1'} courier connection(s)
+                          </Alert>
+                        )}
+                        {user?.user_role === 'admin' && (
+                          <Alert severity="success" sx={{ mb: 2 }}>
+                            Admin Access - Unlimited courier connections
+                          </Alert>
+                        )}
 
                         <Typography variant="body2" color="text.secondary">
                           Courier marketplace and lead generation features would be implemented here
