@@ -126,12 +126,12 @@ export const Analytics: React.FC = () => {
       try {
         return courierData.map((courier: any) => ({
           name: courier.courier_name || 'Unknown',
-          trustScore: courier.overall_score || (courier.avg_rating ? courier.avg_rating * 20 : 0) || 0,
-          marketShare: courier.total_orders || 0,
+          trustScore: Number(courier.overall_score || (courier.avg_rating ? courier.avg_rating * 20 : 0) || 0),
+          marketShare: Number(courier.total_orders || 0),
           unlocked: true, // Admin sees all data
-          totalOrders: courier.total_orders,
-          avgRating: courier.avg_rating,
-          successRate: courier.delivery_success_rate
+          totalOrders: Number(courier.total_orders || 0),
+          avgRating: Number(courier.avg_rating || 0),
+          successRate: Number(courier.delivery_success_rate || 0)
         }));
       } catch (error) {
         console.error('Error mapping courier data:', error);
@@ -731,19 +731,19 @@ export const Analytics: React.FC = () => {
                               </Box>
                               
                               <Typography variant="body2" color="text.secondary">
-                                {user?.user_role === 'admin' ? 'Trust Score' : 'TrustScore'}: {competitor.unlocked ? competitor.trustScore.toFixed(1) : '***'}
+                                {user?.user_role === 'admin' ? 'Trust Score' : 'TrustScore'}: {competitor.unlocked ? Number(competitor.trustScore || 0).toFixed(1) : '***'}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
                                 {user?.user_role === 'admin' ? 'Total Orders' : 'Market Share'}: {competitor.unlocked ? (user?.user_role === 'admin' ? competitor.marketShare : `${competitor.marketShare}%`) : '***'}
                               </Typography>
                               {user?.user_role === 'admin' && competitor.avgRating && (
                                 <Typography variant="body2" color="text.secondary">
-                                  Avg Rating: {competitor.avgRating.toFixed(1)}/5
+                                  Avg Rating: {Number(competitor.avgRating || 0).toFixed(1)}/5
                                 </Typography>
                               )}
                               {user?.user_role === 'admin' && competitor.successRate && (
                                 <Typography variant="body2" color="text.secondary">
-                                  Success Rate: {competitor.successRate.toFixed(1)}%
+                                  Success Rate: {Number(competitor.successRate || 0).toFixed(1)}%
                                 </Typography>
                               )}
                               
