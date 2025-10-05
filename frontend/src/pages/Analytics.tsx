@@ -92,7 +92,7 @@ export const Analytics: React.FC = () => {
     enabled: !!user
   });
 
-  const courierData = analyticsData?.data || [];
+  const courierData = Array.isArray(analyticsData?.data) ? analyticsData.data : [];
 
   // Mock data for demonstration
   const performanceData = [
