@@ -120,12 +120,23 @@ export const Analytics: React.FC = () => {
     { name: 'Response Time', value: 2.3, color: '#FF8042' }
   ];
 
-  const competitorData = [
-    { name: 'Competitor A', trustScore: 85, marketShare: 25, unlocked: false },
-    { name: 'Competitor B', trustScore: 78, marketShare: 18, unlocked: true },
-    { name: 'Competitor C', trustScore: 92, marketShare: 30, unlocked: false },
-    { name: 'You', trustScore: 89, marketShare: 15, unlocked: true }
-  ];
+  // For admin: Use real courier data, for others: use mock data
+  const competitorData = user?.user_role === 'admin' && courierData.length > 0
+    ? courierData.map((courier: any) => ({
+        name: courier.courier_name,
+        trustScore: courier.overall_score || courier.avg_rating * 20 || 0,
+        marketShare: courier.total_orders || 0,
+        unlocked: true, // Admin sees all data
+        totalOrders: courier.total_orders,
+        avgRating: courier.avg_rating,
+        successRate: courier.delivery_success_rate
+      }))
+    : [
+        { name: 'Competitor A', trustScore: 85, marketShare: 25, unlocked: false },
+        { name: 'Competitor B', trustScore: 78, marketShare: 18, unlocked: true },
+        { name: 'Competitor C', trustScore: 92, marketShare: 30, unlocked: false },
+        { name: 'You', trustScore: 89, marketShare: 15, unlocked: true }
+      ];
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
@@ -691,10 +702,12 @@ export const Analytics: React.FC = () => {
 
                   <Grid item xs={12}>
                     <Typography variant="h6" gutterBottom>
-                      Competitor Insights
+                      {user?.user_role === 'admin' ? 'Courier Comparison' : 'Competitor Insights'}
                     </Typography>
                     <Grid container spacing={2}>
-                      {competitorData.filter(c => c.name !== 'You').map((competitor, index) => (
+                      {competitorData
+                        .filter(c => user?.user_role === 'admin' || c.name !== 'You')
+                        .map((competitor, index) => (
                         <Grid item xs={12} md={4} key={index}>
                           <Card sx={{ position: 'relative' }}>
                             <CardContent>
@@ -708,11 +721,21 @@ export const Analytics: React.FC = () => {
                               </Box>
                               
                               <Typography variant="body2" color="text.secondary">
-                                TrustScore: {competitor.unlocked ? competitor.trustScore : '***'}
+                                {user?.user_role === 'admin' ? 'Trust Score' : 'TrustScore'}: {competitor.unlocked ? competitor.trustScore.toFixed(1) : '***'}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
-                                Market Share: {competitor.unlocked ? `${competitor.marketShare}%` : '***%'}
+                                {user?.user_role === 'admin' ? 'Total Orders' : 'Market Share'}: {competitor.unlocked ? (user?.user_role === 'admin' ? competitor.marketShare : `${competitor.marketShare}%`) : '***'}
                               </Typography>
+                              {user?.user_role === 'admin' && competitor.avgRating && (
+                                <Typography variant="body2" color="text.secondary">
+                                  Avg Rating: {competitor.avgRating.toFixed(1)}/5
+                                </Typography>
+                              )}
+                              {user?.user_role === 'admin' && competitor.successRate && (
+                                <Typography variant="body2" color="text.secondary">
+                                  Success Rate: {competitor.successRate.toFixed(1)}%
+                                </Typography>
+                              )}
                               
                               {!competitor.unlocked && (
                                 <Button 
