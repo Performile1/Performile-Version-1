@@ -123,8 +123,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               is_active: user.is_active,
               created_at: user.created_at || new Date().toISOString(),
               updated_at: user.updated_at || new Date().toISOString()
+            },
+            tokens: {
+              accessToken,
+              refreshToken
             }
-            // Tokens now in httpOnly cookies - not returned in response
           }
         });
 
