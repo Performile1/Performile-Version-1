@@ -121,22 +121,32 @@ export const Analytics: React.FC = () => {
   ];
 
   // For admin: Use real courier data, for others: use mock data
-  const competitorData = user?.user_role === 'admin' && courierData.length > 0
-    ? courierData.map((courier: any) => ({
-        name: courier.courier_name,
-        trustScore: courier.overall_score || courier.avg_rating * 20 || 0,
-        marketShare: courier.total_orders || 0,
-        unlocked: true, // Admin sees all data
-        totalOrders: courier.total_orders,
-        avgRating: courier.avg_rating,
-        successRate: courier.delivery_success_rate
-      }))
-    : [
-        { name: 'Competitor A', trustScore: 85, marketShare: 25, unlocked: false },
-        { name: 'Competitor B', trustScore: 78, marketShare: 18, unlocked: true },
-        { name: 'Competitor C', trustScore: 92, marketShare: 30, unlocked: false },
-        { name: 'You', trustScore: 89, marketShare: 15, unlocked: true }
-      ];
+  const competitorData = React.useMemo(() => {
+    if (user?.user_role === 'admin' && Array.isArray(courierData) && courierData.length > 0) {
+      try {
+        return courierData.map((courier: any) => ({
+          name: courier.courier_name || 'Unknown',
+          trustScore: courier.overall_score || (courier.avg_rating ? courier.avg_rating * 20 : 0) || 0,
+          marketShare: courier.total_orders || 0,
+          unlocked: true, // Admin sees all data
+          totalOrders: courier.total_orders,
+          avgRating: courier.avg_rating,
+          successRate: courier.delivery_success_rate
+        }));
+      } catch (error) {
+        console.error('Error mapping courier data:', error);
+        return [];
+      }
+    }
+    
+    // Mock data for non-admin users
+    return [
+      { name: 'Competitor A', trustScore: 85, marketShare: 25, unlocked: false },
+      { name: 'Competitor B', trustScore: 78, marketShare: 18, unlocked: true },
+      { name: 'Competitor C', trustScore: 92, marketShare: 30, unlocked: false },
+      { name: 'You', trustScore: 89, marketShare: 15, unlocked: true }
+    ];
+  }, [user?.user_role, courierData]);
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);

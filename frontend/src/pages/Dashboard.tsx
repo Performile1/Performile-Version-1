@@ -84,7 +84,7 @@ export const Dashboard: React.FC = () => {
   });
 
   const stats = dashboardData?.statistics as DashboardStats;
-  const topCouriers = dashboardData?.couriers?.slice(0, 5) || [];
+  const topCouriers = Array.isArray(dashboardData?.couriers) ? dashboardData.couriers.slice(0, 5) : [];
 
   const getWelcomeMessage = () => {
     const hour = new Date().getHours();

@@ -94,7 +94,7 @@ export const ManageMerchants: React.FC = () => {
     }
   });
 
-  const merchants: Merchant[] = merchantsData?.data || [];
+  const merchants: Merchant[] = Array.isArray(merchantsData?.data) ? merchantsData.data : [];
 
   const filteredMerchants = merchants.filter(merchant =>
     merchant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||

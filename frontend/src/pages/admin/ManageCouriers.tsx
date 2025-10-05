@@ -99,7 +99,7 @@ export const ManageCouriers: React.FC = () => {
     }
   });
 
-  const couriers: Courier[] = couriersData?.data || [];
+  const couriers: Courier[] = Array.isArray(couriersData?.data) ? couriersData.data : [];
 
   const filteredCouriers = couriers.filter(courier =>
     courier.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
