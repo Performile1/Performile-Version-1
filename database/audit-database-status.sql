@@ -246,17 +246,17 @@ SELECT
     '' as language;
 
 SELECT 
-    proname as function_name,
-    pg_get_function_result(oid) as return_type,
-    prosrc as definition_length,
-    lanname as language
+    p.proname as function_name,
+    pg_get_function_result(p.oid) as return_type,
+    length(p.prosrc) as definition_length,
+    l.lanname as language
 FROM pg_proc p
 JOIN pg_language l ON p.prolang = l.oid
-WHERE pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')
-    AND proname LIKE '%trust%' 
-    OR proname LIKE '%market%'
-    OR proname LIKE '%shop%'
-ORDER BY proname;
+WHERE p.pronamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')
+    AND (p.proname LIKE '%trust%' 
+    OR p.proname LIKE '%market%'
+    OR p.proname LIKE '%shop%')
+ORDER BY p.proname;
 
 -- =====================================================
 -- 9. Check Expected Functions
