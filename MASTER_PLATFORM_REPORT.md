@@ -252,6 +252,28 @@ Supported platforms:
 - ✅ Competitor insights
 - ✅ Export capabilities (planned)
 
+#### Market Share Analytics (NEW)
+- 🟡 Checkout presence tracking (which couriers merchants offer)
+- 🟡 Market share by merchant count (% of merchants using each courier)
+- 🟡 Market share by order volume (% of orders per courier)
+- 🟡 Market share by delivery count (% of deliveries completed)
+- 🟡 Geographic filtering (country, postal code, city)
+- 🟡 Service type tracking (parcel locker, parcel shop, home delivery)
+- 🟡 Competitive intelligence dashboard
+- 🟡 Market penetration reports
+
+**Service Types Supported:**
+1. **Home Delivery** - Direct to customer address
+2. **Parcel Shop** - Pickup from retail location
+3. **Parcel Locker** - Automated locker pickup
+
+**Market Share Calculations:**
+- **Checkout Share:** % of merchants offering each courier in checkout
+- **Order Share:** % of total orders assigned to each courier
+- **Delivery Share:** % of completed deliveries by each courier
+- **Geographic Share:** Market share filtered by location (country/postal code)
+- **Service Share:** Market share by delivery service type
+
 #### PWA Features
 - ✅ Installable web app
 - ✅ App icons (192x192, 512x512)
@@ -288,6 +310,12 @@ Supported platforms:
 - `LeadsMarketplace` - Lead listings
 - `LeadPurchases` - Purchase history
 - `CompetitorData` - Anonymized data
+
+#### Market Share Analytics (NEW - 4 tables)
+- `MerchantCourierCheckout` - Which couriers merchants offer at checkout
+- `ServiceTypes` - Delivery service types (home, shop, locker)
+- `OrderServiceType` - Service type per order
+- `MarketShareSnapshots` - Historical market share data
 
 #### System
 - `NotificationPreferences` - User settings

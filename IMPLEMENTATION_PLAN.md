@@ -313,7 +313,64 @@ Performile is **97% production-ready** with all core features functional, securi
 
 ### 🟢 Recommended - Complete Month 1 (3 weeks)
 
-#### 7. API Documentation - 8 hours
+#### 7. Market Share Analytics System - 6 hours
+**Status:** Schema ready, implementation pending
+
+**Tasks:**
+- [ ] **Database Setup (1 hour)**
+  - [ ] Run `database/market-share-analytics.sql`
+  - [ ] Verify all 4 tables created:
+    - `ServiceTypes` (home delivery, parcel shop, parcel locker)
+    - `MerchantCourierCheckout` (which couriers merchants offer)
+    - `OrderServiceType` (service type per order)
+    - `MarketShareSnapshots` (historical data)
+  - [ ] Test database functions
+  
+- [ ] **Backend API Endpoints (2 hours)**
+  - [ ] `GET /api/analytics/market-share` - Get market share report
+  - [ ] `GET /api/analytics/market-share/courier/:id` - Courier-specific data
+  - [ ] `POST /api/merchant/checkout-couriers` - Manage checkout options
+  - [ ] `GET /api/merchant/checkout-couriers` - List checkout options
+  - [ ] `GET /api/analytics/service-types` - Service type distribution
+  - [ ] `GET /api/analytics/geographic-coverage` - Geographic breakdown
+  
+- [ ] **Frontend Components (3 hours)**
+  - [ ] Market Share Dashboard page
+  - [ ] Checkout courier management (merchant settings)
+  - [ ] Service type selector (order creation)
+  - [ ] Geographic filter components
+  - [ ] Market share charts (checkout, order, delivery)
+  - [ ] Competitive intelligence view
+
+**Files to Create:**
+- `frontend/api/analytics/market-share.ts`
+- `frontend/api/merchant/checkout-couriers.ts`
+- `frontend/src/pages/analytics/MarketShare.tsx`
+- `frontend/src/pages/merchant/CheckoutSettings.tsx`
+- `frontend/src/components/analytics/MarketShareChart.tsx`
+- `frontend/src/components/analytics/ServiceTypeDistribution.tsx`
+
+**Features Implemented:**
+- ✅ Track which couriers merchants offer at checkout
+- ✅ Calculate checkout market share (% of merchants)
+- ✅ Calculate order market share (% of orders)
+- ✅ Calculate delivery market share (% of deliveries)
+- ✅ Filter by geography (country, postal code, city)
+- ✅ Filter by service type (home, shop, locker)
+- ✅ Historical tracking via snapshots
+- ✅ Automated daily snapshot creation
+
+**Acceptance Criteria:**
+- Merchants can configure checkout courier options
+- Service types tracked on all orders
+- Market share calculations accurate
+- Geographic filtering functional
+- Charts display market share trends
+- Competitive intelligence accessible
+
+---
+
+#### 8. API Documentation - 8 hours
 **Status:** Not started
 
 **Tasks:**
@@ -329,7 +386,7 @@ Performile is **97% production-ready** with all core features functional, securi
 
 ---
 
-#### 8. Comprehensive Testing - 2 weeks
+#### 9. Comprehensive Testing - 2 weeks
 **Status:** Basic setup, needs expansion
 
 **Tasks:**
@@ -356,7 +413,7 @@ Performile is **97% production-ready** with all core features functional, securi
 
 ---
 
-#### 9. User Onboarding Flow - 8 hours
+#### 10. User Onboarding Flow - 8 hours
 **Status:** Not started
 
 **Tasks:**
@@ -376,7 +433,7 @@ Performile is **97% production-ready** with all core features functional, securi
 
 ---
 
-#### 10. Performance Optimization - 1 week
+#### 11. Performance Optimization - 1 week
 **Status:** Partial
 
 **Tasks:**
@@ -469,6 +526,7 @@ Performile is **97% production-ready** with all core features functional, securi
 ### Month 2-3: Growth & Enhancement (November-December 2025)
 
 #### November
+- Market share analytics system (6h)
 - Comprehensive testing suite
 - Performance optimization
 - User onboarding flow
@@ -478,6 +536,7 @@ Performile is **97% production-ready** with all core features functional, securi
 - Advanced features
 - Mobile app planning
 - API enhancements
+- Market share competitive intelligence
 - Target: 1,000 users
 
 ---
@@ -680,16 +739,18 @@ Performile is **97% production-ready** with all core features functional, securi
 4. ✅ Beta feedback iteration
 
 ### Do Soon (Month 1)
-1. ✅ API documentation
-2. ✅ Comprehensive testing
-3. ✅ User onboarding
-4. ✅ Performance optimization
+1. ✅ Market share analytics system
+2. ✅ API documentation
+3. ✅ Comprehensive testing
+4. ✅ User onboarding
+5. ✅ Performance optimization
 
 ### Do Later (Month 2-3)
-1. ⬜ Mobile app
-2. ⬜ AI features
-3. ⬜ Advanced integrations
-4. ⬜ White-label solution
+1. ⬜ Market share competitive intelligence
+2. ⬜ Mobile app
+3. ⬜ AI features
+4. ⬜ Advanced integrations
+5. ⬜ White-label solution
 
 ---
 
