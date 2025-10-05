@@ -349,7 +349,9 @@ Supported platforms:
 
 ## 📁 Database Architecture
 
-### Tables (48+)
+### Tables (32 tables - Production Database)
+
+**Status:** ✅ All tables created and populated (October 5, 2025, 23:47)
 
 #### Core Tables
 - `Users` - User accounts (all roles)
@@ -375,15 +377,16 @@ Supported platforms:
 - `LeadPurchases` - Purchase history
 - `CompetitorData` - Anonymized data
 
-#### Market Share Analytics (NEW - 4 tables)
-- `MerchantCourierCheckout` - Which couriers merchants offer at checkout
-- `ServiceTypes` - Delivery service types (home, shop, locker)
-- `OrderServiceType` - Service type per order
-- `MarketShareSnapshots` - Historical market share data
+#### Market Share Analytics (✅ IMPLEMENTED - 4 tables)
+- ✅ `servicetypes` - Delivery service types (home, shop, locker) - **3 types added**
+- ✅ `merchantcouriercheckout` - Which couriers merchants offer at checkout
+- ✅ `orderservicetype` - Service type per order - **Linked to existing orders**
+- ✅ `marketsharesnapshots` - Historical market share data
 
-#### Merchant Multi-Shop (NEW - 2 tables)
-- `MerchantShops` - Multiple shops per merchant
-- `ShopIntegrations` - E-commerce platform per shop
+#### Merchant Multi-Shop (✅ IMPLEMENTED - 3 tables)
+- ✅ `merchantshops` - Multiple shops per merchant - **Default shops created**
+- ✅ `shopintegrations` - E-commerce platform per shop
+- ✅ `shopanalyticssnapshots` - Shop performance tracking
 
 #### System
 - `NotificationPreferences` - User settings
@@ -395,10 +398,22 @@ Supported platforms:
 ### Database Features
 - ✅ Proper indexing on all foreign keys
 - ✅ Composite indexes for complex queries
-- ✅ Row Level Security (RLS) enabled
+- ✅ Row Level Security (RLS) enabled on all tables
 - ✅ Automated triggers for TrustScore
 - ✅ Connection pooling
 - ✅ Point-in-time recovery ready
+- ✅ 3 production views (market leaders, service distribution, shop overview)
+- ✅ Sample data populated (service types, default shops)
+
+### Database Statistics (Live Production)
+- **Total Tables:** 32
+- **Total Users:** 23
+- **Total Couriers:** 11
+- **Total Orders:** 105
+- **Total Reviews:** 106
+- **Service Types:** 3 (home delivery, parcel shop, parcel locker)
+- **Merchant Shops:** Created for all merchants
+- **Last Updated:** October 5, 2025, 23:47 UTC
 
 ---
 
