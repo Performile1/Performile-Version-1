@@ -1,11 +1,22 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Pool } from 'pg';
 import jwt from 'jsonwebtoken';
-import { getJWTSecret } from '../../utils/env';
+
+// Inline JWT helper
+function getJWTSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'development') {
+      return 'development-fallback-secret-min-32-chars-long-for-testing';
+    }
+    throw new Error('JWT_SECRET not configured');
+  }
+  return secret;
+}
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 // Verify admin token
