@@ -59,7 +59,16 @@ export const CourierDirectory: React.FC = () => {
     }
   });
 
-  const couriers: AnonymousCourier[] = Array.isArray(couriersData?.data) ? couriersData.data : [];
+  const couriers: AnonymousCourier[] = Array.isArray(couriersData?.data) 
+    ? couriersData.data.map((c: any) => ({
+        ...c,
+        trust_score: Number(c.trust_score) || 0,
+        avg_rating: Number(c.avg_rating) || 0,
+        total_deliveries: Number(c.total_deliveries) || 0,
+        successful_deliveries: Number(c.successful_deliveries) || 0,
+        total_reviews: Number(c.total_reviews) || 0
+      }))
+    : [];
 
   const filteredCouriers = couriers.filter(courier =>
     courier.location_area.toLowerCase().includes(searchTerm.toLowerCase())
@@ -252,8 +261,8 @@ export const CourierDirectory: React.FC = () => {
                       </Typography>
                     </Box>
                     <Chip
-                      label={courier.trust_score.toFixed(1)}
-                      color={getTrustScoreColor(courier.trust_score)}
+                      label={Number(courier.trust_score || 0).toFixed(1)}
+                      color={getTrustScoreColor(Number(courier.trust_score || 0))}
                       size="small"
                       icon={<StarIcon />}
                     />
@@ -263,7 +272,7 @@ export const CourierDirectory: React.FC = () => {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
                       <Typography variant="body2">Rating</Typography>
                       <Typography variant="body2" fontWeight="medium">
-                        {courier.avg_rating.toFixed(1)} / 5.0
+                        {Number(courier.avg_rating || 0).toFixed(1)} / 5.0
                       </Typography>
                     </Box>
                     <Rating value={courier.avg_rating} readOnly size="small" precision={0.1} />
