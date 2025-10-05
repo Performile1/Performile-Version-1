@@ -90,7 +90,7 @@ SELECT
     COALESCE(
         (SELECT n_live_tup::text 
          FROM pg_stat_user_tables 
-         WHERE tablename = mt.table_name), 
+         WHERE relname = mt.table_name), 
         '0'
     ) as row_count
 FROM messaging_tables mt
@@ -124,7 +124,7 @@ SELECT
     COALESCE(
         (SELECT n_live_tup::text 
          FROM pg_stat_user_tables 
-         WHERE tablename = rt.table_name), 
+         WHERE relname = rt.table_name), 
         '0'
     ) as row_count
 FROM review_tables rt
@@ -159,7 +159,7 @@ SELECT
     COALESCE(
         (SELECT n_live_tup::text 
          FROM pg_stat_user_tables 
-         WHERE tablename = mkt.table_name), 
+         WHERE relname = mkt.table_name), 
         '0'
     ) as row_count
 FROM market_tables mkt
