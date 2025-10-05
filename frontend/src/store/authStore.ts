@@ -31,12 +31,16 @@ export const useAuthStore = create<AuthStore>()(
           if (response.success && response.data) {
             const { user, tokens } = response.data;
             
+            console.log('[AuthStore] Login successful, setting tokens:', { hasTokens: !!tokens, hasAccessToken: !!tokens?.accessToken });
+            
             set({
               user,
               tokens,
               isAuthenticated: true,
               isLoading: false,
             });
+            
+            console.log('[AuthStore] State after login:', { hasTokens: !!get().tokens, hasAccessToken: !!get().tokens?.accessToken });
             
             toast.success('Login successful!');
             return true;

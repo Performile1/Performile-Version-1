@@ -46,9 +46,18 @@ class ApiClient {
     this.client.interceptors.request.use(
       (config) => {
         // Get token from auth store (tokens are in memory)
-        const { tokens } = useAuthStore.getState();
+        const state = useAuthStore.getState();
+        const tokens = state.tokens;
+        
+        // Debug logging
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[ApiClient] Auth state:', { hasTokens: !!tokens, hasAccessToken: !!tokens?.accessToken });
+        }
+        
         if (tokens?.accessToken) {
           config.headers.Authorization = `Bearer ${tokens.accessToken}`;
+        } else {
+          console.warn('[ApiClient] No access token available for request:', config.url);
         }
         
         // Always send credentials (cookies)
