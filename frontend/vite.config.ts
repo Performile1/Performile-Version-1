@@ -17,8 +17,29 @@ export default defineConfig(({ mode }) => {
       tsconfigPaths({ loose: true }),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: [],
-        manifest: false, // Disable PWA manifest until icons are created
+        includeAssets: ['favicon.ico', 'robots.txt'],
+        manifest: {
+          name: 'Performile',
+          short_name: 'Performile',
+          description: 'Logistics Performance Platform',
+          theme_color: '#1976d2',
+          background_color: '#ffffff',
+          display: 'standalone',
+          icons: [
+            {
+              src: 'pwa-192x192.png',
+              sizes: '192x192',
+              type: 'image/png',
+              purpose: 'any maskable'
+            },
+            {
+              src: 'pwa-512x512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any maskable'
+            }
+          ]
+        },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg}']
         }
