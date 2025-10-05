@@ -16,11 +16,11 @@ SELECT
     '' as size;
 
 SELECT 
-    schemaname || '.' || tablename as table_name,
+    schemaname || '.' || relname as table_name,
     n_live_tup as estimated_rows,
-    pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as total_size
+    pg_size_pretty(pg_total_relation_size(schemaname||'.'||relname)) as total_size
 FROM pg_stat_user_tables
-ORDER BY tablename;
+ORDER BY relname;
 
 -- =====================================================
 -- 2. Check Expected Core Tables
@@ -54,7 +54,7 @@ SELECT
     COALESCE(
         (SELECT n_live_tup::text 
          FROM pg_stat_user_tables 
-         WHERE tablename = et.table_name), 
+         WHERE relname = et.table_name), 
         '0'
     ) as row_count
 FROM expected_tables et
@@ -193,7 +193,7 @@ SELECT
     COALESCE(
         (SELECT n_live_tup::text 
          FROM pg_stat_user_tables 
-         WHERE tablename = st.table_name), 
+         WHERE relname = st.table_name), 
         '0'
     ) as row_count
 FROM shop_tables st
@@ -227,7 +227,7 @@ SELECT
     COALESCE(
         (SELECT n_live_tup::text 
          FROM pg_stat_user_tables 
-         WHERE tablename = mpt.table_name), 
+         WHERE relname = mpt.table_name), 
         '0'
     ) as row_count
 FROM marketplace_tables mpt

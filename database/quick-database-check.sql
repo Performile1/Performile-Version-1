@@ -7,11 +7,11 @@
 -- List all tables with row counts
 SELECT 
     'EXISTING TABLES' as section,
-    tablename as name,
+    relname as name,
     n_live_tup as rows,
-    pg_size_pretty(pg_total_relation_size('public.'||tablename)) as size
+    pg_size_pretty(pg_total_relation_size('public.'||relname)) as size
 FROM pg_stat_user_tables
-ORDER BY tablename;
+ORDER BY relname;
 
 -- Check critical tables
 SELECT 
