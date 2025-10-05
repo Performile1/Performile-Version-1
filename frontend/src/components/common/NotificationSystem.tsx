@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Badge,
@@ -25,6 +25,7 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
+import Pusher from 'pusher-js';
 import toast from 'react-hot-toast';
 
 interface Notification {
@@ -64,76 +65,62 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
   // Update local state when data changes
   useEffect(() => {
     if (notificationsData) {
-      setNotifications(notificationsData);
+      // Ensure we always work with an array
+      const notifArray = Array.isArray(notificationsData) 
+        ? notificationsData 
+        : Array.isArray(notificationsData?.data) 
+        ? notificationsData.data 
+        : [];
+      setNotifications(notifArray);
     }
   }, [notificationsData]);
 
-  // Real-time subscription effect
+  // Real-time subscription with Pusher
   useEffect(() => {
     if (!user) return;
 
-    let eventSource: EventSource | null = null;
+    const pusherKey = import.meta.env.VITE_PUSHER_KEY;
+    const pusherCluster = import.meta.env.VITE_PUSHER_CLUSTER;
 
-    const setupSSE = () => {
-      try {
-        const { tokens } = useAuthStore.getState();
-        if (!tokens?.accessToken) {
-          console.warn('No access token available for SSE connection');
-          return;
-        }
+    if (!pusherKey || !pusherCluster) {
+      console.warn('[NotificationSystem] Pusher not configured, falling back to polling');
+      return;
+    }
 
-        // Create Server-Sent Events connection with token as query parameter
-        // EventSource doesn't support Authorization headers, so we pass token in URL
-        eventSource = new EventSource(`/api/notifications?stream=true&userId=${user.user_id}&token=${tokens.accessToken}`, {
-          withCredentials: true,
-        });
+    console.log('[NotificationSystem] Connecting to Pusher for real-time notifications');
 
-        eventSource.onopen = () => {
-          console.log('Notification stream connected');
-        };
+    // Initialize Pusher
+    const pusher = new Pusher(pusherKey, {
+      cluster: pusherCluster,
+    });
 
-        eventSource.onmessage = (event) => {
-          try {
-            const notification: Notification = JSON.parse(event.data);
-            
-            // Add to notifications list
-            setNotifications(prev => [notification, ...prev].slice(0, maxVisible));
-            
-            // Show toast notification
-            showToastNotification(notification);
-            
-            // Invalidate related queries
-            queryClient.invalidateQueries({ queryKey: ['orders'] });
-            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-            
-          } catch (error) {
-            console.error('Failed to parse notification:', error);
-          }
-        };
+    // Subscribe to user's notification channel
+    const channel = pusher.subscribe(`user-${user.user_id}`);
 
-        eventSource.onerror = (error) => {
-          console.error('Notification stream error:', error);
-          eventSource?.close();
-          
-          // Retry connection after 5 seconds
-          setTimeout(setupSSE, 5000);
-        };
+    // Listen for new notifications
+    channel.bind('new-notification', (data: Notification) => {
+      console.log('[NotificationSystem] Received notification:', data);
+      
+      // Add to notifications list
+      setNotifications(prev => [data, ...prev].slice(0, maxVisible));
+      
+      // Show toast notification
+      showToastNotification(data);
+      
+      // Invalidate related queries
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    });
 
-      } catch (error) {
-        console.error('Failed to setup notification stream:', error);
-      }
-    };
-
-    setupSSE();
-
+    // Cleanup
     return () => {
-      if (eventSource) {
-        eventSource.close();
-      }
+      channel.unbind_all();
+      channel.unsubscribe();
+      pusher.disconnect();
     };
   }, [user, maxVisible, queryClient]);
 
-  const showToastNotification = useCallback((notification: Notification) => {
+  const showToastNotification = (notification: Notification) => {
     const toastOptions = {
       duration: 5000,
       position: 'top-right' as const,
@@ -158,7 +145,7 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
       default:
         toast(notification.title, toastOptions);
     }
-  }, []);
+  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -236,7 +223,7 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = Array.isArray(notifications) ? notifications.filter(n => !n.read).length : 0;
   const isOpen = Boolean(anchorEl);
 
   const formatTime = (timestamp: string) => {
@@ -312,7 +299,7 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
           </Box>
         </Box>
 
-        {notifications.length === 0 ? (
+        {!Array.isArray(notifications) || notifications.length === 0 ? (
           <Box sx={{ p: 4, textAlign: 'center' }}>
             <Notifications sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
             <Typography variant="body2" color="text.secondary">
