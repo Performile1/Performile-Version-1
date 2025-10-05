@@ -59,7 +59,7 @@ export const CourierDirectory: React.FC = () => {
     }
   });
 
-  const couriers: AnonymousCourier[] = couriersData?.data || [];
+  const couriers: AnonymousCourier[] = Array.isArray(couriersData?.data) ? couriersData.data : [];
 
   const filteredCouriers = couriers.filter(courier =>
     courier.location_area.toLowerCase().includes(searchTerm.toLowerCase())

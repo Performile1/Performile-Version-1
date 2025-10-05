@@ -91,7 +91,7 @@ export const MessagingCenter: React.FC = () => {
     retry: false,
   });
 
-  const conversations: Conversation[] = conversationsData?.data || [];
+  const conversations: Conversation[] = Array.isArray(conversationsData?.data) ? conversationsData.data : [];
 
   // Fetch messages for selected conversation
   const { data: messagesData, refetch: refetchMessages } = useQuery({
@@ -108,7 +108,7 @@ export const MessagingCenter: React.FC = () => {
     retry: false,
   });
 
-  const messages: Message[] = messagesData?.data || [];
+  const messages: Message[] = Array.isArray(messagesData?.data) ? messagesData.data : [];
 
   // Send message mutation
   const sendMessageMutation = useMutation({

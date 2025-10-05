@@ -70,7 +70,7 @@ export const TrustScores: React.FC = () => {
     refetchInterval: 60000, // Refresh every minute
   });
 
-  const couriers = trustScoresData?.data || [];
+  const couriers = Array.isArray(trustScoresData?.data) ? trustScoresData.data : [];
 
   const getGradeColor = (grade: string) => {
     switch (grade?.toUpperCase()) {
