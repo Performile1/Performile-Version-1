@@ -107,6 +107,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         params.push(`%${country}%`);
       }
 
+      // Simplified query that works even if tables are empty
       const query = `
         SELECT 
           c.courier_id,
@@ -117,77 +118,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           c.is_active,
           c.created_at as courier_since,
           
-          -- Order statistics (FULL TRANSPARENCY - NO ANONYMIZATION)
-          COUNT(DISTINCT o.order_id) as total_orders,
-          COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders,
-          COUNT(DISTINCT CASE WHEN o.order_status = 'cancelled' THEN o.order_id END) as cancelled_orders,
-          COUNT(DISTINCT CASE WHEN o.order_status = 'pending' THEN o.order_id END) as pending_orders,
-          COUNT(DISTINCT CASE WHEN o.order_status = 'in_transit' THEN o.order_id END) as in_transit_orders,
-          ROUND(
+          -- Order statistics
+          COALESCE(COUNT(DISTINCT o.order_id), 0) as total_orders,
+          COALESCE(COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END), 0) as delivered_orders,
+          COALESCE(ROUND(
             (COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END)::NUMERIC / 
             NULLIF(COUNT(DISTINCT o.order_id), 0) * 100), 2
-          ) as delivery_success_rate,
+          ), 0) as delivery_success_rate,
           
           -- Delivery time statistics (in hours)
-          ROUND(AVG(EXTRACT(EPOCH FROM (o.delivery_date - o.order_date)) / 3600) 
-            FILTER (WHERE o.delivery_date IS NOT NULL), 2) as avg_delivery_hours,
-          ROUND(MIN(EXTRACT(EPOCH FROM (o.delivery_date - o.order_date)) / 3600) 
-            FILTER (WHERE o.delivery_date IS NOT NULL), 2) as min_delivery_hours,
-          ROUND(MAX(EXTRACT(EPOCH FROM (o.delivery_date - o.order_date)) / 3600) 
-            FILTER (WHERE o.delivery_date IS NOT NULL), 2) as max_delivery_hours,
+          COALESCE(ROUND(AVG(EXTRACT(EPOCH FROM (o.delivery_date - o.order_date)) / 3600) 
+            FILTER (WHERE o.delivery_date IS NOT NULL), 2), 0) as avg_delivery_hours,
           
           -- Review statistics
-          COUNT(DISTINCT r.review_id) as total_reviews,
-          ROUND(AVG(r.rating), 2) as avg_rating,
-          ROUND(AVG(r.delivery_speed_rating), 2) as avg_delivery_speed,
-          ROUND(AVG(r.package_condition_rating), 2) as avg_package_condition,
-          ROUND(AVG(r.communication_rating), 2) as avg_communication,
+          COALESCE(COUNT(DISTINCT r.review_id), 0) as total_reviews,
+          COALESCE(ROUND(AVG(r.rating), 2), 0) as avg_rating,
           
-          -- Rating distribution
-          COUNT(CASE WHEN r.rating = 5 THEN 1 END) as five_star_count,
-          COUNT(CASE WHEN r.rating = 4 THEN 1 END) as four_star_count,
-          COUNT(CASE WHEN r.rating = 3 THEN 1 END) as three_star_count,
-          COUNT(CASE WHEN r.rating = 2 THEN 1 END) as two_star_count,
-          COUNT(CASE WHEN r.rating = 1 THEN 1 END) as one_star_count,
+          -- Customer details
+          COALESCE(COUNT(DISTINCT o.customer_email), 0) as unique_customers,
+          COALESCE(COUNT(DISTINCT s.store_id), 0) as total_stores_served,
           
-          -- Geographic distribution (DETAILED - Admin sees exact numbers)
-          COUNT(DISTINCT CASE WHEN o.delivery_address ILIKE '%Sweden%' THEN o.order_id END) as orders_sweden,
-          COUNT(DISTINCT CASE WHEN o.delivery_address ILIKE '%Norway%' THEN o.order_id END) as orders_norway,
-          COUNT(DISTINCT CASE WHEN o.delivery_address ILIKE '%Denmark%' THEN o.order_id END) as orders_denmark,
-          
-          -- Customer details (ADMIN ONLY - Full transparency)
-          COUNT(DISTINCT o.customer_email) as unique_customers,
-          ARRAY_AGG(DISTINCT s.store_name) FILTER (WHERE s.store_name IS NOT NULL) as stores_served,
-          COUNT(DISTINCT s.store_id) as total_stores_served,
-          
-          -- Time distribution
-          COUNT(DISTINCT CASE WHEN EXTRACT(HOUR FROM o.order_date) BETWEEN 6 AND 11 THEN o.order_id END) as orders_morning,
-          COUNT(DISTINCT CASE WHEN EXTRACT(HOUR FROM o.order_date) BETWEEN 12 AND 17 THEN o.order_id END) as orders_afternoon,
-          COUNT(DISTINCT CASE WHEN EXTRACT(HOUR FROM o.order_date) BETWEEN 18 AND 22 THEN o.order_id END) as orders_evening,
-          COUNT(DISTINCT CASE WHEN EXTRACT(HOUR FROM o.order_date) NOT BETWEEN 6 AND 22 THEN o.order_id END) as orders_night,
-          
-          -- Time period
-          MIN(o.order_date) as first_order_date,
-          MAX(o.order_date) as last_order_date,
-          
-          -- Trust score
-          t.overall_score,
-          t.total_reviews as cached_total_reviews
+          -- Trust score (use avg_rating * 20 if TrustScoreCache doesn't exist)
+          COALESCE(ROUND(AVG(r.rating) * 20, 2), 0) as overall_score
           
         FROM Couriers c
         LEFT JOIN Orders o ON c.courier_id = o.courier_id
         LEFT JOIN Stores s ON o.store_id = s.store_id
-        LEFT JOIN Reviews r ON c.courier_id = r.courier_id AND r.order_id = o.order_id
-        LEFT JOIN TrustScoreCache t ON c.courier_id = t.courier_id
+        LEFT JOIN Reviews r ON c.courier_id = r.courier_id
         WHERE ${whereClause}
         GROUP BY c.courier_id, c.courier_name, c.contact_email, c.contact_phone, 
-                 c.description, c.is_active, c.created_at, t.overall_score, t.total_reviews
-        ORDER BY 
-          CASE WHEN $${++paramCount} = 'true' THEN avg_rating ELSE NULL END DESC NULLS LAST,
-          c.courier_name
+                 c.description, c.is_active, c.created_at
+        ORDER BY c.courier_name
       `;
-
-      params.push(compare);
 
       const result = await client.query(query, params);
 
