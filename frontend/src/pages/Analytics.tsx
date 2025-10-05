@@ -776,19 +776,20 @@ export const Analytics: React.FC = () => {
                       <Typography variant="h6" gutterBottom>
                         Available Markets
                       </Typography>
-                      <Alert severity="info" sx={{ mb: 2 }}>
-                        Upgrade to Pro to access advanced analytics features.
-                      </Alert>
-                      {user?.user_role !== 'admin' && (
-                        <Alert severity="info" sx={{ mb: 2 }}>
-                          Your {user?.subscription_tier || 'Tier 1'} subscription allows access to{' '}
-                          {user?.subscription_tier === 'tier3' ? '8' : user?.subscription_tier === 'tier2' ? '3' : '1'} market(s)
-                        </Alert>
-                      )}
-                      {user?.user_role === 'admin' && (
+                      {user?.user_role === 'admin' ? (
                         <Alert severity="success" sx={{ mb: 2 }}>
                           Admin Access - Full access to all markets and features
                         </Alert>
+                      ) : (
+                        <>
+                          <Alert severity="info" sx={{ mb: 2 }}>
+                            Upgrade to Pro to access advanced analytics features.
+                          </Alert>
+                          <Alert severity="info" sx={{ mb: 2 }}>
+                            Your {user?.subscription_tier || 'Tier 1'} subscription allows access to{' '}
+                            {user?.subscription_tier === 'tier3' ? '8' : user?.subscription_tier === 'tier2' ? '3' : '1'} market(s)
+                          </Alert>
+                        </>
                       )}
                       
                       {/* Market cards would be rendered here */}
