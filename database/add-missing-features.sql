@@ -323,15 +323,16 @@ CREATE OR REPLACE VIEW vw_market_leaders AS
 SELECT 
     u.user_id as courier_id,
     u.first_name || ' ' || u.last_name as courier_name,
-    c.trust_score,
+    COALESCE(tc.trust_score, 0) as trust_score,
     COUNT(DISTINCT o.order_id) as total_orders,
     COUNT(DISTINCT CASE WHEN o.status = 'delivered' THEN o.order_id END) as completed_orders
 FROM users u
 LEFT JOIN couriers c ON u.user_id = c.user_id
+LEFT JOIN trustscorecache tc ON u.user_id = tc.courier_id
 LEFT JOIN orders o ON u.user_id = o.courier_id
 WHERE u.user_role = 'courier'
-GROUP BY u.user_id, u.first_name, u.last_name, c.trust_score
-ORDER BY c.trust_score DESC NULLS LAST;
+GROUP BY u.user_id, u.first_name, u.last_name, tc.trust_score
+ORDER BY tc.trust_score DESC NULLS LAST;
 
 -- View: Service Type Distribution
 CREATE OR REPLACE VIEW vw_service_type_distribution AS
