@@ -99,7 +99,16 @@ export const ManageCouriers: React.FC = () => {
     }
   });
 
-  const couriers: Courier[] = Array.isArray(couriersData?.data) ? couriersData.data : [];
+  const couriers: Courier[] = Array.isArray(couriersData?.data) 
+    ? couriersData.data.map((c: any) => ({
+        ...c,
+        trust_score: Number(c.trust_score) || 0,
+        avg_rating: Number(c.avg_rating) || 0,
+        total_deliveries: Number(c.total_deliveries) || 0,
+        successful_deliveries: Number(c.successful_deliveries) || 0,
+        revenue_generated: Number(c.revenue_generated) || 0
+      }))
+    : [];
 
   const filteredCouriers = couriers.filter(courier =>
     courier.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -365,8 +374,8 @@ export const ManageCouriers: React.FC = () => {
                     </TableCell>
                     <TableCell align="center">
                       <Chip
-                        label={courier.trust_score.toFixed(1)}
-                        color={getTrustScoreColor(courier.trust_score)}
+                        label={Number(courier.trust_score || 0).toFixed(1)}
+                        color={getTrustScoreColor(Number(courier.trust_score || 0))}
                         size="small"
                         icon={<StarIcon />}
                       />
@@ -503,7 +512,7 @@ export const ManageCouriers: React.FC = () => {
                   <Grid item xs={6}>
                     <Card variant="outlined">
                       <CardContent>
-                        <Typography variant="h4" color={getTrustScoreColor(selectedCourier.trust_score)}>{selectedCourier.trust_score.toFixed(1)}</Typography>
+                        <Typography variant="h4" color={getTrustScoreColor(Number(selectedCourier.trust_score || 0))}>{Number(selectedCourier.trust_score || 0).toFixed(1)}</Typography>
                         <Typography variant="body2" color="text.secondary">Trust Score</Typography>
                       </CardContent>
                     </Card>
