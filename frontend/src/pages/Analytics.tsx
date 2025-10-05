@@ -141,10 +141,10 @@ export const Analytics: React.FC = () => {
     
     // Mock data for non-admin users
     return [
-      { name: 'Competitor A', trustScore: 85, marketShare: 25, unlocked: false },
-      { name: 'Competitor B', trustScore: 78, marketShare: 18, unlocked: true },
-      { name: 'Competitor C', trustScore: 92, marketShare: 30, unlocked: false },
-      { name: 'You', trustScore: 89, marketShare: 15, unlocked: true }
+      { name: 'Competitor A', trustScore: 85, marketShare: 25, unlocked: false, totalOrders: 0, avgRating: 0, successRate: 0 },
+      { name: 'Competitor B', trustScore: 78, marketShare: 18, unlocked: true, totalOrders: 0, avgRating: 0, successRate: 0 },
+      { name: 'Competitor C', trustScore: 92, marketShare: 30, unlocked: false, totalOrders: 0, avgRating: 0, successRate: 0 },
+      { name: 'You', trustScore: 89, marketShare: 15, unlocked: true, totalOrders: 0, avgRating: 0, successRate: 0 }
     ];
   }, [user?.user_role, courierData]);
 
