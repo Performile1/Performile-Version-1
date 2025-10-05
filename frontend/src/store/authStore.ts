@@ -24,9 +24,11 @@ export const useAuthStore = create<AuthStore>()(
 
       login: async (credentials: LoginCredentials) => {
         try {
+          console.log('[AuthStore] Login attempt started');
           set({ isLoading: true });
           
           const response = await authService.login(credentials);
+          console.log('[AuthStore] Login response received:', { success: response.success, hasData: !!response.data });
           
           if (response.success && response.data) {
             const { user, tokens } = response.data;
