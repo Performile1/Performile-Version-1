@@ -79,6 +79,9 @@ export const MessagingCenter: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [newConversationOpen, setNewConversationOpen] = useState(false);
+  const [newConvSubject, setNewConvSubject] = useState('');
+  const [newConvRecipient, setNewConvRecipient] = useState('');
+  const [newConvMessage, setNewConvMessage] = useState('');
 
   // Fetch conversations
   const { data: conversationsData, refetch: refetchConversations } = useQuery({
@@ -124,18 +127,21 @@ export const MessagingCenter: React.FC = () => {
     },
   });
 
-  // Create conversation mutation (for future use)
-  // const createConversationMutation = useMutation({
-  //   mutationFn: async (data: { participant_ids: string[]; subject: string }) => {
-  //     const response = await apiClient.post('/messages/conversations', data);
-  //     return response.data;
-  //   },
-  //   onSuccess: (data) => {
-  //     setNewConversationOpen(false);
-  //     setSelectedConversation(data.data.conversation_id);
-  //     refetchConversations();
-  //   },
-  // });
+  // Create conversation mutation
+  const createConversationMutation = useMutation({
+    mutationFn: async (data: { participant_emails: string[]; subject: string; initial_message: string }) => {
+      const response = await apiClient.post('/messages/conversations', data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      setNewConversationOpen(false);
+      setNewConvSubject('');
+      setNewConvRecipient('');
+      setNewConvMessage('');
+      setSelectedConversation(data.data.conversation_id);
+      refetchConversations();
+    },
+  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -416,12 +422,55 @@ export const MessagingCenter: React.FC = () => {
       <Dialog open={newConversationOpen} onClose={() => setNewConversationOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>New Conversation</DialogTitle>
         <DialogContent>
-          <Typography variant="body2" color="text.secondary">
-            New conversation feature coming soon!
-          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+            <TextField
+              label="Recipient Email"
+              fullWidth
+              value={newConvRecipient}
+              onChange={(e) => setNewConvRecipient(e.target.value)}
+              placeholder="user@example.com"
+              helperText="Enter the email address of the person you want to message"
+            />
+            <TextField
+              label="Subject"
+              fullWidth
+              value={newConvSubject}
+              onChange={(e) => setNewConvSubject(e.target.value)}
+              placeholder="What's this conversation about?"
+            />
+            <TextField
+              label="Message"
+              fullWidth
+              multiline
+              rows={4}
+              value={newConvMessage}
+              onChange={(e) => setNewConvMessage(e.target.value)}
+              placeholder="Type your message here..."
+            />
+          </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setNewConversationOpen(false)}>Cancel</Button>
+          <Button onClick={() => {
+            setNewConversationOpen(false);
+            setNewConvSubject('');
+            setNewConvRecipient('');
+            setNewConvMessage('');
+          }}>Cancel</Button>
+          <Button 
+            onClick={() => {
+              if (newConvRecipient && newConvSubject && newConvMessage) {
+                createConversationMutation.mutate({
+                  participant_emails: [newConvRecipient],
+                  subject: newConvSubject,
+                  initial_message: newConvMessage
+                });
+              }
+            }}
+            variant="contained"
+            disabled={!newConvRecipient || !newConvSubject || !newConvMessage || createConversationMutation.isPending}
+          >
+            {createConversationMutation.isPending ? 'Creating...' : 'Create'}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
