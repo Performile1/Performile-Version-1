@@ -27,6 +27,7 @@ import {
   Message,
   Business,
   DirectionsCar,
+  Star,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -103,6 +104,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       label: 'Manage Couriers',
       path: '/admin/couriers',
       icon: DirectionsCar,
+      roles: ['admin'],
+    },
+    {
+      label: 'Review Builder',
+      path: '/admin/reviews',
+      icon: Star,
       roles: ['admin'],
     },
     {

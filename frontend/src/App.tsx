@@ -12,6 +12,7 @@ import { ManageCarriers } from '@/pages/admin/ManageCarriers';
 import { ManageStores } from '@/pages/admin/ManageStores';
 import { ManageMerchants } from '@/pages/admin/ManageMerchants';
 import { ManageCouriers } from '@/pages/admin/ManageCouriers';
+import { ReviewBuilder } from '@/pages/admin/ReviewBuilder';
 import { CourierDirectory } from '@/pages/courier/CourierDirectory';
 import { TeamManagement } from '@/pages/team/TeamManagement';
 import { AcceptInvitation } from '@/pages/team/AcceptInvitation';
@@ -206,6 +207,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute requiredRoles={['admin']}>
                   <ManageCouriers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/reviews"
+              element={
+                <ProtectedRoute requiredRoles={['admin']}>
+                  <ReviewBuilder />
                 </ProtectedRoute>
               }
             />
