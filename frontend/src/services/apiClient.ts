@@ -45,9 +45,22 @@ class ApiClient {
     // Request interceptor to add auth token
     this.client.interceptors.request.use(
       (config) => {
-        // Get token from auth store (tokens are in memory)
+        // Try to get token from auth store first
         const state = useAuthStore.getState();
-        const tokens = state.tokens;
+        let tokens = state.tokens;
+        
+        // FALLBACK: If not in store, try manual localStorage backup
+        if (!tokens?.accessToken) {
+          try {
+            const storedTokens = localStorage.getItem('performile_tokens');
+            if (storedTokens) {
+              tokens = JSON.parse(storedTokens);
+              console.log('[ApiClient] Using tokens from localStorage backup');
+            }
+          } catch (e) {
+            console.error('[ApiClient] Failed to read tokens from localStorage:', e);
+          }
+        }
         
         // Debug logging
         if (process.env.NODE_ENV === 'development') {

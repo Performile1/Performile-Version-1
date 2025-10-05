@@ -33,6 +33,16 @@ export const useAuthStore = create<AuthStore>()(
             
             console.log('[AuthStore] Login successful, setting tokens:', { hasTokens: !!tokens, hasAccessToken: !!tokens?.accessToken });
             
+            // CRITICAL: Manually save tokens to localStorage as backup
+            if (tokens) {
+              try {
+                localStorage.setItem('performile_tokens', JSON.stringify(tokens));
+                console.log('[AuthStore] Tokens manually saved to localStorage');
+              } catch (e) {
+                console.error('[AuthStore] Failed to save tokens to localStorage:', e);
+              }
+            }
+            
             set({
               user,
               tokens,
