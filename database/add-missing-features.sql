@@ -379,12 +379,44 @@ ALTER TABLE shopanalyticssnapshots ENABLE ROW LEVEL SECURITY;
 
 -- Policies will be added based on your authentication setup
 -- For now, allowing authenticated users to read
-CREATE POLICY IF NOT EXISTS "Allow authenticated read" ON merchantcouriercheckout FOR SELECT USING (true);
-CREATE POLICY IF NOT EXISTS "Allow authenticated read" ON orderservicetype FOR SELECT USING (true);
-CREATE POLICY IF NOT EXISTS "Allow authenticated read" ON marketsharesnapshots FOR SELECT USING (true);
-CREATE POLICY IF NOT EXISTS "Allow authenticated read" ON merchantshops FOR SELECT USING (true);
-CREATE POLICY IF NOT EXISTS "Allow authenticated read" ON shopintegrations FOR SELECT USING (true);
-CREATE POLICY IF NOT EXISTS "Allow authenticated read" ON shopanalyticssnapshots FOR SELECT USING (true);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'merchantcouriercheckout' AND policyname = 'Allow authenticated read'
+    ) THEN
+        CREATE POLICY "Allow authenticated read" ON merchantcouriercheckout FOR SELECT USING (true);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'orderservicetype' AND policyname = 'Allow authenticated read'
+    ) THEN
+        CREATE POLICY "Allow authenticated read" ON orderservicetype FOR SELECT USING (true);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'marketsharesnapshots' AND policyname = 'Allow authenticated read'
+    ) THEN
+        CREATE POLICY "Allow authenticated read" ON marketsharesnapshots FOR SELECT USING (true);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'merchantshops' AND policyname = 'Allow authenticated read'
+    ) THEN
+        CREATE POLICY "Allow authenticated read" ON merchantshops FOR SELECT USING (true);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'shopintegrations' AND policyname = 'Allow authenticated read'
+    ) THEN
+        CREATE POLICY "Allow authenticated read" ON shopintegrations FOR SELECT USING (true);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE tablename = 'shopanalyticssnapshots' AND policyname = 'Allow authenticated read'
+    ) THEN
+        CREATE POLICY "Allow authenticated read" ON shopanalyticssnapshots FOR SELECT USING (true);
+    END IF;
+END $$;
 
 -- =====================================================
 -- 12. SAMPLE DATA (Optional - for testing)
