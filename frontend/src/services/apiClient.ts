@@ -62,10 +62,8 @@ class ApiClient {
           }
         }
         
-        // Debug logging
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[ApiClient] Auth state:', { hasTokens: !!tokens, hasAccessToken: !!tokens?.accessToken });
-        }
+        // Debug logging (always on for now)
+        console.log('[ApiClient] Auth state:', { hasTokens: !!tokens, hasAccessToken: !!tokens?.accessToken });
         
         if (tokens?.accessToken) {
           config.headers.Authorization = `Bearer ${tokens.accessToken}`;
