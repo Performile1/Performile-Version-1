@@ -319,21 +319,24 @@ $$ LANGUAGE plpgsql;
 -- =====================================================
 
 -- View: Market Leaders
--- Note: Adjust column names based on your actual trustscorecache table structure
+-- Simplified version - calculates metrics without relying on trustscorecache structure
 CREATE OR REPLACE VIEW vw_market_leaders AS
 SELECT 
     u.user_id as courier_id,
     u.first_name || ' ' || u.last_name as courier_name,
-    COALESCE(tc.score, 0) as trust_score,
     COUNT(DISTINCT o.order_id) as total_orders,
-    COUNT(DISTINCT CASE WHEN o.status = 'delivered' THEN o.order_id END) as completed_orders
+    COUNT(DISTINCT CASE WHEN o.status = 'delivered' THEN o.order_id END) as completed_orders,
+    ROUND(
+        (COUNT(DISTINCT CASE WHEN o.status = 'delivered' THEN o.order_id END)::DECIMAL / 
+         NULLIF(COUNT(DISTINCT o.order_id), 0)) * 100, 
+        2
+    ) as completion_rate
 FROM users u
 LEFT JOIN couriers c ON u.user_id = c.user_id
-LEFT JOIN trustscorecache tc ON u.user_id = tc.courier_id
 LEFT JOIN orders o ON u.user_id = o.courier_id
 WHERE u.user_role = 'courier'
-GROUP BY u.user_id, u.first_name, u.last_name, tc.score
-ORDER BY tc.score DESC NULLS LAST;
+GROUP BY u.user_id, u.first_name, u.last_name
+ORDER BY completion_rate DESC NULLS LAST, total_orders DESC;
 
 -- View: Service Type Distribution
 CREATE OR REPLACE VIEW vw_service_type_distribution AS
