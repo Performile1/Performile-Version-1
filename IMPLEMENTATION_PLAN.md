@@ -370,7 +370,137 @@ Performile is **97% production-ready** with all core features functional, securi
 
 ---
 
-#### 8. API Documentation - 8 hours
+#### 8. Merchant Multi-Shop & Analytics - 8 hours
+**Status:** Schema ready, implementation pending
+
+**Tasks:**
+- [ ] **Database Setup (1 hour)**
+  - [ ] Run `database/merchant-multi-shop-system.sql`
+  - [ ] Verify tables created:
+    - `MerchantShops` (multiple shops per merchant)
+    - `ShopIntegrations` (e-commerce platforms per shop)
+    - `ShopAnalyticsSnapshots` (historical shop data)
+  - [ ] Add `shop_id` column to Orders table
+  - [ ] Test database functions
+  
+- [ ] **Backend API Endpoints (3 hours)**
+  - [ ] `POST /api/merchant/shops` - Create shop
+  - [ ] `GET /api/merchant/shops` - List merchant shops
+  - [ ] `PUT /api/merchant/shops/:id` - Update shop
+  - [ ] `DELETE /api/merchant/shops/:id` - Delete shop
+  - [ ] `GET /api/merchant/shops/:id/analytics` - Shop analytics
+  - [ ] `GET /api/merchant/analytics/all-shops` - All shops analytics
+  - [ ] `GET /api/merchant/analytics/platforms` - Platform usage stats
+  - [ ] `POST /api/merchant/shops/:id/integrations` - Add integration
+  
+- [ ] **Frontend Components (4 hours)**
+  - [ ] Shop management page (add/edit/delete shops)
+  - [ ] Shop selector (dropdown in order creation)
+  - [ ] Per-shop analytics dashboard
+  - [ ] All-shops overview dashboard
+  - [ ] E-commerce platform analytics view
+  - [ ] Geographic performance charts
+  - [ ] Shop comparison view
+
+**Files to Create:**
+- `frontend/api/merchant/shops.ts`
+- `frontend/api/merchant/shop-analytics.ts`
+- `frontend/src/pages/merchant/ShopManagement.tsx`
+- `frontend/src/pages/merchant/ShopAnalytics.tsx`
+- `frontend/src/components/merchant/ShopSelector.tsx`
+- `frontend/src/components/analytics/ShopPerformanceChart.tsx`
+- `frontend/src/components/analytics/PlatformUsageChart.tsx`
+
+**Features Implemented:**
+- ✅ Multiple shops per merchant
+- ✅ Per-shop analytics (orders, revenue, couriers)
+- ✅ Geographic breakdown (country, postal code)
+- ✅ E-commerce platform tracking
+- ✅ Courier performance by shop
+- ✅ Service type distribution per shop
+- ✅ Historical snapshots
+
+**Acceptance Criteria:**
+- Merchants can add/manage multiple shops
+- Orders linked to specific shops
+- Analytics calculated per shop
+- Platform usage tracked
+- Geographic filtering works
+- Subscription tiers respected
+
+---
+
+#### 9. Courier Selection Widget/Plugin - 10 hours
+**Status:** Not started
+
+**Tasks:**
+- [ ] **Widget Core (4 hours)**
+  - [ ] Create embeddable JavaScript widget
+  - [ ] Postal code input and validation
+  - [ ] Real-time courier fetching API
+  - [ ] Dynamic ranking algorithm
+  - [ ] TrustScore display
+  - [ ] Service type selector
+  - [ ] Mobile-responsive design
+  
+- [ ] **Backend API (2 hours)**
+  - [ ] `GET /api/widget/couriers` - Get couriers by postal code
+  - [ ] Dynamic ranking based on TrustScore + location
+  - [ ] Service type filtering
+  - [ ] CORS configuration for widget
+  - [ ] Rate limiting for public API
+  
+- [ ] **Admin Configuration (2 hours)**
+  - [ ] Widget settings page
+  - [ ] Customization options (colors, branding)
+  - [ ] API key generation for merchants
+  - [ ] Usage analytics
+  - [ ] Embed code generator
+  
+- [ ] **Documentation & Testing (2 hours)**
+  - [ ] Integration guide
+  - [ ] Code examples (Shopify, WooCommerce, etc.)
+  - [ ] Testing on multiple platforms
+  - [ ] Performance optimization
+
+**Files to Create:**
+- `frontend/public/widget/performile-widget.js`
+- `frontend/public/widget/performile-widget.css`
+- `frontend/api/widget/couriers.ts`
+- `frontend/src/pages/merchant/WidgetSettings.tsx`
+- `frontend/src/components/widget/WidgetPreview.tsx`
+- `docs/WIDGET_INTEGRATION_GUIDE.md`
+
+**Widget Features:**
+- ✅ Embeddable on any website
+- ✅ Postal code-based recommendations
+- ✅ Dynamic courier ranking (best first)
+- ✅ Real-time TrustScore display
+- ✅ Service type selection
+- ✅ Automatic position optimization
+- ✅ Mobile-responsive
+- ✅ Customizable branding
+- ✅ Lightweight (<50KB)
+
+**Dynamic Ranking Algorithm:**
+```javascript
+score = (TrustScore * 0.4) + 
+        (GeographicPerformance * 0.3) + 
+        (RecentRatings * 0.2) + 
+        (DeliverySuccessRate * 0.1)
+```
+
+**Acceptance Criteria:**
+- Widget loads in <2 seconds
+- Works on all major e-commerce platforms
+- Couriers ranked accurately
+- Updates in real-time
+- GDPR compliant
+- Analytics tracked
+
+---
+
+#### 10. API Documentation - 8 hours
 **Status:** Not started
 
 **Tasks:**
@@ -386,7 +516,7 @@ Performile is **97% production-ready** with all core features functional, securi
 
 ---
 
-#### 9. Comprehensive Testing - 2 weeks
+#### 11. Comprehensive Testing - 2 weeks
 **Status:** Basic setup, needs expansion
 
 **Tasks:**
@@ -413,7 +543,7 @@ Performile is **97% production-ready** with all core features functional, securi
 
 ---
 
-#### 10. User Onboarding Flow - 8 hours
+#### 12. User Onboarding Flow - 8 hours
 **Status:** Not started
 
 **Tasks:**
@@ -433,7 +563,7 @@ Performile is **97% production-ready** with all core features functional, securi
 
 ---
 
-#### 11. Performance Optimization - 1 week
+#### 13. Performance Optimization - 1 week
 **Status:** Partial
 
 **Tasks:**
@@ -527,6 +657,8 @@ Performile is **97% production-ready** with all core features functional, securi
 
 #### November
 - Market share analytics system (6h)
+- Merchant multi-shop system (8h)
+- Courier selection widget (10h)
 - Comprehensive testing suite
 - Performance optimization
 - User onboarding flow
@@ -537,6 +669,8 @@ Performile is **97% production-ready** with all core features functional, securi
 - Mobile app planning
 - API enhancements
 - Market share competitive intelligence
+- Widget optimization and expansion
+- Advanced shop analytics
 - Target: 1,000 users
 
 ---
@@ -740,17 +874,21 @@ Performile is **97% production-ready** with all core features functional, securi
 
 ### Do Soon (Month 1)
 1. ✅ Market share analytics system
-2. ✅ API documentation
-3. ✅ Comprehensive testing
-4. ✅ User onboarding
-5. ✅ Performance optimization
+2. ✅ Merchant multi-shop system
+3. ✅ Courier selection widget
+4. ✅ API documentation
+5. ✅ Comprehensive testing
+6. ✅ User onboarding
+7. ✅ Performance optimization
 
 ### Do Later (Month 2-3)
 1. ⬜ Market share competitive intelligence
-2. ⬜ Mobile app
-3. ⬜ AI features
-4. ⬜ Advanced integrations
-5. ⬜ White-label solution
+2. ⬜ Widget advanced features
+3. ⬜ Advanced shop analytics
+4. ⬜ Mobile app
+5. ⬜ AI features
+6. ⬜ Advanced integrations
+7. ⬜ White-label solution
 
 ---
 

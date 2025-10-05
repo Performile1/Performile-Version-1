@@ -84,6 +84,30 @@ Performile is a **production-ready logistics performance platform** currently li
 - **CI/CD:** GitHub Actions + Vercel integration
 - **Domain:** Custom domain ready
 - **SSL:** Automatic via Vercel
+- **Environment:** Production on Vercel, staging available
+- **Monitoring:** Vercel Analytics + Sentry (pending)
+
+### Development Setup
+- **Prerequisites:** Node.js 18+, npm, Supabase account, Vercel account
+- **Local Development:** 
+  - Frontend: `cd frontend && npm install && npm run dev` (http://localhost:5173)
+  - API: Vercel serverless functions (hot reload)
+- **Environment Variables:**
+  - `DATABASE_URL` - Supabase connection string
+  - `JWT_SECRET` - 32+ character secret
+  - `JWT_REFRESH_SECRET` - 32+ character secret
+  - `VITE_API_URL` - API endpoint URL
+  - `PUSHER_*` - Pusher credentials
+  - `RESEND_API_KEY` - Email service
+  - `STRIPE_*` - Payment processing
+- **Quick Start:**
+  ```bash
+  git clone <repo>
+  cd frontend
+  cp .env.example .env
+  npm install
+  npm run dev
+  ```
 
 ---
 
@@ -274,6 +298,46 @@ Supported platforms:
 - **Geographic Share:** Market share filtered by location (country/postal code)
 - **Service Share:** Market share by delivery service type
 
+#### Merchant Analytics Dashboard (NEW)
+- 🟡 Multi-shop management (merchants can add multiple stores)
+- 🟡 Order analytics per shop
+- 🟡 Geographic breakdown (country, postal code)
+- 🟡 E-commerce platform analytics (which platforms used)
+- 🟡 Courier performance by shop
+- 🟡 Revenue tracking per shop
+- 🟡 Subscription tier-based access
+
+**Features:**
+- Add/manage multiple shops under one merchant account
+- Per-shop analytics and reporting
+- Geographic performance analysis
+- E-commerce integration tracking
+- Courier comparison by shop location
+
+#### Courier Selection Plugin/Widget (NEW)
+- 🟡 Checkout integration widget
+- 🟡 Postal code-based recommendations
+- 🟡 Dynamic courier ranking (best performing first)
+- 🟡 Real-time TrustScore display
+- 🟡 Service type selector
+- 🟡 Automatic position optimization based on reviews/ratings
+
+**Widget Features:**
+- Embeddable JavaScript widget for any e-commerce platform
+- Real-time courier recommendations based on postal code
+- Automatic reordering: best-performing couriers shown first
+- TrustScore and rating display
+- Service type selection (home, shop, locker)
+- Mobile-responsive design
+- Customizable branding
+
+**Dynamic Positioning Algorithm:**
+- Couriers ranked by TrustScore + recent ratings
+- Geographic performance weighting
+- Service type availability
+- Delivery success rate in area
+- Real-time updates based on new reviews
+
 #### PWA Features
 - ✅ Installable web app
 - ✅ App icons (192x192, 512x512)
@@ -285,7 +349,7 @@ Supported platforms:
 
 ## 📁 Database Architecture
 
-### Tables (40+)
+### Tables (48+)
 
 #### Core Tables
 - `Users` - User accounts (all roles)
@@ -316,6 +380,10 @@ Supported platforms:
 - `ServiceTypes` - Delivery service types (home, shop, locker)
 - `OrderServiceType` - Service type per order
 - `MarketShareSnapshots` - Historical market share data
+
+#### Merchant Multi-Shop (NEW - 2 tables)
+- `MerchantShops` - Multiple shops per merchant
+- `ShopIntegrations` - E-commerce platform per shop
 
 #### System
 - `NotificationPreferences` - User settings
