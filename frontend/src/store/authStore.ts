@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { User, AuthState, LoginCredentials, RegisterData } from '@/types';
 import { authService } from '@/services/authService';
 import toast from 'react-hot-toast';
+import { analytics } from '@/lib/analytics';
 
 interface AuthStore extends AuthState {
   login: (credentials: LoginCredentials) => Promise<boolean>;
@@ -55,6 +56,9 @@ export const useAuthStore = create<AuthStore>()(
             
             console.log('[AuthStore] State after login:', { hasTokens: !!get().tokens, hasAccessToken: !!get().tokens?.accessToken });
             
+            // Track login event
+            analytics.login(user.user_id, user.user_role);
+            
             toast.success('Login successful!');
             return true;
           }
@@ -86,6 +90,9 @@ export const useAuthStore = create<AuthStore>()(
               isLoading: false,
             });
             
+            // Track signup event
+            analytics.signup(user.user_id, user.user_role);
+            
             toast.success('Registration successful!');
             return true;
           }
@@ -108,6 +115,9 @@ export const useAuthStore = create<AuthStore>()(
           if (tokens) {
             await authService.logout();
           }
+          
+          // Track logout event
+          analytics.logout();
           
           set({
             user: null,

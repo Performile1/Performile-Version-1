@@ -24,6 +24,7 @@
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "pg": "^8.11.3",
+    "posthog-js": "^1.271.0",
     "pusher": "^5.2.0",
     "pusher-js": "^8.4.0-rc2",
     "react": "^18.2.0",
