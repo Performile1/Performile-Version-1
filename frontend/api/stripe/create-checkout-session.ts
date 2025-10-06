@@ -4,7 +4,7 @@ import { Pool } from 'pg';
 import { applySecurityMiddleware } from '../middleware/security';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2023-10-16',
 });
 
 const pool = new Pool({
@@ -45,6 +45,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const plan = planQuery.rows[0];
+
+    // Check if user can get trial
+    const trialCheck = await pool.query(
+      'SELECT * FROM can_user_get_trial($1)',
+      [user.user_id]
+    );
+
+    const canGetTrial = trialCheck.rows[0]?.can_get_trial || false;
 
     // Get or create Stripe customer
     let customerId: string;
@@ -91,7 +99,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         },
         product_data: {
           name: plan.plan_name,
-          description: plan.description || `${plan.plan_name} subscription`,
           metadata: {
             plan_id: plan.plan_id.toString(),
             user_type: plan.user_type,
@@ -131,7 +138,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           user_id: user.user_id,
           plan_id: plan.plan_id.toString(),
         },
-        trial_period_days: 14, // 14-day free trial
+        trial_period_days: canGetTrial ? 14 : undefined, // 14-day free trial only if eligible
       },
     });
 
