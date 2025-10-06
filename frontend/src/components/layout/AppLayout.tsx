@@ -134,12 +134,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       roles: ['admin', 'merchant', 'courier'],
     },
     {
-      label: 'Messages',
-      path: '/messages',
-      icon: Message,
-      roles: ['admin', 'merchant', 'courier', 'consumer'],
-    },
-    {
       label: 'E-commerce',
       path: '/integrations/ecommerce',
       icon: ShoppingCart,
