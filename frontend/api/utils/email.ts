@@ -7,7 +7,7 @@ export interface SendEmailOptions {
   subject: string;
   html: string;
   from?: string;
-  replyTo?: string;
+  reply_to?: string;
 }
 
 /**
@@ -20,7 +20,7 @@ export async function sendEmail(options: SendEmailOptions) {
       to: options.to,
       subject: options.subject,
       html: options.html,
-      replyTo: options.replyTo,
+      reply_to: options.reply_to,
     });
 
     if (error) {
