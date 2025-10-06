@@ -69,7 +69,7 @@ const SubscriptionManagement: React.FC = () => {
   const queryClient = useQueryClient();
 
   // Fetch subscription plans
-  const { data: plansData, isLoading } = useQuery({
+  const { data: plansData } = useQuery({
     queryKey: ['subscription-plans', activeTab],
     queryFn: async () => {
       const response = await fetch(`/api/admin/subscriptions?user_type=${activeTab}&include_inactive=true`);

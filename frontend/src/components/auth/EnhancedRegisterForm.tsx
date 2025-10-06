@@ -1,3 +1,17 @@
+import React from 'react';
+import { RegisterForm } from './RegisterForm';
+
+interface EnhancedRegisterFormProps {
+  onSwitchToLogin: () => void;
+}
+
+// TODO: Complete multi-step wizard implementation
+// For now, using standard RegisterForm
+export const EnhancedRegisterForm: React.FC<EnhancedRegisterFormProps> = ({ onSwitchToLogin }) => {
+  return <RegisterForm onSwitchToLogin={onSwitchToLogin} />;
+};
+
+/* WORK IN PROGRESS - Multi-step wizard
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -20,16 +34,10 @@ import EmailCustomizer from '../onboarding/EmailCustomizer';
 import LogoUploader from '../onboarding/LogoUploader';
 import SubscriptionSelector from '../onboarding/SubscriptionSelector';
 
-interface EnhancedRegisterFormProps {
-  onSwitchToLogin: () => void;
-}
-
 const steps = ['Account', 'Platform', 'Branding', 'Plan'];
 
 export const EnhancedRegisterForm: React.FC<EnhancedRegisterFormProps> = ({ onSwitchToLogin }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [userRole, setUserRole] = useState<string>('');
-  const [registrationData, setRegistrationData] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
@@ -60,19 +68,8 @@ export const EnhancedRegisterForm: React.FC<EnhancedRegisterFormProps> = ({ onSw
     fetchPlans();
   }, []);
 
-  const handleAccountComplete = (data: any, role: string) => {
-    setRegistrationData(data);
-    setUserRole(role);
-    
-    // Skip onboarding steps for consumers and couriers
-    if (role === 'consumer' || role === 'courier') {
-      completeRegistration(data, role);
-    } else {
-      setActiveStep(1);
-    }
-  };
 
-  const completeRegistration = async (data: any, role: string) => {
+  const completeRegistration = async (_data: any, _role: string) => {
     setIsSubmitting(true);
     setError(null);
 
@@ -135,8 +132,8 @@ export const EnhancedRegisterForm: React.FC<EnhancedRegisterFormProps> = ({ onSw
       }
 
       // Login and redirect
-      const { login } = useAuthStore.getState();
-      await login(data.email, data.password);
+      const authStore = useAuthStore.getState();
+      await authStore.login(data.email, data.password);
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Registration failed');
@@ -160,10 +157,12 @@ export const EnhancedRegisterForm: React.FC<EnhancedRegisterFormProps> = ({ onSw
     switch (activeStep) {
       case 0:
         return (
-          <RegisterForm
-            onSwitchToLogin={onSwitchToLogin}
-            onComplete={handleAccountComplete}
-          />
+          <Box>
+            <RegisterForm onSwitchToLogin={onSwitchToLogin} />
+            <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 2 }}>
+              Note: After registration, merchants will complete additional setup steps.
+            </Typography>
+          </Box>
         );
 
       case 1:
@@ -286,3 +285,4 @@ export const EnhancedRegisterForm: React.FC<EnhancedRegisterFormProps> = ({ onSw
     </Card>
   );
 };
+*/

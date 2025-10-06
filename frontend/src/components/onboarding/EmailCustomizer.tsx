@@ -9,7 +9,7 @@ import {
   Button,
   Paper
 } from '@mui/material';
-import { Palette, Preview } from '@mui/icons-material';
+import { Preview } from '@mui/icons-material';
 
 interface EmailCustomizerProps {
   customText: string;
