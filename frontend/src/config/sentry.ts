@@ -1,14 +1,30 @@
 import * as Sentry from '@sentry/react';
 
 export const initSentry = () => {
-  // Only initialize Sentry in production
-  if (import.meta.env.PROD) {
+  const dsn = import.meta.env.VITE_SENTRY_DSN;
+  
+  // Check if DSN is configured
+  if (!dsn) {
+    console.warn('Sentry DSN not configured. Skipping Sentry initialization.');
+    return;
+  }
+
+  try {
     Sentry.init({
-      dsn: import.meta.env.VITE_SENTRY_DSN,
+      dsn,
+      
+      // Integrations
+      integrations: [
+        Sentry.browserTracingIntegration(),
+        Sentry.replayIntegration({
+          maskAllText: false,
+          blockAllMedia: false,
+        }),
+      ],
       
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
       // We recommend adjusting this value in production
-      tracesSampleRate: 0.1, // 10% of transactions
+      tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0, // 100% in dev, 10% in prod
       
       // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
       tracePropagationTargets: [
@@ -19,7 +35,7 @@ export const initSentry = () => {
       
       // Capture Replay for 10% of all sessions,
       // plus 100% of sessions with an error
-      replaysSessionSampleRate: 0.1,
+      replaysSessionSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
       replaysOnErrorSampleRate: 1.0,
       
       // Additional options
@@ -45,20 +61,23 @@ export const initSentry = () => {
       
       // Before sending to Sentry
       beforeSend(event, hint) {
-        // Don't send events in development
+        // Log in development
         if (import.meta.env.DEV) {
           console.log('Sentry event (dev mode):', event);
-          return null;
         }
         
-        // Filter out non-error events
-        if (event.level === 'info' || event.level === 'warning') {
+        // Filter out non-error events in production
+        if (import.meta.env.PROD && (event.level === 'info' || event.level === 'warning')) {
           return null;
         }
         
         return event;
       },
     });
+    
+    console.log('✅ Sentry initialized successfully');
+  } catch (error) {
+    console.error('❌ Failed to initialize Sentry:', error);
   }
 };
 
