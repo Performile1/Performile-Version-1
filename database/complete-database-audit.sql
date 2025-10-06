@@ -88,8 +88,7 @@ BEGIN
         RAISE NOTICE '=====================================================';
         
         FOR r IN SELECT * FROM subscriptionplans ORDER BY plan_id LOOP
-            RAISE NOTICE 'Plan ID: %, Name: %, Price: $%, Type: %', 
-                r.plan_id, r.plan_name, r.monthly_price, r.user_type;
+            RAISE NOTICE 'Plan: %', r;
         END LOOP;
     END IF;
 END $$;
@@ -105,8 +104,7 @@ BEGIN
         RAISE NOTICE '=====================================================';
         
         FOR r IN SELECT * FROM subscription_plans ORDER BY plan_id LOOP
-            RAISE NOTICE 'Plan ID: %, Name: %, Price: $%, Type: %', 
-                r.plan_id, r.plan_name, r.monthly_price, r.user_type;
+            RAISE NOTICE 'Plan: %', r;
         END LOOP;
     END IF;
 END $$;
