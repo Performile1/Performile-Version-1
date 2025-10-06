@@ -1,15 +1,11 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient } from '@supabase/supabase-js';
+import { Pool } from 'pg';
+import jwt from 'jsonwebtoken';
 
-// Check environment variables
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-  console.error('Missing Supabase environment variables');
-}
-
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_KEY || ''
-);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enable CORS
@@ -34,20 +30,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     const token = authHeader.substring(7);
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
+    let decoded: any;
+    
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    } catch (error) {
       return res.status(401).json({ error: 'Invalid token' });
     }
 
     // Verify admin role
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('user_role')
-      .eq('user_id', user.id)
-      .single();
+    const userResult = await pool.query(
+      'SELECT user_role FROM users WHERE user_id = $1',
+      [decoded.userId]
+    );
 
-    if (userError || userData?.user_role !== 'admin') {
+    if (userResult.rows.length === 0 || userResult.rows[0].user_role !== 'admin') {
       return res.status(403).json({ error: 'Forbidden - Admin access required' });
     }
 
@@ -66,45 +63,95 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const limitNum = parseInt(limit as string);
       const offset = (pageNum - 1) * limitNum;
 
-      // Build query
-      let query = supabase
-        .from('orders')
-        .select(`
-          *,
-          courier:users!orders_courier_id_fkey(user_id, first_name, last_name, email),
-          merchant:users!orders_merchant_id_fkey(user_id, first_name, last_name, email, company_name)
-        `, { count: 'exact' })
-        .order('created_at', { ascending: false })
-        .range(offset, offset + limitNum - 1);
+      // Build query with filters
+      let queryText = `
+        SELECT 
+          o.*,
+          json_build_object(
+            'user_id', c.user_id,
+            'first_name', c.first_name,
+            'last_name', c.last_name,
+            'email', c.email
+          ) as courier,
+          json_build_object(
+            'user_id', m.user_id,
+            'first_name', m.first_name,
+            'last_name', m.last_name,
+            'email', m.email,
+            'company_name', m.company_name
+          ) as merchant
+        FROM orders o
+        LEFT JOIN users c ON o.courier_id = c.user_id
+        LEFT JOIN users m ON o.merchant_id = m.user_id
+        WHERE 1=1
+      `;
+      
+      const queryParams: any[] = [];
+      let paramCount = 1;
 
-      // Apply filters
       if (status) {
-        query = query.eq('order_status', status);
+        queryText += ` AND o.order_status = $${paramCount}`;
+        queryParams.push(status);
+        paramCount++;
       }
       if (courier_id) {
-        query = query.eq('courier_id', courier_id);
+        queryText += ` AND o.courier_id = $${paramCount}`;
+        queryParams.push(courier_id);
+        paramCount++;
       }
       if (merchant_id) {
-        query = query.eq('merchant_id', merchant_id);
+        queryText += ` AND o.merchant_id = $${paramCount}`;
+        queryParams.push(merchant_id);
+        paramCount++;
       }
       if (search) {
-        query = query.or(`tracking_number.ilike.%${search}%,order_id.ilike.%${search}%`);
+        queryText += ` AND (o.tracking_number ILIKE $${paramCount} OR o.order_id::text ILIKE $${paramCount})`;
+        queryParams.push(`%${search}%`);
+        paramCount++;
       }
 
-      const { data: orders, error, count } = await query;
+      queryText += ` ORDER BY o.created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+      queryParams.push(limitNum, offset);
 
-      if (error) {
-        console.error('Error fetching orders:', error);
-        return res.status(500).json({ error: 'Failed to fetch orders' });
+      // Get total count
+      let countQuery = 'SELECT COUNT(*) FROM orders o WHERE 1=1';
+      const countParams: any[] = [];
+      let countParamNum = 1;
+      
+      if (status) {
+        countQuery += ` AND o.order_status = $${countParamNum}`;
+        countParams.push(status);
+        countParamNum++;
       }
+      if (courier_id) {
+        countQuery += ` AND o.courier_id = $${countParamNum}`;
+        countParams.push(courier_id);
+        countParamNum++;
+      }
+      if (merchant_id) {
+        countQuery += ` AND o.merchant_id = $${countParamNum}`;
+        countParams.push(merchant_id);
+        countParamNum++;
+      }
+      if (search) {
+        countQuery += ` AND (o.tracking_number ILIKE $${countParamNum} OR o.order_id::text ILIKE $${countParamNum})`;
+        countParams.push(`%${search}%`);
+      }
+
+      const [ordersResult, countResult] = await Promise.all([
+        pool.query(queryText, queryParams),
+        pool.query(countQuery, countParams)
+      ]);
+
+      const totalCount = parseInt(countResult.rows[0].count);
 
       return res.status(200).json({
-        orders: orders || [],
+        orders: ordersResult.rows || [],
         pagination: {
           page: pageNum,
           limit: limitNum,
-          total: count || 0,
-          totalPages: Math.ceil((count || 0) / limitNum)
+          total: totalCount,
+          totalPages: Math.ceil(totalCount / limitNum)
         }
       });
     }
@@ -113,18 +160,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Create new order (admin can create orders on behalf of merchants)
       const orderData = req.body;
 
-      const { data: newOrder, error } = await supabase
-        .from('orders')
-        .insert([orderData])
-        .select()
-        .single();
+      const result = await pool.query(
+        `INSERT INTO orders (merchant_id, courier_id, tracking_number, order_status, total_amount, created_at)
+         VALUES ($1, $2, $3, $4, $5, NOW())
+         RETURNING *`,
+        [orderData.merchant_id, orderData.courier_id, orderData.tracking_number, orderData.order_status, orderData.total_amount]
+      );
 
-      if (error) {
-        console.error('Error creating order:', error);
-        return res.status(500).json({ error: 'Failed to create order' });
-      }
-
-      return res.status(201).json(newOrder);
+      return res.status(201).json(result.rows[0]);
     }
 
     if (req.method === 'PUT' || req.method === 'PATCH') {
@@ -135,19 +178,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'order_id is required' });
       }
 
-      const { data: updatedOrder, error } = await supabase
-        .from('orders')
-        .update(updates)
-        .eq('order_id', order_id)
-        .select()
-        .single();
+      const updateFields = Object.keys(updates).map((key, index) => `${key} = $${index + 2}`).join(', ');
+      const updateValues = Object.values(updates);
 
-      if (error) {
-        console.error('Error updating order:', error);
-        return res.status(500).json({ error: 'Failed to update order' });
+      const result = await pool.query(
+        `UPDATE orders SET ${updateFields}, updated_at = NOW() WHERE order_id = $1 RETURNING *`,
+        [order_id, ...updateValues]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Order not found' });
       }
 
-      return res.status(200).json(updatedOrder);
+      return res.status(200).json(result.rows[0]);
     }
 
     if (req.method === 'DELETE') {
@@ -157,14 +200,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'order_id is required' });
       }
 
-      const { error } = await supabase
-        .from('orders')
-        .delete()
-        .eq('order_id', order_id);
+      const result = await pool.query(
+        'DELETE FROM orders WHERE order_id = $1 RETURNING order_id',
+        [order_id]
+      );
 
-      if (error) {
-        console.error('Error deleting order:', error);
-        return res.status(500).json({ error: 'Failed to delete order' });
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Order not found' });
       }
 
       return res.status(200).json({ message: 'Order deleted successfully' });
