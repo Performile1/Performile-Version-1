@@ -83,12 +83,11 @@ BEGIN
         RAISE NOTICE '=====================================================';
         
         FOR r IN 
-            SELECT plan_id, plan_name, monthly_price, user_type 
+            SELECT * 
             FROM subscriptionplans 
             ORDER BY plan_id 
         LOOP
-            RAISE NOTICE 'ID: % | Name: % | Price: $% | Type: %', 
-                r.plan_id, r.plan_name, r.monthly_price, r.user_type;
+            RAISE NOTICE 'Plan: %', r;
         END LOOP;
     ELSE
         RAISE NOTICE '✅ No old subscriptionplans table found';
@@ -106,12 +105,11 @@ BEGIN
         RAISE NOTICE '=====================================================';
         
         FOR r IN 
-            SELECT plan_id, plan_name, monthly_price, user_type 
+            SELECT * 
             FROM subscription_plans 
             ORDER BY plan_id 
         LOOP
-            RAISE NOTICE 'ID: % | Name: % | Price: $% | Type: %', 
-                r.plan_id, r.plan_name, r.monthly_price, r.user_type;
+            RAISE NOTICE 'Plan: %', r;
         END LOOP;
     ELSE
         RAISE NOTICE '⚠️ No new subscription_plans table found';
