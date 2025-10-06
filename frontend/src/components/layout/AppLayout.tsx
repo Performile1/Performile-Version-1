@@ -28,6 +28,9 @@ import {
   Business,
   DirectionsCar,
   Star,
+  Subscriptions,
+  Email,
+  ShoppingCart,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -113,6 +116,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       roles: ['admin'],
     },
     {
+      label: 'Subscriptions',
+      path: '/admin/subscriptions',
+      icon: Subscriptions,
+      roles: ['admin'],
+    },
+    {
       label: 'Team',
       path: '/team',
       icon: Group,
@@ -123,6 +132,24 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       path: '/analytics',
       icon: Assessment,
       roles: ['admin', 'merchant', 'courier'],
+    },
+    {
+      label: 'Messages',
+      path: '/messages',
+      icon: Message,
+      roles: ['admin', 'merchant', 'courier', 'consumer'],
+    },
+    {
+      label: 'E-commerce',
+      path: '/integrations/ecommerce',
+      icon: ShoppingCart,
+      roles: ['admin', 'merchant'],
+    },
+    {
+      label: 'Email Templates',
+      path: '/settings/email-templates',
+      icon: Email,
+      roles: ['admin', 'merchant'],
     },
   ];
 

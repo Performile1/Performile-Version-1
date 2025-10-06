@@ -284,6 +284,22 @@ const App: React.FC = () => {
               path="/invite/:token"
               element={<AcceptInvitation />}
             />
+            <Route
+              path="/integrations/ecommerce"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant']}>
+                  <div>E-commerce Integrations - Coming Soon</div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/email-templates"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant']}>
+                  <div>Email Templates - Coming Soon</div>
+                </ProtectedRoute>
+              }
+            />
 
             {/* Default Redirects */}
             <Route
