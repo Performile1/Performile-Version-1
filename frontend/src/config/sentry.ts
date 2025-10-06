@@ -39,7 +39,8 @@ export const initSentry = () => {
       replaysOnErrorSampleRate: 1.0,
       
       // Additional options
-      environment: import.meta.env.MODE,
+      environment: import.meta.env.VITE_VERCEL_ENV || import.meta.env.MODE || 'development',
+      release: import.meta.env.VITE_VERCEL_GIT_COMMIT_SHA,
       enabled: true,
       
       // Ignore common errors
