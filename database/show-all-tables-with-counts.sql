@@ -74,6 +74,8 @@ ORDER BY tablename;
 
 -- Step 4: Show data from OLD subscriptionplans (if exists)
 DO $$
+DECLARE
+    r RECORD;
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'subscriptionplans') THEN
         RAISE NOTICE '=====================================================';
@@ -95,6 +97,8 @@ END $$;
 
 -- Step 5: Show data from NEW subscription_plans (if exists)
 DO $$
+DECLARE
+    r RECORD;
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'subscription_plans') THEN
         RAISE NOTICE '=====================================================';
