@@ -22,6 +22,7 @@ import { MessagingCenter } from './components/messaging/MessagingCenter';
 import Settings from './pages/Settings';
 import Orders from './pages/Orders';
 import ServiceRatingForm from './components/rating/ServiceRatingForm';
+import { SentryTestButton } from './components/debug/SentryTestButton';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -295,6 +296,7 @@ const App: React.FC = () => {
             },
           }}
         />
+        <SentryTestButton />
       </ThemeProvider>
     </QueryClientProvider>
   );
