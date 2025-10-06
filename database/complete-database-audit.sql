@@ -79,6 +79,8 @@ SELECT
 
 -- If old subscriptionplans table exists
 DO $$
+DECLARE
+    r RECORD;
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'subscriptionplans') THEN
         RAISE NOTICE '=====================================================';
@@ -94,6 +96,8 @@ END $$;
 
 -- If new subscription_plans table exists
 DO $$
+DECLARE
+    r RECORD;
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'subscription_plans') THEN
         RAISE NOTICE '=====================================================';
