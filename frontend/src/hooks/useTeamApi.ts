@@ -21,7 +21,7 @@ export const useCourierTeamMembers = (courierId: string) => {
   return useQuery({
     queryKey: teamKeys.courierMembers(courierId),
     queryFn: async (): Promise<TeamMember[]> => {
-      const response = await apiClient.get(`/api/team/couriers/${courierId}/members`);
+      const response = await apiClient.get(`/team/couriers/${courierId}/members`);
       return response.data.data;
     },
     enabled: !!courierId,
@@ -33,7 +33,7 @@ export const useStoreTeamMembers = (storeId: string) => {
   return useQuery({
     queryKey: teamKeys.storeMembers(storeId),
     queryFn: async (): Promise<TeamMember[]> => {
-      const response = await apiClient.get(`/api/team/stores/${storeId}/members`);
+      const response = await apiClient.get(`/team/stores/${storeId}/members`);
       return response.data.data;
     },
     enabled: !!storeId,
@@ -45,7 +45,7 @@ export const useUserEntities = () => {
   return useQuery({
     queryKey: teamKeys.userEntities(),
     queryFn: async (): Promise<UserEntities> => {
-      const response = await apiClient.get('/api/team/my-entities');
+      const response = await apiClient.get('/team/my-entities');
       return response.data.data;
     },
   });
@@ -57,7 +57,7 @@ export const useInviteToCourierTeam = () => {
 
   return useMutation({
     mutationFn: async ({ courierId, ...data }: InviteTeamMemberRequest & { courierId: string }) => {
-      const response = await apiClient.post(`/api/team/couriers/${courierId}/invite`, data);
+      const response = await apiClient.post(`/team/couriers/${courierId}/invite`, data);
       return response.data;
     },
     onSuccess: (_: any, variables: any) => {
@@ -76,7 +76,7 @@ export const useInviteToStoreTeam = () => {
 
   return useMutation({
     mutationFn: async ({ storeId, ...data }: InviteTeamMemberRequest & { storeId: string }) => {
-      const response = await apiClient.post(`/api/team/stores/${storeId}/invite`, data);
+      const response = await apiClient.post(`/team/stores/${storeId}/invite`, data);
       return response.data;
     },
     onSuccess: (_: any, variables: any) => {
@@ -95,7 +95,7 @@ export const useAcceptInvitation = () => {
 
   return useMutation({
     mutationFn: async (token: string) => {
-      const response = await apiClient.post(`/api/team/invitations/${token}/accept`);
+      const response = await apiClient.post(`/team/invitations/${token}/accept`);
       return response.data;
     },
     onSuccess: () => {
@@ -122,7 +122,7 @@ export const useUpdateTeamMemberRole = () => {
       teamMemberId: string; 
       teamRole: TeamRole;
     }) => {
-      const response = await apiClient.put(`/api/team/members/${teamMemberId}/role`, {
+      const response = await apiClient.put(`/team/members/${teamMemberId}/role`, {
         teamRole
       });
       return response.data;
@@ -152,7 +152,7 @@ export const useRemoveTeamMember = () => {
     }: { 
       teamMemberId: string;
     }) => {
-      const response = await apiClient.delete(`/api/team/members/${teamMemberId}`);
+      const response = await apiClient.delete(`/team/members/${teamMemberId}`);
       return response.data;
     },
     onSuccess: (_: any, variables: any) => {
