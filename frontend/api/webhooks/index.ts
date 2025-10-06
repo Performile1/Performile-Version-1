@@ -2,6 +2,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { Pool } from 'pg';
 import crypto from 'crypto';
 import { applySecurityMiddleware } from '../middleware/security';
+import { sendEmail, generateReviewRequestEmail } from '../utils/email';
 
 // Database connection
 const pool = new Pool({
@@ -243,8 +244,13 @@ const handleShopifyOrderFulfilled = async (order: any, shopDomain: string) => {
       RETURNING *
     `;
     
-    await pool.query(fulfillQuery, [order.id.toString()]);
+    const result = await pool.query(fulfillQuery, [order.id.toString()]);
     console.log(`Marked delivery request as completed for Shopify order ${order.order_number}`);
+
+    // Send review request email
+    if (result.rows.length > 0) {
+      await sendReviewRequestEmail(order, result.rows[0], shopDomain);
+    }
 
   } catch (error) {
     console.error('Error handling Shopify order fulfillment:', error);
@@ -610,6 +616,74 @@ const sendOrderStatusNotification = async (order: any) => {
     }
   } catch (error) {
     console.error('Error sending order status notification:', error);
+  }
+};
+
+// Send review request email after order fulfillment
+const sendReviewRequestEmail = async (order: any, deliveryRequest: any, shopDomain: string) => {
+  try {
+    // Generate unique review token
+    const reviewToken = crypto.randomBytes(32).toString('hex');
+    
+    // Store review token in database
+    const tokenQuery = `
+      UPDATE delivery_requests 
+      SET review_link_token = $1, review_link_sent = true, review_link_sent_at = NOW()
+      WHERE request_id = $2
+    `;
+    await pool.query(tokenQuery, [reviewToken, deliveryRequest.request_id]);
+    
+    // Generate review link
+    const reviewLink = `${process.env.VERCEL_URL || 'https://frontend-two-swart-31.vercel.app'}/review/${deliveryRequest.request_id}/${reviewToken}`;
+    
+    // Get courier name
+    let courierName = 'Your courier';
+    if (deliveryRequest.courier_id) {
+      const courierQuery = 'SELECT first_name, last_name FROM users WHERE user_id = $1';
+      const courierResult = await pool.query(courierQuery, [deliveryRequest.courier_id]);
+      if (courierResult.rows.length > 0) {
+        const courier = courierResult.rows[0];
+        courierName = `${courier.first_name} ${courier.last_name}`;
+      }
+    }
+    
+    // Generate email HTML
+    const emailHtml = generateReviewRequestEmail({
+      customerName: order.customer?.first_name || deliveryRequest.customer_name || 'Valued Customer',
+      orderNumber: order.order_number || order.id,
+      courierName,
+      reviewLink
+    });
+    
+    // Send email
+    await sendEmail({
+      to: order.email || deliveryRequest.customer_email,
+      subject: `How was your delivery experience? Order #${order.order_number}`,
+      html: emailHtml
+    });
+    
+    console.log(`Review request email sent for order ${order.order_number}`);
+    
+    // Schedule reminder for 7 days later
+    await scheduleReviewReminder(deliveryRequest.request_id, 7);
+    
+  } catch (error) {
+    console.error('Error sending review request email:', error);
+    // Don't throw - we don't want to fail the webhook if email fails
+  }
+};
+
+// Schedule review reminder
+const scheduleReviewReminder = async (requestId: string, daysDelay: number) => {
+  try {
+    const reminderQuery = `
+      INSERT INTO review_reminders (request_id, scheduled_for, status)
+      VALUES ($1, NOW() + INTERVAL '${daysDelay} days', 'pending')
+    `;
+    await pool.query(reminderQuery, [requestId]);
+    console.log(`Scheduled review reminder for request ${requestId} in ${daysDelay} days`);
+  } catch (error) {
+    console.error('Error scheduling review reminder:', error);
   }
 };
 
