@@ -31,6 +31,9 @@ import {
   Subscriptions,
   Email,
   ShoppingCart,
+  CreditCard,
+  ShoppingBag,
+  RateReview,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -144,6 +147,36 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       path: '/settings/email-templates',
       icon: Email,
       roles: ['admin', 'merchant'],
+    },
+    {
+      label: 'My Subscription',
+      path: '/subscription',
+      icon: CreditCard,
+      roles: ['merchant', 'courier'],
+    },
+    {
+      label: 'Courier Directory',
+      path: '/courier-directory',
+      icon: DirectionsCar,
+      roles: ['merchant'],
+    },
+    {
+      label: 'Marketplace',
+      path: '/marketplace',
+      icon: ShoppingBag,
+      roles: ['courier'],
+    },
+    {
+      label: 'My Reviews',
+      path: '/my-reviews',
+      icon: RateReview,
+      roles: ['consumer'],
+    },
+    {
+      label: 'Settings',
+      path: '/settings',
+      icon: Settings,
+      roles: ['admin', 'merchant', 'courier', 'consumer'],
     },
   ];
 
