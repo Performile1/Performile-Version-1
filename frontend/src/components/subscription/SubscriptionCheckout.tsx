@@ -71,7 +71,7 @@ export const SubscriptionCheckout: React.FC<SubscriptionCheckoutProps> = ({
   };
 
   const getFeatures = () => {
-    const features = [];
+    const features: string[] = [];
 
     if (plan.max_orders_per_month) {
       features.push(`${plan.max_orders_per_month} orders/month`);
