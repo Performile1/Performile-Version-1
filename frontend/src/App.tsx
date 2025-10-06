@@ -24,7 +24,6 @@ import Settings from './pages/Settings';
 import Orders from './pages/Orders';
 import ServiceRatingForm from './components/rating/ServiceRatingForm';
 import { SentryTestButton } from './components/debug/SentryTestButton';
-import { SentryTest } from './pages/SentryTest';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -300,10 +299,6 @@ const App: React.FC = () => {
                   <div>Email Templates - Coming Soon</div>
                 </ProtectedRoute>
               }
-            />
-            <Route
-              path="/sentry-test"
-              element={<SentryTest />}
             />
 
             {/* Default Redirects */}
