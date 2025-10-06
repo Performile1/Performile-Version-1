@@ -258,6 +258,7 @@ const SubscriptionManagement: React.FC = () => {
               <TableCell>Orders</TableCell>
               <TableCell>Emails</TableCell>
               <TableCell>SMS</TableCell>
+              <TableCell>Team</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -276,6 +277,12 @@ const SubscriptionManagement: React.FC = () => {
                 <TableCell>{plan.max_orders_per_month || '∞'}</TableCell>
                 <TableCell>{plan.max_emails_per_month || '∞'}</TableCell>
                 <TableCell>{plan.max_sms_per_month || '0'}</TableCell>
+                <TableCell>
+                  {plan.user_type === 'merchant' 
+                    ? (plan.max_couriers || '∞') + ' couriers'
+                    : (plan.max_team_members || '∞') + ' members'
+                  }
+                </TableCell>
                 <TableCell>
                   <Chip
                     label={plan.is_active ? 'Active' : 'Inactive'}
