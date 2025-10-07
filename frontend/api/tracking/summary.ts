@@ -24,6 +24,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const user = (req as any).user;
 
   try {
+    // Check if tracking_data table exists
+    const tableCheck = await pool.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'tracking_data'
+      );
+    `);
+
+    if (!tableCheck.rows[0].exists) {
+      // Table doesn't exist yet, return empty data
+      return res.status(200).json({
+        success: true,
+        data: {
+          total: 0,
+          outForDelivery: 0,
+          inTransit: 0,
+          delivered: 0,
+          exceptions: 0,
+          recentUpdates: [],
+        }
+      });
+    }
+
     // Get tracking summary for user's orders
     const summaryQuery = `
       SELECT 
@@ -33,25 +56,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         COUNT(*) FILTER (WHERE td.status = 'delivered') as delivered,
         COUNT(*) FILTER (WHERE td.status IN ('exception', 'failed_delivery')) as exceptions
       FROM tracking_data td
-      JOIN orders o ON td.order_id = o.order_id
-      WHERE o.merchant_id = $1
+      LEFT JOIN orders o ON td.order_id = o.order_id
+      WHERE (o.merchant_id = $1 OR td.order_id IS NULL)
         AND td.status NOT IN ('delivered', 'cancelled')
         AND td.created_at > NOW() - INTERVAL '30 days'
     `;
 
     const summaryResult = await pool.query(summaryQuery, [user.user_id]);
-    const summary = summaryResult.rows[0];
+    const summary = summaryResult.rows[0] || {};
 
     // Get recent updates
     const updatesQuery = `
       SELECT 
-        o.order_id,
+        COALESCE(o.order_id::text, td.tracking_id::text) as order_id,
         td.tracking_number,
         td.status,
         td.last_updated as timestamp
       FROM tracking_data td
-      JOIN orders o ON td.order_id = o.order_id
-      WHERE o.merchant_id = $1
+      LEFT JOIN orders o ON td.order_id = o.order_id
+      WHERE (o.merchant_id = $1 OR td.order_id IS NULL)
       ORDER BY td.last_updated DESC
       LIMIT 10
     `;
