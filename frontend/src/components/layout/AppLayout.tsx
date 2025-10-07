@@ -19,6 +19,7 @@ import {
   Assessment,
   LocalShipping,
   MyLocation,
+  Gavel,
   People,
   Group,
   Settings,
@@ -100,6 +101,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       path: '/track',
       icon: MyLocation,
       roles: ['admin', 'merchant', 'courier', 'consumer'],
+    },
+    {
+      label: 'Claims',
+      path: '/claims',
+      icon: Gavel,
+      roles: ['admin', 'merchant'],
     },
     {
       label: 'Users',
