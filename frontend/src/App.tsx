@@ -21,6 +21,7 @@ import { Analytics } from './pages/Analytics';
 import { ReviewRequestSettings } from './pages/settings/ReviewRequestSettings';
 import { CourierPreferences } from './pages/settings/CourierPreferences';
 import { PluginSetup } from './pages/integrations/PluginSetup';
+import { TrackingPage } from './pages/TrackingPage';
 import { MessagingCenter } from './components/messaging/MessagingCenter';
 import Settings from './pages/Settings';
 import Orders from './pages/Orders';
@@ -132,6 +133,7 @@ const App: React.FC = () => {
               }
             />
             <Route path="/review/:token" element={<PublicReview />} />
+            <Route path="/track/:trackingNumber?" element={<TrackingPage />} />
 
             {/* Protected Routes */}
             <Route
