@@ -90,7 +90,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       let paramCount = 1;
 
       if (status) {
-        queryText += ` AND o.order_status = $${paramCount}`;
+        queryText += ` AND o.status = $${paramCount}`;
         queryParams.push(status);
         paramCount++;
       }
@@ -119,7 +119,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       let countParamNum = 1;
       
       if (status) {
-        countQuery += ` AND o.order_status = $${countParamNum}`;
+        countQuery += ` AND o.status = $${countParamNum}`;
         countParams.push(status);
         countParamNum++;
       }
@@ -161,10 +161,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const orderData = req.body;
 
       const result = await pool.query(
-        `INSERT INTO orders (merchant_id, courier_id, tracking_number, order_status, total_amount, created_at)
+        `INSERT INTO orders (merchant_id, courier_id, tracking_number, status, total_amount, created_at)
          VALUES ($1, $2, $3, $4, $5, NOW())
          RETURNING *`,
-        [orderData.merchant_id, orderData.courier_id, orderData.tracking_number, orderData.order_status, orderData.total_amount]
+        [orderData.merchant_id, orderData.courier_id, orderData.tracking_number, orderData.status || 'pending', orderData.total_amount]
       );
 
       return res.status(201).json(result.rows[0]);
