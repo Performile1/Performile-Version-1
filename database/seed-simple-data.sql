@@ -38,12 +38,16 @@ BEGIN
       INSERT INTO orders (
         store_id, courier_id,
         tracking_number, order_number,
+        customer_name, customer_email, customer_phone,
         delivery_address,
         order_status, order_date, delivery_date
       ) VALUES (
         v_store_id, v_courier_id,
         SUBSTRING(v_courier_name FROM 1 FOR 3) || LPAD(i::TEXT, 10, '0'),
         'ORD-' || SUBSTRING(v_courier_name FROM 1 FOR 3) || '-' || i,
+        'Customer ' || i,
+        'customer' || i || '@test.com',
+        '+46701234' || LPAD(i::TEXT, 3, '0'),
         'Test Address ' || i || ', Stockholm, Sweden',
         CASE 
           WHEN i <= 35 THEN 'delivered'::order_status
