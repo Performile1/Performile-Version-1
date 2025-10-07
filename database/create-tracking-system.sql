@@ -54,7 +54,8 @@ CREATE TABLE IF NOT EXISTS tracking_data (
   CONSTRAINT valid_status CHECK (status IN (
     'pending', 'picked_up', 'in_transit', 'out_for_delivery', 
     'delivered', 'failed_delivery', 'returned', 'cancelled', 'exception'
-  ))
+  )),
+  CONSTRAINT unique_tracking_courier UNIQUE (tracking_number, courier)
 );
 
 -- Indexes for performance
@@ -64,6 +65,7 @@ CREATE INDEX IF NOT EXISTS idx_courier ON tracking_data(courier);
 CREATE INDEX IF NOT EXISTS idx_status ON tracking_data(status);
 CREATE INDEX IF NOT EXISTS idx_last_updated ON tracking_data(last_updated);
 CREATE INDEX IF NOT EXISTS idx_estimated_delivery ON tracking_data(estimated_delivery);
+CREATE INDEX IF NOT EXISTS idx_source ON tracking_data(source);
 
 -- =====================================================
 -- 2. TRACKING EVENTS TABLE
@@ -373,6 +375,8 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS update_tracking_data_updated_at ON tracking_data;
 
 CREATE TRIGGER update_tracking_data_updated_at
   BEFORE UPDATE ON tracking_data
