@@ -158,28 +158,27 @@ const MobileNavigation: React.FC<MobileNavigationProps> = () => {
         }}
       >
         <IconButton
-          color="inherit"
           onClick={() => setDrawerOpen(true)}
-          sx={{ mr: 1 }}
+          sx={{ mr: 1, color: '#666' }}
         >
           <Menu />
         </IconButton>
 
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#333' }}>
           Performile
         </Typography>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <IconButton
-            color="inherit"
             onClick={() => setSearchOpen(true)}
             size="small"
+            sx={{ color: '#666' }}
           >
             <Dashboard />
           </IconButton>
 
           <Avatar
-            sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}
+            sx={{ width: 32, height: 32, bgcolor: '#667eea' }}
             onClick={() => setDrawerOpen(true)}
           >
             {user?.first_name?.[0]}{user?.last_name?.[0]}
