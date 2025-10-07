@@ -1,0 +1,26 @@
+api_version = "2024-01"
+
+[[extensions]]
+type = "ui_extension"
+name = "performile-courier-ratings"
+handle = "performile-courier-ratings"
+
+[[extensions.targeting]]
+target = "purchase.checkout.block.render"
+
+[extensions.capabilities]
+network_access = true
+api_access = true
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "title"
+type = "single_line_text_field"
+name = "Section Title"
+default = "Top Rated Couriers in Your Area"
+
+[[extensions.settings.fields]]
+key = "num_couriers"
+type = "number_integer"
+name = "Number of Couriers"
+default = 3
