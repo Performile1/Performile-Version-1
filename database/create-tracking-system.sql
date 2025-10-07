@@ -368,20 +368,31 @@ $$ LANGUAGE plpgsql;
 -- =====================================================
 
 -- Trigger to update updated_at timestamp
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+DO $$ 
 BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+  -- Create function if not exists
+  CREATE OR REPLACE FUNCTION update_updated_at_column()
+  RETURNS TRIGGER AS $func$
+  BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+  END;
+  $func$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS update_tracking_data_updated_at ON tracking_data;
+  -- Drop trigger if exists and recreate
+  IF EXISTS (
+    SELECT 1 FROM pg_trigger 
+    WHERE tgname = 'update_tracking_data_updated_at'
+  ) THEN
+    DROP TRIGGER update_tracking_data_updated_at ON tracking_data;
+  END IF;
 
-CREATE TRIGGER update_tracking_data_updated_at
-  BEFORE UPDATE ON tracking_data
-  FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+  -- Create trigger
+  CREATE TRIGGER update_tracking_data_updated_at
+    BEFORE UPDATE ON tracking_data
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+END $$;
 
 -- =====================================================
 -- 9. INITIAL DATA
