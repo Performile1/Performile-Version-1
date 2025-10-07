@@ -4,6 +4,11 @@
 -- Creates realistic orders and reviews for testing
 -- =====================================================
 
+-- First, clean up any existing test data
+DELETE FROM reviews WHERE comment = 'Good service, delivery was smooth';
+DELETE FROM orders WHERE order_number LIKE 'ORD-%-%';
+DELETE FROM stores WHERE store_name = 'Demo Store';
+
 DO $$
 DECLARE
   v_store_id UUID;
