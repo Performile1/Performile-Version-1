@@ -90,7 +90,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       let paramCount = 1;
 
       if (status) {
-        queryText += ` AND o.status = $${paramCount}`;
+        queryText += ` AND o.order_status = $${paramCount}`;
         queryParams.push(status);
         paramCount++;
       }
@@ -119,7 +119,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       let countParamNum = 1;
       
       if (status) {
-        countQuery += ` AND o.status = $${countParamNum}`;
+        countQuery += ` AND o.order_status = $${countParamNum}`;
         countParams.push(status);
         countParamNum++;
       }
