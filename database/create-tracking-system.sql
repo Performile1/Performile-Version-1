@@ -15,6 +15,11 @@ CREATE TABLE IF NOT EXISTS tracking_data (
   tracking_number VARCHAR(255) NOT NULL,
   courier VARCHAR(100) NOT NULL,
   
+  -- Source tracking (preserve original e-commerce data)
+  source VARCHAR(50) DEFAULT 'manual', -- 'manual', 'woocommerce', 'shopify', 'api'
+  external_tracking_url TEXT, -- Original tracking URL from e-commerce
+  external_order_id VARCHAR(255), -- E-commerce order ID
+  
   -- Status fields
   status VARCHAR(50) NOT NULL DEFAULT 'pending',
   status_description TEXT,

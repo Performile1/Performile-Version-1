@@ -73,7 +73,7 @@ async function handleOrderCreated(order: any, source: string) {
 
     const deliveryAddress = `${order.shipping.address_1} ${order.shipping.address_2 || ''}, ${order.shipping.city}, ${order.shipping.postcode}`;
     
-    await pool.query(query, [
+    const result = await pool.query(query, [
       order.id.toString(),
       `woocommerce:${source}`,
       order.billing.email,
@@ -82,6 +82,36 @@ async function handleOrderCreated(order: any, source: string) {
       deliveryAddress,
       parseFloat(order.total)
     ]);
+
+    // Save tracking information if provided by WooCommerce
+    if (order.meta_data) {
+      const trackingMeta = order.meta_data.find((meta: any) => 
+        meta.key === '_tracking_number' || meta.key === 'tracking_number'
+      );
+      const courierMeta = order.meta_data.find((meta: any) => 
+        meta.key === '_tracking_provider' || meta.key === 'tracking_provider'
+      );
+      const trackingUrlMeta = order.meta_data.find((meta: any) => 
+        meta.key === '_tracking_url' || meta.key === 'tracking_url'
+      );
+
+      if (trackingMeta?.value && courierMeta?.value) {
+        await pool.query(
+          `INSERT INTO tracking_data (
+            order_id, tracking_number, courier, source, 
+            external_tracking_url, external_order_id, status
+          ) VALUES ($1, $2, $3, 'woocommerce', $4, $5, 'pending')
+          ON CONFLICT (tracking_number, courier) DO NOTHING`,
+          [
+            result.rows[0].request_id,
+            trackingMeta.value,
+            courierMeta.value,
+            trackingUrlMeta?.value,
+            order.id.toString()
+          ]
+        );
+      }
+    }
 
     console.log(`Created delivery request for WooCommerce order ${order.number}`);
   } catch (error) {
