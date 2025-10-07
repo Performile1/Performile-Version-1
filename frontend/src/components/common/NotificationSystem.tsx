@@ -245,11 +245,12 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
     <>
       <IconButton
         onClick={(event) => setAnchorEl(event.currentTarget)}
-        color="inherit"
         sx={{
           position: 'relative',
+          color: unreadCount > 0 ? '#667eea' : '#666',
           '&:hover': {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            color: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
           },
         }}
       >

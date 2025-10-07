@@ -187,13 +187,23 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   ];
 
   const drawer = (
-    <Box>
-      <Toolbar>
-        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold' }}>
+    <Box sx={{ bgcolor: '#667eea', height: '100%' }}>
+      <Toolbar sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2 }}>
+        <Box
+          component="img"
+          src="/logo.png"
+          alt="Performile Logo"
+          sx={{
+            height: 40,
+            width: 40,
+            objectFit: 'contain',
+          }}
+        />
+        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold', color: 'white' }}>
           Performile
         </Typography>
       </Toolbar>
-      <Divider />
+      <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.12)' }} />
       <NavigationMenu
         items={navigationItems}
         currentPath={location.pathname}
@@ -210,20 +220,22 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         sx={{
           width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
           ml: { md: `${DRAWER_WIDTH}px` },
+          bgcolor: 'white',
+          color: '#666',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
         <Toolbar>
           <IconButton
-            color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { md: 'none' } }}
+            sx={{ mr: 2, display: { md: 'none' }, color: '#666' }}
           >
             <MenuIcon />
           </IconButton>
           
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, color: '#333' }}>
             {navigationItems.find(item => item.path === location.pathname)?.label || 'Performile'}
           </Typography>
 
@@ -239,18 +251,20 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {/* Search Icon - Mobile */}
             <IconButton
-              color="inherit"
               onClick={() => setSearchOpen(true)}
-              sx={{ display: { xs: 'flex', md: 'none' } }}
+              sx={{ display: { xs: 'flex', md: 'none' }, color: '#666' }}
             >
               <Search />
             </IconButton>
 
             {/* Messages Icon */}
             <IconButton
-              color="inherit"
               onClick={() => navigate('/messages')}
-              sx={{ display: { xs: 'none', sm: 'flex' } }}
+              sx={{ 
+                display: { xs: 'none', sm: 'flex' }, 
+                color: '#666',
+                '&:hover': { color: '#667eea' }
+              }}
             >
               <Message />
             </IconButton>
@@ -258,7 +272,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             {/* Notification System */}
             <NotificationSystem maxVisible={50} />
 
-            <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
+            <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' }, color: '#666' }}>
               {user?.first_name} {user?.last_name}
             </Typography>
             <IconButton
@@ -267,9 +281,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               aria-controls="profile-menu"
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
-              color="inherit"
+              sx={{ color: '#666' }}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>
+              <Avatar sx={{ width: 32, height: 32, bgcolor: '#667eea' }}>
                 {user?.first_name?.[0]?.toUpperCase() || <AccountCircle />}
               </Avatar>
             </IconButton>
