@@ -19,6 +19,7 @@ import { TeamManagement } from '@/pages/team/TeamManagement';
 import { AcceptInvitation } from '@/pages/team/AcceptInvitation';
 import { Analytics } from './pages/Analytics';
 import { ReviewRequestSettings } from './pages/settings/ReviewRequestSettings';
+import { CourierPreferences } from './pages/settings/CourierPreferences';
 import { MessagingCenter } from './components/messaging/MessagingCenter';
 import Settings from './pages/Settings';
 import Orders from './pages/Orders';
@@ -299,6 +300,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute requiredRoles={['admin', 'merchant']}>
                   <div>Email Templates - Coming Soon</div>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/courier-preferences"
+              element={
+                <ProtectedRoute requiredRoles={['merchant']}>
+                  <CourierPreferences />
                 </ProtectedRoute>
               }
             />

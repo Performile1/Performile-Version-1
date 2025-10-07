@@ -149,6 +149,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       roles: ['admin', 'merchant'],
     },
     {
+      label: 'Courier Preferences',
+      path: '/settings/courier-preferences',
+      icon: DirectionsCar,
+      roles: ['merchant'],
+    },
+    {
       label: 'My Subscription',
       path: '/subscription',
       icon: CreditCard,
