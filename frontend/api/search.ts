@@ -21,36 +21,59 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const searchLimit = parseInt(limit as string, 10);
     const searchTerm = `%${q}%`;
 
-    const client = await pool.connect();
+    const results: any[] = [];
+
+    // Search couriers
     try {
-      const result = await client.query(`
-        SELECT 'courier' as type, courier_id as id, courier_name as name, description
-        FROM Couriers
-        WHERE courier_name ILIKE $1 OR description ILIKE $1
-        LIMIT $2
-        
-        UNION ALL
-        
-        SELECT 'store' as type, store_id as id, store_name as name, description
-        FROM Stores
-        WHERE store_name ILIKE $1 OR description ILIKE $1
-        LIMIT $2
-        
-        UNION ALL
-        
-        SELECT 'order' as type, order_id as id, order_number as name, customer_name as description
-        FROM Orders
-        WHERE order_number ILIKE $1 OR customer_name ILIKE $1 OR customer_email ILIKE $1
+      const courierResult = await pool.query(`
+        SELECT 'courier' as type, user_id::text as id, 
+               COALESCE(company_name, first_name || ' ' || last_name) as name,
+               email as description
+        FROM users
+        WHERE user_role = 'courier' 
+          AND (company_name ILIKE $1 OR first_name ILIKE $1 OR last_name ILIKE $1 OR email ILIKE $1)
         LIMIT $2
       `, [searchTerm, searchLimit]);
-
-      return res.status(200).json({
-        success: true,
-        data: result.rows
-      });
-    } finally {
-      client.release();
+      results.push(...courierResult.rows);
+    } catch (err) {
+      console.error('Courier search error:', err);
     }
+
+    // Search merchants
+    try {
+      const merchantResult = await pool.query(`
+        SELECT 'merchant' as type, user_id::text as id,
+               COALESCE(company_name, first_name || ' ' || last_name) as name,
+               email as description
+        FROM users
+        WHERE user_role = 'merchant'
+          AND (company_name ILIKE $1 OR first_name ILIKE $1 OR last_name ILIKE $1 OR email ILIKE $1)
+        LIMIT $2
+      `, [searchTerm, searchLimit]);
+      results.push(...merchantResult.rows);
+    } catch (err) {
+      console.error('Merchant search error:', err);
+    }
+
+    // Search orders
+    try {
+      const orderResult = await pool.query(`
+        SELECT 'order' as type, order_id::text as id,
+               tracking_number as name,
+               status as description
+        FROM orders
+        WHERE tracking_number ILIKE $1
+        LIMIT $2
+      `, [searchTerm, searchLimit]);
+      results.push(...orderResult.rows);
+    } catch (err) {
+      console.error('Order search error:', err);
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: results.slice(0, searchLimit)
+    });
   } catch (error: any) {
     console.error('Search API error:', error);
     return res.status(500).json({ 
