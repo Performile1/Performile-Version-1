@@ -19,18 +19,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         SELECT 
           COUNT(DISTINCT c.courier_id) as total_couriers,
           COUNT(DISTINCT CASE WHEN c.is_active THEN c.courier_id END) as active_couriers,
-          COALESCE(ROUND(AVG(t.overall_score) * 20, 2), 0) as avg_trust_score,
+          COALESCE(ROUND(AVG(r.rating) * 20, 2), 0) as avg_trust_score,
           COUNT(DISTINCT r.review_id) as total_reviews,
           COALESCE(ROUND(AVG(r.rating), 2), 0) as avg_rating,
           COUNT(DISTINCT o.order_id) as total_orders_processed,
           COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders,
           COALESCE(ROUND((COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END)::NUMERIC / 
             NULLIF(COUNT(DISTINCT o.order_id), 0) * 100), 2), 0) as avg_completion_rate,
-          COALESCE(ROUND(AVG(t.avg_delivery_speed) * 20, 2), 0) as avg_on_time_rate
-        FROM Couriers c
-        LEFT JOIN TrustScoreCache t ON c.courier_id = t.courier_id
-        LEFT JOIN Reviews r ON c.courier_id = r.courier_id
-        LEFT JOIN Orders o ON c.courier_id = o.courier_id
+          COALESCE(ROUND((COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END)::NUMERIC / 
+            NULLIF(COUNT(DISTINCT o.order_id), 0) * 100), 2), 0) as avg_on_time_rate
+        FROM couriers c
+        LEFT JOIN orders o ON c.courier_id = o.courier_id
+        LEFT JOIN reviews r ON o.order_id = r.order_id
       `);
 
       // Get top performers
@@ -38,15 +38,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         SELECT 
           c.courier_id,
           c.courier_name,
-          t.overall_score,
-          t.total_reviews,
-          t.avg_delivery_speed,
-          t.avg_package_condition,
-          t.avg_communication
-        FROM Couriers c
-        JOIN TrustScoreCache t ON c.courier_id = t.courier_id
+          COALESCE(ROUND(AVG(r.rating) * 20, 2), 0) as overall_score,
+          COUNT(DISTINCT r.review_id) as total_reviews,
+          COUNT(DISTINCT o.order_id) as total_orders,
+          COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders
+        FROM couriers c
+        LEFT JOIN orders o ON c.courier_id = o.courier_id
+        LEFT JOIN reviews r ON o.order_id = r.order_id
         WHERE c.is_active = TRUE
-        ORDER BY t.overall_score DESC NULLS LAST
+        GROUP BY c.courier_id, c.courier_name
+        ORDER BY AVG(r.rating) DESC NULLS LAST
         LIMIT 5
       `);
 
@@ -55,14 +56,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         SELECT 
           r.review_id,
           r.rating,
-          r.comment,
+          r.review_text as comment,
           r.created_at,
           c.courier_name,
           s.store_name
-        FROM Reviews r
-        JOIN Couriers c ON r.courier_id = c.courier_id
-        JOIN Stores s ON r.store_id = s.store_id
-        WHERE r.is_public = TRUE
+        FROM reviews r
+        JOIN orders o ON r.order_id = o.order_id
+        JOIN couriers c ON o.courier_id = c.courier_id
+        JOIN stores s ON o.store_id = s.store_id
         ORDER BY r.created_at DESC
         LIMIT 10
       `);
