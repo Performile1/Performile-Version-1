@@ -15,7 +15,7 @@ DECLARE
   v_dhl_id UUID;
   v_bring_id UUID;
   v_budbee_id UUID;
-  v_merchant_id UUID;
+  v_store_id UUID;
   v_consumer_id UUID;
   v_order_id UUID;
   i INTEGER;
@@ -26,19 +26,20 @@ BEGIN
   SELECT courier_id INTO v_bring_id FROM couriers WHERE courier_name = 'Bring' LIMIT 1;
   SELECT courier_id INTO v_budbee_id FROM couriers WHERE courier_name = 'Budbee' LIMIT 1;
   
-  -- Get a merchant
-  SELECT user_id INTO v_merchant_id FROM users WHERE user_role = 'merchant' LIMIT 1;
+  -- Get a store
+  SELECT store_id INTO v_store_id FROM stores LIMIT 1;
   
   -- Get a consumer
   SELECT user_id INTO v_consumer_id FROM users WHERE user_role = 'consumer' LIMIT 1;
   
-  -- If no users exist, create them
-  IF v_merchant_id IS NULL THEN
-    INSERT INTO users (email, password_hash, first_name, last_name, user_role, is_active)
-    VALUES ('merchant@test.com', '$2a$10$abcdefghijklmnopqrstuv', 'Test', 'Merchant', 'merchant', TRUE)
-    RETURNING user_id INTO v_merchant_id;
+  -- If no store exists, create one
+  IF v_store_id IS NULL THEN
+    INSERT INTO stores (store_name, store_url, is_active)
+    VALUES ('Test Store', 'https://teststore.com', TRUE)
+    RETURNING store_id INTO v_store_id;
   END IF;
   
+  -- If no consumer exists, create one
   IF v_consumer_id IS NULL THEN
     INSERT INTO users (email, password_hash, first_name, last_name, user_role, is_active)
     VALUES ('consumer@test.com', '$2a$10$abcdefghijklmnopqrstuv', 'Test', 'Consumer', 'consumer', TRUE)
@@ -46,30 +47,23 @@ BEGIN
   END IF;
 
   -- Create sample orders for PostNord (85% on-time, 95% completion)
-  IF v_postnord_id IS NOT NULL THEN
+  IF v_postnord_id IS NOT NULL AND v_store_id IS NOT NULL THEN
     FOR i IN 1..50 LOOP
       INSERT INTO orders (
-        merchant_id, courier_id, consumer_id,
-        tracking_number, order_number, store_name,
-        pickup_address, delivery_address,
-        pickup_city, pickup_country, pickup_postal_code,
-        city, country, postal_code,
-        order_status, order_date, delivery_date,
-        on_time, completed
+        store_id, courier_id, consumer_id,
+        tracking_number, order_number,
+        delivery_address, postal_code, country,
+        order_status, order_date, delivery_date
       ) VALUES (
-        v_merchant_id, v_postnord_id, v_consumer_id,
+        v_store_id, v_postnord_id, v_consumer_id,
         'PN' || LPAD(i::TEXT, 10, '0'),
         'ORD-PN-' || i,
-        'Test Store',
-        'Warehouse Street 1',
-        'Customer Street ' || i,
-        'Stockholm', 'Sweden', '11122',
-        'Stockholm', 'Sweden', '11' || LPAD(i::TEXT, 3, '0'),
+        'Customer Street ' || i || ', Stockholm',
+        '11' || LPAD(i::TEXT, 3, '0'),
+        'SWE',
         CASE WHEN i <= 47 THEN 'delivered' ELSE 'in_transit' END,
         NOW() - (i || ' days')::INTERVAL,
-        CASE WHEN i <= 47 THEN NOW() - ((i-2) || ' days')::INTERVAL ELSE NULL END,
-        CASE WHEN i <= 42 THEN TRUE ELSE FALSE END,
-        CASE WHEN i <= 47 THEN TRUE ELSE FALSE END
+        CASE WHEN i <= 47 THEN NOW() - ((i-2) || ' days')::INTERVAL ELSE NULL END
       );
     END LOOP;
     
