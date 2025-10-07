@@ -63,22 +63,17 @@ BEGIN
       IF i <= 35 AND i % 3 != 0 THEN
         INSERT INTO reviews (
           order_id, courier_id,
-          rating, review_text,
-          delivery_speed, package_condition, communication,
+          rating, comment,
           is_verified, created_at
         ) VALUES (
           v_order_id, v_courier_id,
-          3 + (RANDOM() * 2)::INTEGER, -- Random rating 3-5
-          'Good service overall',
           3 + (RANDOM() * 2)::INTEGER,
-          4 + (RANDOM() * 1)::INTEGER,
-          3 + (RANDOM() * 2)::INTEGER,
+          'Good service, delivery was smooth',
           TRUE,
           NOW() - ((i-1) || ' days')::INTERVAL
         );
       END IF;
     END LOOP;
-    
     RAISE NOTICE 'Created 40 orders for %', v_courier_name;
   END LOOP;
   
