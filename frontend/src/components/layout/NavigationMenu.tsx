@@ -6,7 +6,6 @@ import {
   ListItemIcon,
   ListItemText,
   Collapse,
-  Chip,
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -119,19 +118,6 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
   return (
     <List sx={{ px: 1, py: 2 }}>
       {items.map(item => renderMenuItem(item))}
-      
-      {/* Role indicator */}
-      <ListItem sx={{ mt: 2, justifyContent: 'center' }}>
-        <Chip
-          label={userRole.charAt(0).toUpperCase() + userRole.slice(1)}
-          size="small"
-          sx={{
-            color: 'white',
-            borderColor: 'rgba(255, 255, 255, 0.5)',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          }}
-        />
-      </ListItem>
     </List>
   );
 };
