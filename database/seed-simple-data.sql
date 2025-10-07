@@ -5,10 +5,16 @@
 -- =====================================================
 
 -- First, clean up any existing test data
+-- Delete reviews first (has foreign keys)
 DELETE FROM reviews WHERE comment = 'Good service, delivery was smooth';
-DELETE FROM reviews WHERE order_id IN (SELECT order_id FROM orders WHERE order_number LIKE 'ORD-%-%');
-DELETE FROM orders WHERE order_number LIKE 'ORD-%-%';
+DELETE FROM reviews WHERE order_id IN (SELECT order_id FROM orders WHERE order_number LIKE 'ORD-%' OR customer_email LIKE 'customer%@test.com');
+
+-- Delete orders
+DELETE FROM orders WHERE order_number LIKE 'ORD-%';
 DELETE FROM orders WHERE customer_email LIKE 'customer%@test.com';
+DELETE FROM orders WHERE tracking_number LIKE 'DHL%' OR tracking_number LIKE 'Pos%' OR tracking_number LIKE 'Bri%' OR tracking_number LIKE 'Bud%' OR tracking_number LIKE 'Dem%';
+
+-- Delete test stores
 DELETE FROM stores WHERE store_name = 'Demo Store';
 
 DO $$
