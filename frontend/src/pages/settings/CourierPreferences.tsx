@@ -28,9 +28,7 @@ import {
   Add,
   DragIndicator,
   Delete,
-  Edit,
   Star,
-  CheckCircle,
 } from '@mui/icons-material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -57,7 +55,6 @@ interface AvailableCourier {
 }
 
 export const CourierPreferences: React.FC = () => {
-  const { user } = useAuthStore();
   const [couriers, setCouriers] = useState<Courier[]>([]);
   const [availableCouriers, setAvailableCouriers] = useState<AvailableCourier[]>([]);
   const [loading, setLoading] = useState(true);
