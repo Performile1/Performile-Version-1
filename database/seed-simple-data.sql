@@ -6,8 +6,10 @@
 
 -- First, clean up any existing test data
 DELETE FROM reviews WHERE comment = 'Good service, delivery was smooth';
+DELETE FROM reviews WHERE order_id IN (SELECT order_id FROM orders WHERE order_number LIKE 'ORD-%-%');
 DELETE FROM orders WHERE order_number LIKE 'ORD-%-%';
-DELETE FROM stores WHERE store_name = 'Demo Store';
+DELETE FROM orders WHERE customer_email LIKE 'customer%@test.com';
+DELETE FROM stores WHERE store_name = 'Demo Store' OR store_url = 'https://demostore.com';
 
 DO $$
 DECLARE
