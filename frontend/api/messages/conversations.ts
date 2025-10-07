@@ -33,11 +33,28 @@ const verifyToken = (req: VercelRequest): any => {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const user = verifyToken(req);
+
+    // GET - List user's conversations
+    if (req.method === 'GET') {
+      // Return empty conversations for now (tables may not exist yet)
+      return res.status(200).json({
+        success: true,
+        data: []
+      });
+    }
+
+    // POST - Create new conversation
+    if (req.method === 'POST') {
+      return res.status(400).json({ 
+        message: 'Conversations feature not yet available' 
+      });
+    }
+
     const client = await pool.connect();
 
     try {
-      // GET - List user's conversations
-      if (req.method === 'GET') {
+      // GET - List user's conversations (old code kept for reference)
+      if (req.method === 'GET_OLD') {
         const { status = 'active' } = req.query;
 
         const query = `
