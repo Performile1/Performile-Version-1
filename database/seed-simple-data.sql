@@ -4,21 +4,16 @@
 -- Creates realistic orders and reviews for testing
 -- =====================================================
 
--- First, clean up any existing test data
--- Delete reviews first (has foreign keys)
-DELETE FROM reviews WHERE comment = 'Good service, delivery was smooth';
-DELETE FROM reviews WHERE order_id IN (
-  SELECT order_id FROM orders 
-  WHERE order_number SIMILAR TO 'ORD-[A-Z]+-[0-9]+'
-);
+-- =====================================================
+-- NUCLEAR OPTION: Delete ALL orders and reviews to start fresh
+-- =====================================================
+-- WARNING: This will delete ALL data in orders and reviews tables!
+-- Comment out these lines if you want to keep existing data
 
--- Delete ALL test orders (be aggressive - use SIMILAR TO for better pattern matching)
-DELETE FROM orders WHERE order_number SIMILAR TO 'ORD-[A-Z]+-[0-9]+';
-DELETE FROM orders WHERE order_number SIMILAR TO 'ORD-[A-Za-z]+-[0-9]+';
-DELETE FROM orders WHERE customer_email SIMILAR TO 'customer[0-9]+@test.com';
-DELETE FROM orders WHERE customer_name SIMILAR TO 'Customer [0-9]+';
+TRUNCATE TABLE reviews RESTART IDENTITY CASCADE;
+TRUNCATE TABLE orders RESTART IDENTITY CASCADE;
 
--- Delete test stores
+-- Also clean up test stores
 DELETE FROM stores WHERE store_name = 'Demo Store';
 
 DO $$
