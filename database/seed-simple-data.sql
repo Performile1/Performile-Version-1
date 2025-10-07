@@ -9,7 +9,7 @@ DELETE FROM reviews WHERE comment = 'Good service, delivery was smooth';
 DELETE FROM reviews WHERE order_id IN (SELECT order_id FROM orders WHERE order_number LIKE 'ORD-%-%');
 DELETE FROM orders WHERE order_number LIKE 'ORD-%-%';
 DELETE FROM orders WHERE customer_email LIKE 'customer%@test.com';
-DELETE FROM stores WHERE store_name = 'Demo Store' OR store_url = 'https://demostore.com';
+DELETE FROM stores WHERE store_name = 'Demo Store';
 
 DO $$
 DECLARE
@@ -20,12 +20,24 @@ DECLARE
   v_courier_name TEXT;
   i INTEGER;
 BEGIN
-  -- Get or create store
+  -- Get or create store (need a merchant first)
   SELECT store_id INTO v_store_id FROM stores LIMIT 1;
   IF v_store_id IS NULL THEN
-    INSERT INTO stores (store_name, store_url, is_active)
-    VALUES ('Demo Store', 'https://demostore.com', TRUE)
-    RETURNING store_id INTO v_store_id;
+    -- Get a merchant to own the store
+    DECLARE
+      v_merchant_id UUID;
+    BEGIN
+      SELECT user_id INTO v_merchant_id FROM users WHERE user_role = 'merchant' LIMIT 1;
+      IF v_merchant_id IS NULL THEN
+        INSERT INTO users (email, password_hash, first_name, last_name, user_role, is_active)
+        VALUES ('demo@merchant.com', '$2a$10$abcdefghijklmnopqrstuv', 'Demo', 'Merchant', 'merchant', TRUE)
+        RETURNING user_id INTO v_merchant_id;
+      END IF;
+      
+      INSERT INTO stores (store_name, owner_user_id, is_active)
+      VALUES ('Demo Store', v_merchant_id, TRUE)
+      RETURNING store_id INTO v_store_id;
+    END;
   END IF;
   
   -- Get or create consumer (not needed for orders, just for reference)
