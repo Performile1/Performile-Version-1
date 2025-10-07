@@ -62,11 +62,11 @@ BEGIN
       -- Add review for delivered orders (70% review rate)
       IF i <= 35 AND i % 3 != 0 THEN
         INSERT INTO reviews (
-          order_id, courier_id,
+          order_id, store_id, courier_id,
           rating, comment,
           is_verified, created_at
         ) VALUES (
-          v_order_id, v_courier_id,
+          v_order_id, v_store_id, v_courier_id,
           3 + (RANDOM() * 2)::INTEGER,
           'Good service, delivery was smooth',
           TRUE,
