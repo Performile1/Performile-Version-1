@@ -180,7 +180,19 @@ export const CourierSelector: React.FC<CourierSelectorProps> = ({
                   <Avatar
                     src={courier.logo_url || undefined}
                     alt={courier.courier_name}
-                    sx={{ mr: 2, width: 48, height: 48 }}
+                    variant="rounded"
+                    sx={{ 
+                      mr: 2, 
+                      width: 60, 
+                      height: 60,
+                      bgcolor: courier.logo_url ? 'white' : 'primary.main',
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      '& img': {
+                        objectFit: 'contain',
+                        padding: 1
+                      }
+                    }}
                   >
                     {courier.courier_name.charAt(0)}
                   </Avatar>

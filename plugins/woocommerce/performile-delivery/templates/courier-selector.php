@@ -26,6 +26,18 @@ if (!defined('ABSPATH')) {
                            <?php checked($index, 0); ?>>
                 </div>
                 
+                <?php if (!empty($courier['logo_url'])): ?>
+                    <div class="courier-logo">
+                        <img src="<?php echo esc_url($courier['logo_url']); ?>" 
+                             alt="<?php echo esc_attr($courier['courier_name']); ?>"
+                             loading="lazy">
+                    </div>
+                <?php else: ?>
+                    <div class="courier-logo courier-logo-placeholder">
+                        <span><?php echo esc_html(substr($courier['courier_name'], 0, 1)); ?></span>
+                    </div>
+                <?php endif; ?>
+                
                 <div class="courier-info">
                     <div class="courier-header">
                         <label for="courier_<?php echo esc_attr($courier['courier_id']); ?>" class="courier-name">

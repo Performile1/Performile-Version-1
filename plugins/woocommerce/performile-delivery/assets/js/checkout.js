@@ -114,6 +114,24 @@
                     stars += '⭐';
                 }
                 
+                // Create logo HTML
+                var logoHtml = '';
+                if (courier.logo_url) {
+                    logoHtml = `
+                        <div class="courier-logo">
+                            <img src="${courier.logo_url}" 
+                                 alt="${courier.courier_name}"
+                                 loading="lazy">
+                        </div>
+                    `;
+                } else {
+                    logoHtml = `
+                        <div class="courier-logo courier-logo-placeholder">
+                            <span>${courier.courier_name.charAt(0)}</span>
+                        </div>
+                    `;
+                }
+                
                 var html = `
                     <div class="performile-courier ${isRecommended ? 'recommended' : ''}" 
                          data-courier-id="${courier.courier_id}"
@@ -126,6 +144,8 @@
                                    value="${courier.courier_id}"
                                    ${isRecommended ? 'checked' : ''}>
                         </div>
+                        
+                        ${logoHtml}
                         
                         <div class="courier-info">
                             <div class="courier-header">

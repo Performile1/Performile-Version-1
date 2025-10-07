@@ -55,6 +55,37 @@
     cursor: pointer;
 }
 
+.courier-logo {
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    border: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+
+.courier-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+}
+
+.courier-logo-placeholder {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.courier-logo-placeholder span {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+}
+
 .courier-info {
     flex: 1;
 }
