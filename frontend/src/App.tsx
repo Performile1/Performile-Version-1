@@ -24,6 +24,7 @@ import Settings from './pages/Settings';
 import Orders from './pages/Orders';
 import ServiceRatingForm from './components/rating/ServiceRatingForm';
 import { SentryTestButton } from './components/debug/SentryTestButton';
+import { PublicReview } from './pages/PublicReview';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -128,6 +129,7 @@ const App: React.FC = () => {
                 isAuthenticated ? <Navigate to="/dashboard" replace /> : <AuthPage />
               }
             />
+            <Route path="/review/:token" element={<PublicReview />} />
 
             {/* Protected Routes */}
             <Route
