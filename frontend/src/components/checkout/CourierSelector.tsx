@@ -10,7 +10,6 @@ import {
   Avatar,
   Chip,
   Rating,
-  CircularProgress,
   Alert,
   Skeleton,
 } from '@mui/material';
