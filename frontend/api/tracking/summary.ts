@@ -1,0 +1,80 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { Pool } from 'pg';
+import { applySecurityMiddleware } from '../middleware/security';
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const security = applySecurityMiddleware(req, res, {
+    requireAuth: true,
+    rateLimit: 'default'
+  });
+
+  if (!security.success) {
+    return;
+  }
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const user = (req as any).user;
+
+  try {
+    // Get tracking summary for user's orders
+    const summaryQuery = `
+      SELECT 
+        COUNT(*) as total,
+        COUNT(*) FILTER (WHERE td.status = 'out_for_delivery') as out_for_delivery,
+        COUNT(*) FILTER (WHERE td.status = 'in_transit') as in_transit,
+        COUNT(*) FILTER (WHERE td.status = 'delivered') as delivered,
+        COUNT(*) FILTER (WHERE td.status IN ('exception', 'failed_delivery')) as exceptions
+      FROM tracking_data td
+      JOIN orders o ON td.order_id = o.order_id
+      WHERE o.merchant_id = $1
+        AND td.status NOT IN ('delivered', 'cancelled')
+        AND td.created_at > NOW() - INTERVAL '30 days'
+    `;
+
+    const summaryResult = await pool.query(summaryQuery, [user.user_id]);
+    const summary = summaryResult.rows[0];
+
+    // Get recent updates
+    const updatesQuery = `
+      SELECT 
+        o.order_id,
+        td.tracking_number,
+        td.status,
+        td.last_updated as timestamp
+      FROM tracking_data td
+      JOIN orders o ON td.order_id = o.order_id
+      WHERE o.merchant_id = $1
+      ORDER BY td.last_updated DESC
+      LIMIT 10
+    `;
+
+    const updatesResult = await pool.query(updatesQuery, [user.user_id]);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        total: parseInt(summary.total) || 0,
+        outForDelivery: parseInt(summary.out_for_delivery) || 0,
+        inTransit: parseInt(summary.in_transit) || 0,
+        delivered: parseInt(summary.delivered) || 0,
+        exceptions: parseInt(summary.exceptions) || 0,
+        recentUpdates: updatesResult.rows,
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Error fetching tracking summary:', error);
+    return res.status(500).json({
+      error: 'Failed to fetch tracking summary',
+      message: error.message
+    });
+  }
+}

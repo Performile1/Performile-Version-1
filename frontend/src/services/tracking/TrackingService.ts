@@ -4,6 +4,9 @@
 
 import { TrackingAdapter, TrackingInfo, CourierAPIConfig } from './types';
 import { PostNordAdapter } from './adapters/PostNordAdapter';
+import { DHLAdapter } from './adapters/DHLAdapter';
+import { BringAdapter } from './adapters/BringAdapter';
+import { BudbeeAdapter } from './adapters/BudbeeAdapter';
 
 export class TrackingService {
   private adapters: Map<string, TrackingAdapter> = new Map();
@@ -25,9 +28,36 @@ export class TrackingService {
     };
     this.adapters.set('postnord', new PostNordAdapter(postNordConfig));
     
-    // Add more adapters as they're implemented
-    // this.adapters.set('dhl', new DHLAdapter(dhlConfig));
-    // this.adapters.set('bring', new BringAdapter(bringConfig));
+    // Initialize DHL
+    const dhlConfig: CourierAPIConfig = {
+      courierName: 'DHL',
+      apiKey: process.env.DHL_API_KEY || '',
+      baseUrl: 'https://api-eu.dhl.com/track/shipments',
+      apiVersion: 'v1',
+      rateLimitPerMinute: 250,
+    };
+    this.adapters.set('dhl', new DHLAdapter(dhlConfig));
+    
+    // Initialize Bring
+    const bringConfig: CourierAPIConfig = {
+      courierName: 'Bring',
+      apiKey: process.env.BRING_API_KEY || '',
+      clientId: process.env.BRING_CLIENT_ID || '',
+      baseUrl: 'https://api.bring.com/tracking/api/v2',
+      apiVersion: 'v2',
+      rateLimitPerMinute: 120,
+    };
+    this.adapters.set('bring', new BringAdapter(bringConfig));
+    
+    // Initialize Budbee
+    const budbeeConfig: CourierAPIConfig = {
+      courierName: 'Budbee',
+      apiKey: process.env.BUDBEE_API_KEY || '',
+      baseUrl: 'https://api.budbee.com/v1',
+      apiVersion: 'v1',
+      rateLimitPerMinute: 100,
+    };
+    this.adapters.set('budbee', new BudbeeAdapter(budbeeConfig));
   }
   
   /**
