@@ -18,6 +18,7 @@ import {
   Dashboard,
   Assessment,
   LocalShipping,
+  MyLocation,
   People,
   Group,
   Settings,
@@ -97,7 +98,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     {
       label: 'Track Shipment',
       path: '/track',
-      icon: LocalShipping,
+      icon: MyLocation,
       roles: ['admin', 'merchant', 'courier', 'consumer'],
     },
     {

@@ -28,6 +28,7 @@ import {
   Alert,
   Fab,
   InputAdornment,
+  Link,
   Menu,
   ListItemIcon,
   ListItemText,
@@ -449,9 +450,25 @@ const Orders: React.FC = () => {
               {orders.map((order: Order) => (
                 <TableRow key={order.order_id} hover>
                   <TableCell>
-                    <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
-                      {order.tracking_number}
-                    </Typography>
+                    {order.tracking_number ? (
+                      <Link
+                        href={`/track/${order.tracking_number}`}
+                        sx={{
+                          fontFamily: 'monospace',
+                          textDecoration: 'none',
+                          color: 'primary.main',
+                          '&:hover': {
+                            textDecoration: 'underline',
+                          },
+                        }}
+                      >
+                        {order.tracking_number}
+                      </Link>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        -
+                      </Typography>
+                    )}
                   </TableCell>
                   <TableCell>{order.order_number || '-'}</TableCell>
                   <TableCell>{order.store_name || '-'}</TableCell>
