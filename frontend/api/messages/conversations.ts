@@ -53,8 +53,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 'email', u.email,
                 'user_role', u.user_role
               ))
-              FROM ConversationParticipants cp2
-              JOIN Users u ON cp2.user_id = u.user_id
+              FROM conversation_participants cp2
+              JOIN users u ON cp2.user_id = u.user_id
               WHERE cp2.conversation_id = c.conversation_id
                 AND cp2.is_active = TRUE
                 AND cp2.user_id != $1
@@ -66,13 +66,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 'sender_id', m.sender_id,
                 'created_at', m.created_at
               )
-              FROM Messages m
+              FROM messages m
               WHERE m.conversation_id = c.conversation_id
               ORDER BY m.created_at DESC
               LIMIT 1
             ) as last_message
-          FROM Conversations c
-          JOIN ConversationParticipants cp ON c.conversation_id = cp.conversation_id
+          FROM conversations c
+          JOIN conversation_participants cp ON c.conversation_id = cp.conversation_id
           WHERE cp.user_id = $1
             AND cp.is_active = TRUE
             AND c.status = $2
@@ -99,9 +99,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (conversation_type === 'direct' && participant_ids.length === 1) {
           const existingQuery = `
             SELECT c.conversation_id
-            FROM Conversations c
-            JOIN ConversationParticipants cp1 ON c.conversation_id = cp1.conversation_id
-            JOIN ConversationParticipants cp2 ON c.conversation_id = cp2.conversation_id
+            FROM conversations c
+            JOIN conversation_participants cp1 ON c.conversation_id = cp1.conversation_id
+            JOIN conversation_participants cp2 ON c.conversation_id = cp2.conversation_id
             WHERE cp1.user_id = $1
               AND cp2.user_id = $2
               AND c.conversation_type = 'direct'
@@ -121,7 +121,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         // Create new conversation
         const conversationQuery = `
-          INSERT INTO Conversations (
+          INSERT INTO conversations (
             subject, conversation_type, related_order_id, related_lead_id, created_by
           ) VALUES ($1, $2, $3, $4, $5)
           RETURNING *
@@ -139,7 +139,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         // Add creator as participant
         await client.query(
-          `INSERT INTO ConversationParticipants (conversation_id, user_id, role)
+          `INSERT INTO conversation_participants (conversation_id, user_id, role)
            VALUES ($1, $2, 'admin')`,
           [conversationId, user.userId]
         );
@@ -147,7 +147,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // Add other participants
         for (const participantId of participant_ids) {
           await client.query(
-            `INSERT INTO ConversationParticipants (conversation_id, user_id, role)
+            `INSERT INTO conversation_participants (conversation_id, user_id, role)
              VALUES ($1, $2, 'participant')`,
             [conversationId, participantId]
           );
@@ -170,7 +170,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         // Verify user is participant
         const participantCheck = await client.query(
-          `SELECT * FROM ConversationParticipants 
+          `SELECT * FROM conversation_participants 
            WHERE conversation_id = $1 AND user_id = $2`,
           [conversation_id, user.userId]
         );
@@ -182,7 +182,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // Update conversation status
         if (status) {
           await client.query(
-            `UPDATE Conversations SET status = $1, updated_at = NOW()
+            `UPDATE conversations SET status = $1, updated_at = NOW()
              WHERE conversation_id = $2`,
             [status, conversation_id]
           );
@@ -191,7 +191,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // Update participant preferences
         if (notifications_enabled !== undefined) {
           await client.query(
-            `UPDATE ConversationParticipants 
+            `UPDATE conversation_participants 
              SET notifications_enabled = $1
              WHERE conversation_id = $2 AND user_id = $3`,
             [notifications_enabled, conversation_id, user.userId]
