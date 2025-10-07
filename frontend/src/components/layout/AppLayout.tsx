@@ -187,8 +187,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   ];
 
   const drawer = (
-    <Box sx={{ bgcolor: '#667eea', height: '100%' }}>
-      <Toolbar sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2 }}>
+    <Box sx={{ height: '100%' }}>
+      <Toolbar sx={{ display: 'flex', alignItems: 'center', gap: 2, px: 2, bgcolor: 'white' }}>
         <Box
           component="img"
           src="/logo.png"
@@ -199,17 +199,19 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             objectFit: 'contain',
           }}
         />
-        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold', color: 'white' }}>
+        <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold', color: '#333' }}>
           Performile
         </Typography>
       </Toolbar>
-      <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.12)' }} />
-      <NavigationMenu
-        items={navigationItems}
-        currentPath={location.pathname}
-        userRole={user?.user_role || 'consumer'}
-        onItemClick={() => isMobile && setMobileOpen(false)}
-      />
+      <Divider />
+      <Box sx={{ bgcolor: '#667eea', height: 'calc(100% - 64px)' }}>
+        <NavigationMenu
+          items={navigationItems}
+          currentPath={location.pathname}
+          userRole={user?.user_role || 'consumer'}
+          onItemClick={() => isMobile && setMobileOpen(false)}
+        />
+      </Box>
     </Box>
   );
 
