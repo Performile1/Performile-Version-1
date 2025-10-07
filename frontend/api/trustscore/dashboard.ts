@@ -14,6 +14,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const client = await pool.connect();
     try {
+      // Check if tables exist first
+      const tablesExist = await client.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_name IN ('couriers', 'orders', 'reviews')
+        );
+      `);
+
+      if (!tablesExist.rows[0].exists) {
+        return res.status(200).json({
+          success: true,
+          data: {
+            statistics: {
+              total_couriers: 0,
+              active_couriers: 0,
+              avg_trust_score: 0,
+              total_reviews: 0,
+              avg_rating: 0,
+              total_orders_processed: 0,
+              delivered_orders: 0,
+              avg_completion_rate: 0,
+              avg_on_time_rate: 0
+            },
+            couriers: [],
+            recentReviews: []
+          }
+        });
+      }
+
       // Get dashboard summary statistics
       const result = await client.query(`
         SELECT 
