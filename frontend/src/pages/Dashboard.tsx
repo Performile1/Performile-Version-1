@@ -20,6 +20,7 @@ import {
 import { useAuthStore } from '@/store/authStore';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
+import { TrackingWidget } from '@/components/tracking/TrackingWidget';
 
 interface DashboardStats {
   total_couriers: number;
@@ -131,6 +132,9 @@ export const Dashboard: React.FC = () => {
                 color="info.main"
               />
             </Grid>
+            <Grid item xs={12} md={6}>
+              <TrackingWidget />
+            </Grid>
           </Grid>
         );
 
@@ -160,6 +164,9 @@ export const Dashboard: React.FC = () => {
                 icon={<LocalShipping />}
                 color="info.main"
               />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TrackingWidget />
             </Grid>
           </Grid>
         );
