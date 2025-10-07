@@ -152,8 +152,9 @@ const MobileNavigation: React.FC<MobileNavigationProps> = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           p: 1,
-          bgcolor: 'primary.main',
-          color: 'primary.contrastText',
+          bgcolor: 'white',
+          color: '#333',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
         }}
       >
         <IconButton
@@ -237,8 +238,8 @@ const MobileNavigation: React.FC<MobileNavigationProps> = () => {
             alignItems: 'center',
             justifyContent: 'space-between',
             p: 2,
-            bgcolor: 'primary.main',
-            color: 'primary.contrastText',
+            bgcolor: '#667eea',
+            color: 'white',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

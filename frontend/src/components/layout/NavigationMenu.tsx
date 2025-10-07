@@ -71,15 +71,23 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
               borderRadius: 1,
               mx: 1,
               mb: 0.5,
+              color: 'rgba(255, 255, 255, 0.8)',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                color: 'white',
+              },
               '&.Mui-selected': {
-                backgroundColor: 'primary.main',
-                color: 'primary.contrastText',
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
                 '&:hover': {
-                  backgroundColor: 'primary.dark',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 },
                 '& .MuiListItemIcon-root': {
-                  color: 'primary.contrastText',
+                  color: 'white',
                 },
+              },
+              '& .MuiListItemIcon-root': {
+                color: 'rgba(255, 255, 255, 0.8)',
               },
             }}
           >
@@ -117,8 +125,11 @@ export const NavigationMenu: React.FC<NavigationMenuProps> = ({
         <Chip
           label={userRole.charAt(0).toUpperCase() + userRole.slice(1)}
           size="small"
-          variant="outlined"
-          color="primary"
+          sx={{
+            color: 'white',
+            borderColor: 'rgba(255, 255, 255, 0.5)',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          }}
         />
       </ListItem>
     </List>
