@@ -203,7 +203,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           Performile
         </Typography>
       </Toolbar>
-      <Divider />
+      <Divider sx={{ borderColor: 'transparent' }} />
       <Box sx={{ bgcolor: '#667eea', height: 'calc(100% - 64px)' }}>
         <NavigationMenu
           items={navigationItems}
