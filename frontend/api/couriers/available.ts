@@ -27,9 +27,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       `SELECT 
         courier_id,
         courier_name,
-        company_name,
-        logo_url,
-        trust_score
+        contact_email,
+        contact_phone
       FROM couriers
       WHERE is_active = true
       ORDER BY trust_score DESC, courier_name ASC`

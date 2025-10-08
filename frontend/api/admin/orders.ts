@@ -70,7 +70,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           json_build_object(
             'courier_id', c.courier_id,
             'courier_name', c.courier_name,
-            'logo_url', c.logo_url
+            'contact_email', c.contact_email
           ) as courier,
           json_build_object(
             'store_id', s.store_id,
