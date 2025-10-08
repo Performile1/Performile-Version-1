@@ -281,9 +281,30 @@ WooCommerce: /api/webhooks/woocommerce
 
 # WHAT'S REMAINING
 
-## 🟡 POST-CRASH CLEANUP (4 hours) - PRIORITY
+## 🟡 POST-CRASH CLEANUP (6 hours) - PRIORITY
 
-### 1. Fix Remaining 4 APIs ⚠️
+### 1. Fix TrustScore & Rating Data Issues ⚠️ NEW
+**Status:** Some couriers showing 0.0 TrustScore and ratings  
+**Priority:** HIGH (affects core feature)
+
+**Issues Found:**
+- DHL eCommerce shows 0.0 TrustScore (should have score)
+- Customer Satisfaction shows 0.0/5 (should show rating)
+- Response Time shows 0 min (likely missing data)
+- Trust Score and Rating data inconsistent across platform
+
+**Tasks:**
+- [ ] Audit `courier_analytics` table for NULL/0 values
+- [ ] Check if `avg_rating` is being calculated correctly
+- [ ] Verify `trust_score` calculation in refresh function
+- [ ] Check if reviews are properly linked to couriers
+- [ ] Fix any missing data in analytics cache
+- [ ] Re-run `refresh_courier_analytics()` if needed
+- [ ] Verify TrustScore displays correctly on all pages
+
+**Estimated Time:** 2 hours
+
+### 2. Fix Remaining 4 APIs ⚠️
 **Status:** Column mismatch errors  
 **Priority:** HIGH (blocks some admin features)
 
@@ -295,7 +316,7 @@ WooCommerce: /api/webhooks/woocommerce
 
 **Estimated Time:** 2 hours (30 min each)
 
-### 2. Create Missing Database Tables ⚠️
+### 3. Create Missing Database Tables ⚠️
 **Status:** 8 tables missing from schema (31/39)  
 **Priority:** MEDIUM (optional features, not blocking beta)
 
