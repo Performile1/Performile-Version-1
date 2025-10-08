@@ -46,6 +46,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Get dashboard summary statistics from cache (fast!)
       let result;
       try {
+        console.log('[Dashboard API] Querying platform_analytics...');
         result = await client.query(`
           SELECT 
             pa.total_couriers,
@@ -62,8 +63,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           LIMIT 1
         `);
         
+        console.log('[Dashboard API] Query result:', result.rows);
+        
         // If no cache exists, return zeros
         if (!result.rows || result.rows.length === 0) {
+          console.log('[Dashboard API] No rows found, returning zeros');
           result = { rows: [{
             total_couriers: 0,
             active_couriers: 0,
@@ -77,7 +81,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           }]};
         }
       } catch (queryError: any) {
-        console.error('Dashboard query error:', queryError);
+        console.error('[Dashboard API] Query error:', queryError);
         // Return empty data on error
         return res.status(200).json({
           success: true,
