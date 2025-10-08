@@ -210,14 +210,14 @@ export const TrustScores: React.FC = () => {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="caption">On-Time Rate</Typography>
                   <Typography variant="caption">
-                    {courier.on_time_rate?.toFixed(1) || '0'}%
+                    {courier.on_time_rate ? Number(courier.on_time_rate).toFixed(1) : '0'}%
                   </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                   <Typography variant="caption">Completion Rate</Typography>
                   <Typography variant="caption">
-                    {courier.completion_rate?.toFixed(1) || '0'}%
+                    {courier.completion_rate ? Number(courier.completion_rate).toFixed(1) : '0'}%
                   </Typography>
                 </Box>
 
