@@ -18,7 +18,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         SELECT 
           c.courier_id,
           c.courier_name,
-          c.logo_url,
+          c.contact_email,
+          c.contact_phone,
           COALESCE(ca.trust_score, 0) as overall_score,
           COALESCE(ca.total_reviews, 0) as total_reviews,
           COALESCE(ca.total_orders, 0) as total_orders,

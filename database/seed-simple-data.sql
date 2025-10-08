@@ -60,15 +60,17 @@ BEGIN
     -- Create 20-50 orders per courier
     FOR i IN 1..40 LOOP
       INSERT INTO orders (
-        store_id, courier_id,
+        store_id, courier_id, customer_id,
         tracking_number, order_number,
-        delivery_address,
+        delivery_address, postal_code, country,
         order_status, order_date, delivery_date
       ) VALUES (
-        v_store_id, v_courier_id,
+        v_store_id, v_courier_id, v_consumer_id,
         SUBSTRING(v_courier_name FROM 1 FOR 3) || LPAD(i::TEXT, 10, '0'),
         'ORD-' || SUBSTRING(v_courier_name FROM 1 FOR 3) || '-' || i,
-        'Test Address ' || i || ', Stockholm, Sweden',
+        'Test Address ' || i || ', Stockholm',
+        '11' || LPAD(i::TEXT, 3, '0'),
+        'SWE',
         CASE 
           WHEN i <= 35 THEN 'delivered'::order_status
           WHEN i <= 38 THEN 'in_transit'::order_status
