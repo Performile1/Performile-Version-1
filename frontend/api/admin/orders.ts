@@ -68,21 +68,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         SELECT 
           o.*,
           json_build_object(
-            'user_id', c.user_id,
-            'first_name', c.first_name,
-            'last_name', c.last_name,
-            'email', c.email
+            'courier_id', c.courier_id,
+            'courier_name', c.courier_name,
+            'logo_url', c.logo_url
           ) as courier,
           json_build_object(
-            'user_id', m.user_id,
-            'first_name', m.first_name,
-            'last_name', m.last_name,
-            'email', m.email,
-            'company_name', m.company_name
-          ) as merchant
+            'store_id', s.store_id,
+            'store_name', s.store_name
+          ) as store
         FROM orders o
-        LEFT JOIN users c ON o.courier_id = c.user_id
-        LEFT JOIN users m ON o.merchant_id = m.user_id
+        LEFT JOIN couriers c ON o.courier_id = c.courier_id
+        LEFT JOIN stores s ON o.store_id = s.store_id
         WHERE 1=1
       `;
       
@@ -100,7 +96,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         paramCount++;
       }
       if (merchant_id) {
-        queryText += ` AND o.merchant_id = $${paramCount}`;
+        queryText += ` AND s.owner_user_id = $${paramCount}`;
         queryParams.push(merchant_id);
         paramCount++;
       }
@@ -129,7 +125,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         countParamNum++;
       }
       if (merchant_id) {
-        countQuery += ` AND o.merchant_id = $${countParamNum}`;
+        countQuery += ` AND o.store_id IN (SELECT store_id FROM stores WHERE owner_user_id = $${countParamNum})`;
         countParams.push(merchant_id);
         countParamNum++;
       }
