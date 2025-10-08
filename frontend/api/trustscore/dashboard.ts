@@ -7,6 +7,7 @@ const pool = new Pool({
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Dashboard API v2 - with analytics cache
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
