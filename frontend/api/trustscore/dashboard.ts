@@ -43,26 +43,39 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         });
       }
 
-      // Get dashboard summary statistics - with error handling
+      // Get dashboard summary statistics from cache (fast!)
       let result;
       try {
         result = await client.query(`
           SELECT 
-            COUNT(DISTINCT c.courier_id) as total_couriers,
-            COUNT(DISTINCT CASE WHEN c.is_active THEN c.courier_id END) as active_couriers,
-            COALESCE(ROUND(AVG(r.rating) * 20, 2), 0) as avg_trust_score,
-            COUNT(DISTINCT r.review_id) as total_reviews,
-            COALESCE(ROUND(AVG(r.rating), 2), 0) as avg_rating,
-            COUNT(DISTINCT o.order_id) as total_orders_processed,
-            COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders,
-            COALESCE(ROUND((COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END)::NUMERIC / 
-              NULLIF(COUNT(DISTINCT o.order_id), 0) * 100), 2), 0) as avg_completion_rate,
-            COALESCE(ROUND((COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END)::NUMERIC / 
-              NULLIF(COUNT(DISTINCT o.order_id), 0) * 100), 2), 0) as avg_on_time_rate
-          FROM couriers c
-          LEFT JOIN orders o ON c.courier_id = o.courier_id
-          LEFT JOIN reviews r ON o.order_id = r.order_id
+            pa.total_couriers,
+            pa.active_couriers,
+            pa.avg_trust_score,
+            pa.total_reviews,
+            pa.avg_rating,
+            pa.total_orders as total_orders_processed,
+            pa.delivered_orders,
+            pa.avg_completion_rate,
+            pa.avg_completion_rate as avg_on_time_rate
+          FROM platform_analytics pa
+          ORDER BY pa.metric_date DESC
+          LIMIT 1
         `);
+        
+        // If no cache exists, return zeros
+        if (!result.rows || result.rows.length === 0) {
+          result = { rows: [{
+            total_couriers: 0,
+            active_couriers: 0,
+            avg_trust_score: 0,
+            total_reviews: 0,
+            avg_rating: 0,
+            total_orders_processed: 0,
+            delivered_orders: 0,
+            avg_completion_rate: 0,
+            avg_on_time_rate: 0
+          }]};
+        }
       } catch (queryError: any) {
         console.error('Dashboard query error:', queryError);
         // Return empty data on error
@@ -86,21 +99,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         });
       }
 
-      // Get top performers
+      // Get top performers from cache (fast!)
       const topPerformers = await client.query(`
         SELECT 
-          c.courier_id,
-          c.courier_name,
-          COALESCE(ROUND(AVG(r.rating) * 20, 2), 0) as overall_score,
-          COUNT(DISTINCT r.review_id) as total_reviews,
-          COUNT(DISTINCT o.order_id) as total_orders,
-          COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders
-        FROM couriers c
-        LEFT JOIN orders o ON c.courier_id = o.courier_id
-        LEFT JOIN reviews r ON o.order_id = r.order_id
+          ca.courier_id,
+          ca.courier_name,
+          ca.trust_score as overall_score,
+          ca.total_reviews,
+          ca.total_orders,
+          ca.delivered_orders,
+          ca.completion_rate
+        FROM courier_analytics ca
+        JOIN couriers c ON ca.courier_id = c.courier_id
         WHERE c.is_active = TRUE
-        GROUP BY c.courier_id, c.courier_name
-        ORDER BY AVG(r.rating) DESC NULLS LAST
+        ORDER BY ca.trust_score DESC NULLS LAST
         LIMIT 5
       `);
 
