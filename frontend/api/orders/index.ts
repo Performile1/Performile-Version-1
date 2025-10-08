@@ -102,17 +102,19 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
         o.order_status,
         o.order_date,
         o.delivery_date,
-        o.customer_name,
-        o.customer_email,
-        o.customer_phone,
         o.delivery_address,
+        o.postal_code,
+        o.country,
         o.created_at,
         o.updated_at,
         s.store_name,
-        c.courier_name
+        c.courier_name,
+        u.first_name || ' ' || u.last_name as customer_name,
+        u.email as customer_email
       FROM orders o
       LEFT JOIN stores s ON o.store_id = s.store_id
       LEFT JOIN couriers c ON o.courier_id = c.courier_id
+      LEFT JOIN users u ON o.customer_id = u.user_id
       WHERE ${whereClause}
       ORDER BY o.created_at DESC
       LIMIT $${++paramCount} OFFSET $${++paramCount}
