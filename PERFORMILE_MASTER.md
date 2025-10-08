@@ -281,11 +281,11 @@ WooCommerce: /api/webhooks/woocommerce
 
 # WHAT'S REMAINING
 
-## 🟡 POST-CRASH CLEANUP (2 hours) - PRIORITY
+## 🟡 POST-CRASH CLEANUP (4 hours) - PRIORITY
 
 ### 1. Fix Remaining 4 APIs ⚠️
 **Status:** Column mismatch errors  
-**Priority:** MEDIUM (doesn't block core features)
+**Priority:** HIGH (blocks some admin features)
 
 **Tasks:**
 - [ ] Fix `/api/couriers` - Remove logo_url references
@@ -294,6 +294,24 @@ WooCommerce: /api/webhooks/woocommerce
 - [ ] Fix `/api/team/my-entities` - Fix table joins
 
 **Estimated Time:** 2 hours (30 min each)
+
+### 2. Create Missing Database Tables ⚠️
+**Status:** 8 tables missing from schema (31/39)  
+**Priority:** MEDIUM (optional features, not blocking beta)
+
+**Missing Tables:**
+- [ ] `claims` - Claims management system
+- [ ] `claim_documents` - Claim file attachments
+- [ ] `claim_messages` - Claim communication thread
+- [ ] `claim_templates` - Courier-specific claim templates
+- [ ] `claim_status_history` - Claim audit trail
+- [ ] `team_members` - Team management (if not using users table)
+- [ ] `team_invitations` - Team invite system
+- [ ] `plan_changes` or `subscription_cancellations` - Subscription tracking
+
+**Estimated Time:** 2 hours (create tables + test)
+
+**Note:** These tables are for optional features (claims, team management). Core platform works without them.
 
 ---
 
