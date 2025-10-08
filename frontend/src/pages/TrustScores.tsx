@@ -108,7 +108,7 @@ export const TrustScores: React.FC = () => {
             {icon}
           </Avatar>
           <Typography variant="h6" component="div">
-            {value.toFixed(1)}{suffix}
+            {Number(value).toFixed(1)}{suffix}
           </Typography>
         </Box>
         <Typography variant="body2" color="text.secondary">
@@ -190,7 +190,7 @@ export const TrustScores: React.FC = () => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                     <Typography variant="body2">Trust Score</Typography>
                     <Typography variant="body2" fontWeight="bold">
-                      {courier.trust_score?.toFixed(1) || '0.0'}/100
+                      {courier.trust_score ? Number(courier.trust_score).toFixed(1) : '0.0'}/100
                     </Typography>
                   </Box>
                   <LinearProgress
@@ -203,7 +203,7 @@ export const TrustScores: React.FC = () => {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="caption">Rating</Typography>
                   <Typography variant="caption">
-                    {courier.rating?.toFixed(1) || '0.0'}/5 ⭐
+                    {courier.rating ? Number(courier.rating).toFixed(1) : '0.0'}/5 ⭐
                   </Typography>
                 </Box>
 
@@ -261,7 +261,7 @@ export const TrustScores: React.FC = () => {
               {/* Overall Trust Score */}
               <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <Typography variant="h3" color="primary" gutterBottom>
-                  {selectedCourier.trust_score?.toFixed(1) || '0.0'}
+                  {selectedCourier.trust_score ? Number(selectedCourier.trust_score).toFixed(1) : '0.0'}
                 </Typography>
                 <Typography variant="h6" color="text.secondary">
                   Trust Score out of 100
@@ -323,7 +323,7 @@ export const TrustScores: React.FC = () => {
                     <TableRow>
                       <TableCell>Response Time</TableCell>
                       <TableCell align="right">
-                        {selectedCourier.response_time?.toFixed(1) || '0'} min
+                        {selectedCourier.response_time ? Number(selectedCourier.response_time).toFixed(1) : '0'} min
                       </TableCell>
                       <TableCell align="right">15.2 min</TableCell>
                     </TableRow>
