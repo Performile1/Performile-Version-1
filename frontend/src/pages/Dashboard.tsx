@@ -312,13 +312,13 @@ export const Dashboard: React.FC = () => {
                     </Box>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                       <Typography variant="caption">On-Time Rate</Typography>
-                      <Typography variant="caption">
-                        {courier.avg_delivery_speed ? Number(courier.avg_delivery_speed * 20).toFixed(1) : '0'}%
+                      <Typography variant="caption" fontWeight="bold">
+                        {courier.on_time_rate ? Number(courier.on_time_rate).toFixed(1) : '0'}%
                       </Typography>
                     </Box>
                     <LinearProgress
                       variant="determinate"
-                      value={courier.on_time_rate || 0}
+                      value={Number(courier.on_time_rate) || 0}
                       sx={{ mb: 2 }}
                     />
                     <Typography variant="caption" color="text.secondary">
