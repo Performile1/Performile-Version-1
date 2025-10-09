@@ -31,9 +31,11 @@ import {
   Save as SaveIcon,
   Upload as UploadIcon,
   Visibility as EyeIcon,
-  VisibilityOff as EyeOffIcon
+  VisibilityOff as EyeOffIcon,
+  Email as EmailIcon
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
+import { EmailTemplateEditor } from '@/components/settings/EmailTemplateEditor';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -192,6 +194,9 @@ const Settings: React.FC = () => {
           <Tab icon={<BellIcon />} label="Notifications" iconPosition="start" />
           <Tab icon={<ShieldIcon />} label="Privacy" iconPosition="start" />
           <Tab icon={<PaletteIcon />} label="Preferences" iconPosition="start" />
+          {(user?.user_role === 'merchant' || user?.user_role === 'admin') && (
+            <Tab icon={<EmailIcon />} label="Email Templates" iconPosition="start" />
+          )}
         </Tabs>
       </Box>
 
@@ -726,6 +731,13 @@ const Settings: React.FC = () => {
           </CardContent>
         </Card>
       </TabPanel>
+
+      {/* Email Templates */}
+      {(user?.user_role === 'merchant' || user?.user_role === 'admin') && (
+        <TabPanel value={tabValue} index={4}>
+          <EmailTemplateEditor />
+        </TabPanel>
+      )}
     </Box>
   );
 };
