@@ -32,6 +32,7 @@ import {
   Menu,
   ListItemIcon,
   ListItemText,
+  Checkbox,
 } from '@mui/material';
 import {
   Add,
@@ -50,6 +51,7 @@ import { apiClient } from '@/services/apiClient';
 import { toast } from 'react-hot-toast';
 import { exportOrdersToCSV } from '@/utils/exportToCSV';
 import { OrderFilters, OrderFilterValues } from '@/components/orders/OrderFilters';
+import { BulkActionsBar } from '@/components/orders/BulkActionsBar';
 
 interface Order {
   order_id: string;
@@ -129,6 +131,9 @@ const Orders: React.FC = () => {
     dateFrom: null,
     dateTo: null,
   });
+
+  // Bulk selection state
+  const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
 
   // Form state
   const [formData, setFormData] = useState<OrderFormData>({
@@ -357,6 +362,63 @@ const Orders: React.FC = () => {
     }
   };
 
+  // Bulk selection handlers
+  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const allOrderIds = new Set(orders.map((order: Order) => order.order_id));
+      setSelectedOrders(allOrderIds);
+    } else {
+      setSelectedOrders(new Set());
+    }
+  };
+
+  const handleSelectOne = (orderId: string) => {
+    const newSelected = new Set(selectedOrders);
+    if (newSelected.has(orderId)) {
+      newSelected.delete(orderId);
+    } else {
+      newSelected.add(orderId);
+    }
+    setSelectedOrders(newSelected);
+  };
+
+  const handleBulkUpdateStatus = async (status: string) => {
+    try {
+      const orderIds = Array.from(selectedOrders);
+      await apiClient.post('/orders/bulk-update', {
+        order_ids: orderIds,
+        status: status,
+      });
+      toast.success(`Updated ${orderIds.length} orders to ${status}`);
+      setSelectedOrders(new Set());
+      refetch();
+    } catch (error) {
+      toast.error('Failed to update orders');
+    }
+  };
+
+  const handleBulkExport = () => {
+    const selectedOrdersData = orders.filter((order: Order) => 
+      selectedOrders.has(order.order_id)
+    );
+    exportOrdersToCSV(selectedOrdersData);
+    toast.success(`Exported ${selectedOrdersData.length} orders`);
+  };
+
+  const handleBulkDelete = async () => {
+    try {
+      const orderIds = Array.from(selectedOrders);
+      await apiClient.post('/orders/bulk-delete', {
+        order_ids: orderIds,
+      });
+      toast.success(`Deleted ${orderIds.length} orders`);
+      setSelectedOrders(new Set());
+      refetch();
+    } catch (error) {
+      toast.error('Failed to delete orders');
+    }
+  };
+
   // Loading skeleton
   if (isLoading) {
     return (
@@ -427,6 +489,13 @@ const Orders: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    indeterminate={selectedOrders.size > 0 && selectedOrders.size < orders.length}
+                    checked={orders.length > 0 && selectedOrders.size === orders.length}
+                    onChange={handleSelectAll}
+                  />
+                </TableCell>
                 <TableCell 
                   sx={{ cursor: 'pointer', userSelect: 'none' }}
                   onClick={() => handleSort('tracking_number')}
@@ -510,7 +579,17 @@ const Orders: React.FC = () => {
             </TableHead>
             <TableBody>
               {orders.map((order: Order) => (
-                <TableRow key={order.order_id} hover>
+                <TableRow 
+                  key={order.order_id} 
+                  hover
+                  selected={selectedOrders.has(order.order_id)}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectedOrders.has(order.order_id)}
+                      onChange={() => handleSelectOne(order.order_id)}
+                    />
+                  </TableCell>
                   <TableCell>
                     {order.tracking_number ? (
                       <Link
@@ -764,6 +843,15 @@ const Orders: React.FC = () => {
       >
         <Add />
       </Fab>
+
+      {/* Bulk Actions Bar */}
+      <BulkActionsBar
+        selectedCount={selectedOrders.size}
+        onUpdateStatus={handleBulkUpdateStatus}
+        onExport={handleBulkExport}
+        onDelete={handleBulkDelete}
+        onClear={() => setSelectedOrders(new Set())}
+      />
     </Box>
   );
 };
