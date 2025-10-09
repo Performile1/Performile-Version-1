@@ -42,6 +42,8 @@ import {
   MoreVert,
   Refresh,
   FileDownload,
+  ArrowUpward,
+  ArrowDownward,
 } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
@@ -112,6 +114,8 @@ const Orders: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
+  const [sortBy, setSortBy] = useState<string>('created_at');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [openDialog, setOpenDialog] = useState(false);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -135,7 +139,7 @@ const Orders: React.FC = () => {
 
   // Fetch orders
   const { data: orders = [], isLoading, error, refetch } = useQuery({
-    queryKey: ['orders', page, rowsPerPage, searchTerm, statusFilter, dateFilter],
+    queryKey: ['orders', page, rowsPerPage, searchTerm, statusFilter, dateFilter, sortBy, sortOrder],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: (page + 1).toString(),
@@ -143,6 +147,8 @@ const Orders: React.FC = () => {
         ...(searchTerm && { search: searchTerm }),
         ...(statusFilter !== 'all' && { status: statusFilter }),
         ...(dateFilter !== 'all' && { date_filter: dateFilter }),
+        sort_by: sortBy,
+        sort_order: sortOrder,
       });
 
       const response = await apiClient.get(`/orders?${params}`);
@@ -151,6 +157,18 @@ const Orders: React.FC = () => {
     placeholderData: keepPreviousData,
     staleTime: 30000, // 30 seconds
   });
+
+  // Handle column sort
+  const handleSort = (column: string) => {
+    if (sortBy === column) {
+      // Toggle sort order
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      // New column, default to descending
+      setSortBy(column);
+      setSortOrder('desc');
+    }
+  };
 
   // Fetch stores and couriers for form dropdowns
   const { data: stores = [] } = useQuery({
@@ -430,13 +448,83 @@ const Orders: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Tracking Number</TableCell>
-                <TableCell>Order Number</TableCell>
-                <TableCell>Store</TableCell>
-                <TableCell>Courier</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Order Date</TableCell>
-                <TableCell>Delivery Date</TableCell>
+                <TableCell 
+                  sx={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort('tracking_number')}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    Tracking Number
+                    {sortBy === 'tracking_number' && (
+                      sortOrder === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />
+                    )}
+                  </Box>
+                </TableCell>
+                <TableCell 
+                  sx={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort('order_number')}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    Order Number
+                    {sortBy === 'order_number' && (
+                      sortOrder === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />
+                    )}
+                  </Box>
+                </TableCell>
+                <TableCell 
+                  sx={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort('store_name')}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    Store
+                    {sortBy === 'store_name' && (
+                      sortOrder === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />
+                    )}
+                  </Box>
+                </TableCell>
+                <TableCell 
+                  sx={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort('courier_name')}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    Courier
+                    {sortBy === 'courier_name' && (
+                      sortOrder === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />
+                    )}
+                  </Box>
+                </TableCell>
+                <TableCell 
+                  sx={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort('order_status')}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    Status
+                    {sortBy === 'order_status' && (
+                      sortOrder === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />
+                    )}
+                  </Box>
+                </TableCell>
+                <TableCell 
+                  sx={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort('order_date')}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    Order Date
+                    {sortBy === 'order_date' && (
+                      sortOrder === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />
+                    )}
+                  </Box>
+                </TableCell>
+                <TableCell 
+                  sx={{ cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => handleSort('delivery_date')}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    Delivery Date
+                    {sortBy === 'delivery_date' && (
+                      sortOrder === 'asc' ? <ArrowUpward fontSize="small" /> : <ArrowDownward fontSize="small" />
+                    )}
+                  </Box>
+                </TableCell>
                 <TableCell>Location</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
