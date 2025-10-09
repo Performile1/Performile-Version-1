@@ -49,6 +49,7 @@ import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tansta
 import { apiClient } from '@/services/apiClient';
 import { toast } from 'react-hot-toast';
 import { exportOrdersToCSV } from '@/utils/exportToCSV';
+import { OrderFilters, OrderFilterValues } from '@/components/orders/OrderFilters';
 
 interface Order {
   order_id: string;
@@ -111,15 +112,23 @@ const Orders: React.FC = () => {
   // State management
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState('all');
   const [sortBy, setSortBy] = useState<string>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [openDialog, setOpenDialog] = useState(false);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  
+  // Advanced filters state
+  const [filters, setFilters] = useState<OrderFilterValues>({
+    search: '',
+    statuses: [],
+    couriers: [],
+    stores: [],
+    countries: [],
+    dateFrom: null,
+    dateTo: null,
+  });
 
   // Form state
   const [formData, setFormData] = useState<OrderFormData>({
@@ -139,17 +148,43 @@ const Orders: React.FC = () => {
 
   // Fetch orders
   const { data: orders = [], isLoading, error, refetch } = useQuery({
-    queryKey: ['orders', page, rowsPerPage, searchTerm, statusFilter, dateFilter, sortBy, sortOrder],
+    queryKey: ['orders', page, rowsPerPage, filters, sortBy, sortOrder],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: (page + 1).toString(),
         limit: rowsPerPage.toString(),
-        ...(searchTerm && { search: searchTerm }),
-        ...(statusFilter !== 'all' && { status: statusFilter }),
-        ...(dateFilter !== 'all' && { date_filter: dateFilter }),
+        ...(filters.search && { search: filters.search }),
         sort_by: sortBy,
         sort_order: sortOrder,
       });
+
+      // Add status filters
+      filters.statuses.forEach(status => {
+        params.append('status[]', status);
+      });
+
+      // Add courier filters
+      filters.couriers.forEach(courier => {
+        params.append('courier_id[]', courier);
+      });
+
+      // Add store filters
+      filters.stores.forEach(store => {
+        params.append('store_id[]', store);
+      });
+
+      // Add country filters
+      filters.countries.forEach(country => {
+        params.append('country[]', country);
+      });
+
+      // Add date filters
+      if (filters.dateFrom) {
+        params.append('date_from', filters.dateFrom.toISOString().split('T')[0]);
+      }
+      if (filters.dateTo) {
+        params.append('date_to', filters.dateTo.toISOString().split('T')[0]);
+      }
 
       const response = await apiClient.get(`/orders?${params}`);
       return response.data.orders || [];
@@ -157,6 +192,9 @@ const Orders: React.FC = () => {
     placeholderData: keepPreviousData,
     staleTime: 30000, // 30 seconds
   });
+
+  // Get unique countries from orders for filter
+  const uniqueCountries = Array.from(new Set(orders.map((order: Order) => order.country).filter(Boolean))) as string[];
 
   // Handle column sort
   const handleSort = (column: string) => {
@@ -374,73 +412,14 @@ const Orders: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Filters */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                placeholder="Search orders..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <FormControl fullWidth>
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={statusFilter}
-                  label="Status"
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                >
-                  <MenuItem value="all">All Statuses</MenuItem>
-                  <MenuItem value="pending">Pending</MenuItem>
-                  <MenuItem value="confirmed">Confirmed</MenuItem>
-                  <MenuItem value="picked_up">Picked Up</MenuItem>
-                  <MenuItem value="in_transit">In Transit</MenuItem>
-                  <MenuItem value="delivered">Delivered</MenuItem>
-                  <MenuItem value="cancelled">Cancelled</MenuItem>
-                  <MenuItem value="failed">Failed</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <FormControl fullWidth>
-                <InputLabel>Date Range</InputLabel>
-                <Select
-                  value={dateFilter}
-                  label="Date Range"
-                  onChange={(e) => setDateFilter(e.target.value)}
-                >
-                  <MenuItem value="all">All Time</MenuItem>
-                  <MenuItem value="today">Today</MenuItem>
-                  <MenuItem value="week">This Week</MenuItem>
-                  <MenuItem value="month">This Month</MenuItem>
-                  <MenuItem value="quarter">This Quarter</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={2}>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<Refresh />}
-                onClick={() => refetch()}
-              >
-                Refresh
-              </Button>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+      {/* Advanced Filters */}
+      <OrderFilters
+        filters={filters}
+        onFilterChange={setFilters}
+        couriers={couriers}
+        stores={stores}
+        countries={uniqueCountries}
+      />
 
       {/* Orders Table */}
       <Card>
