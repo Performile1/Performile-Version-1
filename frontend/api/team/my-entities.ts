@@ -17,6 +17,24 @@ module.exports = async function handler(req: VercelRequest, res: VercelResponse)
   try {
     const client = await pool.connect();
     try {
+      // Check if team tables exist
+      const tableCheck = await client.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' 
+          AND table_name = 'team_members'
+        );
+      `);
+      
+      if (!tableCheck.rows[0].exists) {
+        // Tables don't exist yet, return empty array
+        return res.status(200).json({
+          success: true,
+          data: [],
+          message: 'Team management feature coming soon'
+        });
+      }
+      
       // Get user's team entities
       const query = `
         SELECT 
@@ -25,8 +43,8 @@ module.exports = async function handler(req: VercelRequest, res: VercelResponse)
           tm.description,
           tm.created_at,
           COUNT(tmu.user_id) as member_count
-        FROM TeamMembers tmu
-        JOIN Teams tm ON tmu.team_id = tm.team_id
+        FROM team_members tmu
+        JOIN teams tm ON tmu.team_id = tm.team_id
         WHERE tmu.user_id = $1
         GROUP BY tm.team_id, tm.team_name, tm.description, tm.created_at
         ORDER BY tm.created_at DESC

@@ -135,16 +135,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           COALESCE(ROUND(AVG(r.rating), 2), 0) as avg_rating,
           
           -- Customer details
-          COALESCE(COUNT(DISTINCT o.customer_email), 0) as unique_customers,
+          COALESCE(COUNT(DISTINCT o.customer_id), 0) as unique_customers,
           COALESCE(COUNT(DISTINCT s.store_id), 0) as total_stores_served,
           
-          -- Trust score (use avg_rating * 20 if TrustScoreCache doesn't exist)
+          -- Trust score (use avg_rating * 20 if analytics cache doesn't exist)
           COALESCE(ROUND(AVG(r.rating) * 20, 2), 0) as overall_score
           
-        FROM Couriers c
-        LEFT JOIN Orders o ON c.courier_id = o.courier_id
-        LEFT JOIN Stores s ON o.store_id = s.store_id
-        LEFT JOIN Reviews r ON c.courier_id = r.courier_id
+        FROM couriers c
+        LEFT JOIN orders o ON c.courier_id = o.courier_id
+        LEFT JOIN stores s ON o.store_id = s.store_id
+        LEFT JOIN reviews r ON c.courier_id = r.courier_id
         WHERE ${whereClause}
         GROUP BY c.courier_id, c.courier_name, c.contact_email, c.contact_phone, 
                  c.description, c.is_active, c.created_at
