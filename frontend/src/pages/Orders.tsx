@@ -443,7 +443,7 @@ const Orders: React.FC = () => {
         <Alert severity="error" sx={{ mb: 2 }}>
           Failed to load orders. Please try again.
         </Alert>
-        <Button variant="contained" onClick={() => refetch()} startIcon={<Refresh />}>
+        <Button variant="contained" onClick={() => refetch()}>
           Retry
         </Button>
       </Box>
