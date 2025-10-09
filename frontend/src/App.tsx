@@ -30,6 +30,9 @@ import ServiceRatingForm from './components/rating/ServiceRatingForm';
 import { SentryTestButton } from './components/debug/SentryTestButton';
 import { PublicReview } from './pages/PublicReview';
 import Pricing from './pages/Pricing';
+import SubscriptionPlans from './pages/SubscriptionPlans';
+import SubscriptionSuccess from './pages/SubscriptionSuccess';
+import SubscriptionCancel from './pages/SubscriptionCancel';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -137,6 +140,9 @@ const App: React.FC = () => {
             <Route path="/review/:token" element={<PublicReview />} />
             <Route path="/track/:trackingNumber?" element={<TrackingPage />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/subscription/plans" element={<SubscriptionPlans />} />
+            <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+            <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
 
             {/* Protected Routes */}
             <Route

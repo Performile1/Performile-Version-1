@@ -165,8 +165,12 @@ const Pricing: React.FC = () => {
   };
 
   const handleSelectPlan = (plan: PricingPlan) => {
-    // Navigate to registration with plan selected
-    navigate(`/register?plan=${plan.plan_id}&role=${plan.user_role}`);
+    // If user is logged in, go to subscription page, otherwise register
+    if (user) {
+      navigate('/subscription/plans');
+    } else {
+      navigate(`/register?plan=${plan.plan_id}&role=${plan.user_role}`);
+    }
   };
 
   return (
