@@ -58,7 +58,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             pa.total_orders as total_orders_processed,
             pa.delivered_orders,
             pa.avg_completion_rate,
-            pa.avg_completion_rate as avg_on_time_rate
+            pa.avg_on_time_rate
           FROM platform_analytics pa
           ORDER BY pa.metric_date DESC
           LIMIT 1
@@ -113,7 +113,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           ca.total_reviews,
           ca.total_orders,
           ca.delivered_orders,
-          ca.completion_rate
+          ca.completion_rate,
+          ca.on_time_rate
         FROM courier_analytics ca
         JOIN couriers c ON ca.courier_id = c.courier_id
         WHERE c.is_active = TRUE
