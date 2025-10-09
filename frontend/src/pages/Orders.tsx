@@ -46,6 +46,7 @@ import {
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { toast } from 'react-hot-toast';
+import { exportOrdersToCSV } from '@/utils/exportToCSV';
 
 interface Order {
   order_id: string;
@@ -285,22 +286,16 @@ const Orders: React.FC = () => {
     }
   };
 
-  const handleExport = async () => {
+  const handleExport = () => {
     try {
-      const response = await apiClient.get('/orders/export', {
-        responseType: 'blob',
-      });
+      if (!orders || orders.length === 0) {
+        toast.error('No orders to export');
+        return;
+      }
       
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `orders-${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-      
-      toast.success('Orders exported successfully');
+      // Export current filtered/searched orders
+      exportOrdersToCSV(orders);
+      toast.success(`Exported ${orders.length} orders successfully`);
     } catch (error) {
       toast.error('Failed to export orders');
     }
