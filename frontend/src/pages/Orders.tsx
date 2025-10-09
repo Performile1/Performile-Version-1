@@ -52,6 +52,7 @@ import { toast } from 'react-hot-toast';
 import { exportOrdersToCSV } from '@/utils/exportToCSV';
 import { OrderFilters, OrderFilterValues } from '@/components/orders/OrderFilters';
 import { BulkActionsBar } from '@/components/orders/BulkActionsBar';
+import { OrderDetailsDrawer } from '@/components/orders/OrderDetailsDrawer';
 
 interface Order {
   order_id: string;
@@ -134,6 +135,10 @@ const Orders: React.FC = () => {
 
   // Bulk selection state
   const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
+
+  // Quick view drawer state
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerOrder, setDrawerOrder] = useState<Order | null>(null);
 
   // Form state
   const [formData, setFormData] = useState<OrderFormData>({
@@ -640,6 +645,16 @@ const Orders: React.FC = () => {
                   </TableCell>
                   <TableCell align="right">
                     <IconButton
+                      onClick={() => {
+                        setDrawerOrder(order);
+                        setDrawerOpen(true);
+                      }}
+                      size="small"
+                      title="Quick View"
+                    >
+                      <Visibility />
+                    </IconButton>
+                    <IconButton
                       onClick={(e) => handleMenuClick(e, order)}
                       size="small"
                     >
@@ -851,6 +866,20 @@ const Orders: React.FC = () => {
         onExport={handleBulkExport}
         onDelete={handleBulkDelete}
         onClear={() => setSelectedOrders(new Set())}
+      />
+
+      {/* Quick View Drawer */}
+      <OrderDetailsDrawer
+        open={drawerOpen}
+        order={drawerOrder}
+        onClose={() => {
+          setDrawerOpen(false);
+          setDrawerOrder(null);
+        }}
+        onViewFull={(orderId) => {
+          // Navigate to full order details page if it exists
+          window.location.href = `/orders/${orderId}`;
+        }}
       />
     </Box>
   );
