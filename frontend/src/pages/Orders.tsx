@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Box,
   Card,
-  CardContent,
   Typography,
   Button,
   TextField,
@@ -27,7 +26,6 @@ import {
   Skeleton,
   Alert,
   Fab,
-  InputAdornment,
   Link,
   Menu,
   ListItemIcon,
@@ -36,12 +34,10 @@ import {
 } from '@mui/material';
 import {
   Add,
-  Search,
   Edit,
   Delete,
   Visibility,
   MoreVert,
-  Refresh,
   FileDownload,
   ArrowUpward,
   ArrowDownward,
@@ -370,10 +366,10 @@ const Orders: React.FC = () => {
   // Bulk selection handlers
   const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const allOrderIds = new Set(orders.map((order: Order) => order.order_id));
+      const allOrderIds = new Set<string>(orders.map((order: Order) => order.order_id));
       setSelectedOrders(allOrderIds);
     } else {
-      setSelectedOrders(new Set());
+      setSelectedOrders(new Set<string>());
     }
   };
 

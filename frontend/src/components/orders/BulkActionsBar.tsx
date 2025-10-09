@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 import {
   Delete,
-  Edit,
   FileDownload,
   Close,
 } from '@mui/icons-material';

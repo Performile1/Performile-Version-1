@@ -21,13 +21,6 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 
-interface TrendData {
-  date: string;
-  orders: number;
-  reviews: number;
-  trust_score: number;
-}
-
 export const PerformanceTrendsChart: React.FC = () => {
   const [period, setPeriod] = useState<'7d' | '30d'>('7d');
 

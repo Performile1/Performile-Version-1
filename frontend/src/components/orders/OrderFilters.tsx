@@ -14,7 +14,6 @@ import {
   Collapse,
   IconButton,
   Typography,
-  Autocomplete,
   SelectChangeEvent,
 } from '@mui/material';
 import {
