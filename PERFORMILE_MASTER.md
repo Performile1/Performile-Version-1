@@ -316,27 +316,26 @@ WooCommerce: /api/webhooks/woocommerce
 
 **Estimated Time:** 2 hours (30 min each)
 
-### 3. Display Subscription Tiers in UI ⚠️ NEW
-**Status:** Tiers exist in database but not visible in Performile  
+### 3. Display Subscription Tiers in UI ⚠️ IN PROGRESS
+**Status:** Pricing page created, needs API integration  
 **Priority:** HIGH (needed for merchant onboarding)
 
-**Current Situation:**
-- `subscriptionplans` table has data
-- No UI to view/select plans
-- Registration doesn't show plan options
-- No pricing page
+**Completed:**
+- [x] Query subscriptionplans table - 4 plans found (Basic/Pro for Merchant/Courier)
+- [x] Create pricing page (`/pricing`) - DONE ✅
+- [x] Build plan comparison component - DONE ✅
+- [x] Add route to app - DONE ✅
 
-**Tasks:**
-- [ ] Query subscriptionplans table to see what exists
-- [ ] Create pricing page (`/pricing`)
+**Remaining:**
+- [ ] Create `/api/subscriptions/plans` endpoint
+- [ ] Update pricing page to fetch from API
 - [ ] Add plan selection to registration flow
-- [ ] Build plan comparison component
 - [ ] Add "Upgrade Plan" button in dashboard
 - [ ] Create subscription management page (`/settings/subscription`)
 - [ ] Show current plan in user profile
 - [ ] Add plan limits display (orders/month, features, etc.)
 
-**Estimated Time:** 3 hours
+**Estimated Time:** 2 hours remaining
 
 ### 4. Create Missing Database Tables ⚠️
 **Status:** 8 tables missing from schema (31/39)  
