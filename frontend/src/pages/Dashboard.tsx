@@ -21,6 +21,9 @@ import { useAuthStore } from '@/store/authStore';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { TrackingWidget } from '@/components/tracking/TrackingWidget';
+import { PerformanceTrendsChart } from '@/components/dashboard/PerformanceTrendsChart';
+import { RecentActivityWidget } from '@/components/dashboard/RecentActivityWidget';
+import { QuickActionsPanel } from '@/components/dashboard/QuickActionsPanel';
 
 interface DashboardStats {
   total_couriers: number;
@@ -99,6 +102,7 @@ export const Dashboard: React.FC = () => {
       case 'admin':
         return (
           <Grid container spacing={3}>
+            {/* Stats Cards */}
             <Grid item xs={12} sm={6} md={3}>
               <StatCard
                 title="Total Couriers"
@@ -132,6 +136,23 @@ export const Dashboard: React.FC = () => {
                 color="info.main"
               />
             </Grid>
+
+            {/* Performance Trends Chart */}
+            <Grid item xs={12} lg={8}>
+              <PerformanceTrendsChart />
+            </Grid>
+
+            {/* Recent Activity */}
+            <Grid item xs={12} lg={4}>
+              <RecentActivityWidget />
+            </Grid>
+
+            {/* Quick Actions */}
+            <Grid item xs={12}>
+              <QuickActionsPanel />
+            </Grid>
+
+            {/* Tracking Widget */}
             <Grid item xs={12} md={6}>
               <TrackingWidget />
             </Grid>
