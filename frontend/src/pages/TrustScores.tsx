@@ -40,13 +40,12 @@ import { useAuthStore } from '@/store/authStore';
 interface CourierTrustScore {
   courier_id: string;
   courier_name: string;
-  trust_score: number;
-  performance_grade: string;
-  rating: number;
+  overall_score: number; // Changed from trust_score
+  performance_grade?: string;
+  avg_rating: number; // Changed from rating
   completion_rate: number;
   on_time_rate: number;
-  response_time: number;
-  customer_satisfaction: number;
+  response_time?: number;
   total_orders: number;
   total_reviews: number;
   last_updated: string;
@@ -181,7 +180,7 @@ export const TrustScores: React.FC = () => {
                         color={getGradeColor(courier.performance_grade) as any}
                         size="small"
                       />
-                      {getTrendIcon(courier.trust_score)}
+                      {getTrendIcon(courier.overall_score)}
                     </Box>
                   </Box>
                 </Box>
@@ -190,12 +189,12 @@ export const TrustScores: React.FC = () => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                     <Typography variant="body2">Trust Score</Typography>
                     <Typography variant="body2" fontWeight="bold">
-                      {courier.trust_score ? Number(courier.trust_score).toFixed(1) : '0.0'}/100
+                      {courier.overall_score ? Number(courier.overall_score).toFixed(1) : '0.0'}/100
                     </Typography>
                   </Box>
                   <LinearProgress
                     variant="determinate"
-                    value={courier.trust_score || 0}
+                    value={courier.overall_score || 0}
                     sx={{ height: 8, borderRadius: 4 }}
                   />
                 </Box>
@@ -203,7 +202,7 @@ export const TrustScores: React.FC = () => {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                   <Typography variant="caption">Rating</Typography>
                   <Typography variant="caption">
-                    {courier.rating ? Number(courier.rating).toFixed(1) : '0.0'}/5 ⭐
+                    {courier.avg_rating ? Number(courier.avg_rating).toFixed(1) : '0.0'}/5 ⭐
                   </Typography>
                 </Box>
 
@@ -261,14 +260,14 @@ export const TrustScores: React.FC = () => {
               {/* Overall Trust Score */}
               <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <Typography variant="h3" color="primary" gutterBottom>
-                  {selectedCourier.trust_score ? Number(selectedCourier.trust_score).toFixed(1) : '0.0'}
+                  {selectedCourier.overall_score ? Number(selectedCourier.overall_score).toFixed(1) : '0.0'}
                 </Typography>
                 <Typography variant="h6" color="text.secondary">
                   Trust Score out of 100
                 </Typography>
                 <LinearProgress
                   variant="determinate"
-                  value={selectedCourier.trust_score || 0}
+                  value={selectedCourier.overall_score || 0}
                   sx={{ mt: 2, height: 12, borderRadius: 6 }}
                 />
               </Box>
@@ -278,7 +277,7 @@ export const TrustScores: React.FC = () => {
                 <Grid item xs={6} sm={3}>
                   <MetricCard
                     label="Rating"
-                    value={selectedCourier.rating || 0}
+                    value={selectedCourier.avg_rating || 0}
                     suffix="/5"
                     icon={<Star />}
                   />
@@ -302,7 +301,7 @@ export const TrustScores: React.FC = () => {
                 <Grid item xs={6} sm={3}>
                   <MetricCard
                     label="Customer Satisfaction"
-                    value={selectedCourier.customer_satisfaction || 0}
+                    value={selectedCourier.avg_rating || 0}
                     suffix="/5"
                     icon={<ThumbUp />}
                   />
