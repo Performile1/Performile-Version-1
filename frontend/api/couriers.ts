@@ -22,13 +22,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           c.contact_email,
           c.contact_phone,
           c.is_active,
-          t.overall_score,
-          t.total_reviews,
-          t.avg_delivery_speed,
-          t.avg_package_condition,
-          t.avg_communication
-        FROM Couriers c
-        LEFT JOIN TrustScoreCache t ON c.courier_id = t.courier_id
+          ca.trust_score as overall_score,
+          ca.total_reviews,
+          ca.avg_rating,
+          ca.completion_rate,
+          ca.on_time_rate,
+          ca.total_orders,
+          ca.delivered_orders
+        FROM couriers c
+        LEFT JOIN courier_analytics ca ON c.courier_id = ca.courier_id
         WHERE c.is_active = TRUE
         ORDER BY c.courier_name
       `);

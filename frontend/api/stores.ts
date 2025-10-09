@@ -23,9 +23,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           s.is_active,
           COUNT(DISTINCT o.order_id) as total_orders,
           COUNT(DISTINCT r.review_id) as total_reviews
-        FROM Stores s
-        LEFT JOIN Orders o ON s.store_id = o.store_id
-        LEFT JOIN Reviews r ON s.store_id = r.store_id
+        FROM stores s
+        LEFT JOIN orders o ON s.store_id = o.store_id
+        LEFT JOIN reviews r ON o.order_id = r.order_id
         WHERE s.is_active = TRUE
         GROUP BY s.store_id, s.store_name, s.website_url, s.description, s.is_active
         ORDER BY s.store_name
