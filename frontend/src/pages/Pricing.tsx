@@ -25,6 +25,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '@/services/apiClient';
+import { useAuthStore } from '@/store/authStore';
 
 interface PricingPlan {
   plan_id: string;
@@ -45,6 +46,7 @@ interface PricingPlan {
 
 const Pricing: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedRole, setSelectedRole] = useState<'merchant' | 'courier'>('merchant');
   const [plans, setPlans] = useState<PricingPlan[]>([]);
