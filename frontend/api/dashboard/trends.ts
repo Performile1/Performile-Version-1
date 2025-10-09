@@ -44,11 +44,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ),
         daily_trust_scores AS (
           SELECT 
-            DATE(last_calculated) as date,
+            DATE(COALESCE(last_calculated, updated_at, created_at)) as date,
             AVG(trust_score) as avg_trust_score
           FROM courier_analytics
-          WHERE last_calculated >= CURRENT_DATE - INTERVAL '${days} days'
-          GROUP BY DATE(last_calculated)
+          WHERE COALESCE(last_calculated, updated_at, created_at) >= CURRENT_DATE - INTERVAL '${days} days'
+          GROUP BY DATE(COALESCE(last_calculated, updated_at, created_at))
         )
         SELECT 
           ds.date::text,
