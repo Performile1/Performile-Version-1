@@ -3,7 +3,7 @@ import { Box, Container, Fade } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { LoginForm } from '@/components/auth/LoginForm';
-import { RegisterForm } from '@/components/auth/RegisterForm';
+import { EnhancedRegisterFormV2 } from '@/components/auth/EnhancedRegisterFormV2';
 
 export const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -32,7 +32,7 @@ export const AuthPage: React.FC = () => {
             {isLogin ? (
               <LoginForm onSwitchToRegister={() => setIsLogin(false)} />
             ) : (
-              <RegisterForm onSwitchToLogin={() => setIsLogin(true)} />
+              <EnhancedRegisterFormV2 onSwitchToLogin={() => setIsLogin(true)} />
             )}
           </Box>
         </Fade>

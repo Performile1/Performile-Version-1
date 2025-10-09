@@ -82,9 +82,10 @@ const DEFAULT_VALUES: RegisterFormData = {
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
+  onSuccess?: (data: any, role: string) => void;
 }
 
-export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
+export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, onSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -132,6 +133,13 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) =
     setServerError(null);
     
     try {
+      // If onSuccess callback is provided, use it instead of default behavior
+      if (onSuccess) {
+        onSuccess(data, data.user_role);
+        return;
+      }
+      
+      // Default behavior: register and navigate
       const success = await registerUser(data);
       if (success) {
         navigate('/dashboard');
