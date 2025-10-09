@@ -177,7 +177,7 @@ export const TrustScores: React.FC = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Chip
                         label={courier.performance_grade || 'N/A'}
-                        color={getGradeColor(courier.performance_grade) as any}
+                        color={getGradeColor(courier.performance_grade || '') as any}
                         size="small"
                       />
                       {getTrendIcon(courier.overall_score)}
