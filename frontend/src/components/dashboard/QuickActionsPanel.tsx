@@ -100,7 +100,7 @@ export const QuickActionsPanel: React.FC = () => {
       label: 'Settings',
       icon: <Settings />,
       path: '/settings',
-      color: 'default',
+      color: 'inherit',
       roles: ['admin', 'merchant', 'courier'],
     },
   ];
