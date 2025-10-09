@@ -29,6 +29,7 @@ import Orders from './pages/Orders';
 import ServiceRatingForm from './components/rating/ServiceRatingForm';
 import { SentryTestButton } from './components/debug/SentryTestButton';
 import { PublicReview } from './pages/PublicReview';
+import Pricing from './pages/Pricing';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -135,6 +136,7 @@ const App: React.FC = () => {
             />
             <Route path="/review/:token" element={<PublicReview />} />
             <Route path="/track/:trackingNumber?" element={<TrackingPage />} />
+            <Route path="/pricing" element={<Pricing />} />
 
             {/* Protected Routes */}
             <Route

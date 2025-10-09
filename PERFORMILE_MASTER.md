@@ -316,7 +316,29 @@ WooCommerce: /api/webhooks/woocommerce
 
 **Estimated Time:** 2 hours (30 min each)
 
-### 3. Create Missing Database Tables ⚠️
+### 3. Display Subscription Tiers in UI ⚠️ NEW
+**Status:** Tiers exist in database but not visible in Performile  
+**Priority:** HIGH (needed for merchant onboarding)
+
+**Current Situation:**
+- `subscriptionplans` table has data
+- No UI to view/select plans
+- Registration doesn't show plan options
+- No pricing page
+
+**Tasks:**
+- [ ] Query subscriptionplans table to see what exists
+- [ ] Create pricing page (`/pricing`)
+- [ ] Add plan selection to registration flow
+- [ ] Build plan comparison component
+- [ ] Add "Upgrade Plan" button in dashboard
+- [ ] Create subscription management page (`/settings/subscription`)
+- [ ] Show current plan in user profile
+- [ ] Add plan limits display (orders/month, features, etc.)
+
+**Estimated Time:** 3 hours
+
+### 4. Create Missing Database Tables ⚠️
 **Status:** 8 tables missing from schema (31/39)  
 **Priority:** MEDIUM (optional features, not blocking beta)
 
