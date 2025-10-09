@@ -118,7 +118,7 @@ export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ on
 
       // Login and redirect
       const authStore = useAuthStore.getState();
-      await authStore.login(data.email, data.password);
+      await authStore.login({ email: data.email, password: data.password });
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Registration failed');
