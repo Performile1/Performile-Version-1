@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -15,6 +15,7 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  CircularProgress,
 } from '@mui/material';
 import {
   CheckCircle as CheckIcon,
@@ -23,6 +24,7 @@ import {
   LocalShipping as ShippingIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { apiClient } from '@/services/apiClient';
 
 interface PricingPlan {
   plan_id: string;
@@ -45,9 +47,32 @@ const Pricing: React.FC = () => {
   const navigate = useNavigate();
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedRole, setSelectedRole] = useState<'merchant' | 'courier'>('merchant');
+  const [plans, setPlans] = useState<PricingPlan[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Hardcoded plans (will be fetched from API later)
-  const plans: PricingPlan[] = [
+  // Fetch plans from API
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        setLoading(true);
+        const response = await apiClient.get('/api/subscriptions/plans');
+        if (response.data.success) {
+          setPlans(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+        // Fallback to hardcoded plans if API fails
+        setPlans(fallbackPlans);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
+
+  // Fallback plans in case API fails
+  const fallbackPlans: PricingPlan[] = [
     {
       plan_id: '5b11cb84-ad36-440c-a427-5c91cb675e54',
       plan_name: 'Basic Merchant',
@@ -208,8 +233,13 @@ const Pricing: React.FC = () => {
         </Box>
 
         {/* Pricing Cards */}
-        <Grid container spacing={4} justifyContent="center">
-          {filteredPlans.map((plan, index) => {
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: 8 }}>
+            <CircularProgress size={60} />
+          </Box>
+        ) : (
+          <Grid container spacing={4} justifyContent="center">
+            {filteredPlans.map((plan, index) => {
             const isPopular = index === 1; // Pro plans are popular
             const price = isAnnual ? plan.price_yearly : plan.price_monthly;
             const billingPeriod = isAnnual ? 'year' : 'month';
@@ -301,7 +331,8 @@ const Pricing: React.FC = () => {
               </Grid>
             );
           })}
-        </Grid>
+          </Grid>
+        )}
 
         {/* FAQ / Additional Info */}
         <Box sx={{ mt: 8, textAlign: 'center' }}>
