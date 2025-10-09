@@ -18,8 +18,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // Check if user is admin
-  const user = (req as any).user;
-  if (!user || user.user_role !== 'admin') {
+  const user = security.user;
+  if (!user || (user.role !== 'admin' && user.user_role !== 'admin')) {
     return res.status(403).json({ error: 'Admin access required' });
   }
 
@@ -46,19 +46,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 async function getSubscriptionPlans(req: VercelRequest, res: VercelResponse) {
   const { user_type, include_inactive } = req.query;
 
-  let query = 'SELECT * FROM subscription_plans WHERE 1=1';
+  let query = 'SELECT * FROM subscriptionplans WHERE 1=1';
   const params: any[] = [];
 
   if (user_type) {
     params.push(user_type);
-    query += ` AND user_type = $${params.length}`;
+    query += ` AND user_role = $${params.length}`;
   }
 
   if (include_inactive !== 'true') {
     query += ' AND is_active = true';
   }
 
-  query += ' ORDER BY user_type, tier';
+  query += ' ORDER BY user_role, price_monthly';
 
   const result = await pool.query(query, params);
 
