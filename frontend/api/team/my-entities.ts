@@ -1,19 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Pool } from 'pg';
+import { getPool } from '../lib/db';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
+const pool = getPool();
 
 module.exports = async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
-
   try {
     const client = await pool.connect();
     try {

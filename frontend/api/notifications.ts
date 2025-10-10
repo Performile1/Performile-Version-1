@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Pool } from 'pg';
+import { getPool } from './lib/db';
 import jwt from 'jsonwebtoken';
 
 // Inline JWT helper
@@ -14,10 +14,7 @@ function getJWTSecret(): string {
   return secret;
 }
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+const pool = getPool();
 
 // Verify token and get user
 const verifyToken = (req: VercelRequest): any => {
