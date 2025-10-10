@@ -61,6 +61,7 @@ interface Invoice {
 }
 
 export const BillingPortal: React.FC = () => {
+  // const { user } = useAuthStore(); // Available for future role-based features
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showCancelDialog, setShowCancelDialog] = useState(false);
