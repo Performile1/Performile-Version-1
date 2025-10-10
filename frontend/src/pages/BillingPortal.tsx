@@ -38,7 +38,8 @@ import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 
-interface Subscription {
+// Subscription interface moved to types
+interface SubscriptionData {
   subscription_id: string;
   plan_name: string;
   status: string;
@@ -60,7 +61,6 @@ interface Invoice {
 }
 
 export const BillingPortal: React.FC = () => {
-  const { user } = useAuthStore();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showCancelDialog, setShowCancelDialog] = useState(false);
