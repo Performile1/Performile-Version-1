@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import jwt from 'jsonwebtoken';
-import { Pool } from 'pg';
+import { getPool } from '../lib/db';
 
 // Initialize Resend client
 const { Resend } = require('resend');

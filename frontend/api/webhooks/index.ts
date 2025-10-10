@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { Pool } from 'pg';
+import { getPool } from '../lib/db';
 import crypto from 'crypto';
 import { applySecurityMiddleware } from '../middleware/security';
 import { sendEmail, generateReviewRequestEmail } from '../utils/email';

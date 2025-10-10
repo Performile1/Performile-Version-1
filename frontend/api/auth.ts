@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { Pool } from 'pg';
+import { getPool } from './lib/db';
 
 // Inline environment helpers to avoid ES module issues
 function getJWTSecret(): string {

@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Pool } from 'pg';
+import { getPool } from '../lib/db';
 const { createLogEndpoint } = require('../utils/logger');
 
 const pool = new Pool({

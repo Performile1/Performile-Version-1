@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { getPool } from '../lib/db';
 
 // Shared database connection pool
 // This prevents "max clients reached" errors by reusing connections

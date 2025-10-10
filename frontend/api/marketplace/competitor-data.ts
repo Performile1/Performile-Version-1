@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Pool } from 'pg';
+import { getPool } from '../lib/db';
 import jwt from 'jsonwebtoken';
 import { getJWTSecret } from '../../utils/env';
 

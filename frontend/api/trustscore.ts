@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Pool } from 'pg';
+import { getPool } from './lib/db';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,

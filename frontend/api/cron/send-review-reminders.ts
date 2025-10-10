@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Pool } from 'pg';
+import { getPool } from '../lib/db';
 import { sendEmail, generateReviewReminderEmail } from '../utils/email';
 
 const pool = new Pool({
