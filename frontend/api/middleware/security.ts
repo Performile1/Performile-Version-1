@@ -221,7 +221,7 @@ export const sanitizeInput = (input: any): any => {
   return input;
 };
 
-// Helper to get JWT secret (matches auth.ts)
+// Helper to get JWT secret (matches auth.ts) - Updated for deployment
 const getJWTSecret = (): string => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
