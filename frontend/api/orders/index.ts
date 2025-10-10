@@ -37,7 +37,12 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
       limit = '10',
       search = '',
       status = '',
-      date_filter = ''
+      date_filter = '',
+      from_date = '',
+      to_date = '',
+      courier = '',
+      store = '',
+      country = ''
     } = req.query;
 
     const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
@@ -68,8 +73,36 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
       queryParams.push(status);
     }
 
-    // Date filter
-    if (date_filter && date_filter !== 'all') {
+    // Courier filter
+    if (courier && courier !== 'all') {
+      whereClause += ` AND c.courier_id = $${++paramCount}`;
+      queryParams.push(courier);
+    }
+
+    // Store filter
+    if (store && store !== 'all') {
+      whereClause += ` AND s.store_id = $${++paramCount}`;
+      queryParams.push(store);
+    }
+
+    // Country filter
+    if (country && country !== 'all') {
+      whereClause += ` AND o.country = $${++paramCount}`;
+      queryParams.push(country);
+    }
+
+    // Date range filter (from_date and to_date)
+    if (from_date) {
+      whereClause += ` AND o.order_date >= $${++paramCount}`;
+      queryParams.push(from_date);
+    }
+    if (to_date) {
+      whereClause += ` AND o.order_date <= $${++paramCount}`;
+      queryParams.push(to_date);
+    }
+
+    // Preset date filter (fallback if no custom range)
+    if (!from_date && !to_date && date_filter && date_filter !== 'all') {
       const dateCondition = (() => {
         switch (date_filter) {
           case 'today':
