@@ -1,8 +1,7 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "frontend/dist",
-  "installCommand": "cd frontend && npm install --legacy-peer-deps",
-  "framework": null,
+  "buildSettings": {
+    "rootDirectory": "frontend"
+  },
   "functions": {
     "frontend/api/**/*.ts": {
       "runtime": "@vercel/node@3.0.0"
