@@ -34,6 +34,7 @@ import SubscriptionPlans from './pages/SubscriptionPlans';
 import SubscriptionSuccess from './pages/SubscriptionSuccess';
 import SubscriptionCancel from './pages/SubscriptionCancel';
 import ResetPassword from './pages/ResetPassword';
+import BillingPortal from './pages/BillingPortal';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -290,6 +291,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/billing"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant', 'courier']}>
+                  <BillingPortal />
                 </ProtectedRoute>
               }
             />
