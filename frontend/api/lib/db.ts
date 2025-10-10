@@ -9,9 +9,9 @@ export const getPool = (): Pool => {
     pool = new Pool({
       connectionString: process.env.DATABASE_URL,
       ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-      max: 5, // Reduced for Supabase Session Mode
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000,
+      max: 3, // Further reduced for Supabase Session Mode
+      idleTimeoutMillis: 10000, // Release idle connections faster
+      connectionTimeoutMillis: 30000, // Increased timeout
     });
 
     // Handle pool errors
