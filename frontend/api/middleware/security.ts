@@ -236,7 +236,13 @@ export const verifyTokenSecure = (req: VercelRequest): any => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    // Check if JWT_SECRET is set
+    if (!process.env.JWT_SECRET) {
+      console.error('[Security] JWT_SECRET environment variable is not set!');
+      throw new Error('Server configuration error');
+    }
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
     
     // Check token expiration with buffer
     const now = Math.floor(Date.now() / 1000);
@@ -245,12 +251,19 @@ export const verifyTokenSecure = (req: VercelRequest): any => {
     }
     
     // Validate required token fields
-    if (!decoded.userId || !decoded.email) {
+    if (!decoded.userId && !decoded.user_id) {
+      console.error('[Security] Token missing userId:', decoded);
       throw new Error('Invalid token payload');
+    }
+    
+    // Normalize userId field (support both userId and user_id)
+    if (decoded.user_id && !decoded.userId) {
+      decoded.userId = decoded.user_id;
     }
     
     return decoded;
   } catch (error: any) {
+    console.error('[Security] Token verification failed:', error.message);
     if (error.name === 'TokenExpiredError') {
       throw new Error('Token has expired');
     } else if (error.name === 'JsonWebTokenError') {
