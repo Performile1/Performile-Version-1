@@ -33,6 +33,7 @@ import Pricing from './pages/Pricing';
 import SubscriptionPlans from './pages/SubscriptionPlans';
 import SubscriptionSuccess from './pages/SubscriptionSuccess';
 import SubscriptionCancel from './pages/SubscriptionCancel';
+import ResetPassword from './pages/ResetPassword';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -143,6 +144,7 @@ const App: React.FC = () => {
             <Route path="/subscription/plans" element={<SubscriptionPlans />} />
             <Route path="/subscription/success" element={<SubscriptionSuccess />} />
             <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Protected Routes */}
             <Route

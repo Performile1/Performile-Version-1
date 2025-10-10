@@ -10,6 +10,10 @@ import {
   Alert,
   InputAdornment,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
@@ -36,6 +40,11 @@ interface LoginFormProps {
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetSent, setResetSent] = useState(false);
+  const [resetError, setResetError] = useState('');
+  const [sendingReset, setSendingReset] = useState(false);
   const { login, isLoading } = useAuthStore();
   const navigate = useNavigate();
 
@@ -60,6 +69,43 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
         message: error.message || 'Login failed. Please try again.',
       });
     }
+  };
+
+  const handleForgotPassword = async () => {
+    setResetError('');
+    
+    if (!resetEmail || !/\S+@\S+\.\S+/.test(resetEmail)) {
+      setResetError('Please enter a valid email address');
+      return;
+    }
+
+    setSendingReset(true);
+    
+    try {
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: resetEmail }),
+      });
+
+      if (response.ok) {
+        setResetSent(true);
+      } else {
+        const data = await response.json();
+        setResetError(data.message || 'Failed to send reset email');
+      }
+    } catch (error) {
+      setResetError('Failed to send reset email. Please try again.');
+    } finally {
+      setSendingReset(false);
+    }
+  };
+
+  const handleCloseForgotPassword = () => {
+    setShowForgotPassword(false);
+    setResetEmail('');
+    setResetSent(false);
+    setResetError('');
   };
 
   return (
@@ -138,7 +184,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
             {isLoading ? 'Signing In...' : 'Sign In'}
           </Button>
 
-          <Box textAlign="center">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Link
+              component="button"
+              type="button"
+              variant="body2"
+              onClick={() => setShowForgotPassword(true)}
+              sx={{ textDecoration: 'none' }}
+            >
+              Forgot password?
+            </Link>
             <Link
               component="button"
               type="button"
@@ -146,11 +201,68 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
               onClick={onSwitchToRegister}
               sx={{ textDecoration: 'none' }}
             >
-              Don't have an account? Sign up
+              Sign up
             </Link>
           </Box>
         </Box>
       </CardContent>
+
+      {/* Forgot Password Dialog */}
+      <Dialog open={showForgotPassword} onClose={handleCloseForgotPassword} maxWidth="sm" fullWidth>
+        <DialogTitle>Reset Password</DialogTitle>
+        <DialogContent>
+          {resetSent ? (
+            <Alert severity="success" sx={{ mt: 2 }}>
+              <Typography variant="body2">
+                Password reset instructions have been sent to <strong>{resetEmail}</strong>.
+                Please check your inbox and follow the link to reset your password.
+              </Typography>
+            </Alert>
+          ) : (
+            <>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 3 }}>
+                Enter your email address and we'll send you instructions to reset your password.
+              </Typography>
+              
+              {resetError && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {resetError}
+                </Alert>
+              )}
+
+              <TextField
+                fullWidth
+                label="Email Address"
+                type="email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                autoFocus
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Email color="action" />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={handleCloseForgotPassword}>
+            {resetSent ? 'Close' : 'Cancel'}
+          </Button>
+          {!resetSent && (
+            <Button 
+              variant="contained" 
+              onClick={handleForgotPassword}
+              disabled={sendingReset}
+            >
+              {sendingReset ? 'Sending...' : 'Send Reset Link'}
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
