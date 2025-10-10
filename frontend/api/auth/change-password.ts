@@ -12,7 +12,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Apply security middleware
   const security = applySecurityMiddleware(req, res, {
     requireAuth: true,
-    rateLimit: 'strict'
+    rateLimit: 'auth'
   });
 
   if (!security.success) {
