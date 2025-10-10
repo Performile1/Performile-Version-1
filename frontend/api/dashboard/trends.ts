@@ -52,11 +52,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         )
         SELECT 
           ds.date::text,
-          COALESCE(do.orders, 0) as orders,
+          COALESCE(dord.orders, 0) as orders,
           COALESCE(dr.reviews, 0) as reviews,
           COALESCE(ROUND(dts.avg_trust_score::numeric, 1), 0) as trust_score
         FROM date_series ds
-        LEFT JOIN daily_orders do ON ds.date = do.date
+        LEFT JOIN daily_orders dord ON ds.date = dord.date
         LEFT JOIN daily_reviews dr ON ds.date = dr.date
         LEFT JOIN daily_trust_scores dts ON ds.date = dts.date
         ORDER BY ds.date
