@@ -2,10 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getPool } from '../lib/db';
 import { sendEmail, generateReviewReminderEmail } from '../utils/email';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+const pool = getPool();
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Verify this is a cron job request (Vercel adds this header)

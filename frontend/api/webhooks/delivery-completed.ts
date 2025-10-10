@@ -2,10 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getPool } from '../lib/db';
 import { Resend } from 'resend';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+const pool = getPool();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

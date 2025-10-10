@@ -3,10 +3,7 @@ import { getPool } from '../lib/db';
 import jwt from 'jsonwebtoken';
 import { getJWTSecret } from '../../utils/env';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
+const pool = getPool();
 
 // Verify token
 const verifyToken = (req: VercelRequest): any => {

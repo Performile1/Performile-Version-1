@@ -5,10 +5,7 @@ import { applySecurityMiddleware } from '../middleware/security';
 import { sendEmail, generateReviewRequestEmail } from '../utils/email';
 
 // Database connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-});
+const pool = getPool();
 
 // Webhook verification secrets
 const WEBHOOK_SECRETS = {

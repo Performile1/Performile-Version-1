@@ -3,10 +3,7 @@ import { getPool } from '../lib/db';
 import crypto from 'crypto';
 import { sendEmail, generateReviewRequestEmail } from '../utils/email';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+const pool = getPool();
 
 /**
  * Universal E-commerce Webhook Handler

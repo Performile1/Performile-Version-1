@@ -3,10 +3,7 @@ import { getPool } from '../lib/db';
 import bcrypt from 'bcryptjs';
 import { applySecurityMiddleware } from '../middleware/security';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+const pool = getPool();
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Apply security middleware
