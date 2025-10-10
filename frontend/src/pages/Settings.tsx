@@ -36,6 +36,7 @@ import {
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 import { EmailTemplateEditor } from '@/components/settings/EmailTemplateEditor';
+import { ChangePasswordForm } from '@/components/settings/ChangePasswordForm';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -589,6 +590,11 @@ const Settings: React.FC = () => {
             </Button>
           </CardContent>
         </Card>
+
+        {/* Change Password */}
+        <Box sx={{ mt: 3 }}>
+          <ChangePasswordForm />
+        </Box>
       </TabPanel>
 
       {/* Preferences */}
