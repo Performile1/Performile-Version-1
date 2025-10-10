@@ -221,6 +221,22 @@ export const sanitizeInput = (input: any): any => {
   return input;
 };
 
+// Helper to get JWT secret (matches auth.ts)
+const getJWTSecret = (): string => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️  WARNING: Using fallback JWT_SECRET in development');
+      return 'development-fallback-secret-min-32-chars-long-for-testing';
+    }
+    throw new Error('JWT_SECRET not configured');
+  }
+  if (secret.length < 32) {
+    throw new Error('JWT_SECRET too short (min 32 chars)');
+  }
+  return secret;
+};
+
 // JWT verification with enhanced security
 export const verifyTokenSecure = (req: VercelRequest): any => {
   const authHeader = req.headers.authorization;
@@ -236,13 +252,8 @@ export const verifyTokenSecure = (req: VercelRequest): any => {
   }
 
   try {
-    // Check if JWT_SECRET is set
-    if (!process.env.JWT_SECRET) {
-      console.error('[Security] JWT_SECRET environment variable is not set!');
-      throw new Error('Server configuration error');
-    }
-    
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+    const jwtSecret = getJWTSecret();
+    const decoded = jwt.verify(token, jwtSecret) as any;
     
     // Check token expiration with buffer
     const now = Math.floor(Date.now() / 1000);
