@@ -38,7 +38,6 @@ import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 
-// Subscription interface moved to types
 interface SubscriptionData {
   subscription_id: string;
   plan_name: string;
@@ -61,19 +60,20 @@ interface Invoice {
 }
 
 export const BillingPortal: React.FC = () => {
-  // const { user } = useAuthStore(); // Available for future role-based features
+  const { user } = useAuthStore();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
 
   // Fetch current subscription
-  const { data: subscription, isLoading: loadingSubscription } = useQuery({
+  const { data: subscription, isLoading: loadingSubscription } = useQuery<SubscriptionData | null>({
     queryKey: ['user-subscription'],
     queryFn: async () => {
       const response = await apiClient.get('/subscriptions/current');
       return response.data.subscription;
     },
+    enabled: !!user, // Only fetch if user is logged in
   });
 
   // Fetch invoices
