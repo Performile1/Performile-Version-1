@@ -10,7 +10,7 @@ const pool = new Pool({
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const security = applySecurityMiddleware(req, res, {
     requireAuth: true,
-    rateLimit: 'strict'
+    rateLimit: 'default'
   });
 
   if (!security.success) {
