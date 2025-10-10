@@ -21,7 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const user = (req as any).user;
+  const user = security.user;
 
   try {
     // Check if tracking_data table exists
