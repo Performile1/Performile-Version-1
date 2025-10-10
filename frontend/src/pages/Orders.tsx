@@ -219,7 +219,7 @@ const Orders: React.FC = () => {
     queryKey: ['stores'],
     queryFn: async () => {
       const response = await apiClient.get('/stores');
-      return response.data.stores || [];
+      return response.data.data || response.data.stores || [];
     }
   });
 
@@ -227,7 +227,7 @@ const Orders: React.FC = () => {
     queryKey: ['couriers'],
     queryFn: async () => {
       const response = await apiClient.get('/couriers');
-      return response.data.couriers || [];
+      return response.data.data || response.data.couriers || [];
     }
   });
 

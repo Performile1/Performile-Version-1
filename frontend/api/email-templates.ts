@@ -42,22 +42,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 async function getEmailTemplates(req: VercelRequest, res: VercelResponse, userId: string) {
   const { template_type } = req.query;
 
-  let query = 'SELECT * FROM email_templates WHERE user_id = $1';
-  const params: any[] = [userId];
+  try {
+    let query = 'SELECT * FROM email_templates WHERE user_id = $1';
+    const params: any[] = [userId];
 
-  if (template_type) {
-    params.push(template_type);
-    query += ` AND template_type = $${params.length}`;
+    if (template_type) {
+      params.push(template_type);
+      query += ` AND template_type = $${params.length}`;
+    }
+
+    query += ' ORDER BY created_at DESC';
+
+    const result = await pool.query(query, params);
+
+    return res.status(200).json({
+      success: true,
+      templates: result.rows
+    });
+  } catch (error: any) {
+    // If table doesn't exist, return empty array
+    if (error.code === '42P01') {
+      return res.status(200).json({
+        success: true,
+        templates: []
+      });
+    }
+    throw error;
   }
-
-  query += ' ORDER BY created_at DESC';
-
-  const result = await pool.query(query, params);
-
-  return res.status(200).json({
-    success: true,
-    templates: result.rows
-  });
 }
 
 // Create email template
