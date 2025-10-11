@@ -7,7 +7,8 @@ import { EnhancedRegisterFormV2 } from '@/components/auth/EnhancedRegisterFormV2
 
 export const AuthPage: React.FC = () => {
   const location = useLocation();
-  const [isLogin, setIsLogin] = useState(location.pathname === '/login');
+  // Check if we're on the login page (default to login if not on /register)
+  const [isLogin, setIsLogin] = useState(location.pathname !== '/register');
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
@@ -18,7 +19,8 @@ export const AuthPage: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
-    setIsLogin(location.pathname === '/login');
+    // Update form based on current path
+    setIsLogin(location.pathname !== '/register');
   }, [location.pathname]);
 
   return (
@@ -35,9 +37,9 @@ export const AuthPage: React.FC = () => {
         <Fade in timeout={800}>
           <Box>
             {isLogin ? (
-              <LoginForm onSwitchToRegister={() => setIsLogin(false)} />
+              <LoginForm onSwitchToRegister={() => navigate('/register')} />
             ) : (
-              <EnhancedRegisterFormV2 onSwitchToLogin={() => setIsLogin(true)} />
+              <EnhancedRegisterFormV2 onSwitchToLogin={() => navigate('/login')} />
             )}
           </Box>
         </Fade>
