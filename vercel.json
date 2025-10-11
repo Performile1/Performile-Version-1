@@ -7,6 +7,18 @@
       "runtime": "@vercel/node@3.0.0"
     }
   },
+  "redirects": [
+    {
+      "source": "/login",
+      "destination": "/#/login",
+      "permanent": false
+    },
+    {
+      "source": "/register",
+      "destination": "/#/register",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
