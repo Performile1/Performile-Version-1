@@ -482,6 +482,60 @@ const handleExportOrders = async (req: VercelRequest, res: VercelResponse) => {
   }
 };
 
+// Get single order by ID
+const handleGetSingleOrder = async (req: VercelRequest, res: VercelResponse, orderId: string) => {
+  try {
+    const query = `
+      SELECT 
+        o.order_id,
+        o.tracking_number,
+        o.order_number,
+        o.order_status,
+        o.order_date,
+        o.delivery_date,
+        o.delivery_address,
+        o.postal_code,
+        o.city,
+        o.country,
+        o.level_of_service,
+        o.type_of_delivery,
+        o.created_at,
+        o.updated_at,
+        s.store_name,
+        s.store_id,
+        c.courier_name,
+        c.courier_id,
+        u.first_name || ' ' || u.last_name as customer_name,
+        u.email as customer_email
+      FROM orders o
+      LEFT JOIN stores s ON o.store_id = s.store_id
+      LEFT JOIN couriers c ON o.courier_id = c.courier_id
+      LEFT JOIN users u ON o.customer_id = u.user_id
+      WHERE o.order_id = $1
+    `;
+
+    const result = await pool.query(query, [orderId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      order: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Get single order error:', error);
+    return res.status(500).json({
+      success: false,
+      message: error instanceof Error ? error.message : 'Failed to fetch order'
+    });
+  }
+};
+
 // Main handler
 module.exports = async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS headers
@@ -499,12 +553,18 @@ module.exports = async function handler(req: VercelRequest, res: VercelResponse)
     // Parse URL to handle different endpoints
     const urlParts = url?.split('/') || [];
     const isExport = urlParts.includes('export');
-    const orderId = urlParts[urlParts.length - 1];
+    const lastPart = urlParts[urlParts.length - 1];
+    
+    // Check if lastPart is a UUID (order_id) or query string
+    const isOrderId = lastPart && lastPart.length > 10 && !lastPart.includes('?') && lastPart !== 'orders';
 
     switch (method) {
       case 'GET':
         if (isExport) {
           return await handleExportOrders(req, res);
+        }
+        if (isOrderId) {
+          return await handleGetSingleOrder(req, res, lastPart);
         }
         return await handleGetOrders(req, res);
         
@@ -513,12 +573,12 @@ module.exports = async function handler(req: VercelRequest, res: VercelResponse)
         
       case 'PUT':
         // Add orderId to query for update handler
-        req.query.orderId = orderId;
+        req.query.orderId = lastPart;
         return await handleUpdateOrder(req, res);
         
       case 'DELETE':
         // Add orderId to query for delete handler
-        req.query.orderId = orderId;
+        req.query.orderId = lastPart;
         return await handleDeleteOrder(req, res);
         
       default:

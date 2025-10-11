@@ -5,12 +5,16 @@ import { getPool } from '../lib/db';
 const pool = getPool();
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Log auth header for debugging
+  console.log('[Tracking Summary] Auth header:', req.headers.authorization ? 'Present' : 'Missing');
+  
   const security = applySecurityMiddleware(req, res, {
     requireAuth: true,
     rateLimit: 'default'
   });
 
   if (!security.success) {
+    console.log('[Tracking Summary] Security check failed');
     return;
   }
 
@@ -19,6 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const user = security.user;
+  console.log('[Tracking Summary] User authenticated:', user?.userId || user?.user_id);
 
   try {
     // Check if tracking_data table exists
