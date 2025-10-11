@@ -346,7 +346,41 @@ export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ on
   return (
     <Card sx={{ maxWidth: 1200, mx: 'auto' }}>
       <CardContent sx={{ p: 4 }}>
-        <Typography variant="h4" align="center" gutterBottom>
+        {/* Logo and Brand */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="Performile Logo"
+            sx={{
+              width: 80,
+              height: 80,
+              mb: 2,
+              objectFit: 'contain',
+            }}
+          />
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              color: 'primary.main',
+              mb: 0.5,
+            }}
+          >
+            Performile
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            align="center"
+            sx={{ fontStyle: 'italic', mb: 3 }}
+          >
+            Elevate Every Delivery
+          </Typography>
+        </Box>
+
+        <Typography variant="h5" align="center" gutterBottom>
           Complete Your Setup
         </Typography>
         <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 4 }}>
