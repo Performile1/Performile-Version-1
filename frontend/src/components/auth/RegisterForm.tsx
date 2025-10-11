@@ -195,31 +195,65 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, onS
       }}
     >
       <CardContent sx={{ p: { xs: 2, sm: 4 } }}>
+        {/* Logo and Brand */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="Performile Logo"
+            sx={{
+              width: 100,
+              height: 100,
+              mb: 2,
+              objectFit: 'contain',
+            }}
+          />
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              color: 'primary.main',
+              mb: 1,
+            }}
+          >
+            Performile
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            align="center"
+            sx={{ fontStyle: 'italic', mb: 2 }}
+          >
+            Elevate Every Delivery
+          </Typography>
+        </Box>
+
         <Typography 
           id="register-form-title"
-          variant="h4" 
-          component="h1" 
+          variant="h5" 
+          component="h2" 
           gutterBottom 
           align="center"
           sx={{
             fontWeight: 600,
-            fontSize: { xs: '1.75rem', sm: '2rem' },
-            mb: 2,
+            fontSize: { xs: '1.5rem', sm: '1.75rem' },
+            mb: 1,
           }}
         >
           Create Account
         </Typography>
         
         <Typography 
-          variant="body1" 
+          variant="body2" 
           color="text.secondary" 
           align="center" 
           sx={{ 
-            mb: 4,
-            fontSize: { xs: '0.9rem', sm: '1rem' },
+            mb: 3,
+            fontSize: { xs: '0.875rem', sm: '0.95rem' },
           }}
         >
-          Join Performile to track and improve delivery performance
+          Join thousands tracking and improving delivery performance
         </Typography>
 
         {serverError && (

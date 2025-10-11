@@ -111,11 +111,45 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   return (
     <Card sx={{ maxWidth: 400, mx: 'auto', mt: 4 }}>
       <CardContent sx={{ p: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
+        {/* Logo and Brand */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="Performile Logo"
+            sx={{
+              width: 100,
+              height: 100,
+              mb: 2,
+              objectFit: 'contain',
+            }}
+          />
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              color: 'primary.main',
+              mb: 1,
+            }}
+          >
+            Performile
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            align="center"
+            sx={{ fontStyle: 'italic', mb: 2 }}
+          >
+            Elevate Every Delivery
+          </Typography>
+        </Box>
+
+        <Typography variant="h5" component="h2" gutterBottom align="center" sx={{ mb: 1 }}>
           Sign In
         </Typography>
         <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
-          Welcome back to Performile
+          Welcome back to your dashboard
         </Typography>
 
         {errors.root && (
