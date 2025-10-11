@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Container, Fade } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { LoginForm } from '@/components/auth/LoginForm';
 import { EnhancedRegisterFormV2 } from '@/components/auth/EnhancedRegisterFormV2';
 
 export const AuthPage: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState(location.pathname === '/login');
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
@@ -15,6 +16,10 @@ export const AuthPage: React.FC = () => {
       navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    setIsLogin(location.pathname === '/login');
+  }, [location.pathname]);
 
   return (
     <Box
