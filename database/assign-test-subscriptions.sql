@@ -17,7 +17,7 @@ ORDER BY user_role, email;
 
 -- Check current subscriptions
 SELECT 
-    us.user_subscription_id,
+    us.subscription_id,
     u.email,
     u.user_role,
     sp.plan_name,
