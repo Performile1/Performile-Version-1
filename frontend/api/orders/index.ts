@@ -266,6 +266,33 @@ const handleCreateOrder = async (req: VercelRequest, res: VercelResponse) => {
           message: 'You do not have permission to create orders for this store'
         });
       }
+
+      // Check subscription limit for orders
+      const limitCheck = await pool.query(
+        'SELECT check_subscription_limit($1, $2) as can_create',
+        [user.user_id, 'order']
+      );
+
+      if (!limitCheck.rows[0].can_create) {
+        // Get current limits to show in error
+        const limits = await pool.query(
+          'SELECT * FROM get_user_subscription_limits($1)',
+          [user.user_id]
+        );
+        const limit = limits.rows[0];
+        
+        return res.status(403).json({
+          success: false,
+          message: `Order limit reached. You've used ${limit.current_orders_used}/${limit.max_orders_per_month} orders this month.`,
+          error: 'SUBSCRIPTION_LIMIT_REACHED',
+          limit_type: 'orders',
+          current_usage: limit.current_orders_used,
+          max_allowed: limit.max_orders_per_month,
+          plan_name: limit.plan_name,
+          tier: limit.tier,
+          upgrade_required: true
+        });
+      }
     }
 
     const query = `
@@ -293,6 +320,14 @@ const handleCreateOrder = async (req: VercelRequest, res: VercelResponse) => {
     ];
 
     const result = await pool.query(query, values);
+
+    // Increment order usage counter for merchants
+    if (user.user_role === 'merchant') {
+      await pool.query(
+        'SELECT increment_usage($1, $2, $3)',
+        [user.user_id, 'order', 1]
+      );
+    }
 
     res.status(201).json({
       success: true,
