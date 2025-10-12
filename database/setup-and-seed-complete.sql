@@ -88,6 +88,7 @@ LIMIT 100; -- Safety limit
 -- STEP 4: Create sample orders
 -- =====================================================
 
+-- Create sample orders with only the columns that exist
 INSERT INTO orders (
   tracking_number,
   order_number,
@@ -96,10 +97,6 @@ INSERT INTO orders (
   order_status,
   order_date,
   delivery_date,
-  delivery_address,
-  postal_code,
-  city,
-  country,
   created_at
 )
 SELECT 
@@ -115,10 +112,6 @@ SELECT
   END as order_status,
   NOW() - (random() * INTERVAL '30 days') as order_date,
   NOW() - (random() * INTERVAL '25 days') as delivery_date,
-  '123 Test Street' as delivery_address,
-  '12345' as postal_code,
-  'Test City' as city,
-  'USA' as country,
   NOW() - (random() * INTERVAL '30 days') as created_at
 FROM stores s
 JOIN merchant_courier_selections mcs ON s.owner_user_id = mcs.merchant_id
