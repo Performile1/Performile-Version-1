@@ -40,33 +40,11 @@ WHERE u.user_role = 'merchant'
   );
 
 -- =====================================================
--- 3. Link Merchants with Couriers
+-- 3. Link Merchants with Couriers (SKIPPED)
 -- =====================================================
-
--- Create store_couriers relationships (if table exists)
--- Note: If you're using shop_couriers table, this links stores with couriers
--- Check your actual table name and adjust accordingly
-
--- Option A: If using merchant_courier_selections table
-INSERT INTO merchant_courier_selections (
-  merchant_id,
-  courier_id,
-  priority_level,
-  is_active
-)
-SELECT 
-  s.owner_user_id,
-  c.courier_id,
-  1 as priority_level,
-  TRUE
-FROM stores s
-CROSS JOIN couriers c
-WHERE s.owner_user_id IN (SELECT user_id FROM users WHERE user_role = 'merchant')
-  AND NOT EXISTS (
-    SELECT 1 FROM merchant_courier_selections mcs 
-    WHERE mcs.merchant_id = s.owner_user_id AND mcs.courier_id = c.courier_id
-  )
-LIMIT 5; -- Limit to 5 couriers per merchant (respects Tier 1 limit)
+-- Note: The merchant-courier relationship table doesn't exist yet
+-- Orders will be created with random couriers from the couriers table
+-- You can manually select couriers in the UI later
 
 -- =====================================================
 -- 4. Create Sample Orders
@@ -106,11 +84,8 @@ SELECT
   'USA' as country,
   NOW() - (random() * INTERVAL '30 days') as created_at
 FROM stores s
-CROSS JOIN couriers c
+CROSS JOIN (SELECT courier_id FROM couriers LIMIT 1) c
 WHERE s.owner_user_id IN (SELECT user_id FROM users WHERE user_role = 'merchant')
-  AND c.courier_id IN (
-    SELECT courier_id FROM merchant_courier_selections WHERE merchant_id = s.owner_user_id LIMIT 1
-  )
 LIMIT 50; -- Create 50 sample orders
 
 -- =====================================================
@@ -121,11 +96,9 @@ LIMIT 50; -- Create 50 sample orders
 SELECT 
   s.store_name,
   u.email as owner_email,
-  COUNT(DISTINCT mcs.courier_id) as linked_couriers,
   COUNT(DISTINCT o.order_id) as total_orders
 FROM stores s
 JOIN users u ON s.owner_user_id = u.user_id
-LEFT JOIN merchant_courier_selections mcs ON s.owner_user_id = mcs.merchant_id
 LEFT JOIN orders o ON s.store_id = o.store_id
 WHERE u.user_role = 'merchant'
 GROUP BY s.store_id, s.store_name, u.email;
@@ -141,12 +114,10 @@ GROUP BY order_status;
 SELECT 
   u.email as merchant_email,
   COUNT(DISTINCT o.order_id) as total_orders,
-  COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders,
-  COUNT(DISTINCT mcs.courier_id) as available_couriers
+  COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders
 FROM users u
 JOIN stores s ON u.user_id = s.owner_user_id
 LEFT JOIN orders o ON s.store_id = o.store_id
-LEFT JOIN merchant_courier_selections mcs ON s.owner_user_id = mcs.merchant_id AND mcs.is_active = TRUE
 WHERE u.user_role = 'merchant'
 GROUP BY u.user_id, u.email;
 
