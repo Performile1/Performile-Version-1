@@ -10,10 +10,17 @@ const router = Router();
  */
 router.get('/dashboard', authenticateToken, async (req: Request, res: Response) => {
   try {
-    const userId = (req as any).user?.userId;
-    const userRole = (req as any).user?.userRole;
+    const userId = (req as any).user?.user_id;
+    const userRole = (req as any).user?.user_role;
 
     console.log('[Merchant Dashboard] Request from user:', userId, 'role:', userRole);
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: 'User ID not found in token',
+      });
+    }
 
     if (userRole !== 'merchant') {
       return res.status(403).json({
