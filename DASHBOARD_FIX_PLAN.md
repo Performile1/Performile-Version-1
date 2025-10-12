@@ -28,7 +28,23 @@
 
 ---
 
-## 🔧 Solution Plan
+## 🔧 Solution Plan (REVISED - Unified Approach)
+
+### **💡 New Strategy: Reuse Admin Dashboard with Role Filtering**
+
+Instead of creating separate endpoints, we'll:
+1. ✅ Use existing `/api/trustscore/dashboard` (admin endpoint)
+2. ✅ Add role-based filtering to return only user's data
+3. ✅ Apply subscription limits to what data is visible
+4. ✅ Keep same data structure for consistency
+
+**Benefits:**
+- Less code duplication
+- Consistent data structure across roles
+- Easier to maintain
+- Subscription limits enforced in one place
+
+---
 
 ### **Phase 1: Database Setup (30 min)**
 
@@ -41,10 +57,6 @@ Run in Supabase SQL Editor:
 ✅ stores  
 ✅ orders
 ✅ couriers
-
--- Need to verify these exist:
-⏳ courier_performance (for courier stats)
-⏳ consumer_orders (for consumer tracking)
 ```
 
 **Action Items:**
@@ -54,177 +66,225 @@ Run in Supabase SQL Editor:
 
 ---
 
-### **Phase 2: Merchant Dashboard API (45 min)**
+### **Phase 2: Unified Dashboard API (2 hours)**
 
-#### **2.1 Fix Current Issues**
-**File:** `backend/src/routes/merchant-dashboard.ts`
+#### **2.1 Modify Existing Dashboard Endpoint**
+**File:** `backend/src/routes/trustscore.ts` (existing admin dashboard)
 
-**Current Status:**
-- ✅ Route created
-- ✅ Error handling added
-- ⏳ Needs `merchant_courier_selections` table on production
-- ⏳ Needs testing with real data
+**Current Endpoint:** `GET /api/trustscore/dashboard`
 
-**Action Items:**
-- [ ] Verify Vercel deployment completed
-- [ ] Check Vercel logs for errors
-- [ ] Test endpoint: `GET /api/merchant/dashboard`
-- [ ] Verify returns:
-  - `total_couriers` (from merchant_courier_selections)
-  - `avg_on_time_rate` (from orders)
-  - `avg_completion_rate` (from orders)
-  - `total_orders`, `delivered_orders`, `pending_orders`, `in_transit_orders`
+**Strategy:** Add role-based filtering to the existing endpoint instead of creating new ones.
 
-#### **2.2 Expected Response**
+#### **2.2 Role-Based Data Filtering**
+
+**Admin (existing - no changes):**
+```sql
+-- Shows ALL couriers, ALL orders, ALL stats
+SELECT * FROM couriers;
+SELECT * FROM orders;
+```
+
+**Merchant:**
+```sql
+-- Shows only THEIR stores, THEIR orders, THEIR linked couriers
+SELECT c.* FROM couriers c
+JOIN merchant_courier_selections mcs ON c.courier_id = mcs.courier_id
+WHERE mcs.merchant_id = $userId AND mcs.is_active = TRUE;
+
+SELECT o.* FROM orders o
+JOIN stores s ON o.store_id = s.store_id
+WHERE s.owner_user_id = $userId;
+```
+
+**Courier:**
+```sql
+-- Shows only THEIR data
+SELECT * FROM couriers WHERE courier_id = (
+  SELECT courier_id FROM couriers WHERE user_id = $userId
+);
+
+SELECT * FROM orders WHERE courier_id = (
+  SELECT courier_id FROM couriers WHERE user_id = $userId
+);
+```
+
+**Consumer:**
+```sql
+-- Shows only THEIR orders and claims
+SELECT * FROM orders WHERE consumer_id = $userId;
+SELECT * FROM claims WHERE claimant_id = $userId;
+```
+
+#### **2.3 Implementation Plan**
+
+**File:** `backend/src/routes/trustscore.ts`
+
+**Add role detection:**
+```typescript
+router.get('/dashboard', authenticateToken, async (req, res) => {
+  const userId = req.user.userId;
+  const userRole = req.user.userRole;
+  
+  // Build queries based on role
+  let courierQuery, orderQuery;
+  
+  switch(userRole) {
+    case 'admin':
+      // Existing queries (no filter)
+      courierQuery = 'SELECT * FROM couriers';
+      orderQuery = 'SELECT * FROM orders';
+      break;
+      
+    case 'merchant':
+      // Filter to merchant's couriers and orders
+      courierQuery = `
+        SELECT c.* FROM couriers c
+        JOIN merchant_courier_selections mcs ON c.courier_id = mcs.courier_id
+        WHERE mcs.merchant_id = $1 AND mcs.is_active = TRUE
+      `;
+      orderQuery = `
+        SELECT o.* FROM orders o
+        JOIN stores s ON o.store_id = s.store_id
+        WHERE s.owner_user_id = $1
+      `;
+      break;
+      
+    case 'courier':
+      // Filter to courier's own data
+      courierQuery = `
+        SELECT * FROM couriers 
+        WHERE user_id = $1
+      `;
+      orderQuery = `
+        SELECT o.* FROM orders o
+        WHERE o.courier_id = (
+          SELECT courier_id FROM couriers WHERE user_id = $1
+        )
+      `;
+      break;
+      
+    case 'consumer':
+      // Filter to consumer's orders
+      courierQuery = null; // Consumers don't see courier details
+      orderQuery = `
+        SELECT * FROM orders 
+        WHERE consumer_id = $1
+      `;
+      break;
+  }
+  
+  // Execute queries with userId as parameter
+  // Return same data structure for all roles
+});
+```
+
+#### **2.4 Expected Response (Same for All Roles)**
 ```json
 {
   "success": true,
   "data": {
     "statistics": {
-      "total_couriers": 11,
-      "avg_on_time_rate": 70.5,
-      "avg_completion_rate": 72.7,
-      "total_orders": 11,
-      "delivered_orders": 8,
-      "pending_orders": 2,
-      "in_transit_orders": 1
+      "total_couriers": 11,        // Filtered by role
+      "avg_trust_score": 85.2,     // Calculated from filtered data
+      "avg_on_time_rate": 70.5,    // Calculated from filtered data
+      "avg_completion_rate": 72.7, // Calculated from filtered data
+      "total_orders": 11,           // Filtered by role
+      "total_reviews": 45           // Filtered by role
     },
-    "couriers": [...]
+    "couriers": [...],              // Filtered by role
+    "recent_orders": [...],         // Filtered by role
+    "subscription": {               // NEW: Add subscription info
+      "tier": 1,
+      "plan_name": "Starter",
+      "limits": {
+        "max_couriers": 5,
+        "max_orders": 100,
+        "has_analytics": false
+      }
+    }
   }
 }
 ```
 
----
-
-### **Phase 3: Courier Dashboard API (1 hour)**
-
-#### **3.1 Create Courier Dashboard Endpoint**
-**File:** `backend/src/routes/courier-dashboard.ts` (NEW)
-
-**Endpoint:** `GET /api/courier/dashboard`
-
-**Data to Return:**
-```typescript
-{
-  statistics: {
-    trust_score: number,           // From couriers.trust_score
-    orders_this_month: number,     // From orders WHERE courier_id
-    on_time_rate: number,          // % delivered on time
-    completion_rate: number,       // % completed
-    total_earnings: number,        // From orders (if tracking)
-    active_deliveries: number      // Orders in_transit
-  },
-  recent_orders: Order[],          // Last 10 orders
-  performance_trend: {             // Last 6 months
-    month: string,
-    orders: number,
-    on_time_rate: number
-  }[]
-}
-```
-
-**SQL Queries Needed:**
-```sql
--- Get courier's trust score
-SELECT trust_score FROM couriers WHERE courier_id = $1;
-
--- Get orders this month
-SELECT COUNT(*) FROM orders 
-WHERE courier_id = $1 
-AND created_at >= DATE_TRUNC('month', NOW());
-
--- Get on-time rate
-SELECT 
-  COUNT(CASE WHEN delivery_date <= expected_delivery_date THEN 1 END)::NUMERIC /
-  NULLIF(COUNT(*), 0) * 100 as on_time_rate
-FROM orders
-WHERE courier_id = $1 
-AND order_status = 'delivered'
-AND created_at >= NOW() - INTERVAL '30 days';
-
--- Get completion rate
-SELECT 
-  COUNT(CASE WHEN order_status = 'delivered' THEN 1 END)::NUMERIC /
-  NULLIF(COUNT(*), 0) * 100 as completion_rate
-FROM orders
-WHERE courier_id = $1
-AND created_at >= NOW() - INTERVAL '30 days';
-```
-
 **Action Items:**
-- [ ] Create `backend/src/routes/courier-dashboard.ts`
-- [ ] Add queries for courier stats
-- [ ] Register route in `server.ts`: `app.use('/api/courier', courierDashboardRoutes)`
-- [ ] Test with courier account
-- [ ] Update frontend to use real data (remove hardcoded values)
+- [ ] Modify `backend/src/routes/trustscore.ts` to add role detection
+- [ ] Add role-based WHERE clauses to all queries
+- [ ] Add subscription info to response
+- [ ] Test with all 4 roles
+- [ ] Remove separate merchant-dashboard.ts (no longer needed)
 
 ---
 
-### **Phase 4: Consumer Dashboard API (1 hour)**
+### **Phase 3: Frontend Dashboard Update (1 hour)**
 
-#### **4.1 Create Consumer Dashboard Endpoint**
-**File:** `backend/src/routes/consumer-dashboard.ts` (NEW)
+#### **3.1 Change Dashboard Endpoint Call**
+**File:** `frontend/src/pages/Dashboard.tsx` (Lines 82-96)
 
-**Endpoint:** `GET /api/consumer/dashboard`
-
-**Data to Return:**
+**Current Code:**
 ```typescript
-{
-  statistics: {
-    total_orders: number,          // All orders by consumer
-    active_shipments: number,      // Orders in_transit
-    delivered_orders: number,      // Orders delivered
-    pending_claims: number         // Open claims
-  },
-  recent_orders: Order[],          // Last 10 orders with tracking
-  active_claims: Claim[]           // Open claims
-}
+const getDashboardEndpoint = () => {
+  switch (user?.user_role) {
+    case 'merchant':
+      return '/merchant/dashboard';  // ❌ Remove this
+    case 'courier':
+      return '/courier/dashboard';   // ❌ Remove this
+    case 'consumer':
+      return '/consumer/dashboard';  // ❌ Remove this
+    case 'admin':
+      return '/admin/dashboard';     // ❌ Remove this
+    default:
+      return '/trustscore/dashboard';
+  }
+};
 ```
 
-**SQL Queries Needed:**
-```sql
--- Get consumer's orders
-SELECT 
-  COUNT(*) as total_orders,
-  COUNT(CASE WHEN order_status = 'in_transit' THEN 1 END) as active_shipments,
-  COUNT(CASE WHEN order_status = 'delivered' THEN 1 END) as delivered_orders
-FROM orders
-WHERE consumer_id = $1;  -- Need to add consumer_id to orders table!
-
--- Get pending claims
-SELECT COUNT(*) FROM claims
-WHERE claimant_id = $1 
-AND status IN ('pending', 'under_review');
-```
-
-**⚠️ Schema Changes Needed:**
-```sql
--- Add consumer_id to orders table
-ALTER TABLE orders ADD COLUMN consumer_id UUID REFERENCES users(user_id);
-```
-
-**Action Items:**
-- [ ] Add `consumer_id` column to orders table
-- [ ] Create `backend/src/routes/consumer-dashboard.ts`
-- [ ] Add queries for consumer stats
-- [ ] Register route in `server.ts`: `app.use('/api/consumer', consumerDashboardRoutes)`
-- [ ] Test with consumer account
-- [ ] Update frontend Dashboard.tsx for consumer role
-
----
-
-### **Phase 5: Frontend Integration (45 min)**
-
-#### **5.1 Update Dashboard.tsx**
-**File:** `frontend/src/pages/Dashboard.tsx`
-
-**Changes Needed:**
-
-**Merchant Section (Lines 180-211):**
+**New Code (UNIFIED):**
 ```typescript
-// Currently shows stats?.total_couriers
-// ✅ Already correct, just needs backend to work
+// ✅ ALL roles use the same endpoint!
+const getDashboardEndpoint = () => {
+  return '/trustscore/dashboard';  // Backend filters by role automatically
+};
+```
 
+#### **3.2 Update Display Logic**
+
+**Keep existing role-based display, just change data source:**
+
+**Courier Section - Remove Hardcoded Values:**
+```typescript
+case 'courier':
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={12} sm={6} md={4}>
+        <StatCard
+          title="My Trust Score"
+          value={stats?.avg_trust_score || '0'}  // ✅ From filtered data
+          icon={<Star />}
+          color="warning.main"
+        />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4}>
+        <StatCard
+          title="Orders This Month"
+          value={stats?.total_orders_processed?.toLocaleString() || '0'}  // ✅ From filtered data
+          icon={<LocalShipping />}
+          color="primary.main"
+        />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4}>
+        <StatCard
+          title="On-Time Rate"
+          value={stats?.avg_on_time_rate ? `${stats.avg_on_time_rate}%` : '0%'}  // ✅ From filtered data
+          icon={<Schedule />}
+          color="success.main"
+        />
+      </Grid>
+    </Grid>
+  );
+```
+
+**Merchant Section - Already Correct:**
+```typescript
 case 'merchant':
   return (
     <Grid container spacing={3}>
@@ -236,83 +296,44 @@ case 'merchant':
           color="success.main"
         />
       </Grid>
-      // ... rest is correct
-    </Grid>
-  );
-```
-
-**Courier Section (Lines 213-245):**
-```typescript
-// Currently HARDCODED - needs to use real data
-case 'courier':
-  return (
-    <Grid container spacing={3}>
       <Grid item xs={12} sm={6} md={4}>
         <StatCard
-          title="My Trust Score"
-          value={stats?.trust_score || '0'}  // ❌ Change from "85.2"
-          icon={<Star />}
-          color="warning.main"
-          subtitle="Industry average: 78.4"
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <StatCard
-          title="Orders This Month"
-          value={stats?.orders_this_month?.toLocaleString() || '0'}  // ❌ Change from "1,247"
-          icon={<LocalShipping />}
+          title="Completion Rate"
+          value={stats?.avg_completion_rate ? `${Number(stats.avg_completion_rate).toFixed(1)}%` : '0%'}
+          icon={<CheckCircle />}
           color="primary.main"
         />
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
         <StatCard
-          title="On-Time Rate"
-          value={stats?.on_time_rate ? `${stats.on_time_rate}%` : '0%'}  // ❌ Change from "92.1%"
-          icon={<Schedule />}
-          color="success.main"
+          title="Available Couriers"
+          value={stats?.total_couriers || 0}
+          icon={<LocalShipping />}
+          color="info.main"
         />
       </Grid>
     </Grid>
   );
 ```
 
-**Consumer Section (Lines 247+):**
+**Consumer Section - Add Stats:**
 ```typescript
-// Currently shows generic tracking widget
-// Need to add consumer-specific stats
-
 case 'consumer':
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={6} md={3}>
         <StatCard
-          title="Active Shipments"
-          value={stats?.active_shipments || 0}
+          title="My Orders"
+          value={stats?.total_orders_processed || 0}
           icon={<LocalShipping />}
           color="primary.main"
         />
       </Grid>
       <Grid item xs={12} sm={6} md={3}>
         <StatCard
-          title="Total Orders"
-          value={stats?.total_orders || 0}
-          icon={<Assessment />}
-          color="info.main"
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <StatCard
-          title="Delivered"
-          value={stats?.delivered_orders || 0}
-          icon={<CheckCircle />}
-          color="success.main"
-        />
-      </Grid>
-      <Grid item xs={12} sm={6} md={3}>
-        <StatCard
-          title="Pending Claims"
-          value={stats?.pending_claims || 0}
-          icon={<Warning />}
+          title="Average Rating"
+          value={stats?.avg_trust_score || '0'}
+          icon={<Star />}
           color="warning.main"
         />
       </Grid>
@@ -324,10 +345,10 @@ case 'consumer':
 ```
 
 **Action Items:**
-- [ ] Remove hardcoded courier values
-- [ ] Add consumer dashboard layout
+- [ ] Change `getDashboardEndpoint()` to return `/trustscore/dashboard` for all roles
+- [ ] Remove hardcoded courier values (85.2, 1,247, 92.1%)
+- [ ] Update consumer dashboard layout
 - [ ] Test all 4 role dashboards
-- [ ] Verify data updates in real-time
 
 ---
 
@@ -360,21 +381,23 @@ case 'consumer':
 
 ---
 
-## 📁 Files to Create/Modify
+## 📁 Files to Create/Modify (REVISED)
 
 ### **New Files:**
 ```
-backend/src/routes/courier-dashboard.ts
-backend/src/routes/consumer-dashboard.ts
-database/add-consumer-id-to-orders.sql
+None! Using existing infrastructure
 ```
 
 ### **Modified Files:**
 ```
-backend/src/routes/merchant-dashboard.ts (✅ Done, needs testing)
-backend/src/server.ts (add new routes)
-frontend/src/pages/Dashboard.tsx (update courier/consumer sections)
+backend/src/routes/trustscore.ts (add role-based filtering)
+frontend/src/pages/Dashboard.tsx (simplify endpoint, remove hardcoded values)
 database/setup-and-seed-complete.sql (run on production)
+```
+
+### **Files to Remove:**
+```
+backend/src/routes/merchant-dashboard.ts (no longer needed - unified approach)
 ```
 
 ---
@@ -425,35 +448,56 @@ database/setup-and-seed-complete.sql (run on production)
 
 ---
 
-## 🚀 Execution Order (Tomorrow)
+## 🚀 Execution Order (Tomorrow) - REVISED
 
-### **Morning Session (2 hours):**
-1. ✅ Run `setup-and-seed-complete.sql` on production (10 min)
-2. ✅ Verify merchant dashboard works (10 min)
-3. ✅ Create courier dashboard API (45 min)
-4. ✅ Test courier dashboard (15 min)
-5. ☕ **Break**
+### **Single Session (2 hours total!):**
 
-### **Afternoon Session (2 hours):**
-6. ✅ Add `consumer_id` to orders table (10 min)
-7. ✅ Create consumer dashboard API (45 min)
-8. ✅ Update frontend Dashboard.tsx (30 min)
-9. ✅ Test all 4 roles (20 min)
-10. ✅ Deploy and verify (15 min)
+**Phase 1: Database (10 min)**
+1. ✅ Run `setup-and-seed-complete.sql` on production Supabase
+
+**Phase 2: Backend (1 hour)**
+2. ✅ Modify `backend/src/routes/trustscore.ts`:
+   - Add role detection (`req.user.userRole`)
+   - Add role-based WHERE clauses to queries
+   - Add subscription info to response
+3. ✅ Remove `backend/src/routes/merchant-dashboard.ts` (no longer needed)
+4. ✅ Remove merchant route from `server.ts`
+
+**Phase 3: Frontend (30 min)**
+5. ✅ Modify `frontend/src/pages/Dashboard.tsx`:
+   - Change `getDashboardEndpoint()` to always return `/trustscore/dashboard`
+   - Remove hardcoded courier values (lines 213-245)
+   - Update consumer section with stats
+6. ✅ Test locally
+
+**Phase 4: Deploy & Test (20 min)**
+7. ✅ Commit and push to trigger Vercel deployment
+8. ✅ Test all 4 roles on production
+9. ✅ Verify Vercel logs
+10. ✅ Done! 🎉
+
+**Total Time: ~2 hours (vs 4 hours with separate endpoints!)**
 
 ---
 
-## 📊 Current Progress
+## 📊 Current Progress (REVISED)
 
 ```
-Overall: 25% Complete
+Overall: 30% Complete
 
-✅ Merchant API Created (needs production table)
-⏳ Courier API (not started)
-⏳ Consumer API (not started)
-⏳ Frontend Updates (not started)
-⏳ Production Database Setup (not started)
+✅ Database scripts created and ready
+✅ Unified approach designed
+✅ SQL queries documented
+⏳ Backend role filtering (not started)
+⏳ Frontend simplification (not started)
+⏳ Production deployment (not started)
 ```
+
+**Complexity Reduced:**
+- ❌ 3 separate API endpoints → ✅ 1 unified endpoint
+- ❌ 4 hours of work → ✅ 2 hours of work
+- ❌ Duplicate code → ✅ DRY principle
+- ❌ Hard to maintain → ✅ Easy to maintain
 
 ---
 
@@ -465,33 +509,51 @@ Overall: 25% Complete
 - `database/verify-merchant-data.sql` - Detailed debugging
 
 **Backend Routes:**
-- `backend/src/routes/merchant-dashboard.ts` - ✅ Created
-- `backend/src/routes/courier-dashboard.ts` - ⏳ To create
-- `backend/src/routes/consumer-dashboard.ts` - ⏳ To create
+- `backend/src/routes/trustscore.ts` - ⏳ Add role filtering
+- `backend/src/routes/merchant-dashboard.ts` - ❌ Delete (no longer needed)
 
 **Frontend:**
-- `frontend/src/pages/Dashboard.tsx` - Needs updates for courier/consumer
+- `frontend/src/pages/Dashboard.tsx` - ⏳ Simplify endpoint + remove hardcoded values
 
 ---
 
-## 💡 Quick Wins for Tomorrow
+## 💡 Quick Wins for Tomorrow (REVISED)
 
-1. **Run SQL script** (10 min) - Fixes merchant dashboard immediately
-2. **Check Vercel logs** (5 min) - See actual errors
-3. **Create courier API** (45 min) - Removes hardcoded data
-4. **Update frontend** (30 min) - Shows real data everywhere
+1. **Run SQL script** (10 min) - Creates tables and seeds data
+2. **Add role filtering to trustscore.ts** (1 hour) - One endpoint for all roles
+3. **Simplify frontend** (30 min) - Remove hardcoded values, use unified endpoint
+4. **Deploy and test** (20 min) - Verify all 4 roles work
 
-**Total Time: ~90 minutes for major improvements!**
+**Total Time: ~2 hours for COMPLETE solution!**
+
+**Benefits of Unified Approach:**
+- ✅ Less code to write and maintain
+- ✅ Consistent data structure across all roles
+- ✅ Subscription limits enforced in one place
+- ✅ Easier to add new roles in future
+- ✅ Same admin dashboard logic, just filtered
 
 ---
 
 ## 📝 Notes
 
-- All SQL scripts are ready to run
-- Backend structure is in place
-- Frontend just needs data source changes
-- No breaking changes required
-- Can deploy incrementally (merchant → courier → consumer)
+- ✅ All SQL scripts are ready to run
+- ✅ Unified approach is simpler and more maintainable
+- ✅ Same data structure for all roles (just filtered)
+- ✅ No breaking changes required
+- ✅ Can deploy all at once (2 hours total!)
+- ✅ Subscription limits can be added to same endpoint
+- ✅ Reuses existing admin dashboard infrastructure
+
+---
+
+## 🎉 Summary
+
+**Old Plan:** 3-4 hours, 3 new endpoints, lots of duplicate code  
+**New Plan:** 2 hours, 1 unified endpoint, DRY principle ✅
+
+**Key Insight:** Admin dashboard already has all the data and logic we need.  
+We just need to add WHERE clauses based on user role!
 
 ---
 
