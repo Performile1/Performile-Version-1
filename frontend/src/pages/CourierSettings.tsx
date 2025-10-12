@@ -25,18 +25,19 @@ import {
 } from '@mui/icons-material';
 
 // Import sub-components
-import { CourierCompanySettings } from '@/components/settings/courier/CourierCompanySettings';
-import { CourierFleetSettings } from '@/components/settings/courier/CourierFleetSettings';
-import { CourierTeamSettings } from '@/components/settings/courier/CourierTeamSettings';
-import { CourierPerformanceSettings } from '@/components/settings/courier/CourierPerformanceSettings';
-import { CourierLeadsSettings } from '@/components/settings/courier/CourierLeadsSettings';
-import { CourierPaymentSettings } from '@/components/settings/courier/CourierPaymentSettings';
-import { CourierNotificationSettings } from '@/components/settings/courier/CourierNotificationSettings';
-import { CourierAPISettings } from '@/components/settings/courier/CourierAPISettings';
-import { CourierAnalyticsSettings } from '@/components/settings/courier/CourierAnalyticsSettings';
-import { CourierGeneralSettings } from '@/components/settings/courier/CourierGeneralSettings';
-import { CourierSecuritySettings } from '@/components/settings/courier/CourierSecuritySettings';
-import { CourierPreferencesSettings } from '@/components/settings/courier/CourierPreferencesSettings';
+// TODO: Create these components
+// import { CourierCompanySettings } from '@/components/settings/courier/CourierCompanySettings';
+// import { CourierFleetSettings } from '@/components/settings/courier/CourierFleetSettings';
+// import { CourierTeamSettings } from '@/components/settings/courier/CourierTeamSettings';
+// import { CourierPerformanceSettings } from '@/components/settings/courier/CourierPerformanceSettings';
+// import { CourierLeadsSettings } from '@/components/settings/courier/CourierLeadsSettings';
+// import { CourierPaymentSettings } from '@/components/settings/courier/CourierPaymentSettings';
+// import { CourierNotificationSettings } from '@/components/settings/courier/CourierNotificationSettings';
+// import { CourierAPISettings } from '@/components/settings/courier/CourierAPISettings';
+// import { CourierAnalyticsSettings } from '@/components/settings/courier/CourierAnalyticsSettings';
+// import { CourierGeneralSettings } from '@/components/settings/courier/CourierGeneralSettings';
+// import { CourierSecuritySettings} from '@/components/settings/courier/CourierSecuritySettings';
+// import { CourierPreferencesSettings } from '@/components/settings/courier/CourierPreferencesSettings';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -60,7 +61,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const CourierSettings: React.FC = () => {
-  const { user } = useAuthStore();
+  const { user: _user } = useAuthStore(); // Prefix with _ to indicate intentionally unused
   const [tabValue, setTabValue] = useState(0);
   const [subscriptionInfo, setSubscriptionInfo] = useState<any>(null);
 
@@ -229,51 +230,51 @@ const CourierSettings: React.FC = () => {
 
       {/* Tab Panels */}
       <TabPanel value={tabValue} index={0}>
-        <CourierCompanySettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Company Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={1}>
-        <CourierFleetSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Fleet Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={2}>
-        <CourierTeamSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Team Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={3}>
-        <CourierPerformanceSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Performance Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={4}>
-        <CourierLeadsSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Leads Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={5}>
-        <CourierAnalyticsSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Analytics Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={6}>
-        <CourierPaymentSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Payment Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={7}>
-        <CourierNotificationSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Notification Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={8}>
-        <CourierAPISettings subscriptionInfo={subscriptionInfo} />
+        <Typography>API Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={9}>
-        <CourierGeneralSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>General Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={10}>
-        <CourierSecuritySettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Security Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={11}>
-        <CourierPreferencesSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Preferences Settings - Coming Soon</Typography>
       </TabPanel>
     </Container>
   );

@@ -25,18 +25,19 @@ import {
 } from '@mui/icons-material';
 
 // Import sub-components
-import { AdminPlatformSettings } from '@/components/settings/admin/AdminPlatformSettings';
-import { AdminUsersSettings } from '@/components/settings/admin/AdminUsersSettings';
-import { AdminMerchantsSettings } from '@/components/settings/admin/AdminMerchantsSettings';
-import { AdminCouriersSettings } from '@/components/settings/admin/AdminCouriersSettings';
-import { AdminSubscriptionsSettings } from '@/components/settings/admin/AdminSubscriptionsSettings';
-import { AdminAnalyticsSettings } from '@/components/settings/admin/AdminAnalyticsSettings';
-import { AdminEmailSettings } from '@/components/settings/admin/AdminEmailSettings';
-import { AdminNotificationSettings } from '@/components/settings/admin/AdminNotificationSettings';
-import { AdminSecuritySettings } from '@/components/settings/admin/AdminSecuritySettings';
-import { AdminDatabaseSettings } from '@/components/settings/admin/AdminDatabaseSettings';
-import { AdminSystemSettings } from '@/components/settings/admin/AdminSystemSettings';
-import { AdminLogsSettings } from '@/components/settings/admin/AdminLogsSettings';
+// TODO: Create these components
+// import { AdminPlatformSettings } from '@/components/settings/admin/AdminPlatformSettings';
+// import { AdminUsersSettings } from '@/components/settings/admin/AdminUsersSettings';
+// import { AdminMerchantsSettings } from '@/components/settings/admin/AdminMerchantsSettings';
+// import { AdminCouriersSettings } from '@/components/settings/admin/AdminCouriersSettings';
+// import { AdminSubscriptionsSettings } from '@/components/settings/admin/AdminSubscriptionsSettings';
+// import { AdminAnalyticsSettings } from '@/components/settings/admin/AdminAnalyticsSettings';
+// import { AdminEmailSettings } from '@/components/settings/admin/AdminEmailSettings';
+// import { AdminNotificationSettings } from '@/components/settings/admin/AdminNotificationSettings';
+// import { AdminSecuritySettings } from '@/components/settings/admin/AdminSecuritySettings';
+// import { AdminDatabaseSettings } from '@/components/settings/admin/AdminDatabaseSettings';
+// import { AdminSystemSettings } from '@/components/settings/admin/AdminSystemSettings';
+// import { AdminLogsSettings } from '@/components/settings/admin/AdminLogsSettings';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -60,7 +61,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const AdminSettings: React.FC = () => {
-  const { user } = useAuthStore();
+  const { user: _user } = useAuthStore(); // Prefix with _ to indicate intentionally unused
   const [tabValue, setTabValue] = useState(0);
   const [platformStats, setPlatformStats] = useState<any>(null);
 
@@ -227,51 +228,51 @@ const AdminSettings: React.FC = () => {
 
       {/* Tab Panels */}
       <TabPanel value={tabValue} index={0}>
-        <AdminPlatformSettings platformStats={platformStats} />
+        <Typography>Platform Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={1}>
-        <AdminUsersSettings platformStats={platformStats} />
+        <Typography>Users Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={2}>
-        <AdminMerchantsSettings platformStats={platformStats} />
+        <Typography>Merchants Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={3}>
-        <AdminCouriersSettings platformStats={platformStats} />
+        <Typography>Couriers Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={4}>
-        <AdminSubscriptionsSettings platformStats={platformStats} />
+        <Typography>Subscriptions Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={5}>
-        <AdminAnalyticsSettings platformStats={platformStats} />
+        <Typography>Analytics Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={6}>
-        <AdminEmailSettings platformStats={platformStats} />
+        <Typography>Email Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={7}>
-        <AdminNotificationSettings platformStats={platformStats} />
+        <Typography>Notification Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={8}>
-        <AdminSecuritySettings platformStats={platformStats} />
+        <Typography>Security Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={9}>
-        <AdminDatabaseSettings platformStats={platformStats} />
+        <Typography>Database Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={10}>
-        <AdminSystemSettings platformStats={platformStats} />
+        <Typography>System Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={11}>
-        <AdminLogsSettings platformStats={platformStats} />
+        <Typography>Logs Settings - Coming Soon</Typography>
       </TabPanel>
     </Container>
   );

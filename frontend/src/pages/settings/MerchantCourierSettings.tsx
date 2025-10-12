@@ -300,7 +300,7 @@ export const MerchantCourierSettings: React.FC = () => {
     );
   }
 
-  const maxCouriers = subscriptionInfo?.subscription.max_couriers;
+  const maxCouriers = subscriptionInfo?.subscription?.max_couriers;
   const couriersSelected = subscriptionInfo?.usage.couriers_selected || 0;
   const canAddMore = subscriptionInfo?.usage.can_add_courier !== false;
   const planName = subscriptionInfo?.subscription.plan_name || 'Free';
@@ -388,7 +388,7 @@ export const MerchantCourierSettings: React.FC = () => {
                 Upgrade Plan
               </Button>
             )}
-            {maxCouriers !== null && canAddMore && (
+            {maxCouriers !== null && maxCouriers !== undefined && canAddMore && (
               <Typography variant="body2" sx={{ opacity: 0.9 }}>
                 {maxCouriers - couriersSelected} slots remaining
               </Typography>

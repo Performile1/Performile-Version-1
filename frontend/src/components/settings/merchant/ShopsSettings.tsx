@@ -27,9 +27,11 @@ import {
   Store,
   Language,
   LocationOn,
-  Phone,
+  Business,
   Email,
   CheckCircle,
+  Cancel,
+  Star,
   Warning,
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
@@ -207,7 +209,7 @@ export const ShopsSettings: React.FC<ShopsSettingsProps> = ({ subscriptionInfo }
   const shopsCreated = subscriptionInfo?.usage?.shops_created || shops.length;
   const canAddMore = maxShops === null || shopsCreated < maxShops;
   const usagePercentage = getUsagePercentage(shopsCreated, maxShops);
-  const usageColor = getUsageColor(shopsCreated, maxShops);
+  const _usageColor = getUsageColor(shopsCreated, maxShops); // Prefix with _ to indicate intentionally unused
 
   return (
     <Box>

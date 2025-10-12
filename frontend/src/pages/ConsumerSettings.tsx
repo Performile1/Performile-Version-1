@@ -21,15 +21,16 @@ import {
 } from '@mui/icons-material';
 
 // Import sub-components
-import { ConsumerProfileSettings } from '@/components/settings/consumer/ConsumerProfileSettings';
-import { ConsumerAddressSettings } from '@/components/settings/consumer/ConsumerAddressSettings';
-import { ConsumerPaymentSettings } from '@/components/settings/consumer/ConsumerPaymentSettings';
-import { ConsumerOrderSettings } from '@/components/settings/consumer/ConsumerOrderSettings';
-import { ConsumerFavoritesSettings } from '@/components/settings/consumer/ConsumerFavoritesSettings';
-import { ConsumerNotificationSettings } from '@/components/settings/consumer/ConsumerNotificationSettings';
-import { ConsumerSecuritySettings } from '@/components/settings/consumer/ConsumerSecuritySettings';
-import { ConsumerPrivacySettings } from '@/components/settings/consumer/ConsumerPrivacySettings';
-import { ConsumerPreferencesSettings } from '@/components/settings/consumer/ConsumerPreferencesSettings';
+// TODO: Create these components
+// import { ConsumerProfileSettings } from '@/components/settings/consumer/ConsumerProfileSettings';
+// import { ConsumerAddressSettings } from '@/components/settings/consumer/ConsumerAddressSettings';
+// import { ConsumerPaymentSettings } from '@/components/settings/consumer/ConsumerPaymentSettings';
+// import { ConsumerOrderSettings } from '@/components/settings/consumer/ConsumerOrderSettings';
+// import { ConsumerFavoritesSettings } from '@/components/settings/consumer/ConsumerFavoritesSettings';
+// import { ConsumerNotificationSettings } from '@/components/settings/consumer/ConsumerNotificationSettings';
+// import { ConsumerSecuritySettings } from '@/components/settings/consumer/ConsumerSecuritySettings';
+// import { ConsumerPrivacySettings } from '@/components/settings/consumer/ConsumerPrivacySettings';
+// import { ConsumerPreferencesSettings } from '@/components/settings/consumer/ConsumerPreferencesSettings';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -53,7 +54,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const ConsumerSettings: React.FC = () => {
-  const { user } = useAuthStore();
+  const { user: _user } = useAuthStore(); // Prefix with _ to indicate intentionally unused
   const [tabValue, setTabValue] = useState(0);
 
   // Get tab from URL hash if present
@@ -166,39 +167,39 @@ const ConsumerSettings: React.FC = () => {
 
       {/* Tab Panels */}
       <TabPanel value={tabValue} index={0}>
-        <ConsumerProfileSettings />
+        <Typography>Profile Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={1}>
-        <ConsumerAddressSettings />
+        <Typography>Address Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={2}>
-        <ConsumerPaymentSettings />
+        <Typography>Payment Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={3}>
-        <ConsumerOrderSettings />
+        <Typography>Order Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={4}>
-        <ConsumerFavoritesSettings />
+        <Typography>Favorites Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={5}>
-        <ConsumerNotificationSettings />
+        <Typography>Notification Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={6}>
-        <ConsumerSecuritySettings />
+        <Typography>Security Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={7}>
-        <ConsumerPrivacySettings />
+        <Typography>Privacy Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={8}>
-        <ConsumerPreferencesSettings />
+        <Typography>Preferences Settings - Coming Soon</Typography>
       </TabPanel>
     </Container>
   );

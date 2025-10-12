@@ -6,28 +6,25 @@ import {
   Button,
   TextField,
   Grid,
-  Alert,
-  Switch,
-  FormControlLabel,
   Card,
   CardContent,
-  Divider,
-  Chip,
+  Switch,
+  FormControlLabel,
+  Alert,
   IconButton,
   InputAdornment,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
+  Chip,
+  // Image, // Not exported from MUI
 } from '@mui/material';
 import {
   ContentCopy,
   Preview,
   Save,
   Palette,
-  Image,
+  Image as ImageIcon,
   Code,
-  CheckCircle,
+  Visibility,
+  Language,
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
@@ -270,7 +267,7 @@ export const TrackingPageSettings: React.FC<TrackingPageSettingsProps> = ({ subs
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Image />
+                    <ImageIcon />
                   </InputAdornment>
                 ),
               }}

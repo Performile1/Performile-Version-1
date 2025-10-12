@@ -28,15 +28,16 @@ import {
 import { ShopsSettings } from '@/components/settings/merchant/ShopsSettings';
 import { CouriersSettings } from '@/components/settings/merchant/CouriersSettings';
 import { TrackingPageSettings } from '@/components/settings/merchant/TrackingPageSettings';
-import { RatingSettings } from '@/components/settings/merchant/RatingSettings';
-import { EmailTemplatesSettings } from '@/components/settings/merchant/EmailTemplatesSettings';
-import { ReturnsSettings } from '@/components/settings/merchant/ReturnsSettings';
-import { PaymentSettings } from '@/components/settings/merchant/PaymentSettings';
-import { NotificationSettings } from '@/components/settings/merchant/NotificationSettings';
-import { APISettings } from '@/components/settings/merchant/APISettings';
-import { GeneralSettings } from '@/components/settings/merchant/GeneralSettings';
-import { SecuritySettings } from '@/components/settings/merchant/SecuritySettings';
-import { PreferencesSettings } from '@/components/settings/merchant/PreferencesSettings';
+// TODO: Create these components
+// import { RatingSettings } from '@/components/settings/merchant/RatingSettings';
+// import { EmailTemplatesSettings } from '@/components/settings/merchant/EmailTemplatesSettings';
+// import { ReturnsSettings } from '@/components/settings/merchant/ReturnsSettings';
+// import { PaymentSettings } from '@/components/settings/merchant/PaymentSettings';
+// import { NotificationSettings } from '@/components/settings/merchant/NotificationSettings';
+// import { APISettings } from '@/components/settings/merchant/APISettings';
+// import { GeneralSettings } from '@/components/settings/merchant/GeneralSettings';
+// import { SecuritySettings } from '@/components/settings/merchant/SecuritySettings';
+// import { PreferencesSettings } from '@/components/settings/merchant/PreferencesSettings';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -60,7 +61,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const MerchantSettings: React.FC = () => {
-  const { user } = useAuthStore();
+  const { user: _user } = useAuthStore(); // Prefix with _ to indicate intentionally unused
   const [tabValue, setTabValue] = useState(0);
   const [subscriptionInfo, setSubscriptionInfo] = useState<any>(null);
 
@@ -241,39 +242,39 @@ const MerchantSettings: React.FC = () => {
       </TabPanel>
 
       <TabPanel value={tabValue} index={3}>
-        <RatingSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Rating Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={4}>
-        <EmailTemplatesSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Email Templates - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={5}>
-        <ReturnsSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Returns Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={6}>
-        <PaymentSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Payment Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={7}>
-        <NotificationSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Notification Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={8}>
-        <APISettings subscriptionInfo={subscriptionInfo} />
+        <Typography>API Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={9}>
-        <GeneralSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>General Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={10}>
-        <SecuritySettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Security Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={11}>
-        <PreferencesSettings subscriptionInfo={subscriptionInfo} />
+        <Typography>Preferences Settings - Coming Soon</Typography>
       </TabPanel>
     </Container>
   );
