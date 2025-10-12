@@ -77,7 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         `SELECT 
            o.order_id,
            o.order_number,
-           o.status,
+           o.order_status as status,
            o.tracking_number,
            o.created_at,
            o.updated_at,

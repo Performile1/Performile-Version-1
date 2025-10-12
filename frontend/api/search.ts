@@ -57,7 +57,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const orderResult = await pool.query(`
         SELECT 'order' as type, order_id::text as id,
                tracking_number as name,
-               status as description
+               order_status as description
         FROM orders
         WHERE tracking_number ILIKE $1
         LIMIT $2

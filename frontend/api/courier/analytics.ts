@@ -83,7 +83,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         `SELECT 
            DATE(o.created_at) as date,
            COUNT(o.order_id) as delivery_count,
-           COUNT(CASE WHEN o.status = 'delivered' THEN 1 END) as completed_count,
+           COUNT(CASE WHEN o.order_status = 'delivered' THEN 1 END) as completed_count,
            COUNT(CASE WHEN o.delivered_on_time THEN 1 END) as on_time_count,
            AVG(o.delivery_rating) as avg_rating
          FROM orders o
@@ -101,7 +101,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
            s.shop_id,
            s.shop_name,
            COUNT(o.order_id) as total_deliveries,
-           COUNT(CASE WHEN o.status = 'delivered' THEN 1 END) as completed_deliveries,
+           COUNT(CASE WHEN o.order_status = 'delivered' THEN 1 END) as completed_deliveries,
            AVG(o.delivery_rating) as avg_rating,
            AVG(CASE WHEN o.delivered_on_time THEN 100 ELSE 0 END) as on_time_rate
          FROM orders o
@@ -117,13 +117,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Get delivery status distribution
       const statusDistributionResult = await client.query(
         `SELECT 
-           o.status,
+           o.order_status as status,
            COUNT(*) as count,
            ROUND(COUNT(*)::NUMERIC / SUM(COUNT(*)) OVER () * 100, 2) as percentage
          FROM orders o
          WHERE o.courier_id = $1
            ${dateFilter}
-         GROUP BY o.status
+         GROUP BY o.order_status
          ORDER BY count DESC`,
         params
       );
@@ -201,7 +201,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
            tm.last_name,
            tm.role,
            COUNT(o.order_id) as deliveries_assigned,
-           COUNT(CASE WHEN o.status = 'delivered' THEN 1 END) as deliveries_completed
+           COUNT(CASE WHEN o.order_status = 'delivered' THEN 1 END) as deliveries_completed
          FROM team_members tm
          LEFT JOIN orders o ON tm.member_id = o.assigned_driver_id
          WHERE tm.courier_id = $1
@@ -215,8 +215,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const summaryResult = await client.query(
         `SELECT 
            COUNT(DISTINCT o.order_id) as total_deliveries,
-           COUNT(CASE WHEN o.status = 'delivered' THEN 1 END) as completed_deliveries,
-           COUNT(CASE WHEN o.status = 'cancelled' THEN 1 END) as cancelled_deliveries,
+           COUNT(CASE WHEN o.order_status = 'delivered' THEN 1 END) as completed_deliveries,
+           COUNT(CASE WHEN o.order_status = 'cancelled' THEN 1 END) as cancelled_deliveries,
            AVG(CASE WHEN o.delivered_on_time THEN 100 ELSE 0 END) as on_time_rate,
            AVG(o.delivery_rating) as avg_rating,
            COUNT(DISTINCT o.consumer_id) as unique_customers,
