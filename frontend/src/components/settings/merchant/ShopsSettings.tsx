@@ -27,18 +27,14 @@ import {
   Store,
   Language,
   LocationOn,
-  Business,
   Email,
   CheckCircle,
-  Cancel,
-  Star,
   Warning,
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { SubscriptionGate } from '@/components/SubscriptionGate';
-import { getUsagePercentage, getUsageColor, formatLimit } from '@/utils/subscriptionHelpers';
+import { getUsagePercentage, formatLimit } from '@/utils/subscriptionHelpers';
 
 interface Shop {
   shop_id: string;
