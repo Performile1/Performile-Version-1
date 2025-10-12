@@ -37,6 +37,7 @@ import adminRoutes from './routes/admin';
 import integrationRoutes from './routes/integration';
 import shopifyRoutes from './routes/shopify';
 import courierRoutes from './routes/courierRoutes';
+import merchantDashboardRoutes from './routes/merchant-dashboard';
 
 
 class Server {
@@ -140,6 +141,7 @@ class Server {
     this.app.use('/api/integration', integrationRoutes);
     this.app.use('/api/shopify', shopifyRoutes);
     this.app.use('/api/couriers', courierRoutes);
+    this.app.use('/api/merchant', merchantDashboardRoutes);
 
     // API documentation endpoint
     this.app.get('/api', (req, res) => {
