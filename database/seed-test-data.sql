@@ -16,13 +16,13 @@ WHERE user_role IN ('merchant', 'courier')
 ORDER BY user_role, email;
 
 -- =====================================================
--- 2. Create Sample Shops for Merchants
+-- 2. Create Sample Stores for Merchants
 -- =====================================================
 
--- Create a shop for each merchant (if they don't have one)
-INSERT INTO shops (
+-- Create a store for each merchant (if they don't have one)
+INSERT INTO stores (
   owner_user_id,
-  shop_name,
+  store_name,
   website_url,
   description,
   contact_email,
@@ -30,42 +30,45 @@ INSERT INTO shops (
 )
 SELECT 
   u.user_id,
-  u.first_name || '''s Shop',
+  u.first_name || '''s Store',
   'https://example.com',
-  'Sample shop for testing',
+  'Sample store for testing',
   u.email,
   TRUE
 FROM users u
 WHERE u.user_role = 'merchant'
   AND NOT EXISTS (
-    SELECT 1 FROM shops s WHERE s.owner_user_id = u.user_id
+    SELECT 1 FROM stores s WHERE s.owner_user_id = u.user_id
   );
 
 -- =====================================================
 -- 3. Link Merchants with Couriers
 -- =====================================================
 
--- Create shop_couriers relationships
--- This links each merchant's shop with available couriers
-INSERT INTO shop_couriers (
-  shop_id,
+-- Create store_couriers relationships (if table exists)
+-- Note: If you're using shop_couriers table, this links stores with couriers
+-- Check your actual table name and adjust accordingly
+
+-- Option A: If using merchant_courier_selections table
+INSERT INTO merchant_courier_selections (
+  merchant_id,
   courier_id,
   priority_level,
   is_active
 )
 SELECT 
-  s.shop_id,
+  s.owner_user_id,
   c.courier_id,
   1 as priority_level,
   TRUE
-FROM shops s
+FROM stores s
 CROSS JOIN couriers c
 WHERE s.owner_user_id IN (SELECT user_id FROM users WHERE user_role = 'merchant')
   AND NOT EXISTS (
-    SELECT 1 FROM shop_couriers sc 
-    WHERE sc.shop_id = s.shop_id AND sc.courier_id = c.courier_id
+    SELECT 1 FROM merchant_courier_selections mcs 
+    WHERE mcs.merchant_id = s.owner_user_id AND mcs.courier_id = c.courier_id
   )
-LIMIT 5; -- Limit to 5 couriers per shop (respects Tier 1 limit)
+LIMIT 5; -- Limit to 5 couriers per merchant (respects Tier 1 limit)
 
 -- =====================================================
 -- 4. Create Sample Orders
@@ -104,11 +107,11 @@ SELECT
   'Test City' as city,
   'USA' as country,
   NOW() - (random() * INTERVAL '30 days') as created_at
-FROM shops s
+FROM stores s
 CROSS JOIN couriers c
 WHERE s.owner_user_id IN (SELECT user_id FROM users WHERE user_role = 'merchant')
   AND c.courier_id IN (
-    SELECT courier_id FROM shop_couriers WHERE shop_id = s.shop_id LIMIT 1
+    SELECT courier_id FROM merchant_courier_selections WHERE merchant_id = s.owner_user_id LIMIT 1
   )
 LIMIT 50; -- Create 50 sample orders
 
@@ -116,18 +119,18 @@ LIMIT 50; -- Create 50 sample orders
 -- 5. Verify Data
 -- =====================================================
 
--- Check shops created
+-- Check stores created
 SELECT 
-  s.shop_name,
+  s.store_name,
   u.email as owner_email,
-  COUNT(DISTINCT sc.courier_id) as linked_couriers,
+  COUNT(DISTINCT mcs.courier_id) as linked_couriers,
   COUNT(DISTINCT o.order_id) as total_orders
-FROM shops s
+FROM stores s
 JOIN users u ON s.owner_user_id = u.user_id
-LEFT JOIN shop_couriers sc ON s.shop_id = sc.shop_id
+LEFT JOIN merchant_courier_selections mcs ON s.owner_user_id = mcs.merchant_id
 LEFT JOIN orders o ON s.store_id = o.store_id
 WHERE u.user_role = 'merchant'
-GROUP BY s.shop_id, s.shop_name, u.email;
+GROUP BY s.store_id, s.store_name, u.email;
 
 -- Check orders created
 SELECT 
@@ -141,11 +144,11 @@ SELECT
   u.email as merchant_email,
   COUNT(DISTINCT o.order_id) as total_orders,
   COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders,
-  COUNT(DISTINCT sc.courier_id) as available_couriers
+  COUNT(DISTINCT mcs.courier_id) as available_couriers
 FROM users u
-JOIN shops s ON u.user_id = s.owner_user_id
+JOIN stores s ON u.user_id = s.owner_user_id
 LEFT JOIN orders o ON s.store_id = o.store_id
-LEFT JOIN shop_couriers sc ON s.shop_id = sc.shop_id AND sc.is_active = TRUE
+LEFT JOIN merchant_courier_selections mcs ON s.owner_user_id = mcs.merchant_id AND mcs.is_active = TRUE
 WHERE u.user_role = 'merchant'
 GROUP BY u.user_id, u.email;
 
