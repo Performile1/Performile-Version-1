@@ -27,7 +27,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Get user's current active subscription
       const result = await client.query(`
         SELECT 
-          us.user_subscription_id as subscription_id,
+          us.subscription_id,
           sp.plan_name,
           us.status,
           us.current_period_start,
