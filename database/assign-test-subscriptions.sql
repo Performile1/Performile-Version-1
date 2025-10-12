@@ -158,7 +158,10 @@ ORDER BY u.user_role, sp.tier;
 -- =====================================================
 -- Check subscription limits for a specific user
 -- =====================================================
--- Replace with your user's email to check their limits
+-- Note: This function needs to be created first from create-subscription-system.sql
+-- Uncomment below if you have the function installed:
+/*
 SELECT * FROM get_user_subscription_limits(
     (SELECT user_id FROM users WHERE email = 'merchant@example.com' LIMIT 1)
 );
+*/
