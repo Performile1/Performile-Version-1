@@ -25,7 +25,6 @@ INSERT INTO stores (
   store_name,
   website_url,
   description,
-  contact_email,
   is_active
 )
 SELECT 
@@ -33,7 +32,6 @@ SELECT
   u.first_name || '''s Store',
   'https://example.com',
   'Sample store for testing',
-  u.email,
   TRUE
 FROM users u
 WHERE u.user_role = 'merchant'
