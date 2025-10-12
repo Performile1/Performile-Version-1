@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { pool } from '../config/database';
+import database from '../config/database';
 import { authenticateToken } from '../middleware/auth';
 
 const router = Router();
@@ -21,7 +21,7 @@ router.get('/dashboard', authenticateToken, async (req: Request, res: Response) 
     }
 
     // Get merchant's stores
-    const storesQuery = await pool.query(
+    const storesQuery = await database.query(
       `SELECT store_id FROM stores WHERE owner_user_id = $1 AND is_active = TRUE`,
       [userId]
     );
@@ -48,7 +48,7 @@ router.get('/dashboard', authenticateToken, async (req: Request, res: Response) 
     }
 
     // Get linked couriers count
-    const couriersQuery = await pool.query(
+    const couriersQuery = await database.query(
       `SELECT COUNT(DISTINCT courier_id) as total_couriers
        FROM merchant_courier_selections
        WHERE merchant_id = $1 AND is_active = TRUE`,
@@ -56,7 +56,7 @@ router.get('/dashboard', authenticateToken, async (req: Request, res: Response) 
     );
 
     // Get orders statistics
-    const ordersStatsQuery = await pool.query(
+    const ordersStatsQuery = await database.query(
       `SELECT 
         COUNT(*) as total_orders,
         COUNT(CASE WHEN order_status = 'delivered' THEN 1 END) as delivered_orders,
@@ -79,7 +79,7 @@ router.get('/dashboard', authenticateToken, async (req: Request, res: Response) 
     );
 
     // Get top performing couriers for this merchant
-    const topCouriersQuery = await pool.query(
+    const topCouriersQuery = await database.query(
       `SELECT 
         c.courier_id,
         c.courier_name,
