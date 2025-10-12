@@ -38,19 +38,15 @@ INSERT INTO user_subscriptions (
     user_id,
     plan_id,
     status,
-    start_date,
     current_period_start,
-    current_period_end,
-    billing_cycle
+    current_period_end
 )
 SELECT 
     u.user_id,
     sp.plan_id,
     'active',
     NOW(),
-    NOW(),
-    NOW() + INTERVAL '1 month',
-    'monthly'
+    NOW() + INTERVAL '1 month'
 FROM users u
 CROSS JOIN subscription_plans sp
 WHERE u.email = 'merchant@example.com'  -- CHANGE THIS
@@ -67,19 +63,15 @@ INSERT INTO user_subscriptions (
     user_id,
     plan_id,
     status,
-    start_date,
     current_period_start,
-    current_period_end,
-    billing_cycle
+    current_period_end
 )
 SELECT 
     u.user_id,
     sp.plan_id,
     'active',
     NOW(),
-    NOW(),
-    NOW() + INTERVAL '1 month',
-    'monthly'
+    NOW() + INTERVAL '1 month'
 FROM users u
 CROSS JOIN subscription_plans sp
 WHERE u.email = 'courier@example.com'  -- CHANGE THIS
@@ -97,19 +89,15 @@ INSERT INTO user_subscriptions (
     user_id,
     plan_id,
     status,
-    start_date,
     current_period_start,
-    current_period_end,
-    billing_cycle
+    current_period_end
 )
 SELECT 
     u.user_id,
     sp.plan_id,
     'active',
     NOW(),
-    NOW(),
-    NOW() + INTERVAL '1 month',
-    'monthly'
+    NOW() + INTERVAL '1 month'
 FROM users u
 CROSS JOIN subscription_plans sp
 WHERE u.user_role = 'merchant'
@@ -127,19 +115,15 @@ INSERT INTO user_subscriptions (
     user_id,
     plan_id,
     status,
-    start_date,
     current_period_start,
-    current_period_end,
-    billing_cycle
+    current_period_end
 )
 SELECT 
     u.user_id,
     sp.plan_id,
     'active',
     NOW(),
-    NOW(),
-    NOW() + INTERVAL '1 month',
-    'monthly'
+    NOW() + INTERVAL '1 month'
 FROM users u
 CROSS JOIN subscription_plans sp
 WHERE u.user_role = 'courier'
