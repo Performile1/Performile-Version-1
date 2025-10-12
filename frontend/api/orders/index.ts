@@ -155,6 +155,11 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
     
     const orderByColumn = columnMap[sortColumn as string] || 'o.created_at';
 
+    // Add limit and offset to params first
+    queryParams.push(parseInt(limit as string), offset);
+    const limitParam = ++paramCount;
+    const offsetParam = ++paramCount;
+
     const query = `
       SELECT 
         o.order_id,
@@ -179,10 +184,8 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
       LEFT JOIN users u ON o.customer_id = u.user_id
       WHERE ${whereClause}
       ORDER BY ${orderByColumn} ${sortDirection}
-      LIMIT $${++paramCount} OFFSET $${++paramCount}
+      LIMIT $${limitParam} OFFSET $${offsetParam}
     `;
-
-    queryParams.push(parseInt(limit as string), offset);
 
     // Use RLS context - queries will be automatically filtered by role
     const data = await withRLS(pool, { userId: user.userId || user.user_id, role: user.role || user.user_role }, async (client) => {
