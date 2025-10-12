@@ -68,7 +68,7 @@ INSERT INTO merchant_courier_selections (
 SELECT 
   u.user_id as merchant_id,
   c.courier_id,
-  ROW_NUMBER() OVER (PARTITION BY u.user_id ORDER BY c.trust_score DESC) as priority_level,
+  ROW_NUMBER() OVER (PARTITION BY u.user_id ORDER BY c.courier_id) as priority_level,
   TRUE
 FROM users u
 CROSS JOIN couriers c
