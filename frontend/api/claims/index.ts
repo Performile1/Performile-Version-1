@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getPool } from '../lib/db';
+import { withRLS } from '../lib/rls';
 import { applySecurityMiddleware } from '../middleware/security';
 
 const pool = getPool();
@@ -40,9 +41,12 @@ async function getClaims(req: VercelRequest, res: VercelResponse, user: any) {
   const { claim_id, status, courier } = req.query;
 
   if (claim_id) {
-    // Get specific claim with timeline
-    const claimResult = await pool.query(
-      `SELECT c.*, 
+    // Get specific claim with timeline (role-based access)
+    let claimQuery = `
+      SELECT c.*, 
+        o.order_number,
+        s.shop_name,
+        co.courier_name,
         json_agg(
           json_build_object(
             'timeline_id', ct.timeline_id,
@@ -54,13 +58,23 @@ async function getClaims(req: VercelRequest, res: VercelResponse, user: any) {
         ) as timeline
       FROM claims c
       LEFT JOIN claim_timeline ct ON c.claim_id = ct.claim_id
-      WHERE c.claim_id = $1 AND c.claimant_id = $2
-      GROUP BY c.claim_id`,
-      [claim_id, user.user_id]
-    );
+      LEFT JOIN orders o ON c.order_id = o.order_id
+      LEFT JOIN shops s ON o.shop_id = s.shop_id
+      LEFT JOIN couriers co ON o.courier_id = co.courier_id
+      WHERE c.claim_id = $1
+    `;
+    const claimParams: any[] = [claim_id];
+
+    // RLS will handle role-based access control automatically
+    claimQuery += ` GROUP BY c.claim_id, o.order_number, s.shop_name, co.courier_name`;
+
+    // Use RLS context
+    const claimResult = await withRLS(pool, { userId: user.userId || user.user_id, role: user.role || user.user_role }, async (client) => {
+      return await client.query(claimQuery, claimParams);
+    });
 
     if (claimResult.rows.length === 0) {
-      return res.status(404).json({ error: 'Claim not found' });
+      return res.status(404).json({ error: 'Claim not found or access denied' });
     }
 
     return res.status(200).json({
@@ -69,15 +83,20 @@ async function getClaims(req: VercelRequest, res: VercelResponse, user: any) {
     });
   }
 
-  // Get all claims for user
+  // Get all claims for user (role-based filtering)
   let query = `
-    SELECT c.*, o.order_number, o.store_name
+    SELECT c.*, o.order_number, s.shop_name as store_name, co.courier_name
     FROM claims c
     LEFT JOIN orders o ON c.order_id = o.order_id
-    WHERE c.claimant_id = $1
+    LEFT JOIN shops s ON o.shop_id = s.shop_id
+    LEFT JOIN couriers co ON o.courier_id = co.courier_id
+    WHERE 1=1
   `;
-  const params: any[] = [user.user_id];
-  let paramCount = 2;
+  const params: any[] = [];
+  let paramCount = 1;
+
+  // RLS will handle role-based filtering automatically
+  query += ` WHERE 1=1`;
 
   if (status) {
     query += ` AND c.claim_status = $${paramCount}`;
@@ -93,7 +112,10 @@ async function getClaims(req: VercelRequest, res: VercelResponse, user: any) {
 
   query += ` ORDER BY c.created_at DESC`;
 
-  const result = await pool.query(query, params);
+  // Use RLS context
+  const result = await withRLS(pool, { userId: user.userId || user.user_id, role: user.role || user.user_role }, async (client) => {
+    return await client.query(query, params);
+  });
 
   return res.status(200).json({
     success: true,

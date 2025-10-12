@@ -76,15 +76,33 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, trend, s
 );
 
 export const Dashboard: React.FC = () => {
-  console.log('🚀 Dashboard v2.0 - All array fixes applied!');
+  console.log('🚀 Dashboard v3.0 - Role-based data filtering enabled!');
   const { user } = useAuthStore();
 
+  // Get role-specific dashboard endpoint
+  const getDashboardEndpoint = () => {
+    switch (user?.user_role) {
+      case 'merchant':
+        return '/merchant/dashboard';
+      case 'courier':
+        return '/courier/dashboard';
+      case 'consumer':
+        return '/consumer/dashboard';
+      case 'admin':
+        return '/admin/dashboard';
+      default:
+        return '/trustscore/dashboard'; // Fallback (should not happen)
+    }
+  };
+
   const { data: dashboardData, isLoading } = useQuery({
-    queryKey: ['dashboard-stats'],
+    queryKey: ['dashboard-stats', user?.user_role, user?.user_id],
     queryFn: async () => {
-      const response = await apiClient.get('/trustscore/dashboard');
+      const endpoint = getDashboardEndpoint();
+      const response = await apiClient.get(endpoint);
       return response.data.data;
     },
+    enabled: !!user, // Only fetch when user is authenticated
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 

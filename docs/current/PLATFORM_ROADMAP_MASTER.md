@@ -1,6 +1,6 @@
 # Performile Platform - Master Roadmap
-**Last Updated:** October 11, 2025, 09:05  
-**Version:** 1.0  
+**Last Updated:** October 12, 2025, 11:06  
+**Version:** 1.1  
 **Status:** Active Planning
 
 ---
@@ -22,9 +22,108 @@ We empower merchants to make data-driven shipping decisions, optimize costs, and
 
 ## 🚀 IMMEDIATE PRIORITY (Next 1-2 Days)
 
-**Goal:** 100% Production-Ready Platform
+**Goal:** 100% Production-Ready Platform with Proper Role Separation
 
-### High-Priority Fixes
+### 🔴 CRITICAL: Role-Based Data Filtering (SECURITY)
+**Estimated Time:** 16-20 hours  
+**Priority:** 🔴 CRITICAL - Security Issue  
+**Status:** ⚠️ BLOCKING PRODUCTION
+
+**Problem Identified:** Dashboard, Analytics, and Orders pages currently show platform-wide data to ALL users instead of role-specific data. This is a critical security and privacy issue.
+
+#### Phase 1: Backend API Separation (8-10 hours)
+- [ ] **Create Role-Specific Dashboard Endpoints**
+  - [ ] Create `/api/merchant/dashboard` - Returns only merchant's shops, orders, revenue
+  - [ ] Create `/api/courier/dashboard` - Returns only courier's deliveries, performance
+  - [ ] Create `/api/consumer/dashboard` - Returns only consumer's orders
+  - [ ] Update `/api/admin/dashboard` - Keep platform-wide access
+  - **Files:** `api/merchant/dashboard.ts`, `api/courier/dashboard.ts`, `api/consumer/dashboard.ts`
+  - **Reference:** `docs/ROLE_FILTERING_IMPLEMENTATION.md` (complete code examples provided)
+
+- [ ] **Create Role-Specific Analytics Endpoints**
+  - [ ] Create `/api/merchant/analytics` - Own shops' analytics only
+  - [ ] Create `/api/courier/analytics` - Own performance analytics only
+  - [ ] Fix `/api/admin/analytics` - Currently used by all roles (WRONG)
+  - **Files:** `api/merchant/analytics.ts`, `api/courier/analytics.ts`
+
+- [ ] **Add Ownership Filtering to Orders API**
+  - [ ] Filter by `shop_id IN (user's shops)` for merchants
+  - [ ] Filter by `courier_id = user_id` for couriers
+  - [ ] Filter by `consumer_id = user_id` for consumers
+  - [ ] No filter for admins (see all)
+  - **File:** `api/orders/index.ts`
+
+- [ ] **Add Ownership Filtering to Team Management**
+  - [ ] Filter by `merchant_id` or `courier_id`
+  - [ ] Validate ownership on all CRUD operations
+  - **File:** `api/team/index.ts`
+
+- [ ] **Add Ownership Filtering to Claims**
+  - [ ] Filter by order ownership
+  - [ ] Validate user can access claim
+  - **File:** `api/claims/index.ts`
+
+#### Phase 2: Frontend Updates (4-6 hours)
+- [ ] **Update Dashboard.tsx**
+  - [ ] Replace `/trustscore/dashboard` with role-specific endpoints
+  - [ ] Add role-based component rendering
+  - [ ] Create `MerchantDashboard`, `CourierDashboard`, `ConsumerDashboard` components
+  - [ ] Test with each role
+  - **File:** `pages/Dashboard.tsx`
+
+- [ ] **Update Analytics.tsx**
+  - [ ] Replace admin-only endpoint with role-specific endpoints
+  - [ ] Add subscription-based feature gating
+  - [ ] Test with each role
+  - **File:** `pages/Analytics.tsx`
+
+- [ ] **Update Orders.tsx**
+  - [ ] Ensure using filtered endpoint
+  - [ ] Add role-based action buttons
+  - [ ] Test with each role
+  - **File:** `pages/Orders.tsx`
+
+#### Phase 3: Database Security (2-4 hours)
+- [ ] **Implement Row Level Security (RLS)**
+  - [ ] Enable RLS on `orders` table
+  - [ ] Enable RLS on `shops` table
+  - [ ] Enable RLS on `team_members` table
+  - [ ] Create role-based policies
+  - [ ] Create helper functions (`current_user_id()`, `current_user_role()`)
+  - **Reference:** `docs/ROLE_FILTERING_IMPLEMENTATION.md` (SQL examples provided)
+
+#### Phase 4: Testing & Validation (2-4 hours)
+- [ ] **Test Data Isolation**
+  - [ ] Test Merchant A cannot see Merchant B's data
+  - [ ] Test Courier A cannot see Courier B's data
+  - [ ] Test Consumer A cannot see Consumer B's data
+  - [ ] Test Admin can see all data
+  - [ ] Test subscription limits are enforced
+
+- [ ] **Security Audit**
+  - [ ] Verify all endpoints validate role
+  - [ ] Verify all queries filter by ownership
+  - [ ] Test for data leakage
+  - [ ] Document findings
+
+**Documentation Created:**
+- ✅ `docs/VIEW_AUDIT_AND_ROLE_CONFLICTS.md` - Complete audit report (1,500+ lines)
+- ✅ `docs/ROLE_FILTERING_IMPLEMENTATION.md` - Exact code implementations (1,200+ lines)
+- ✅ `docs/IMPLEMENTATION_STATUS.md` - Quick reference guide
+
+**Impact:** 
+- 🔴 **Security:** HIGH - Prevents unauthorized data access
+- 🔴 **Privacy:** HIGH - Ensures user data isolation
+- 🟡 **Business:** MEDIUM - Proper subscription enforcement
+- 🟢 **UX:** LOW - Users see relevant data only
+
+**Timeline:** October 12-14, 2025  
+**Estimated Effort:** 16-20 hours  
+**Priority:** 🔴 CRITICAL - MUST FIX BEFORE PRODUCTION
+
+---
+
+### High-Priority Fixes (After Role Filtering)
 - [ ] **Fix Orders Page UI** (1 hour)
   - Add Status column to orders table
   - Wire up filter dropdowns to `/api/orders/filters`
@@ -51,8 +150,8 @@ We empower merchants to make data-driven shipping decisions, optimize costs, and
   - Verify mobile responsiveness
   - Test cross-browser compatibility
 
-**Timeline:** October 11-12, 2025  
-**Estimated Effort:** 4-5 hours  
+**Timeline:** October 12-15, 2025  
+**Estimated Effort:** 20-25 hours total  
 **Priority:** 🔴 Critical
 
 ---

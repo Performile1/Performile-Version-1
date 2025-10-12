@@ -69,27 +69,49 @@ export const Analytics: React.FC = () => {
     country: ''
   });
 
-  // Fetch analytics data from API
+  // Fetch analytics data from API (role-based endpoints)
   const { data: analyticsData, isLoading: analyticsLoading, error: analyticsError } = useQuery({
     queryKey: ['analytics', user?.user_role, filters],
     queryFn: async () => {
-      // Admin uses admin analytics endpoint with full data
-      if (user?.user_role === 'admin') {
-        const response = await apiClient.get('/admin/analytics', {
-          params: {
+      // Get role-specific analytics endpoint
+      let endpoint = '';
+      let params: any = {
+        timeRange: filters.timeRange,
+        startDate: filters.customStartDate,
+        endDate: filters.customEndDate,
+      };
+
+      switch (user?.user_role) {
+        case 'merchant':
+          endpoint = '/merchant/analytics';
+          params = {
+            ...params,
+            shopId: filters.city, // Reuse city filter for shop selection
+          };
+          break;
+        case 'courier':
+          endpoint = '/courier/analytics';
+          break;
+        case 'admin':
+          endpoint = '/admin/analytics';
+          params = {
+            ...params,
             compare: 'true',
-            start_date: filters.customStartDate,
-            end_date: filters.customEndDate,
             postal_code: filters.postalCode,
-            country: filters.country
-          }
-        });
-        return response.data;
+            country: filters.country,
+          };
+          break;
+        default:
+          // Consumer role doesn't have analytics
+          return null;
       }
-      // Other roles would use different endpoints
-      return null;
+
+      if (!endpoint) return null;
+
+      const response = await apiClient.get(endpoint, { params });
+      return response.data;
     },
-    enabled: !!user
+    enabled: !!user && user.user_role !== 'consumer' // Only fetch for roles with analytics
   });
 
   const courierData = Array.isArray(analyticsData?.data) ? analyticsData.data : [];

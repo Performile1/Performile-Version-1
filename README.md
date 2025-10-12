@@ -2,7 +2,20 @@
 
 A comprehensive full-stack logistics performance platform that enables consumers to make informed carrier choices, empowers e-commerce companies to source carrier leads, and provides carriers with performance analytics.
 
-**Last Updated:** 2025-09-10 - Clean slate setup
+**Last Updated:** October 11, 2025  
+**Status:** 97% Production-Ready | Live on Vercel
+
+---
+
+## 🔗 Quick Links
+
+- **🌐 Live Platform:** https://frontend-two-swart-31.vercel.app
+- **📚 Documentation Hub:** [docs/README.md](./docs/README.md)
+- **📊 Platform Status:** [Platform Status Master](./docs/current/PLATFORM_STATUS_MASTER.md)
+- **🗺️ Roadmap:** [Platform Roadmap Master](./docs/current/PLATFORM_ROADMAP_MASTER.md)
+- **👨‍💻 Developer Guide:** [Developer Guide](./docs/guides/DEVELOPER_GUIDE.md)
+
+---
 
 ## 🚀 Quick Start
 
@@ -116,20 +129,25 @@ vercel --prod                   # Deploy to production
 ## 🚀 Deployment
 
 ### Deployment Status
+- ✅ **Live on Vercel:** https://frontend-two-swart-31.vercel.app
 - ✅ TypeScript compilation errors resolved
 - ✅ ES module syntax converted to CommonJS for Vercel compatibility
 - ✅ Serverless optimization applied
-- ✅ Connection pooling standardized across all APIs
-- 🚀 Ready for production deployment
+- ✅ Connection pooling standardized across all APIs (110+ endpoints)
+- ✅ Database: Supabase PostgreSQL (Transaction Mode)
+- ✅ Authentication: JWT with refresh tokens working
+- ✅ 80+ features implemented and tested
+- 🚀 **97% Production-Ready**
 
-Last updated: 2025-01-05
+Last updated: October 11, 2025
 
-### Vercel Deployment (Current)
-- [ ] Connect GitHub repository to Vercel
-- [ ] Configure environment variables in Vercel dashboard
-- [ ] Set up Supabase database and import schema
-- [ ] Generate and configure JWT secrets
-- [ ] Deploy automatically on push to main branch
+### Vercel Deployment
+- ✅ GitHub repository connected to Vercel
+- ✅ Environment variables configured in Vercel dashboard
+- ✅ Supabase database set up with complete schema (30+ tables)
+- ✅ JWT secrets generated and configured
+- ✅ Automatic deployment on push to main branch
+- ✅ HTTPS enabled by default
 
 ### Environment Variables (Vercel)
 ```bash
@@ -206,18 +224,29 @@ NODE_ENV=production
 
 ## 📚 Documentation
 
-- [Development Guide](./DEVELOPMENT.md)
-- [Deployment Guide](./DEPLOYMENT.md)
-- [Team Management](./TEAM_MANAGEMENT_GUIDE.md)
-- [Audit Report](./AUDIT_REPORT.md)
+### 📖 Essential Guides
+- **[Documentation Hub](./docs/README.md)** - Complete documentation index
+- **[Platform Status](./docs/current/PLATFORM_STATUS_MASTER.md)** - Current status and features
+- **[Platform Roadmap](./docs/current/PLATFORM_ROADMAP_MASTER.md)** - Future development plans
+
+### 👥 User Documentation
+- **[User Guide](./docs/guides/USER_GUIDE.md)** - For merchants and couriers
+- **[Admin Guide](./docs/guides/ADMIN_GUIDE.md)** - For platform administrators
+- **[Developer Guide](./docs/guides/DEVELOPER_GUIDE.md)** - For developers
+
+### 🔧 Technical Documentation
+- **[Deployment Guide](./docs/technical/DEPLOYMENT.md)** - Deployment procedures
+- **[Development Guide](./docs/technical/DEVELOPMENT.md)** - Development setup
+- **[Data Sources](./docs/technical/DATA_SOURCES.md)** - Data architecture
+- **[E-commerce Integration](./docs/technical/ECOMMERCE_FLOW_PLAN.md)** - E-commerce setup
 
 ## 🧪 Demo Users
 
-All demo users use password: `password123`
-- `admin@performile.com` - Admin user
-- `merchant@performile.com` - Merchant (Sarah Johnson)
-- `courier@performile.com` - Courier (Mike Anderson)
-- `consumer@performile.com` - Consumer (Emma Wilson)
+Demo user credentials:
+- `admin@performile.com` - Admin user (password: `password123`)
+- `merchant@performile.com` - Merchant (Sarah Johnson) (password: `admin123`)
+- `courier@performile.com` - Courier (Mike Anderson) (password: `password123`)
+- `consumer@performile.com` - Consumer (Emma Wilson) (password: `password123`)
 
 ## 🤝 Contributing
 

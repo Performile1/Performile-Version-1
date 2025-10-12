@@ -3,6 +3,7 @@
 -- ============================================================================
 -- Run this in Supabase SQL Editor to create test users
 -- Password for all users: Test1234!
+-- NOTE: merchant@performile.com has been updated to use password: admin123
 -- ============================================================================
 
 -- Insert test users with bcrypt hashed passwords
@@ -191,6 +192,7 @@ BEGIN
     RAISE NOTICE '   Email: courier@performile.com';
     RAISE NOTICE '';
     RAISE NOTICE '🔑 Password for all users: Test1234!';
+    RAISE NOTICE '⚠️  NOTE: merchant@performile.com uses password: admin123';
     RAISE NOTICE '';
     RAISE NOTICE '👤 Roles:';
     RAISE NOTICE '   - Admin: Full system access';

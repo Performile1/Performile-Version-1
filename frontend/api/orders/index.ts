@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 import { getPool } from '../lib/db';
+import { withRLS } from '../lib/rls';
 
 const jwt = require('jsonwebtoken');
 
@@ -31,19 +32,31 @@ const verifyToken = (req: VercelRequest, required: boolean = true): any => {
 // Get orders with filtering and pagination
 const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
   try {
-    const user = verifyToken(req, false); // Make auth optional for GET
+    const user = verifyToken(req, true); // Authentication REQUIRED for security
     const {
       page = '1',
       limit = '10',
       search = '',
-      status = '',
       date_filter = '',
       from_date = '',
       to_date = '',
-      courier = '',
-      store = '',
-      country = ''
+      date_from = '',
+      date_to = '',
+      sort_by = 'created_at',
+      sort_order = 'desc'
     } = req.query;
+    
+    // Handle array parameters (status[], courier_id[], store_id[], country[])
+    const statusArray = req.query['status[]'];
+    const courierArray = req.query['courier_id[]'];
+    const storeArray = req.query['store_id[]'];
+    const countryArray = req.query['country[]'];
+    
+    // Normalize to arrays
+    const statuses = Array.isArray(statusArray) ? statusArray : (statusArray ? [statusArray] : []);
+    const couriers = Array.isArray(courierArray) ? courierArray : (courierArray ? [courierArray] : []);
+    const stores = Array.isArray(storeArray) ? storeArray : (storeArray ? [storeArray] : []);
+    const countries = Array.isArray(countryArray) ? countryArray : (countryArray ? [countryArray] : []);
 
     const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
     
@@ -51,14 +64,8 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
     const queryParams: any[] = [];
     let paramCount = 0;
 
-    // Role-based filtering (only if authenticated)
-    if (user && user.user_role === 'merchant') {
-      whereClause += ` AND s.owner_user_id = $${++paramCount}`;
-      queryParams.push(user.user_id);
-    } else if (user && user.user_role === 'courier') {
-      whereClause += ` AND c.user_id = $${++paramCount}`;
-      queryParams.push(user.user_id);
-    }
+    // RLS will handle role-based filtering automatically
+    // No need for manual WHERE clauses based on role
 
     // Search filter
     if (search) {
@@ -67,42 +74,49 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
       queryParams.push(searchPattern, searchPattern, searchPattern, searchPattern);
     }
 
-    // Status filter
-    if (status && status !== 'all') {
-      whereClause += ` AND o.order_status = $${++paramCount}`;
-      queryParams.push(status);
+    // Status filter (multiple)
+    if (statuses.length > 0) {
+      const statusPlaceholders = statuses.map(() => `$${++paramCount}`).join(', ');
+      whereClause += ` AND o.order_status IN (${statusPlaceholders})`;
+      queryParams.push(...statuses);
     }
 
-    // Courier filter
-    if (courier && courier !== 'all') {
-      whereClause += ` AND c.courier_id = $${++paramCount}`;
-      queryParams.push(courier);
+    // Courier filter (multiple)
+    if (couriers.length > 0) {
+      const courierPlaceholders = couriers.map(() => `$${++paramCount}`).join(', ');
+      whereClause += ` AND c.courier_id IN (${courierPlaceholders})`;
+      queryParams.push(...couriers);
     }
 
-    // Store filter
-    if (store && store !== 'all') {
-      whereClause += ` AND s.store_id = $${++paramCount}`;
-      queryParams.push(store);
+    // Store filter (multiple)
+    if (stores.length > 0) {
+      const storePlaceholders = stores.map(() => `$${++paramCount}`).join(', ');
+      whereClause += ` AND s.store_id IN (${storePlaceholders})`;
+      queryParams.push(...stores);
     }
 
-    // Country filter
-    if (country && country !== 'all') {
-      whereClause += ` AND o.country = $${++paramCount}`;
-      queryParams.push(country);
+    // Country filter (multiple)
+    if (countries.length > 0) {
+      const countryPlaceholders = countries.map(() => `$${++paramCount}`).join(', ');
+      whereClause += ` AND o.country IN (${countryPlaceholders})`;
+      queryParams.push(...countries);
     }
 
-    // Date range filter (from_date and to_date)
-    if (from_date) {
+    // Date range filter (use date_from/date_to first, fallback to from_date/to_date)
+    const dateFromValue = date_from || from_date;
+    const dateToValue = date_to || to_date;
+    
+    if (dateFromValue) {
       whereClause += ` AND o.order_date >= $${++paramCount}`;
-      queryParams.push(from_date);
+      queryParams.push(dateFromValue);
     }
-    if (to_date) {
+    if (dateToValue) {
       whereClause += ` AND o.order_date <= $${++paramCount}`;
-      queryParams.push(to_date);
+      queryParams.push(dateToValue);
     }
 
     // Preset date filter (fallback if no custom range)
-    if (!from_date && !to_date && date_filter && date_filter !== 'all') {
+    if (!dateFromValue && !dateToValue && date_filter && date_filter !== 'all') {
       const dateCondition = (() => {
         switch (date_filter) {
           case 'today':
@@ -122,6 +136,25 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
       }
     }
 
+    // Validate and sanitize sort parameters
+    const allowedSortColumns = ['tracking_number', 'order_number', 'order_status', 'order_date', 'delivery_date', 'created_at', 'store_name', 'courier_name'];
+    const sortColumn = allowedSortColumns.includes(sort_by as string) ? sort_by : 'created_at';
+    const sortDirection = (sort_order as string).toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+    
+    // Map frontend column names to database column names
+    const columnMap: Record<string, string> = {
+      'tracking_number': 'o.tracking_number',
+      'order_number': 'o.order_number',
+      'order_status': 'o.order_status',
+      'order_date': 'o.order_date',
+      'delivery_date': 'o.delivery_date',
+      'created_at': 'o.created_at',
+      'store_name': 's.store_name',
+      'courier_name': 'c.courier_name'
+    };
+    
+    const orderByColumn = columnMap[sortColumn as string] || 'o.created_at';
+
     const query = `
       SELECT 
         o.order_id,
@@ -132,6 +165,7 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
         o.delivery_date,
         o.delivery_address,
         o.postal_code,
+        o.city,
         o.country,
         o.created_at,
         o.updated_at,
@@ -144,35 +178,42 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
       LEFT JOIN couriers c ON o.courier_id = c.courier_id
       LEFT JOIN users u ON o.customer_id = u.user_id
       WHERE ${whereClause}
-      ORDER BY o.created_at DESC
+      ORDER BY ${orderByColumn} ${sortDirection}
       LIMIT $${++paramCount} OFFSET $${++paramCount}
     `;
 
     queryParams.push(parseInt(limit as string), offset);
 
-    const result = await pool.query(query, queryParams);
+    // Use RLS context - queries will be automatically filtered by role
+    const data = await withRLS(pool, { userId: user.userId || user.user_id, role: user.role || user.user_role }, async (client) => {
+      const result = await client.query(query, queryParams);
 
-    // Get total count for pagination
-    const countQuery = `
-      SELECT COUNT(*) as total
-      FROM orders o
-      LEFT JOIN stores s ON o.store_id = s.store_id
-      LEFT JOIN couriers c ON o.courier_id = c.courier_id
-      WHERE ${whereClause}
-    `;
-    
-    const countResult = await pool.query(countQuery, queryParams.slice(0, -2));
-    const total = parseInt(countResult.rows[0].total);
+      // Get total count for pagination
+      const countQuery = `
+        SELECT COUNT(*) as total
+        FROM orders o
+        LEFT JOIN stores s ON o.store_id = s.store_id
+        LEFT JOIN couriers c ON o.courier_id = c.courier_id
+        WHERE ${whereClause}
+      `;
+      
+      const countResult = await client.query(countQuery, queryParams.slice(0, -2));
+      const total = parseInt(countResult.rows[0].total);
+
+      return {
+        orders: result.rows,
+        pagination: {
+          page: parseInt(page as string),
+          limit: parseInt(limit as string),
+          total,
+          pages: Math.ceil(total / parseInt(limit as string))
+        }
+      };
+    });
 
     res.status(200).json({
       success: true,
-      orders: result.rows,
-      pagination: {
-        page: parseInt(page as string),
-        limit: parseInt(limit as string),
-        total,
-        pages: Math.ceil(total / parseInt(limit as string))
-      }
+      ...data
     });
   } catch (error) {
     console.error('Get orders error:', error);

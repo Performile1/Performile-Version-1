@@ -1,6 +1,6 @@
 -- Demo Users with Crypto Password Hashes for Performile Platform
 -- Run this AFTER running the main database schema
--- All demo users use password: "password123"
+-- Default password: "password123" (except merchant@performile.com which uses "admin123")
 
 -- Generate crypto hashes for password "password123" using Node.js crypto.pbkdf2Sync
 -- Salt: 16 random bytes, Hash: pbkdf2Sync with 10000 iterations, SHA-512
@@ -104,10 +104,9 @@ VALUES
 ON CONFLICT (rating_id) DO NOTHING;
 
 -- Demo login credentials comment
--- All demo users use the password: "password123"
 -- Login credentials for testing:
 -- admin@performile.com / password123 (Admin)
--- merchant@performile.com / password123 (Merchant)
+-- merchant@performile.com / admin123 (Merchant) ⚠️ Updated password
 -- courier@performile.com / password123 (Courier) 
 -- consumer@performile.com / password123 (Consumer)
 -- merchant2@performile.com / password123 (Additional Merchant)

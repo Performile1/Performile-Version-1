@@ -1,5 +1,226 @@
 # Performile Platform - Changelog
 
+## [1.4.1] - October 12, 2025
+
+### 🔐 Security & Access Updates
+
+#### Merchant Account Credential Fix
+- ✅ **Fixed merchant@performile.com login credentials**
+  - Updated password from `password123` to `admin123`
+  - User can now successfully log in with new credentials
+  - Updated documentation across all files
+
+**Files Updated:**
+- `README.md` - Demo users section updated with new credentials
+- `database/demo_users_crypto.sql` - Added notes about updated password
+- `database/create-test-users.sql` - Added warnings about password change
+
+**Login Credentials:**
+- `admin@performile.com` - password: `password123`
+- `merchant@performile.com` - password: `admin123` ⚠️ Updated
+- `courier@performile.com` - password: `password123`
+- `consumer@performile.com` - password: `password123`
+
+### 🎯 Subscription System Implementation
+
+#### Comprehensive Subscription-Based Access Control
+- ✅ **Implemented full subscription tier system with limits enforcement**
+  - Database tables and functions for subscription management
+  - API endpoints with automatic limit checking
+  - Frontend components with visual subscription indicators
+  - Courier selection limits based on subscription tier
+
+### 🎨 Role-Based Settings Pages
+
+#### Unified Settings Experience for All User Roles
+- ✅ **Created dedicated settings pages for each user role**
+  - Proper data separation between roles
+  - Role-specific features and sections
+  - Consistent UI/UX across all roles
+  - Deep linking support with URL hashes
+
+**Settings Pages Created:**
+
+**1. Merchant Settings** (12 sections)
+- Shops management (multi-shop support with limits)
+- Couriers selection (44+ courier logos)
+- Tracking page customization (branded tracking)
+- Rating settings (automated reviews)
+- Email templates (custom communications)
+- Returns management (Professional+)
+- Payments & billing
+- Notifications preferences
+- API & Integrations (Professional+)
+- General settings
+- Security (2FA, password)
+- Preferences (language, timezone, currency)
+
+**2. Courier Settings** (12 sections)
+- Company profile (logo, description, service areas)
+- Fleet & vehicles (Fleet plan only)
+- Team members (role-based limits)
+- Performance dashboard (TrustScore, ratings)
+- Lead marketplace (browse and purchase leads)
+- Analytics (Professional+)
+- Payments & earnings
+- Notifications
+- API & Integrations (Fleet plan only)
+- General settings
+- Security
+- Preferences
+
+**3. Consumer Settings** (9 sections)
+- Profile management
+- Address book (multiple addresses)
+- Payment methods (saved cards)
+- Order preferences (delivery times, instructions)
+- Favorites (shops and couriers)
+- Notifications
+- Security (password, 2FA)
+- Privacy (data sharing, marketing)
+- Preferences
+
+**4. Admin Settings** (12 sections)
+- Platform overview (system health, stats)
+- User management (all users)
+- Merchant management (shops, subscriptions)
+- Courier management (verification, approval)
+- Subscriptions & billing (plans, pricing)
+- Platform analytics (system-wide)
+- Email system (templates, logs)
+- Notifications
+- Security & access (audit logs, permissions)
+- Database management (backups, migrations)
+- System settings (feature flags, config)
+- Logs & monitoring (errors, performance)
+
+**Key Features:**
+- **Role-based routing** - Same URL, different content per role
+- **Data separation** - Users only see their own data
+- **Subscription enforcement** - Limits based on plan tier
+- **Deep linking** - Direct navigation to specific tabs via hash
+- **Responsive design** - Works on all devices
+- **Consistent UX** - Similar layout across all roles
+
+**Files Created:**
+- `frontend/src/pages/MerchantSettings.tsx` (300+ lines)
+- `frontend/src/pages/CourierSettings.tsx` (250+ lines)
+- `frontend/src/pages/ConsumerSettings.tsx` (200+ lines)
+- `frontend/src/pages/AdminSettings.tsx` (250+ lines)
+- `frontend/src/components/RoleBasedSettingsRouter.tsx` (60 lines)
+- `frontend/src/components/settings/merchant/ShopsSettings.tsx` (400+ lines)
+- `frontend/src/components/settings/merchant/CouriersSettings.tsx` (wrapper)
+- `frontend/src/components/settings/merchant/TrackingPageSettings.tsx` (400+ lines)
+- `docs/ROLE_BASED_SETTINGS_GUIDE.md` (800+ lines)
+- `docs/MERCHANT_SETTINGS_GUIDE.md` (500+ lines)
+
+**Data Separation Matrix:**
+- Merchants: Own shops, selected couriers, own orders only
+- Couriers: Own deliveries, own team, own performance only
+- Consumers: Own orders, own addresses, own payment methods only
+- Admins: Full platform access to all data
+
+**Security:**
+- Server-side role validation
+- Database Row Level Security (RLS)
+- API endpoint protection
+- Frontend component guards
+- Audit logging for admin actions
+
+**Navigation:**
+- `/settings` - Routes to role-specific page automatically
+- `/settings#shops` - Deep link to specific tab (Merchant)
+- `/settings#fleet` - Deep link to specific tab (Courier)
+- `/settings#addresses` - Deep link to specific tab (Consumer)
+- `/settings#users` - Deep link to specific tab (Admin)
+
+**Database Implementation:**
+- `merchant_courier_selections` - Tracks courier selections per merchant
+- `get_user_subscription_limits()` - Returns subscription limits for user
+- `check_courier_selection_limit()` - Validates courier selection limits
+- `get_merchant_subscription_info()` - Complete subscription info JSON
+- Automatic trigger enforcement on courier selection
+
+**Subscription Tiers:**
+
+**Merchants:**
+- Free: 2 couriers, 1 shop, 50 orders/month
+- Starter ($29/mo): 5 couriers, 1 shop, 100 orders/month
+- Professional ($79/mo): 20 couriers, 3 shops, 500 orders/month, API access
+- Enterprise ($199/mo): Unlimited everything, white-label, dedicated support
+
+**Couriers:**
+- Free: 1 team member, 25 orders/month
+- Individual ($19/mo): 1 team member, 50 orders/month
+- Professional ($49/mo): 3 team members, 200 orders/month, advanced analytics
+- Fleet ($149/mo): Unlimited team, unlimited orders, API access
+
+**New Features:**
+- Merchant courier selection settings page with subscription limits
+- Visual progress bars showing usage (e.g., "3 / 5 couriers selected")
+- Automatic upgrade prompts when limits reached
+- Courier logos integration from `/public/courier-logos/` (44 courier logos)
+- Custom courier names and display order
+- Enable/disable couriers without removing
+- API key management for e-commerce plugins
+
+**API Endpoints:**
+- `/api/couriers/merchant-preferences` - Complete courier management API
+  - `get_subscription_info` - Fetch subscription limits and usage
+  - `get_selected_couriers` - Get merchant's selected couriers
+  - `get_available_couriers` - Get all available couriers with selection status
+  - `add_courier` - Add courier (with limit check)
+  - `remove_courier` - Remove courier from selection
+  - `toggle_courier_active` - Enable/disable courier
+  - `update_courier_settings` - Update custom names and settings
+
+**Frontend Components:**
+- `MerchantCourierSettings.tsx` - Full-featured courier selection page
+- `SubscriptionGate.tsx` - Reusable component for feature gating
+- `SubscriptionBadge.tsx` - Display subscription tier badge
+- `FeatureLockedAlert.tsx` - Inline alerts for locked features
+- `subscriptionHelpers.ts` - Utility functions for subscription checks
+
+**Helper Functions:**
+- `canAccessFeature()` - Check if user has access to feature
+- `hasReachedLimit()` - Check if usage limit reached
+- `getUsagePercentage()` - Calculate usage percentage
+- `getUsageColor()` - Get color based on usage (success/warning/error)
+- `filterDataBySubscription()` - Filter data based on subscription tier
+- `shouldShowUpgradePrompt()` - Determine if upgrade prompt should show
+- `getRecommendedPlan()` - Suggest plan based on usage
+
+**Documentation:**
+- `docs/SUBSCRIPTION_SYSTEM.md` - Complete subscription system documentation
+- `docs/SUBSCRIPTION_INTEGRATION_GUIDE.md` - Integration guide for developers
+- Includes examples for Analytics, Dashboard, Orders, Settings pages
+- Testing checklist and troubleshooting guide
+
+**Files Created:**
+- `database/merchant-courier-selection-with-limits.sql` (400+ lines)
+- `frontend/api/couriers/merchant-preferences.ts` (400+ lines)
+- `frontend/src/pages/settings/MerchantCourierSettings.tsx` (600+ lines)
+- `frontend/src/utils/subscriptionHelpers.ts` (400+ lines)
+- `frontend/src/components/SubscriptionGate.tsx` (300+ lines)
+- `docs/SUBSCRIPTION_SYSTEM.md` (600+ lines)
+- `docs/SUBSCRIPTION_INTEGRATION_GUIDE.md` (500+ lines)
+
+**Business Impact:**
+- Clear monetization path with 4 subscription tiers
+- Automatic enforcement of limits prevents abuse
+- Smooth upgrade flow with clear value proposition
+- Visual indicators help users understand their limits
+- Reduces support burden with self-service upgrade prompts
+
+**Technical Highlights:**
+- Database-level enforcement via triggers
+- Graceful degradation if subscription info unavailable
+- Reusable components for consistent UX
+- Comprehensive error handling
+- Performance optimized with React.useMemo
+
+---
+
 ## [1.4.0] - October 5, 2025, 23:19
 
 ### 🎯 Major Updates
