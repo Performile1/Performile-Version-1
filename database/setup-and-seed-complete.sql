@@ -32,6 +32,49 @@ CREATE INDEX IF NOT EXISTS idx_mcs_courier ON merchant_courier_selections(courie
 CREATE INDEX IF NOT EXISTS idx_mcs_active ON merchant_courier_selections(is_active);
 
 -- =====================================================
+-- STEP 1.5: Add address columns to orders table
+-- =====================================================
+
+-- Add delivery address columns if they don't exist
+DO $$ 
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'orders' AND column_name = 'delivery_address'
+    ) THEN
+        ALTER TABLE orders ADD COLUMN delivery_address TEXT;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'orders' AND column_name = 'postal_code'
+    ) THEN
+        ALTER TABLE orders ADD COLUMN postal_code VARCHAR(20);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'orders' AND column_name = 'city'
+    ) THEN
+        ALTER TABLE orders ADD COLUMN city VARCHAR(100);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'orders' AND column_name = 'state'
+    ) THEN
+        ALTER TABLE orders ADD COLUMN state VARCHAR(100);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'orders' AND column_name = 'country'
+    ) THEN
+        ALTER TABLE orders ADD COLUMN country VARCHAR(100);
+    END IF;
+END $$;
+
+-- =====================================================
 -- STEP 2: Create stores for merchants
 -- =====================================================
 
@@ -88,7 +131,7 @@ LIMIT 100; -- Safety limit
 -- STEP 4: Create sample orders
 -- =====================================================
 
--- Create sample orders with only the columns that exist
+-- Create sample orders with complete address information
 INSERT INTO orders (
   tracking_number,
   order_number,
@@ -97,6 +140,11 @@ INSERT INTO orders (
   order_status,
   order_date,
   delivery_date,
+  delivery_address,
+  postal_code,
+  city,
+  state,
+  country,
   created_at
 )
 SELECT 
@@ -112,6 +160,11 @@ SELECT
   END as order_status,
   NOW() - (random() * INTERVAL '30 days') as order_date,
   NOW() - (random() * INTERVAL '25 days') as delivery_date,
+  (ARRAY['123 Main St', '456 Oak Ave', '789 Pine Rd', '321 Elm St', '654 Maple Dr'])[FLOOR(random() * 5 + 1)] as delivery_address,
+  (ARRAY['10001', '90210', '60601', '33101', '94102'])[FLOOR(random() * 5 + 1)] as postal_code,
+  (ARRAY['New York', 'Los Angeles', 'Chicago', 'Miami', 'San Francisco'])[FLOOR(random() * 5 + 1)] as city,
+  (ARRAY['NY', 'CA', 'IL', 'FL', 'CA'])[FLOOR(random() * 5 + 1)] as state,
+  'USA' as country,
   NOW() - (random() * INTERVAL '30 days') as created_at
 FROM stores s
 JOIN merchant_courier_selections mcs ON s.owner_user_id = mcs.merchant_id
