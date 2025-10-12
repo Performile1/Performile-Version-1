@@ -7,6 +7,9 @@
 -- - Couriers: Can see claims related to their deliveries
 -- - Admin: Can create claims and see all claims
 -- =====================================================
+-- NOTE: Run fix-claims-add-claimant-id.sql first if you get
+--       "column claimant_id does not exist" error
+-- =====================================================
 
 -- Enable RLS on claims table
 ALTER TABLE claims ENABLE ROW LEVEL SECURITY;
