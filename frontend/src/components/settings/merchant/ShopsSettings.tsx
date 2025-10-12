@@ -34,7 +34,7 @@ import {
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { getUsagePercentage, formatLimit } from '@/utils/subscriptionHelpers';
+import { getUsagePercentage, getUsageColor, formatLimit } from '@/utils/subscriptionHelpers';
 
 interface Shop {
   shop_id: string;
@@ -205,7 +205,6 @@ export const ShopsSettings: React.FC<ShopsSettingsProps> = ({ subscriptionInfo }
   const shopsCreated = subscriptionInfo?.usage?.shops_created || shops.length;
   const canAddMore = maxShops === null || shopsCreated < maxShops;
   const usagePercentage = getUsagePercentage(shopsCreated, maxShops);
-  const _usageColor = getUsageColor(shopsCreated, maxShops); // Prefix with _ to indicate intentionally unused
 
   return (
     <Box>
