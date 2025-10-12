@@ -119,9 +119,21 @@ const emailTemplates = {
   }
 };
 
-// Send email helper
-const sendEmail = async (to: string, templateKey: keyof typeof emailTemplates, data: any) => {
+// Send email helper with subscription limit check
+const sendEmail = async (to: string, templateKey: keyof typeof emailTemplates, data: any, userId?: string) => {
   const template = emailTemplates[templateKey];
+  
+  // Check email limit if userId provided
+  if (userId) {
+    const limitCheck = await pool.query(
+      'SELECT check_subscription_limit($1, $2) as can_send',
+      [userId, 'email']
+    );
+
+    if (!limitCheck.rows[0].can_send) {
+      throw new Error('Email limit reached for this month. Please upgrade your plan.');
+    }
+  }
   
   try {
     const result = await resend.emails.send({
@@ -130,6 +142,14 @@ const sendEmail = async (to: string, templateKey: keyof typeof emailTemplates, d
       subject: template.subject,
       html: template.template(data),
     });
+    
+    // Increment email usage counter if userId provided
+    if (userId) {
+      await pool.query(
+        'SELECT increment_usage($1, $2, $3)',
+        [userId, 'email', 1]
+      );
+    }
     
     return result;
   } catch (error) {

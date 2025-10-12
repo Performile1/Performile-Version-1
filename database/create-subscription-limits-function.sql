@@ -173,6 +173,84 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- =====================================================
+-- Function to check shop count limit
+-- =====================================================
+CREATE OR REPLACE FUNCTION check_shop_limit(p_user_id UUID)
+RETURNS TABLE (
+  can_create BOOLEAN,
+  current_count INTEGER,
+  max_allowed INTEGER,
+  plan_name VARCHAR(100),
+  tier INTEGER
+) AS $$
+DECLARE
+  v_limits RECORD;
+  v_current_shops INTEGER;
+BEGIN
+  -- Get subscription limits
+  SELECT * INTO v_limits FROM get_user_subscription_limits(p_user_id);
+  
+  -- Count current shops
+  SELECT COUNT(*) INTO v_current_shops
+  FROM shops
+  WHERE owner_user_id = p_user_id
+    AND is_active = TRUE;
+  
+  RETURN QUERY
+  SELECT 
+    CASE 
+      WHEN v_limits.max_shops IS NULL THEN TRUE
+      WHEN v_current_shops < v_limits.max_shops THEN TRUE
+      ELSE FALSE
+    END as can_create,
+    v_current_shops::INTEGER,
+    v_limits.max_shops,
+    v_limits.plan_name,
+    v_limits.tier;
+END;
+$$ LANGUAGE plpgsql;
+
+-- =====================================================
+-- Function to check courier selection limit
+-- =====================================================
+CREATE OR REPLACE FUNCTION check_courier_selection_limit(
+  p_user_id UUID,
+  p_shop_id UUID
+) RETURNS TABLE (
+  can_select BOOLEAN,
+  current_count INTEGER,
+  max_allowed INTEGER,
+  plan_name VARCHAR(100),
+  tier INTEGER
+) AS $$
+DECLARE
+  v_limits RECORD;
+  v_current_couriers INTEGER;
+BEGIN
+  -- Get subscription limits
+  SELECT * INTO v_limits FROM get_user_subscription_limits(p_user_id);
+  
+  -- Count currently selected couriers for this shop
+  SELECT COUNT(DISTINCT courier_id) INTO v_current_couriers
+  FROM shop_couriers
+  WHERE shop_id = p_shop_id
+    AND is_active = TRUE;
+  
+  RETURN QUERY
+  SELECT 
+    CASE 
+      WHEN v_limits.max_couriers IS NULL THEN TRUE
+      WHEN v_current_couriers < v_limits.max_couriers THEN TRUE
+      ELSE FALSE
+    END as can_select,
+    v_current_couriers::INTEGER,
+    v_limits.max_couriers,
+    v_limits.plan_name,
+    v_limits.tier;
+END;
+$$ LANGUAGE plpgsql;
+
+-- =====================================================
 -- Test the functions
 -- =====================================================
 SELECT 'Subscription limit functions created successfully!' as status;

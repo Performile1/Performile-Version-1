@@ -48,6 +48,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(403).json({ error: 'Merchants only' });
   }
 
+  // Check if advanced analytics is requested
+  const { advanced } = req.query;
+  
+  if (advanced === 'true') {
+    // Check subscription limit for advanced analytics
+    const limitsResult = await pool.query(
+      'SELECT * FROM get_user_subscription_limits($1)',
+      [user.userId]
+    );
+
+    const limits = limitsResult.rows[0];
+
+    if (!limits || !limits.has_advanced_analytics) {
+      return res.status(403).json({
+        error: 'SUBSCRIPTION_LIMIT_REACHED',
+        message: 'Advanced analytics is not available on your current plan.',
+        limit_type: 'advanced_analytics',
+        plan_name: limits?.plan_name || 'Free',
+        tier: limits?.tier || 0,
+        upgrade_required: true,
+        feature_required: 'advanced_analytics'
+      });
+    }
+  }
+
   const merchantId = user.userId;
 
   try {
