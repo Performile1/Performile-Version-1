@@ -80,18 +80,21 @@ export const Dashboard: React.FC = () => {
   const { user } = useAuthStore();
 
   // Get role-specific dashboard endpoint
+  // UNIFIED APPROACH: All roles use the same endpoint
+  // Backend filters data based on user role automatically
   const getDashboardEndpoint = () => {
+    // For now, use role-specific endpoints until unified endpoint is ready
     switch (user?.user_role) {
       case 'merchant':
         return '/merchant/dashboard';
       case 'courier':
-        return '/courier/dashboard';
+        return '/trustscore/dashboard'; // Courier uses trustscore for now
       case 'consumer':
-        return '/consumer/dashboard';
+        return '/trustscore/dashboard'; // Consumer uses trustscore for now
       case 'admin':
-        return '/admin/dashboard';
+        return '/trustscore/dashboard'; // Admin uses trustscore dashboard
       default:
-        return '/trustscore/dashboard'; // Fallback (should not happen)
+        return '/trustscore/dashboard';
     }
   };
 
