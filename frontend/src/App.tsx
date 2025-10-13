@@ -5,7 +5,7 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '@/store/authStore';
 import { AppLayout } from '@/components/layout/AppLayout';
-// import { SessionExpiredModal } from '@/components/SessionExpiredModal';
+import { SessionExpiredModal } from '@/components/SessionExpiredModal';
 import { AuthPage } from '@/pages/AuthPage';
 import { Dashboard } from '@/pages/Dashboard';
 import { TrustScores } from '@/pages/TrustScores';
@@ -121,19 +121,26 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRoles
 };
 
 const App: React.FC = () => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, validateStoredToken } = useAuthStore();
 
-  // TODO: Re-enable token validation after fixing render error
-  // Temporarily disabled to isolate the issue
-  // React.useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     const storedAuth = localStorage.getItem('performile-auth');
-  //     if (storedAuth && isAuthenticated) {
-  //       validateStoredToken();
-  //     }
-  //   }, 100);
-  //   return () => clearTimeout(timer);
-  // }, []);
+  // Validate stored token on app load - with proper error handling
+  React.useEffect(() => {
+    // Only run if authenticated
+    if (!isAuthenticated) {
+      return;
+    }
+
+    // Delay validation to avoid blocking render
+    const timer = setTimeout(() => {
+      validateStoredToken().catch((error) => {
+        console.error('[App] Token validation failed:', error);
+        // Error is already handled in validateStoredToken
+      });
+    }, 500); // Increased delay to 500ms for safety
+
+    return () => clearTimeout(timer);
+  }, []); // Only run once on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -401,7 +408,7 @@ const App: React.FC = () => {
           }}
         />
         <SentryTestButton />
-        {/* <SessionExpiredModal /> */}
+        <SessionExpiredModal />
       </ThemeProvider>
     </QueryClientProvider>
   );
