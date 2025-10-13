@@ -125,20 +125,24 @@ const App: React.FC = () => {
 
   // Validate stored token on app load
   React.useEffect(() => {
-    // Only validate if we have stored auth state
-    const storedAuth = localStorage.getItem('performile-auth');
-    if (storedAuth && isAuthenticated) {
-      const validateToken = async () => {
-        try {
-          await validateStoredToken();
-        } catch (error) {
-          console.error('[App] Token validation error:', error);
-          // Error is already handled in validateStoredToken
-        }
-      };
-      
-      validateToken();
-    }
+    // Delay validation to avoid blocking initial render
+    const timer = setTimeout(() => {
+      const storedAuth = localStorage.getItem('performile-auth');
+      if (storedAuth && isAuthenticated) {
+        const validateToken = async () => {
+          try {
+            await validateStoredToken();
+          } catch (error) {
+            console.error('[App] Token validation error:', error);
+            // Error is already handled in validateStoredToken
+          }
+        };
+        
+        validateToken();
+      }
+    }, 100); // Delay by 100ms to let app render first
+
+    return () => clearTimeout(timer);
   }, []); // Run once on mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
