@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import database from '../config/database';
 import logger from '../utils/logger';
 import crypto from 'crypto';
+import emailService from '../services/emailService';
 
 const router = Router();
 
@@ -114,6 +115,22 @@ async function handleSubscriptionCreated(subscription: any) {
     );
 
     logger.info('[Stripe Webhook] Subscription created', { userId, subscriptionId: id });
+
+    // Send confirmation email
+    const userInfo = await database.query(
+      'SELECT email, first_name FROM users WHERE user_id = $1',
+      [userId]
+    );
+    if (userInfo.rows.length > 0) {
+      const { email, first_name } = userInfo.rows[0];
+      await emailService.sendSubscriptionConfirmation(
+        email,
+        first_name,
+        tier,
+        subscription.plan?.amount / 100 || 0,
+        subscription.plan?.interval || 'month'
+      );
+    }
   } catch (error) {
     logger.error('[Stripe Webhook] Error handling subscription created', error);
   }
@@ -240,7 +257,19 @@ async function handleInvoicePaymentFailed(invoice: any) {
       [id]
     );
 
-    // TODO: Send payment failed notification email
+    // Send payment failed notification email
+    const userInfo = await database.query(
+      'SELECT email, first_name FROM users WHERE user_id = $1',
+      [userId]
+    );
+    if (userInfo.rows.length > 0) {
+      const { email, first_name } = userInfo.rows[0];
+      await emailService.sendPaymentFailedEmail(
+        email,
+        first_name,
+        invoice.amount_due / 100
+      );
+    }
 
     logger.warn('[Stripe Webhook] Invoice payment failed', { userId, invoiceId: id });
   } catch (error) {
