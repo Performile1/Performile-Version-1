@@ -103,7 +103,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         paramCount++;
       }
 
-      queryText += ` ORDER BY o.created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
+      // Store param indices before building query string
+      const limitParam = paramCount;
+      const offsetParam = paramCount + 1;
+      
+      queryText += ` ORDER BY o.created_at DESC LIMIT $${limitParam} OFFSET $${offsetParam}`;
       queryParams.push(limitNum, offset);
 
       // Get total count
