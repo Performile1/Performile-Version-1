@@ -141,7 +141,9 @@ const App: React.FC = () => {
             />
             <Route path="/review/:token" element={<PublicReview />} />
             <Route path="/track/:trackingNumber?" element={<TrackingPage />} />
-            <Route path="/pricing" element={<Pricing />} />
+            {(user?.user_role === 'merchant' || user?.user_role === 'consumer' || user?.user_role === 'admin') && (
+              <Route path="/trustscores" element={<TrustScores />} />
+            )}
             <Route path="/subscription/plans" element={<SubscriptionPlans />} />
             <Route path="/subscription/success" element={<SubscriptionSuccess />} />
             <Route path="/subscription/cancel" element={<SubscriptionCancel />} />

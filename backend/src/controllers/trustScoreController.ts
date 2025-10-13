@@ -291,6 +291,44 @@ export class TrustScoreController {
 
       logger.info('[Dashboard] Request from user', { userId, userRole });
 
+      // Get user's subscription plan for limits
+      let subscriptionLimits = {
+        max_couriers: 999999, // Default: unlimited for admin
+        max_orders: 999999,
+        tier: 0
+      };
+
+      if (userRole !== 'admin') {
+        try {
+          const subResult = await database.query(
+            `SELECT tier, max_couriers, max_orders_per_month 
+             FROM user_subscriptions 
+             WHERE user_id = $1 
+             ORDER BY created_at DESC 
+             LIMIT 1`,
+            [userId]
+          );
+          
+          if (subResult.rows.length > 0) {
+            subscriptionLimits = {
+              max_couriers: subResult.rows[0].max_couriers || 5,
+              max_orders: subResult.rows[0].max_orders_per_month || 100,
+              tier: subResult.rows[0].tier || 1
+            };
+          }
+          
+          logger.info('[Dashboard] Subscription limits', { userId, limits: subscriptionLimits });
+        } catch (subError) {
+          logger.warn('[Dashboard] Could not fetch subscription', { error: subError });
+          // Use default limits if subscription table doesn't exist
+          subscriptionLimits = {
+            max_couriers: 5,
+            max_orders: 100,
+            tier: 1
+          };
+        }
+      }
+
       const cacheKey = `dashboard:${userRole}:${userId}:${JSON.stringify({ country, postal_code, min_reviews, limit })}`;
       
       // Try cache first
@@ -389,9 +427,22 @@ export class TrustScoreController {
         queryParams
       );
 
+      // Apply subscription limits to results
+      const limitedCouriers = result.rows.slice(0, subscriptionLimits.max_couriers);
+      
       const dashboardData = {
-        couriers: result.rows,
-        statistics: statsResult.rows[0]
+        couriers: limitedCouriers,
+        statistics: {
+          ...statsResult.rows[0],
+          // Add subscription info to response
+          subscription: {
+            tier: subscriptionLimits.tier,
+            max_couriers: subscriptionLimits.max_couriers,
+            max_orders: subscriptionLimits.max_orders,
+            current_couriers: limitedCouriers.length,
+            is_at_limit: limitedCouriers.length >= subscriptionLimits.max_couriers
+          }
+        }
       };
 
       // Cache for 15 minutes
