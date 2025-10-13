@@ -155,10 +155,10 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
     
     const orderByColumn = columnMap[sortColumn as string] || 'o.created_at';
 
-    // Add limit and offset to params first
-    queryParams.push(parseInt(limit as string), offset);
+    // Add limit and offset parameters
     const limitParam = ++paramCount;
     const offsetParam = ++paramCount;
+    queryParams.push(parseInt(limit as string), offset);
 
     const query = `
       SELECT 
