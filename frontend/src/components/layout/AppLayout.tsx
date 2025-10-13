@@ -99,7 +99,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     },
     {
       label: 'Track Shipment',
-      path: '/track',
+      path: '/tracking',
       icon: MyLocation,
       roles: ['admin', 'merchant', 'courier', 'consumer'],
     },

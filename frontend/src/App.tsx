@@ -163,15 +163,28 @@ const App: React.FC = () => {
             />
             <Route path="/review/:token" element={<PublicReview />} />
             <Route path="/track/:trackingNumber?" element={<TrackingPage />} />
-            {(user?.user_role === 'merchant' || user?.user_role === 'consumer' || user?.user_role === 'admin') && (
-              <Route path="/trustscores" element={<TrustScores />} />
-            )}
             <Route path="/subscription/plans" element={<SubscriptionPlans />} />
             <Route path="/subscription/success" element={<SubscriptionSuccess />} />
             <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Protected Routes */}
+            <Route
+              path="/trustscores"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant', 'consumer']}>
+                  <TrustScores />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tracking"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant', 'courier', 'consumer']}>
+                  <TrackingPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/claims"
               element={
