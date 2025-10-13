@@ -171,13 +171,13 @@ const App: React.FC = () => {
             <Route
               path="/trustscores"
               element={
-                user?.user_role === 'courier' ? (
-                  <Navigate to="/courier/checkout-analytics" replace />
-                ) : (
-                  <ProtectedRoute>
+                <ProtectedRoute>
+                  {user?.user_role === 'courier' ? (
+                    <Navigate to="/courier/checkout-analytics" replace />
+                  ) : (
                     <TrustScores />
-                  </ProtectedRoute>
-                )
+                  )}
+                </ProtectedRoute>
               }
             />
             <Route
