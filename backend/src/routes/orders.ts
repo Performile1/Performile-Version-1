@@ -78,20 +78,10 @@ router.get(
           });
         }
       } else if (userRole === 'consumer') {
-        const consumerResult = await database.query(
-          'SELECT consumer_id FROM consumers WHERE user_id = $1',
-          [userId]
-        );
-        if (consumerResult.rows.length > 0) {
-          whereConditions.push(`o.consumer_id = $${paramIndex}`);
-          queryParams.push(consumerResult.rows[0].consumer_id);
-          paramIndex++;
-        } else {
-          return res.status(404).json({
-            success: false,
-            error: 'Consumer profile not found'
-          });
-        }
+        // Consumers filter by their email in orders table
+        whereConditions.push(`o.consumer_email = $${paramIndex}`);
+        queryParams.push((req as any).user?.email);
+        paramIndex++;
       }
       // Admin sees all orders
 
@@ -102,7 +92,7 @@ router.get(
           o.order_number ILIKE $${paramIndex} OR
           m.store_name ILIKE $${paramIndex} OR
           CONCAT(cu.first_name, ' ', cu.last_name) ILIKE $${paramIndex} OR
-          CONCAT(co.first_name, ' ', co.last_name) ILIKE $${paramIndex}
+          o.consumer_email ILIKE $${paramIndex}
         )`);
         queryParams.push(`%${search}%`);
         paramIndex++;
@@ -162,14 +152,21 @@ router.get(
         LEFT JOIN merchants m ON o.merchant_id = m.merchant_id
         LEFT JOIN couriers c ON o.courier_id = c.courier_id
         LEFT JOIN users cu ON c.user_id = cu.user_id
-        LEFT JOIN consumers co ON o.consumer_id = co.consumer_id
         WHERE ${whereClause}
       `;
 
       const countResult = await database.query(countQuery, queryParams);
       const total = parseInt(countResult.rows[0].total);
 
-      // Get orders
+      // Get orders - using safe column reference
+      const allowedSortColumns: { [key: string]: string } = {
+        'created_at': 'o.created_at',
+        'order_date': 'o.order_date',
+        'order_status': 'o.order_status',
+        'tracking_number': 'o.tracking_number'
+      };
+      const safeSortColumn = allowedSortColumns[sortColumn] || 'o.created_at';
+
       const ordersQuery = `
         SELECT 
           o.order_id,
@@ -188,15 +185,13 @@ router.get(
           o.updated_at,
           m.store_name,
           CONCAT(cu.first_name, ' ', cu.last_name) as courier_name,
-          CONCAT(co.first_name, ' ', co.last_name) as consumer_name,
-          co.email as consumer_email
+          o.consumer_email
         FROM orders o
         LEFT JOIN merchants m ON o.merchant_id = m.merchant_id
         LEFT JOIN couriers c ON o.courier_id = c.courier_id
         LEFT JOIN users cu ON c.user_id = cu.user_id
-        LEFT JOIN consumers co ON o.consumer_id = co.consumer_id
         WHERE ${whereClause}
-        ORDER BY o.${sortColumn} ${sortDirection}
+        ORDER BY ${safeSortColumn} ${sortDirection}
         LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
       `;
 
@@ -253,15 +248,11 @@ router.get(
           m.store_name,
           m.merchant_id,
           CONCAT(cu.first_name, ' ', cu.last_name) as courier_name,
-          c.courier_id,
-          CONCAT(co.first_name, ' ', co.last_name) as consumer_name,
-          co.email as consumer_email,
-          co.consumer_id
+          c.courier_id
         FROM orders o
         LEFT JOIN merchants m ON o.merchant_id = m.merchant_id
         LEFT JOIN couriers c ON o.courier_id = c.courier_id
         LEFT JOIN users cu ON c.user_id = cu.user_id
-        LEFT JOIN consumers co ON o.consumer_id = co.consumer_id
         WHERE o.order_id = $1
       `;
 
@@ -295,12 +286,9 @@ router.get(
           hasAccess = courierResult.rows.length > 0 && 
                      courierResult.rows[0].courier_id === order.courier_id;
         } else if (userRole === 'consumer') {
-          const consumerResult = await database.query(
-            'SELECT consumer_id FROM consumers WHERE user_id = $1',
-            [userId]
-          );
-          hasAccess = consumerResult.rows.length > 0 && 
-                     consumerResult.rows[0].consumer_id === order.consumer_id;
+          // Check if consumer email matches
+          const userEmail = (req as any).user?.email;
+          hasAccess = userEmail && order.consumer_email === userEmail;
         }
 
         if (!hasAccess) {
