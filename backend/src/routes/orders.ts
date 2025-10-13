@@ -201,6 +201,13 @@ router.get(
 
       queryParams.push(parseInt(limit as string), offset);
 
+      logger.info('[Orders] Query details', {
+        paramCount: queryParams.length,
+        limitParam,
+        offsetParam,
+        queryPreview: ordersQuery.substring(0, 200)
+      });
+
       const ordersResult = await database.query(ordersQuery, queryParams);
 
       logger.info('[Orders] Success', {
@@ -221,7 +228,12 @@ router.get(
         }
       });
     } catch (error) {
-      logger.error('[Orders] Error', error);
+      logger.error('[Orders] Error', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        userId,
+        userRole
+      });
       res.status(500).json({
         success: false,
         error: 'Failed to fetch orders',
