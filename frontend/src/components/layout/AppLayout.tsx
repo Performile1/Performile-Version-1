@@ -36,6 +36,7 @@ import {
   CreditCard,
   ShoppingBag,
   RateReview,
+  Storefront,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -179,6 +180,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       path: '/courier-directory',
       icon: DirectionsCar,
       roles: ['merchant'],
+    },
+    {
+      label: 'Checkout Analytics',
+      path: '/courier/checkout-analytics',
+      icon: Storefront,
+      roles: ['courier', 'admin'],
     },
     {
       label: 'Marketplace',
