@@ -220,9 +220,15 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
     });
   } catch (error) {
     console.error('Get orders error:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined
+    });
     res.status(500).json({
       success: false,
-      message: error instanceof Error ? error.message : 'Failed to fetch orders'
+      message: error instanceof Error ? error.message : 'Failed to fetch orders',
+      error: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.stack : String(error)) : undefined
     });
   }
 };
