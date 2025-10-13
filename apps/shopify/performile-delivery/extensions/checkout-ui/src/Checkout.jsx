@@ -3,7 +3,7 @@
  * Displays courier ratings in Shopify checkout
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   reactExtension,
   Banner,
@@ -15,6 +15,8 @@ import {
   useSettings,
   useShippingAddress,
   useApplyAttributeChange,
+  useCartLines,
+  useTotalAmount,
 } from '@shopify/ui-extensions-react/checkout';
 
 export default reactExtension(
@@ -26,20 +28,129 @@ function CourierRatings() {
   const settings = useSettings();
   const shippingAddress = useShippingAddress();
   const applyAttributeChange = useApplyAttributeChange();
+  const cartLines = useCartLines();
+  const totalAmount = useTotalAmount();
   
   const [couriers, setCouriers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedCourier, setSelectedCourier] = useState(null);
   const [error, setError] = useState(null);
+  const [sessionId] = useState(() => `checkout_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const trackedCouriers = useRef(new Set());
 
   const title = settings.title || 'Top Rated Couriers in Your Area';
   const numCouriers = settings.num_couriers || 3;
+  const apiBaseUrl = settings.api_url || 'https://frontend-two-swart-31.vercel.app/api';
+  const merchantId = settings.merchant_id;
+
+  // Calculate order details
+  const getOrderDetails = () => {
+    const orderValue = totalAmount?.amount ? parseFloat(totalAmount.amount) : 0;
+    const itemsCount = cartLines.length || 0;
+    
+    // Calculate total weight (if available)
+    const packageWeight = cartLines.reduce((sum, line) => {
+      const weight = line.merchandise?.weight?.value || 0;
+      const quantity = line.quantity || 1;
+      return sum + (weight * quantity);
+    }, 0);
+
+    return {
+      orderValue,
+      itemsCount,
+      packageWeightKg: packageWeight > 0 ? packageWeight : null,
+    };
+  };
+
+  // Track courier position display
+  const trackCourierDisplay = async (courier, position, totalCouriers) => {
+    if (!merchantId || !courier.courier_id) return;
+    
+    // Prevent duplicate tracking
+    const trackingKey = `${sessionId}_${courier.courier_id}_display`;
+    if (trackedCouriers.current.has(trackingKey)) return;
+    trackedCouriers.current.add(trackingKey);
+
+    const orderDetails = getOrderDetails();
+
+    try {
+      await fetch(`${apiBaseUrl}/courier/checkout-analytics/track`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          merchantId,
+          courierId: courier.courier_id,
+          checkoutSessionId: sessionId,
+          positionShown: position,
+          totalCouriersShown: totalCouriers,
+          wasSelected: false,
+          trustScoreAtTime: courier.trust_score || 0,
+          priceAtTime: courier.price || 0,
+          deliveryTimeEstimate: courier.delivery_hours || 48,
+          distanceKm: courier.distance_km || 0,
+          orderValue: orderDetails.orderValue,
+          itemsCount: orderDetails.itemsCount,
+          packageWeightKg: orderDetails.packageWeightKg,
+          deliveryPostalCode: shippingAddress?.zip || '',
+          deliveryCity: shippingAddress?.city || '',
+          deliveryCountry: shippingAddress?.countryCode || '',
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to track courier display:', error);
+      // Don't block UI on tracking failure
+    }
+  };
+
+  // Track courier selection
+  const trackCourierSelection = async (courier, position, totalCouriers) => {
+    if (!merchantId || !courier.courier_id) return;
+
+    const orderDetails = getOrderDetails();
+
+    try {
+      await fetch(`${apiBaseUrl}/courier/checkout-analytics/track`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          merchantId,
+          courierId: courier.courier_id,
+          checkoutSessionId: sessionId,
+          positionShown: position,
+          totalCouriersShown: totalCouriers,
+          wasSelected: true, // ✅ Selected!
+          trustScoreAtTime: courier.trust_score || 0,
+          priceAtTime: courier.price || 0,
+          deliveryTimeEstimate: courier.delivery_hours || 48,
+          distanceKm: courier.distance_km || 0,
+          orderValue: orderDetails.orderValue,
+          itemsCount: orderDetails.itemsCount,
+          packageWeightKg: orderDetails.packageWeightKg,
+          deliveryPostalCode: shippingAddress?.zip || '',
+          deliveryCity: shippingAddress?.city || '',
+          deliveryCountry: shippingAddress?.countryCode || '',
+        }),
+      });
+    } catch (error) {
+      console.error('Failed to track courier selection:', error);
+      // Don't block UI on tracking failure
+    }
+  };
 
   useEffect(() => {
     if (shippingAddress?.zip) {
       fetchCourierRatings(shippingAddress.zip);
     }
   }, [shippingAddress?.zip]);
+
+  // Track courier displays when couriers are loaded
+  useEffect(() => {
+    if (couriers.length > 0 && merchantId) {
+      couriers.forEach((courier, index) => {
+        trackCourierDisplay(courier, index + 1, couriers.length);
+      });
+    }
+  }, [couriers, merchantId]);
 
   const fetchCourierRatings = async (postalCode) => {
     setLoading(true);
@@ -74,8 +185,11 @@ function CourierRatings() {
     }
   };
 
-  const handleCourierSelect = async (courier) => {
+  const handleCourierSelect = async (courier, position) => {
     setSelectedCourier(courier.courier_id);
+
+    // Track selection
+    await trackCourierSelection(courier, position, couriers.length);
 
     // Save to order attributes
     try {
@@ -89,6 +203,12 @@ function CourierRatings() {
         type: 'updateAttribute',
         key: 'performile_courier_name',
         value: courier.courier_name,
+      });
+
+      await applyAttributeChange({
+        type: 'updateAttribute',
+        key: 'performile_session_id',
+        value: sessionId,
       });
     } catch (err) {
       console.error('Error saving courier selection:', err);
@@ -122,9 +242,10 @@ function CourierRatings() {
           <CourierCard
             key={courier.courier_id}
             courier={courier}
+            position={index + 1}
             isRecommended={index === 0}
             isSelected={selectedCourier === courier.courier_id}
-            onSelect={() => handleCourierSelect(courier)}
+            onSelect={() => handleCourierSelect(courier, index + 1)}
           />
         ))}
       </BlockStack>

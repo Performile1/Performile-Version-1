@@ -63,6 +63,16 @@ export const corsOptions = {
       return callback(null, true);
     }
 
+    // Allow Shopify domains for checkout extensions
+    if (origin.includes('.myshopify.com') || origin.includes('shopify.com')) {
+      return callback(null, true);
+    }
+
+    // Allow WooCommerce/WordPress sites (common patterns)
+    if (origin.includes('woocommerce') || origin.includes('wordpress')) {
+      return callback(null, true);
+    }
+
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {

@@ -392,10 +392,10 @@ router.get(
 /**
  * POST /api/courier/checkout-analytics/track
  * Track a checkout position (called by e-commerce plugins)
+ * PUBLIC ENDPOINT - No authentication required (called from checkout)
  */
 router.post(
   '/track',
-  authenticateToken,
   async (req: Request, res: Response) => {
     try {
       const {
