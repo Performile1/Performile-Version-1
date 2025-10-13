@@ -392,8 +392,8 @@ BEGIN
     
     RAISE NOTICE '✅ Created 100 sample checkout positions';
     
-    -- Aggregate the data
-    PERFORM aggregate_courier_position_history(CURRENT_DATE - INTERVAL '1 day');
+    -- Aggregate the data (cast to DATE)
+    PERFORM aggregate_courier_position_history((CURRENT_DATE - INTERVAL '1 day')::DATE);
     RAISE NOTICE '✅ Aggregated position history';
     
   ELSE
