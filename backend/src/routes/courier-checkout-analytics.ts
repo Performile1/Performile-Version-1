@@ -409,8 +409,11 @@ router.post(
         priceAtTime,
         deliveryTimeEstimate,
         distanceKm,
-        customerPostalCode,
-        orderValue
+        orderValue,
+        itemsCount,
+        deliveryPostalCode,
+        deliveryCity,
+        deliveryCountry
       } = req.body;
 
       // Validate required fields
@@ -434,9 +437,12 @@ router.post(
           price_at_time,
           delivery_time_estimate,
           distance_km,
-          customer_postal_code,
-          order_value
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+          order_value,
+          items_count,
+          delivery_postal_code,
+          delivery_city,
+          delivery_country
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
         RETURNING position_id`,
         [
           merchantId,
@@ -449,8 +455,11 @@ router.post(
           priceAtTime,
           deliveryTimeEstimate,
           distanceKm,
-          customerPostalCode,
-          orderValue
+          orderValue,
+          itemsCount,
+          deliveryPostalCode,
+          deliveryCity,
+          deliveryCountry
         ]
       );
 

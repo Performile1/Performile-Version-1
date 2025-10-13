@@ -28,9 +28,14 @@ CREATE TABLE IF NOT EXISTS courier_checkout_positions (
   delivery_time_estimate INTEGER, -- in hours
   distance_km DECIMAL(10,2),
   
-  -- Context
-  customer_postal_code VARCHAR(20),
+  -- Context - Order details
   order_value DECIMAL(10,2),
+  items_count INTEGER, -- Number of items in order
+  
+  -- Context - Delivery address
+  delivery_postal_code VARCHAR(20),
+  delivery_city VARCHAR(100),
+  delivery_country VARCHAR(100),
   
   -- Metadata
   created_at TIMESTAMP DEFAULT NOW(),
@@ -49,6 +54,12 @@ CREATE INDEX IF NOT EXISTS idx_courier_positions_session
 
 CREATE INDEX IF NOT EXISTS idx_courier_positions_selected 
   ON courier_checkout_positions(was_selected, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_courier_positions_country 
+  ON courier_checkout_positions(delivery_country, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_courier_positions_postal 
+  ON courier_checkout_positions(delivery_postal_code, created_at DESC);
 
 COMMENT ON TABLE courier_checkout_positions IS 'Tracks courier positions in merchant checkout flows for analytics';
 
@@ -76,6 +87,17 @@ CREATE TABLE IF NOT EXISTS courier_position_history (
   avg_price DECIMAL(10,2),
   avg_delivery_time INTEGER,
   avg_distance DECIMAL(10,2),
+  
+  -- Order metrics (NEW)
+  avg_order_value DECIMAL(10,2),
+  total_order_value DECIMAL(12,2),
+  avg_items_per_order DECIMAL(5,2),
+  total_items INTEGER,
+  
+  -- Geographic distribution (NEW)
+  top_country VARCHAR(100),
+  top_city VARCHAR(100),
+  unique_postal_codes INTEGER,
   
   -- Metadata
   created_at TIMESTAMP DEFAULT NOW(),
@@ -156,7 +178,14 @@ BEGIN
     avg_trust_score,
     avg_price,
     avg_delivery_time,
-    avg_distance
+    avg_distance,
+    avg_order_value,
+    total_order_value,
+    avg_items_per_order,
+    total_items,
+    top_country,
+    top_city,
+    unique_postal_codes
   )
   SELECT 
     courier_id,
@@ -173,7 +202,14 @@ BEGIN
     ROUND(AVG(trust_score_at_time), 2) as avg_trust_score,
     ROUND(AVG(price_at_time), 2) as avg_price,
     ROUND(AVG(delivery_time_estimate)) as avg_delivery_time,
-    ROUND(AVG(distance_km), 2) as avg_distance
+    ROUND(AVG(distance_km), 2) as avg_distance,
+    ROUND(AVG(order_value), 2) as avg_order_value,
+    ROUND(SUM(order_value), 2) as total_order_value,
+    ROUND(AVG(items_count), 2) as avg_items_per_order,
+    SUM(items_count) as total_items,
+    MODE() WITHIN GROUP (ORDER BY delivery_country) as top_country,
+    MODE() WITHIN GROUP (ORDER BY delivery_city) as top_city,
+    COUNT(DISTINCT delivery_postal_code) as unique_postal_codes
   FROM courier_checkout_positions
   WHERE DATE(created_at) = target_date
   GROUP BY courier_id, merchant_id
@@ -187,6 +223,13 @@ BEGIN
     avg_price = EXCLUDED.avg_price,
     avg_delivery_time = EXCLUDED.avg_delivery_time,
     avg_distance = EXCLUDED.avg_distance,
+    avg_order_value = EXCLUDED.avg_order_value,
+    total_order_value = EXCLUDED.total_order_value,
+    avg_items_per_order = EXCLUDED.avg_items_per_order,
+    total_items = EXCLUDED.total_items,
+    top_country = EXCLUDED.top_country,
+    top_city = EXCLUDED.top_city,
+    unique_postal_codes = EXCLUDED.unique_postal_codes,
     updated_at = NOW();
   
   GET DIAGNOSTICS rows_inserted = ROW_COUNT;
@@ -203,7 +246,14 @@ BEGIN
     avg_trust_score,
     avg_price,
     avg_delivery_time,
-    avg_distance
+    avg_distance,
+    avg_order_value,
+    total_order_value,
+    avg_items_per_order,
+    total_items,
+    top_country,
+    top_city,
+    unique_postal_codes
   )
   SELECT 
     courier_id,
@@ -220,7 +270,14 @@ BEGIN
     ROUND(AVG(trust_score_at_time), 2) as avg_trust_score,
     ROUND(AVG(price_at_time), 2) as avg_price,
     ROUND(AVG(delivery_time_estimate)) as avg_delivery_time,
-    ROUND(AVG(distance_km), 2) as avg_distance
+    ROUND(AVG(distance_km), 2) as avg_distance,
+    ROUND(AVG(order_value), 2) as avg_order_value,
+    ROUND(SUM(order_value), 2) as total_order_value,
+    ROUND(AVG(items_count), 2) as avg_items_per_order,
+    SUM(items_count) as total_items,
+    MODE() WITHIN GROUP (ORDER BY delivery_country) as top_country,
+    MODE() WITHIN GROUP (ORDER BY delivery_city) as top_city,
+    COUNT(DISTINCT delivery_postal_code) as unique_postal_codes
   FROM courier_checkout_positions
   WHERE DATE(created_at) = target_date
   GROUP BY courier_id
@@ -234,6 +291,13 @@ BEGIN
     avg_price = EXCLUDED.avg_price,
     avg_delivery_time = EXCLUDED.avg_delivery_time,
     avg_distance = EXCLUDED.avg_distance,
+    avg_order_value = EXCLUDED.avg_order_value,
+    total_order_value = EXCLUDED.total_order_value,
+    avg_items_per_order = EXCLUDED.avg_items_per_order,
+    total_items = EXCLUDED.total_items,
+    top_country = EXCLUDED.top_country,
+    top_city = EXCLUDED.top_city,
+    unique_postal_codes = EXCLUDED.unique_postal_codes,
     updated_at = NOW();
   
   RETURN rows_inserted;
@@ -283,8 +347,11 @@ BEGIN
         price_at_time,
         delivery_time_estimate,
         distance_km,
-        customer_postal_code,
         order_value,
+        items_count,
+        delivery_postal_code,
+        delivery_city,
+        delivery_country,
         created_at
       ) VALUES (
         test_merchant_id,
@@ -297,8 +364,11 @@ BEGIN
         10.00 + (RANDOM() * 20), -- Price $10-30
         (24 + FLOOR(RANDOM() * 48))::INTEGER, -- 24-72 hours
         5.0 + (RANDOM() * 20), -- 5-25 km
-        (ARRAY['10001', '90210', '60601', '33101', '94102'])[FLOOR(RANDOM() * 5 + 1)],
         50.00 + (RANDOM() * 200), -- Order value $50-250
+        (FLOOR(RANDOM() * 5) + 1)::INTEGER, -- Items 1-5
+        (ARRAY['10001', '90210', '60601', '33101', '94102'])[FLOOR(RANDOM() * 5 + 1)],
+        (ARRAY['New York', 'Los Angeles', 'Chicago', 'Miami', 'San Francisco'])[FLOOR(RANDOM() * 5 + 1)],
+        (ARRAY['USA', 'USA', 'USA', 'Canada', 'USA'])[FLOOR(RANDOM() * 5 + 1)],
         NOW() - (RANDOM() * INTERVAL '30 days')
       );
     END LOOP;
