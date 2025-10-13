@@ -284,7 +284,14 @@ export class TrustScoreController {
         limit = 20
       } = req.query;
 
-      const cacheKey = `dashboard:${JSON.stringify({ country, postal_code, min_reviews, limit })}`;
+      // Get user info for role-based filtering
+      const user = (req as any).user;
+      const userId = user?.user_id;
+      const userRole = user?.user_role;
+
+      logger.info('[Dashboard] Request from user', { userId, userRole });
+
+      const cacheKey = `dashboard:${userRole}:${userId}:${JSON.stringify({ country, postal_code, min_reviews, limit })}`;
       
       // Try cache first
       const cached = await redisClient.get(cacheKey);
@@ -317,7 +324,47 @@ export class TrustScoreController {
         [country || null, postal_code || null, Number(min_reviews), Number(limit)]
       );
 
-      // Get summary statistics from actual tables (works with or without CourierTrustScores view)
+      // Build role-based WHERE clause for filtering
+      let roleFilter = '';
+      let queryParams: any[] = [Number(min_reviews)];
+      
+      switch (userRole) {
+        case 'merchant':
+          // Merchant: Only their linked couriers and orders
+          roleFilter = `AND EXISTS (
+            SELECT 1 FROM merchant_courier_selections mcs 
+            WHERE mcs.courier_id = c.courier_id 
+            AND mcs.merchant_id = $2 
+            AND mcs.is_active = TRUE
+          )`;
+          queryParams.push(userId);
+          break;
+          
+        case 'courier':
+          // Courier: Only their own data
+          roleFilter = `AND c.user_id = $2`;
+          queryParams.push(userId);
+          break;
+          
+        case 'consumer':
+          // Consumer: Only orders they placed (if we add consumer_id to orders)
+          roleFilter = `AND EXISTS (
+            SELECT 1 FROM orders o2 
+            WHERE o2.courier_id = c.courier_id 
+            AND o2.consumer_id = $2
+          )`;
+          queryParams.push(userId);
+          break;
+          
+        case 'admin':
+        default:
+          // Admin: See all data (no filter)
+          break;
+      }
+
+      logger.info('[Dashboard] Role filter', { userRole, roleFilter });
+
+      // Get summary statistics from actual tables with role-based filtering
       const statsResult = await database.query(
         `SELECT 
            COUNT(DISTINCT c.courier_id) as total_couriers,
@@ -336,9 +383,10 @@ export class TrustScoreController {
          LEFT JOIN orders o ON c.courier_id = o.courier_id
          LEFT JOIN reviews r ON o.order_id = r.order_id
          WHERE c.is_active = TRUE
+         ${roleFilter}
          GROUP BY ()
          HAVING COUNT(DISTINCT r.review_id) >= $1`,
-        [Number(min_reviews)]
+        queryParams
       );
 
       const dashboardData = {
