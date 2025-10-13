@@ -125,10 +125,19 @@ const App: React.FC = () => {
 
   // Validate stored token on app load
   React.useEffect(() => {
-    if (isAuthenticated) {
-      validateStoredToken();
-    }
+    const validateToken = async () => {
+      try {
+        if (isAuthenticated) {
+          await validateStoredToken();
+        }
+      } catch (error) {
+        console.error('[App] Token validation error:', error);
+      }
+    };
+    
+    validateToken();
   }, []); // Run once on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   return (
     <QueryClientProvider client={queryClient}>
