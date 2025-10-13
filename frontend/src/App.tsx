@@ -16,6 +16,7 @@ import { ReviewBuilder } from '@/pages/admin/ReviewBuilder';
 import SubscriptionManagement from '@/pages/admin/SubscriptionManagement';
 import { CourierDirectory } from '@/pages/courier/CourierDirectory';
 import { CourierCheckoutAnalytics } from '@/pages/courier/CourierCheckoutAnalytics';
+import { MerchantCheckoutAnalytics } from '@/pages/merchant/MerchantCheckoutAnalytics';
 import { TeamManagement } from '@/pages/team/TeamManagement';
 import { AcceptInvitation } from '@/pages/team/AcceptInvitation';
 import { Analytics } from './pages/Analytics';
@@ -170,9 +171,13 @@ const App: React.FC = () => {
             <Route
               path="/trustscores"
               element={
-                <ProtectedRoute>
-                  <TrustScores />
-                </ProtectedRoute>
+                user?.user_role === 'courier' ? (
+                  <Navigate to="/courier/checkout-analytics" replace />
+                ) : (
+                  <ProtectedRoute>
+                    <TrustScores />
+                  </ProtectedRoute>
+                )
               }
             />
             <Route
@@ -206,6 +211,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute requiredRoles={['courier', 'admin']}>
                   <CourierCheckoutAnalytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/merchant/checkout-analytics"
+              element={
+                <ProtectedRoute requiredRoles={['merchant', 'admin']}>
+                  <MerchantCheckoutAnalytics />
                 </ProtectedRoute>
               }
             />

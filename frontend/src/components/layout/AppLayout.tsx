@@ -89,7 +89,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       label: 'Trust Scores',
       path: '/trustscores',
       icon: Assessment,
-      roles: ['admin', 'merchant', 'courier', 'consumer'],
+      roles: ['admin', 'merchant', 'consumer'], // Removed 'courier'
     },
     {
       label: 'Orders',
@@ -186,6 +186,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       path: '/courier/checkout-analytics',
       icon: Storefront,
       roles: ['courier', 'admin'],
+    },
+    {
+      label: 'Checkout Analytics',
+      path: '/merchant/checkout-analytics',
+      icon: Storefront,
+      roles: ['merchant', 'admin'],
     },
     {
       label: 'Marketplace',
