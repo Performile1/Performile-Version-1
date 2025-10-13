@@ -112,6 +112,7 @@ export const useAuthStore = create<AuthStore>()(
 
       logout: async () => {
         try {
+          console.log('[AuthStore] Logout initiated');
           const { tokens } = get();
           
           if (tokens) {
@@ -121,23 +122,14 @@ export const useAuthStore = create<AuthStore>()(
           // Track logout event
           analytics.logout();
           
-          set({
-            user: null,
-            tokens: null,
-            isAuthenticated: false,
-            isLoading: false,
-          });
+          // Use clearAuth to ensure everything is cleared
+          get().clearAuth();
           
           toast.success('Logged out successfully');
         } catch (error: any) {
           console.error('Logout error:', error);
           // Clear auth state even if logout request fails
-          set({
-            user: null,
-            tokens: null,
-            isAuthenticated: false,
-            isLoading: false,
-          });
+          get().clearAuth();
         }
       },
 
@@ -212,12 +204,23 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       clearAuth: () => {
+        console.log('[AuthStore] Clearing authentication state');
+        
+        // Clear zustand state
         set({
           user: null,
           tokens: null,
           isAuthenticated: false,
           isLoading: false,
         });
+        
+        // Also clear manual localStorage backup
+        try {
+          localStorage.removeItem('performile_tokens');
+          console.log('[AuthStore] Cleared localStorage backup');
+        } catch (error) {
+          console.error('[AuthStore] Failed to clear localStorage backup:', error);
+        }
       },
 
       setLoading: (loading: boolean) => {
