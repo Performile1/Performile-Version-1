@@ -59,8 +59,10 @@ CREATE POLICY orders_select ON orders
     (is_courier() AND courier_id IN (
       SELECT courier_id FROM couriers WHERE user_id = current_user_id()
     )) OR
-    -- Consumers see their own orders (using consumer_id column)
-    (is_consumer() AND consumer_id = current_user_id())
+    -- Consumers see orders by their email (orders table uses customer_email)
+    (is_consumer() AND customer_email IN (
+      SELECT email FROM users WHERE user_id = current_user_id()
+    ))
   );
 
 -- INSERT policy: Only merchants and admins can create orders
