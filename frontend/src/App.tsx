@@ -5,7 +5,7 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '@/store/authStore';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { SessionExpiredModal } from '@/components/SessionExpiredModal';
+// import { SessionExpiredModal } from '@/components/SessionExpiredModal';
 import { AuthPage } from '@/pages/AuthPage';
 import { Dashboard } from '@/pages/Dashboard';
 import { TrustScores } from '@/pages/TrustScores';
@@ -121,30 +121,19 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRoles
 };
 
 const App: React.FC = () => {
-  const { isAuthenticated, user, validateStoredToken } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
-  // Validate stored token on app load
-  React.useEffect(() => {
-    // Delay validation to avoid blocking initial render
-    const timer = setTimeout(() => {
-      const storedAuth = localStorage.getItem('performile-auth');
-      if (storedAuth && isAuthenticated) {
-        const validateToken = async () => {
-          try {
-            await validateStoredToken();
-          } catch (error) {
-            console.error('[App] Token validation error:', error);
-            // Error is already handled in validateStoredToken
-          }
-        };
-        
-        validateToken();
-      }
-    }, 100); // Delay by 100ms to let app render first
-
-    return () => clearTimeout(timer);
-  }, []); // Run once on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // TODO: Re-enable token validation after fixing render error
+  // Temporarily disabled to isolate the issue
+  // React.useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     const storedAuth = localStorage.getItem('performile-auth');
+  //     if (storedAuth && isAuthenticated) {
+  //       validateStoredToken();
+  //     }
+  //   }, 100);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -412,7 +401,7 @@ const App: React.FC = () => {
           }}
         />
         <SentryTestButton />
-        <SessionExpiredModal />
+        {/* <SessionExpiredModal /> */}
       </ThemeProvider>
     </QueryClientProvider>
   );
