@@ -411,6 +411,7 @@ router.post(
         distanceKm,
         orderValue,
         itemsCount,
+        packageWeightKg,
         deliveryPostalCode,
         deliveryCity,
         deliveryCountry
@@ -439,10 +440,11 @@ router.post(
           distance_km,
           order_value,
           items_count,
+          package_weight_kg,
           delivery_postal_code,
           delivery_city,
           delivery_country
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
         RETURNING position_id`,
         [
           merchantId,
@@ -457,6 +459,7 @@ router.post(
           distanceKm,
           orderValue,
           itemsCount,
+          packageWeightKg,
           deliveryPostalCode,
           deliveryCity,
           deliveryCountry

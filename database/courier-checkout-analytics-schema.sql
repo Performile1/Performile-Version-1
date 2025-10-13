@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS courier_checkout_positions (
   -- Context - Order details
   order_value DECIMAL(10,2),
   items_count INTEGER, -- Number of items in order
+  package_weight_kg DECIMAL(8,2), -- Package weight in kilograms
   
   -- Context - Delivery address
   delivery_postal_code VARCHAR(20),
@@ -93,6 +94,8 @@ CREATE TABLE IF NOT EXISTS courier_position_history (
   total_order_value DECIMAL(12,2),
   avg_items_per_order DECIMAL(5,2),
   total_items INTEGER,
+  avg_package_weight_kg DECIMAL(8,2),
+  total_weight_kg DECIMAL(12,2),
   
   -- Geographic distribution (NEW)
   top_country VARCHAR(100),
@@ -183,6 +186,8 @@ BEGIN
     total_order_value,
     avg_items_per_order,
     total_items,
+    avg_package_weight_kg,
+    total_weight_kg,
     top_country,
     top_city,
     unique_postal_codes
@@ -207,6 +212,8 @@ BEGIN
     ROUND(SUM(order_value), 2) as total_order_value,
     ROUND(AVG(items_count), 2) as avg_items_per_order,
     SUM(items_count) as total_items,
+    ROUND(AVG(package_weight_kg), 2) as avg_package_weight_kg,
+    ROUND(SUM(package_weight_kg), 2) as total_weight_kg,
     MODE() WITHIN GROUP (ORDER BY delivery_country) as top_country,
     MODE() WITHIN GROUP (ORDER BY delivery_city) as top_city,
     COUNT(DISTINCT delivery_postal_code) as unique_postal_codes
@@ -227,6 +234,8 @@ BEGIN
     total_order_value = EXCLUDED.total_order_value,
     avg_items_per_order = EXCLUDED.avg_items_per_order,
     total_items = EXCLUDED.total_items,
+    avg_package_weight_kg = EXCLUDED.avg_package_weight_kg,
+    total_weight_kg = EXCLUDED.total_weight_kg,
     top_country = EXCLUDED.top_country,
     top_city = EXCLUDED.top_city,
     unique_postal_codes = EXCLUDED.unique_postal_codes,
@@ -251,6 +260,8 @@ BEGIN
     total_order_value,
     avg_items_per_order,
     total_items,
+    avg_package_weight_kg,
+    total_weight_kg,
     top_country,
     top_city,
     unique_postal_codes
@@ -275,6 +286,8 @@ BEGIN
     ROUND(SUM(order_value), 2) as total_order_value,
     ROUND(AVG(items_count), 2) as avg_items_per_order,
     SUM(items_count) as total_items,
+    ROUND(AVG(package_weight_kg), 2) as avg_package_weight_kg,
+    ROUND(SUM(package_weight_kg), 2) as total_weight_kg,
     MODE() WITHIN GROUP (ORDER BY delivery_country) as top_country,
     MODE() WITHIN GROUP (ORDER BY delivery_city) as top_city,
     COUNT(DISTINCT delivery_postal_code) as unique_postal_codes
@@ -295,6 +308,8 @@ BEGIN
     total_order_value = EXCLUDED.total_order_value,
     avg_items_per_order = EXCLUDED.avg_items_per_order,
     total_items = EXCLUDED.total_items,
+    avg_package_weight_kg = EXCLUDED.avg_package_weight_kg,
+    total_weight_kg = EXCLUDED.total_weight_kg,
     top_country = EXCLUDED.top_country,
     top_city = EXCLUDED.top_city,
     unique_postal_codes = EXCLUDED.unique_postal_codes,
@@ -349,6 +364,7 @@ BEGIN
         distance_km,
         order_value,
         items_count,
+        package_weight_kg,
         delivery_postal_code,
         delivery_city,
         delivery_country,
@@ -366,6 +382,7 @@ BEGIN
         5.0 + (RANDOM() * 20), -- 5-25 km
         50.00 + (RANDOM() * 200), -- Order value $50-250
         (FLOOR(RANDOM() * 5) + 1)::INTEGER, -- Items 1-5
+        0.5 + (RANDOM() * 19.5), -- Weight 0.5-20 kg
         (ARRAY['10001', '90210', '60601', '33101', '94102'])[FLOOR(RANDOM() * 5 + 1)],
         (ARRAY['New York', 'Los Angeles', 'Chicago', 'Miami', 'San Francisco'])[FLOOR(RANDOM() * 5 + 1)],
         (ARRAY['USA', 'USA', 'USA', 'Canada', 'USA'])[FLOOR(RANDOM() * 5 + 1)],
