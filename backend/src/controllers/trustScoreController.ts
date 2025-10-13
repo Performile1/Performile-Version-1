@@ -317,17 +317,27 @@ export class TrustScoreController {
         [country || null, postal_code || null, Number(min_reviews), Number(limit)]
       );
 
-      // Get summary statistics
+      // Get summary statistics from actual tables (works with or without CourierTrustScores view)
       const statsResult = await database.query(
         `SELECT 
-           COUNT(*) as total_couriers,
-           AVG(trust_score) as avg_trust_score,
-           AVG(on_time_rate) as avg_on_time_rate,
-           AVG(completion_rate) as avg_completion_rate,
-           SUM(total_orders) as total_orders_processed,
-           SUM(total_reviews) as total_reviews_count
-         FROM CourierTrustScores
-         WHERE total_reviews >= $1`,
+           COUNT(DISTINCT c.courier_id) as total_couriers,
+           COALESCE(ROUND(AVG(c.trust_score), 1), 0) as avg_trust_score,
+           COALESCE(ROUND(AVG(
+             CASE WHEN o.order_status = 'delivered' AND o.delivery_date <= o.order_date + INTERVAL '2 days' 
+             THEN 100.0 ELSE 0 END
+           ), 1), 0) as avg_on_time_rate,
+           COALESCE(ROUND(AVG(
+             CASE WHEN o.order_status = 'delivered' 
+             THEN 100.0 ELSE 0 END
+           ), 1), 0) as avg_completion_rate,
+           COUNT(DISTINCT o.order_id) as total_orders_processed,
+           COUNT(DISTINCT r.review_id) as total_reviews_count
+         FROM couriers c
+         LEFT JOIN orders o ON c.courier_id = o.courier_id
+         LEFT JOIN reviews r ON o.order_id = r.order_id
+         WHERE c.is_active = TRUE
+         GROUP BY ()
+         HAVING COUNT(DISTINCT r.review_id) >= $1`,
         [Number(min_reviews)]
       );
 
