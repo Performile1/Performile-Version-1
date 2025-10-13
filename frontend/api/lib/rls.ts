@@ -44,8 +44,10 @@ export async function withRLS<T>(
   
   try {
     // Set RLS session variables
-    await client.query('SET app.user_id = $1', [user.userId]);
-    await client.query('SET app.user_role = $1', [user.role]);
+    // Note: SET command doesn't support parameterized queries, so we use string interpolation
+    // The values are from JWT tokens which are already validated
+    await client.query(`SET app.user_id = '${user.userId}'`);
+    await client.query(`SET app.user_role = '${user.role}'`);
     
     // Execute the callback with RLS context active
     const result = await callback(client);
@@ -105,8 +107,9 @@ export async function transactionWithRLS<T>(
   
   try {
     // Set RLS session variables
-    await client.query('SET app.user_id = $1', [user.userId]);
-    await client.query('SET app.user_role = $1', [user.role]);
+    // Note: SET command doesn't support parameterized queries
+    await client.query(`SET app.user_id = '${user.userId}'`);
+    await client.query(`SET app.user_role = '${user.role}'`);
     
     // Begin transaction
     await client.query('BEGIN');
