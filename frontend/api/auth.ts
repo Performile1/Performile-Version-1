@@ -213,6 +213,113 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // Handle token refresh
+    if (action === 'refresh') {
+      const { refreshToken } = req.body;
+      
+      if (!refreshToken) {
+        return res.status(400).json({ 
+          success: false,
+          message: 'Refresh token is required' 
+        });
+      }
+
+      try {
+        const jwtRefreshSecret = getJWTRefreshSecret();
+        const decoded = jwt.verify(refreshToken, jwtRefreshSecret) as any;
+
+        if (!decoded.userId) {
+          return res.status(401).json({ 
+            success: false,
+            message: 'Invalid refresh token' 
+          });
+        }
+
+        // Get user from database to ensure they still exist and are active
+        const client = await pool.connect();
+        try {
+          const userQuery = 'SELECT user_id, email, user_role, first_name, last_name, is_active FROM users WHERE user_id = $1';
+          const userResult = await client.query(userQuery, [decoded.userId]);
+
+          if (userResult.rows.length === 0) {
+            return res.status(401).json({ 
+              success: false,
+              message: 'User not found' 
+            });
+          }
+
+          const user = userResult.rows[0];
+
+          if (!user.is_active) {
+            return res.status(401).json({ 
+              success: false,
+              message: 'Account is deactivated' 
+            });
+          }
+
+          // Generate new tokens
+          const jwtSecret = getJWTSecret();
+          
+          const newAccessToken = jwt.sign(
+            { userId: user.user_id, email: user.email, role: user.user_role },
+            jwtSecret,
+            { expiresIn: '1h' }
+          );
+
+          const newRefreshToken = jwt.sign(
+            { userId: user.user_id },
+            jwtRefreshSecret,
+            { expiresIn: '7d' }
+          );
+
+          // Update last login
+          await client.query('UPDATE users SET last_login = NOW() WHERE user_id = $1', [user.user_id]);
+
+          // Set httpOnly cookies
+          const isProduction = process.env.NODE_ENV === 'production';
+          res.setHeader('Set-Cookie', [
+            `accessToken=${newAccessToken}; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=3600`,
+            `refreshToken=${newRefreshToken}; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=604800`
+          ]);
+
+          return res.status(200).json({
+            success: true,
+            data: {
+              user: {
+                user_id: user.user_id,
+                email: user.email,
+                user_role: user.user_role,
+                first_name: user.first_name,
+                last_name: user.last_name
+              },
+              tokens: {
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken
+              }
+            }
+          });
+
+        } finally {
+          client.release();
+        }
+
+      } catch (error: any) {
+        console.error('Token refresh error:', error);
+        if (error.name === 'TokenExpiredError') {
+          return res.status(401).json({ 
+            success: false,
+            message: 'Refresh token has expired. Please log in again.' 
+          });
+        } else if (error.name === 'JsonWebTokenError') {
+          return res.status(401).json({ 
+            success: false,
+            message: 'Invalid refresh token' 
+          });
+        }
+        throw error;
+      }
+    }
+
     return res.status(400).json({ message: 'Invalid action' });
   } catch (error: any) {
     console.error('Auth API error:', error);
