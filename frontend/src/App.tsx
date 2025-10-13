@@ -119,7 +119,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRoles
 };
 
 const App: React.FC = () => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
   return (
     <QueryClientProvider client={queryClient}>
