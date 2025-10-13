@@ -46,8 +46,10 @@ export async function withRLS<T>(
     // Set RLS session variables
     // Note: SET command doesn't support parameterized queries, so we use string interpolation
     // The values are from JWT tokens which are already validated
+    console.log('[RLS] Setting context:', { userId: user.userId, role: user.role });
     await client.query(`SET app.user_id = '${user.userId}'`);
     await client.query(`SET app.user_role = '${user.role}'`);
+    console.log('[RLS] Context set successfully');
     
     // Execute the callback with RLS context active
     const result = await callback(client);
