@@ -42,6 +42,7 @@ import courierCheckoutAnalyticsRoutes from './routes/courier-checkout-analytics'
 import merchantCheckoutAnalyticsRoutes from './routes/merchant-checkout-analytics';
 import marketInsightsRoutes from './routes/market-insights';
 import ordersRoutes from './routes/orders';
+import dashboardRoutes from './routes/dashboard';
 
 
 class Server {
@@ -150,6 +151,8 @@ class Server {
     this.app.use('/api/merchant/checkout-analytics', merchantCheckoutAnalyticsRoutes);
     this.app.use('/api/market-insights', marketInsightsRoutes);
     this.app.use('/api/orders', ordersRoutes);
+    this.app.use('/api/dashboard', dashboardRoutes);
+    this.app.use('/api/tracking', dashboardRoutes);
 
     // API documentation endpoint
     this.app.get('/api', (req, res) => {
