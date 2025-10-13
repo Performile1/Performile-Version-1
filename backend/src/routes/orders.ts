@@ -167,6 +167,10 @@ router.get(
       };
       const safeSortColumn = allowedSortColumns[sortColumn] || 'o.created_at';
 
+      // Add LIMIT and OFFSET parameters
+      const limitParam = paramIndex;
+      const offsetParam = paramIndex + 1;
+      
       const ordersQuery = `
         SELECT 
           o.order_id,
@@ -184,7 +188,7 @@ router.get(
           o.created_at,
           o.updated_at,
           m.store_name,
-          CONCAT(cu.first_name, ' ', cu.last_name) as courier_name,
+          COALESCE(CONCAT(cu.first_name, ' ', cu.last_name), 'N/A') as courier_name,
           o.consumer_email
         FROM orders o
         LEFT JOIN merchants m ON o.merchant_id = m.merchant_id
@@ -192,7 +196,7 @@ router.get(
         LEFT JOIN users cu ON c.user_id = cu.user_id
         WHERE ${whereClause}
         ORDER BY ${safeSortColumn} ${sortDirection}
-        LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+        LIMIT $${limitParam} OFFSET $${offsetParam}
       `;
 
       queryParams.push(parseInt(limit as string), offset);
