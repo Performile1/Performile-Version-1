@@ -38,6 +38,7 @@ import integrationRoutes from './routes/integration';
 import shopifyRoutes from './routes/shopify';
 import courierRoutes from './routes/courierRoutes';
 import merchantDashboardRoutes from './routes/merchant-dashboard';
+import courierCheckoutAnalyticsRoutes from './routes/courier-checkout-analytics';
 
 
 class Server {
@@ -142,6 +143,7 @@ class Server {
     this.app.use('/api/shopify', shopifyRoutes);
     this.app.use('/api/couriers', courierRoutes);
     this.app.use('/api/merchant', merchantDashboardRoutes);
+    this.app.use('/api/courier/checkout-analytics', courierCheckoutAnalyticsRoutes);
 
     // API documentation endpoint
     this.app.get('/api', (req, res) => {
