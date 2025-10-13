@@ -320,6 +320,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
+    // Handle logout
+    if (action === 'logout') {
+      // Clear cookies
+      const isProduction = process.env.NODE_ENV === 'production';
+      res.setHeader('Set-Cookie', [
+        `accessToken=; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=0`,
+        `refreshToken=; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=0`
+      ]);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Logged out successfully'
+      });
+    }
+
     return res.status(400).json({ message: 'Invalid action' });
   } catch (error: any) {
     console.error('Auth API error:', error);
