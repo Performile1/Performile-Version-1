@@ -121,7 +121,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRoles
 };
 
 const App: React.FC = () => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, validateStoredToken } = useAuthStore();
+
+  // Validate stored token on app load
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      validateStoredToken();
+    }
+  }, []); // Run once on mount
 
   return (
     <QueryClientProvider client={queryClient}>

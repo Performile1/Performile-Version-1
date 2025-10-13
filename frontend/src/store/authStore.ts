@@ -4,12 +4,14 @@ import { User, AuthState, LoginCredentials, RegisterData } from '@/types';
 import { authService } from '@/services/authService';
 import toast from 'react-hot-toast';
 import { analytics } from '@/lib/analytics';
+import { jwtDecode } from 'jwt-decode';
 
 interface AuthStore extends AuthState {
   login: (credentials: LoginCredentials) => Promise<boolean>;
   register: (data: RegisterData) => Promise<boolean>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<boolean>;
+  validateStoredToken: () => Promise<void>;
   updateUser: (user: Partial<User>) => void;
   clearAuth: () => void;
   setLoading: (loading: boolean) => void;
@@ -163,6 +165,36 @@ export const useAuthStore = create<AuthStore>()(
           console.error('Token refresh error:', error);
           get().clearAuth();
           return false;
+        }
+      },
+
+      validateStoredToken: async () => {
+        const { tokens, isAuthenticated } = get();
+        
+        if (!isAuthenticated || !tokens?.accessToken) {
+          return;
+        }
+
+        try {
+          // Decode token to check expiration
+          const decoded: any = jwtDecode(tokens.accessToken);
+          const now = Math.floor(Date.now() / 1000);
+          
+          // If token expired or expires in less than 5 minutes, try to refresh
+          if (decoded.exp && decoded.exp < now + 300) {
+            console.log('[AuthStore] Token expired or expiring soon, attempting refresh');
+            const refreshSuccess = await get().refreshToken();
+            
+            if (!refreshSuccess) {
+              console.log('[AuthStore] Token refresh failed, clearing auth');
+              get().clearAuth();
+              toast.error('Your session has expired. Please log in again.');
+            }
+          }
+        } catch (error) {
+          console.error('[AuthStore] Token validation error:', error);
+          // If token is invalid, clear auth
+          get().clearAuth();
         }
       },
 
