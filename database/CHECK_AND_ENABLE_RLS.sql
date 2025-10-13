@@ -59,8 +59,8 @@ CREATE POLICY orders_select ON orders
     (is_courier() AND courier_id IN (
       SELECT courier_id FROM couriers WHERE user_id = current_user_id()
     )) OR
-    -- Consumers see their own orders
-    (is_consumer() AND customer_id = current_user_id())
+    -- Consumers see their own orders (using consumer_id column)
+    (is_consumer() AND consumer_id = current_user_id())
   );
 
 -- INSERT policy: Only merchants and admins can create orders
@@ -113,27 +113,33 @@ WHERE tablename = 'orders'
 ORDER BY cmd;
 
 -- =====================================================
--- STEP 7: Test RLS with different roles
+-- STEP 7: Test RLS with different roles (OPTIONAL)
 -- =====================================================
+-- Uncomment and replace 'your-user-id-here' with actual UUIDs to test
 
+/*
 -- Test as admin (should see all orders)
 SET app.user_role = 'admin';
 SELECT COUNT(*) as admin_can_see FROM orders;
 
 -- Test as merchant (should see only their store's orders)
--- Replace with actual merchant user_id
-SET app.user_id = (SELECT user_id FROM users WHERE user_role = 'merchant' LIMIT 1);
+-- First get a merchant user_id: SELECT user_id FROM users WHERE user_role = 'merchant' LIMIT 1;
+-- Then replace below:
+SET app.user_id = 'your-merchant-user-id-here';
 SET app.user_role = 'merchant';
 SELECT COUNT(*) as merchant_can_see FROM orders;
 
 -- Test as courier (should see only assigned orders)
-SET app.user_id = (SELECT user_id FROM users WHERE user_role = 'courier' LIMIT 1);
+-- First get a courier user_id: SELECT user_id FROM users WHERE user_role = 'courier' LIMIT 1;
+-- Then replace below:
+SET app.user_id = 'your-courier-user-id-here';
 SET app.user_role = 'courier';
 SELECT COUNT(*) as courier_can_see FROM orders;
 
 -- Reset
 RESET app.user_id;
 RESET app.user_role;
+*/
 
 SELECT '
 ========================================
