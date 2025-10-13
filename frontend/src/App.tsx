@@ -15,6 +15,7 @@ import { ManageCouriers } from '@/pages/admin/ManageCouriers';
 import { ReviewBuilder } from '@/pages/admin/ReviewBuilder';
 import SubscriptionManagement from '@/pages/admin/SubscriptionManagement';
 import { CourierDirectory } from '@/pages/courier/CourierDirectory';
+import { CourierCheckoutAnalytics } from '@/pages/courier/CourierCheckoutAnalytics';
 import { TeamManagement } from '@/pages/team/TeamManagement';
 import { AcceptInvitation } from '@/pages/team/AcceptInvitation';
 import { Analytics } from './pages/Analytics';
@@ -197,6 +198,14 @@ const App: React.FC = () => {
                   {/* Show anonymized directory for couriers, full management for admin */}
                   {/* This will be handled by checking user role in the component */}
                   <CourierDirectory />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/courier/checkout-analytics"
+              element={
+                <ProtectedRoute requiredRoles={['courier', 'admin']}>
+                  <CourierCheckoutAnalytics />
                 </ProtectedRoute>
               }
             />
