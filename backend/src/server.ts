@@ -40,6 +40,7 @@ import courierRoutes from './routes/courierRoutes';
 import merchantDashboardRoutes from './routes/merchant-dashboard';
 import courierCheckoutAnalyticsRoutes from './routes/courier-checkout-analytics';
 import merchantCheckoutAnalyticsRoutes from './routes/merchant-checkout-analytics';
+import marketInsightsRoutes from './routes/market-insights';
 
 
 class Server {
@@ -146,6 +147,7 @@ class Server {
     this.app.use('/api/merchant', merchantDashboardRoutes);
     this.app.use('/api/courier/checkout-analytics', courierCheckoutAnalyticsRoutes);
     this.app.use('/api/merchant/checkout-analytics', merchantCheckoutAnalyticsRoutes);
+    this.app.use('/api/market-insights', marketInsightsRoutes);
 
     // API documentation endpoint
     this.app.get('/api', (req, res) => {

@@ -85,7 +85,7 @@ export const CourierCheckoutAnalytics: React.FC = () => {
   const { data: marketInsightsData, isLoading: loadingMarketInsights, error: marketError } = useQuery({
     queryKey: ['courier-market-insights', user?.user_id],
     queryFn: async () => {
-      const response = await apiClient.get('/courier/market-insights');
+      const response = await apiClient.get('/market-insights/courier');
       return response.data.data;
     },
     enabled: !!user && activeTab === 1,
@@ -413,21 +413,175 @@ const MyMerchantsTab: React.FC<{ data: any }> = ({ data }) => {
 // =====================================================
 
 const MarketInsightsTab: React.FC<{ data: any }> = ({ data }) => {
+  const { merchantSegments, geographicOpportunities, industryTrends, marketBenchmarks } = data;
+
   return (
     <Box>
-      <Alert severity="info" sx={{ mb: 3 }}>
-        🚧 Market Insights feature coming soon! This will show anonymized market data, benchmarking, and opportunities.
+      <Alert severity="success" sx={{ mb: 3 }}>
+        📊 <strong>Anonymized Market Data</strong> - All merchant identities are protected. Data shows market trends and opportunities.
       </Alert>
-      
-      <Typography variant="body2" color="text.secondary">
-        Features planned:
-        <ul>
-          <li>Market overview and benchmarking</li>
-          <li>High-value segment discovery</li>
-          <li>Geographic expansion opportunities</li>
-          <li>Competitive positioning analysis</li>
-        </ul>
-      </Typography>
+
+      {/* Market Benchmarks */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Market Avg Position
+              </Typography>
+              <Typography variant="h4">
+                #{marketBenchmarks?.market_avg_position || 'N/A'}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Top 25%: #{marketBenchmarks?.top_25_position || 'N/A'}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Market Avg Selection Rate
+              </Typography>
+              <Typography variant="h4">
+                {marketBenchmarks?.market_avg_selection_rate || 0}%
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                Top 25%: {marketBenchmarks?.top_25_selection_rate || 0}%
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Merchant Segments */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            💰 Merchant Segments by Order Value
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Discover which merchant segments offer the best opportunities
+          </Typography>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Segment</TableCell>
+                  <TableCell align="right">Merchants</TableCell>
+                  <TableCell align="right">Avg Order Value</TableCell>
+                  <TableCell align="right">Selection Rate</TableCell>
+                  <TableCell align="right">Total Checkouts</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {merchantSegments?.map((segment: any, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Chip label={segment.segment} color="primary" size="small" />
+                    </TableCell>
+                    <TableCell align="right">{segment.merchant_count}</TableCell>
+                    <TableCell align="right">${segment.avg_order_value}</TableCell>
+                    <TableCell align="right">
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1 }}>
+                        {segment.avg_selection_rate}%
+                        <LinearProgress 
+                          variant="determinate" 
+                          value={parseFloat(segment.avg_selection_rate)} 
+                          sx={{ width: 60, height: 6, borderRadius: 3 }}
+                        />
+                      </Box>
+                    </TableCell>
+                    <TableCell align="right">{segment.total_checkouts}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
+
+      {/* Geographic Opportunities */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            🗺️ Geographic Opportunities
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Top locations with active merchant demand
+          </Typography>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Location</TableCell>
+                  <TableCell align="right">Merchants</TableCell>
+                  <TableCell align="right">Checkouts</TableCell>
+                  <TableCell align="right">Avg Order Value</TableCell>
+                  <TableCell align="right">Selection Rate</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {geographicOpportunities?.slice(0, 10).map((location: any, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <LocationOn fontSize="small" color="action" />
+                        {location.delivery_city}, {location.delivery_country}
+                      </Box>
+                    </TableCell>
+                    <TableCell align="right">{location.merchant_count}</TableCell>
+                    <TableCell align="right">{location.total_checkouts}</TableCell>
+                    <TableCell align="right">${location.avg_order_value}</TableCell>
+                    <TableCell align="right">{location.selection_rate}%</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
+
+      {/* Industry Trends */}
+      {industryTrends && industryTrends.length > 0 && (
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              📦 Industry Trends
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Merchant types based on order patterns
+            </Typography>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Industry Type</TableCell>
+                    <TableCell align="right">Merchants</TableCell>
+                    <TableCell align="right">Avg Order Value</TableCell>
+                    <TableCell align="right">Avg Items/Order</TableCell>
+                    <TableCell align="right">Avg Weight (kg)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {industryTrends.map((trend: any, index: number) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <Chip label={trend.industry_type} size="small" />
+                      </TableCell>
+                      <TableCell align="right">{trend.merchant_count}</TableCell>
+                      <TableCell align="right">${trend.avg_order_value}</TableCell>
+                      <TableCell align="right">{trend.avg_items_per_order}</TableCell>
+                      <TableCell align="right">{trend.avg_package_weight || 'N/A'}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </Card>
+      )}
     </Box>
   );
 };
