@@ -47,6 +47,7 @@ import subscriptionsRoutes from './routes/subscriptions';
 import uploadRoutes from './routes/upload';
 import reviewsRoutes from './routes/reviews';
 import webhooksRoutes from './routes/webhooks';
+import sessionsRoutes from './routes/sessions';
 
 
 class Server {
@@ -161,6 +162,7 @@ class Server {
     this.app.use('/api/upload', uploadRoutes);
     this.app.use('/api/reviews', reviewsRoutes);
     this.app.use('/api/webhooks', webhooksRoutes);
+    this.app.use('/api/auth/sessions', sessionsRoutes);
 
     // API documentation endpoint
     this.app.get('/api', (req, res) => {
