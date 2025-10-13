@@ -15,7 +15,9 @@ export const SessionExpiredModal = () => {
       setIsOpen(true);
     });
 
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const handleLogin = () => {
