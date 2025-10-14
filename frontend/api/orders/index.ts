@@ -188,8 +188,14 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
     `;
 
     // Use RLS context - queries will be automatically filtered by role
+    console.log('[Orders API] User object:', { userId: user.userId, user_id: user.user_id, role: user.role, user_role: user.user_role });
     const rlsUser = { userId: user.userId || user.user_id, role: user.role || user.user_role };
     console.log('[Orders API] RLS User:', rlsUser);
+    
+    if (!rlsUser.userId) {
+      console.error('[Orders API] ERROR: userId is missing!', user);
+      throw new Error('User ID is required for RLS');
+    }
     const data = await withRLS(pool, rlsUser, async (client) => {
       const result = await client.query(query, queryParams);
       console.log('[Orders API] Query returned', result.rows.length, 'orders');
