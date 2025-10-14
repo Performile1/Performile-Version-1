@@ -188,8 +188,11 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
     `;
 
     // Use RLS context - queries will be automatically filtered by role
-    const data = await withRLS(pool, { userId: user.userId || user.user_id, role: user.role || user.user_role }, async (client) => {
+    const rlsUser = { userId: user.userId || user.user_id, role: user.role || user.user_role };
+    console.log('[Orders API] RLS User:', rlsUser);
+    const data = await withRLS(pool, rlsUser, async (client) => {
       const result = await client.query(query, queryParams);
+      console.log('[Orders API] Query returned', result.rows.length, 'orders');
 
       // Get total count for pagination
       const countQuery = `
