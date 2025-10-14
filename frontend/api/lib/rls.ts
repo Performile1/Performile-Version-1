@@ -43,6 +43,12 @@ export async function withRLS<T>(
   const client = await pool.connect();
   
   try {
+    // Validate user context before setting
+    if (!user.userId || !user.role) {
+      console.error('[RLS] Invalid user context:', user);
+      throw new Error(`Invalid RLS context: userId=${user.userId}, role=${user.role}`);
+    }
+    
     // Set RLS session variables
     // Note: SET command doesn't support parameterized queries, so we use string interpolation
     // The values are from JWT tokens which are already validated
