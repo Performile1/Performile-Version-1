@@ -44,9 +44,9 @@ export async function withRLS<T>(
   
   try {
     // Validate user context before setting
-    if (!user.userId || !user.role) {
+    if (!user.userId || user.userId.trim() === '' || !user.role || user.role.trim() === '') {
       console.error('[RLS] Invalid user context:', user);
-      throw new Error(`Invalid RLS context: userId=${user.userId}, role=${user.role}`);
+      throw new Error(`Invalid RLS context: userId="${user.userId}", role="${user.role}"`);
     }
     
     // Set RLS session variables
