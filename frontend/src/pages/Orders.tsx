@@ -162,6 +162,7 @@ const Orders: React.FC = () => {
         ...(filters.search && { search: filters.search }),
         sort_by: sortBy,
         sort_order: sortOrder,
+        _t: Date.now().toString(), // Cache buster
       });
 
       // Add status filters
@@ -196,7 +197,8 @@ const Orders: React.FC = () => {
       return response.data.orders || [];
     },
     placeholderData: keepPreviousData,
-    staleTime: 30000, // 30 seconds
+    staleTime: 0, // Disable stale time to force fresh data
+    cacheTime: 0, // Disable cache completely
   });
 
   // Get unique countries from orders for filter
