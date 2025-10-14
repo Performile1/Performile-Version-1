@@ -154,7 +154,7 @@ const Orders: React.FC = () => {
 
   // Fetch orders
   const { data: ordersData, isLoading, error, refetch } = useQuery({
-    queryKey: ['orders', page, rowsPerPage, filters, sortBy, sortOrder],
+    queryKey: ['orders_v2', page, rowsPerPage, filters, sortBy, sortOrder], // Changed key to force cache clear
     queryFn: async () => {
       const params = new URLSearchParams({
         page: (page + 1).toString(),
