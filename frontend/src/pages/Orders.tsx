@@ -153,7 +153,7 @@ const Orders: React.FC = () => {
   });
 
   // Fetch orders
-  const { data: orders = [], isLoading, error, refetch } = useQuery({
+  const { data: ordersData, isLoading, error, refetch } = useQuery({
     queryKey: ['orders', page, rowsPerPage, filters, sortBy, sortOrder],
     queryFn: async () => {
       const params = new URLSearchParams({
@@ -196,10 +196,11 @@ const Orders: React.FC = () => {
       const response = await apiClient.get(`/orders?${params}`);
       return response.data.orders || [];
     },
-    placeholderData: keepPreviousData,
     staleTime: 0, // Disable stale time to force fresh data
-    cacheTime: 0, // Disable cache completely
+    gcTime: 0, // Disable cache completely (replaces cacheTime in v5)
   });
+
+  const orders = ordersData || [];
 
   // Get unique countries from orders for filter
   const uniqueCountries = Array.from(new Set(orders.map((order: Order) => order.country).filter(Boolean))) as string[];
