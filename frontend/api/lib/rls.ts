@@ -49,7 +49,14 @@ export async function withRLS<T>(
     console.log('[RLS] Setting context:', { userId: user.userId, role: user.role });
     await client.query(`SET app.user_id = '${user.userId}'`);
     await client.query(`SET app.user_role = '${user.role}'`);
-    console.log('[RLS] Context set successfully');
+    
+    // Verify the values were set correctly
+    const verification = await client.query(`
+      SELECT 
+        current_setting('app.user_id', true) as user_id,
+        current_setting('app.user_role', true) as role
+    `);
+    console.log('[RLS] Context verification:', verification.rows[0]);
     
     // Execute the callback with RLS context active
     const result = await callback(client);
