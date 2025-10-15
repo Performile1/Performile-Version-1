@@ -3,25 +3,29 @@ import posthog from 'posthog-js';
 // Initialize PostHog
 export const initAnalytics = () => {
   const apiKey = import.meta.env.VITE_POSTHOG_KEY;
-  const apiHost = import.meta.env.VITE_POSTHOG_HOST || 'https://app.posthog.com';
+  const apiHost = import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com';
 
   if (!apiKey) {
-    console.warn('PostHog API key not configured. Analytics disabled.');
+    console.warn('⚠️ PostHog API key not configured. Analytics disabled.');
     return;
   }
 
   try {
     posthog.init(apiKey, {
       api_host: apiHost,
-      autocapture: true, // Automatically capture clicks, page views, etc.
-      capture_pageview: true,
-      capture_pageleave: true,
+      autocapture: false, // Disable automatic capture to reduce errors
+      capture_pageview: false, // Manual page view tracking
+      capture_pageleave: false,
       
-      // Session recording
-      session_recording: {
-        recordCrossOriginIframes: false,
-        maskAllInputs: true, // Mask sensitive inputs
-        maskTextSelector: '.sensitive', // Mask elements with this class
+      // Disable session recording in production to avoid errors
+      disable_session_recording: true,
+      
+      // Reduce network requests
+      persistence: 'localStorage',
+      
+      // Error handling
+      on_xhr_error: (failedRequest) => {
+        console.warn('PostHog request failed:', failedRequest);
       },
       
       // Performance
@@ -29,50 +33,79 @@ export const initAnalytics = () => {
         if (import.meta.env.DEV) {
           posthog.debug();
         }
+        console.log('✅ PostHog analytics initialized');
       },
     });
-
-    console.log('✅ PostHog analytics initialized');
   } catch (error) {
     console.error('❌ Failed to initialize PostHog:', error);
+    // Don't throw - allow app to continue without analytics
+  }
+};
+
+// Helper to check if PostHog is available
+const isPostHogAvailable = (): boolean => {
+  try {
+    return posthog && posthog.__loaded === true;
+  } catch {
+    return false;
   }
 };
 
 // Track custom events
 export const trackEvent = (eventName: string, properties?: Record<string, any>) => {
-  if (posthog.__loaded) {
-    posthog.capture(eventName, properties);
+  try {
+    if (isPostHogAvailable()) {
+      posthog.capture(eventName, properties);
+    }
+  } catch (error) {
+    console.warn('Failed to track event:', eventName, error);
   }
 };
 
 // Identify user
 export const identifyUser = (userId: string, properties?: Record<string, any>) => {
-  if (posthog.__loaded) {
-    posthog.identify(userId, properties);
+  try {
+    if (isPostHogAvailable()) {
+      posthog.identify(userId, properties);
+    }
+  } catch (error) {
+    console.warn('Failed to identify user:', error);
   }
 };
 
 // Reset user (on logout)
 export const resetUser = () => {
-  if (posthog.__loaded) {
-    posthog.reset();
+  try {
+    if (isPostHogAvailable()) {
+      posthog.reset();
+    }
+  } catch (error) {
+    console.warn('Failed to reset user:', error);
   }
 };
 
 // Track page view
 export const trackPageView = (pageName?: string) => {
-  if (posthog.__loaded) {
-    posthog.capture('$pageview', {
-      $current_url: window.location.href,
-      page_name: pageName,
-    });
+  try {
+    if (isPostHogAvailable()) {
+      posthog.capture('$pageview', {
+        $current_url: window.location.href,
+        page_name: pageName,
+      });
+    }
+  } catch (error) {
+    console.warn('Failed to track page view:', error);
   }
 };
 
 // Feature flags
 export const isFeatureEnabled = (flagKey: string): boolean => {
-  if (posthog.__loaded) {
-    return posthog.isFeatureEnabled(flagKey) || false;
+  try {
+    if (isPostHogAvailable()) {
+      return posthog.isFeatureEnabled(flagKey) || false;
+    }
+  } catch (error) {
+    console.warn('Failed to check feature flag:', flagKey, error);
   }
   return false;
 };
