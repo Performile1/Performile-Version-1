@@ -24,6 +24,8 @@ import logger from './utils/logger';
 
 // Import middleware
 import { corsOptions, helmetConfig, generalRateLimit, sanitizeInput, securityHeaders, requestSizeLimit } from './middleware/security';
+import { monitorPoolHealth, trackQueryPerformance, handleConnectionErrors, setupPoolMonitoring } from './middleware/dbPool';
+import { globalErrorHandler, notFoundHandler } from './utils/errorHandler';
 import { AppError } from './types';
 import ratingProcessor from './jobs/ratingProcessor';
 
@@ -109,6 +111,10 @@ class Server {
 
     // Trust proxy for accurate IP addresses behind reverse proxy
     this.app.set('trust proxy', 1);
+
+    // Database pool monitoring
+    this.app.use(monitorPoolHealth);
+    this.app.use(trackQueryPerformance);
   }
 
   private initializeRoutes(): void {
@@ -203,80 +209,14 @@ class Server {
   }
 
   private initializeErrorHandling(): void {
-    // Global error handler
-    this.app.use((error: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-      logger.error('Unhandled error', {
-        error: error.message,
-        stack: error.stack,
-        url: req.url,
-        method: req.method,
-        ip: req.ip,
-        userAgent: req.get('User-Agent')
-      });
+    // Handle database connection errors
+    this.app.use(handleConnectionErrors);
 
-      // Handle known application errors
-      if (error instanceof AppError) {
-        res.status(error.statusCode).json({
-          success: false,
-          error: error.message,
-          message: error.message,
-          statusCode: error.statusCode,
-          timestamp: new Date().toISOString(),
-          path: req.path
-        });
-        return;
-      }
+    // Global error handler (using new utility)
+    this.app.use(globalErrorHandler);
 
-      // Handle validation errors
-      if (error.name === 'ValidationError') {
-        res.status(400).json({
-          success: false,
-          error: 'Validation Error',
-          message: error.message,
-          statusCode: 400,
-          timestamp: new Date().toISOString(),
-          path: req.path
-        });
-        return;
-      }
-
-      // Handle database errors
-      if (error.name === 'DatabaseError' || error.message.includes('database')) {
-        res.status(500).json({
-          success: false,
-          error: 'Database Error',
-          message: 'A database error occurred',
-          statusCode: 500,
-          timestamp: new Date().toISOString(),
-          path: req.path
-        });
-        return;
-      }
-
-      // Default error response
-      res.status(500).json({
-        success: false,
-        error: 'Internal Server Error',
-        message: process.env.NODE_ENV === 'production' 
-          ? 'An unexpected error occurred' 
-          : error.message,
-        statusCode: 500,
-        timestamp: new Date().toISOString(),
-        path: req.path
-      });
-    });
-
-    // Handle 404 for non-API routes
-    this.app.use('*', (req, res) => {
-      res.status(404).json({
-        success: false,
-        error: 'Not Found',
-        message: 'The requested resource was not found',
-        statusCode: 404,
-        timestamp: new Date().toISOString(),
-        path: req.path
-      });
-    });
+    // Handle 404 for non-API routes (using new utility)
+    this.app.use('*', notFoundHandler);
   }
 
   public async start(): Promise<void> {
@@ -294,6 +234,9 @@ class Server {
 
       // Setup graceful shutdown handlers
       this.setupGracefulShutdown();
+
+      // Setup database pool monitoring
+      setupPoolMonitoring();
 
       // Start the HTTP server
       this.app.listen(this.port, () => {
