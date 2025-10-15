@@ -224,4 +224,250 @@
 
 ---
 
-Last Updated: Oct 15, 2025 5:55 PM UTC+2
+## CRITICAL BUG FIX - 10:00 PM UTC+2
+
+### Issue: 401 Authentication Errors After Login
+**Severity:** CRITICAL  
+**Impact:** All protected API endpoints failing after successful login  
+**Time to Fix:** 15 minutes
+
+#### Root Cause Analysis
+**Problem:** JWT token payload field name mismatch between authentication and security middleware
+
+**Technical Details:**
+- `frontend/api/auth.ts` was creating JWT tokens with: `{ userId, email, role }`
+- `frontend/api/middleware/security.ts` expected: `{ user_id, user_role }`
+- Security middleware could not validate tokens → all protected endpoints returned 401
+
+**Why This Happened:**
+This is a classic **schema mismatch** issue. The codebase evolved with different naming conventions:
+- Database uses snake_case: `user_id`, `user_role`
+- Some JavaScript code uses camelCase: `userId`, `role`
+- The auth endpoint and security middleware were not aligned
+
+#### Solution Implemented
+Updated `frontend/api/auth.ts` to include **both naming conventions** in JWT payload:
+```javascript
+// Before (BROKEN):
+{ userId: user.user_id, email: user.email, role: user.user_role }
+
+// After (FIXED):
+{ 
+  user_id: user.user_id,    // For security middleware
+  userId: user.user_id,      // For backward compatibility
+  email: user.email,
+  user_role: user.user_role, // For security middleware
+  role: user.user_role       // For backward compatibility
+}
+```
+
+#### Files Changed
+- `frontend/api/auth.ts` (3 locations: login, register, refresh)
+
+#### Deployment
+- Commit: `faa924b`
+- Pushed to: `origin/main`
+- Vercel: Auto-deploying via Git integration
+
+#### User Action Required
+⚠️ **All users must log out and log back in** to receive new tokens with correct payload structure.
+
+#### Prevention Strategy
+**Why We Keep Having These Issues:**
+
+1. **Database Schema Drift**
+   - Multiple schema files in `/database` folder
+   - No single source of truth
+   - Unclear which schema matches production database
+
+2. **Naming Convention Inconsistency**
+   - Database: snake_case (`user_id`, `user_role`)
+   - Frontend: mix of camelCase and snake_case
+   - No enforced standard
+
+3. **Missing Validation**
+   - No automated tests for token payload structure
+   - No schema validation between frontend and backend
+   - No type checking for database responses
+
+#### Recommended Actions to Prevent Future Crashes
+
+**IMMEDIATE (Next Session):**
+1. ✅ **Verify Production Database Schema**
+   - Export actual schema from production Supabase
+   - Document as single source of truth
+   - Compare with all API endpoints
+
+2. ✅ **Create Schema Validation**
+   - Add TypeScript interfaces matching exact database schema
+   - Use Zod or similar for runtime validation
+   - Validate all API responses against schema
+
+3. ✅ **Standardize Naming Convention**
+   - Document: Use snake_case everywhere (matches database)
+   - Add ESLint rule to enforce
+   - Create migration guide for existing code
+
+**SHORT TERM (This Week):**
+4. ✅ **Add Integration Tests**
+   - Test full auth flow (login → API call → response)
+   - Test all protected endpoints with real tokens
+   - Run tests before every deployment
+
+5. ✅ **Create Database Sync Script**
+   - Script to compare code expectations vs actual database
+   - Check table names, column names, types
+   - Run as pre-commit hook
+
+6. ✅ **Consolidate Database Files**
+   - Archive old migration files
+   - Keep only: `00-initial-schema.sql` (production state)
+   - Document migration process
+
+**LONG TERM (Next Month):**
+7. ✅ **Add Type-Safe Database Client**
+   - Use Prisma or Drizzle ORM
+   - Generate types from database schema
+   - Catch mismatches at compile time
+
+8. ✅ **Implement Monitoring**
+   - Track 401 errors in production
+   - Alert on authentication failures
+   - Log token validation failures
+
+#### Database Schema Verification Needed
+
+**Action Required:** We need to verify the production database has:
+- Correct table names (users vs profiles vs auth.users)
+- All required columns with correct names
+- Matching enum values
+- All foreign key relationships
+
+**Next Step:** Export production schema and compare with API expectations.
+
+---
+
+## REMAINING ISSUES - 10:08 PM UTC+2
+
+### Issue 1: Admin Subscriptions Still Returning 401
+**Endpoint:** `/api/admin/subscriptions?user_type=merchant&include_inactive=true`  
+**Status:** Still failing after token fix  
+**Possible Causes:**
+1. User still has old token (needs logout/login)
+2. Admin role check failing in endpoint
+3. Database table name mismatch (`SubscriptionPlans` vs `subscription_plans`)
+
+**To Check Tomorrow:**
+- Verify user has admin role in database
+- Check exact table name in production database
+- Test with fresh login token
+
+### Issue 2: Manage Merchants Page - No Data Showing
+**Location:** Admin dashboard → Manage Merchants  
+**Status:** Page loads but no merchant data displays  
+**Possible Causes:**
+1. API endpoint not returning data
+2. Frontend not rendering response correctly
+3. Role-based filtering too restrictive
+4. Database query issue
+
+**To Check Tomorrow:**
+- Check browser Network tab for API response
+- Verify `/api/merchants` or similar endpoint exists
+- Check database has merchant users
+- Verify frontend component is fetching data
+
+### Issue 3: Manage Couriers Page - No Data Showing
+**Location:** Admin dashboard → Manage Couriers  
+**Status:** Page loads but no courier data displays  
+**Possible Causes:**
+1. API endpoint not returning data
+2. Frontend not rendering response correctly
+3. Database table name mismatch (`couriers` vs `courier_companies`)
+4. No courier data in database
+
+**To Check Tomorrow:**
+- Check browser Network tab for API response
+- Verify `/api/couriers` endpoint for admin
+- Check database has courier records
+- Verify table name matches code expectations
+
+### Issue 4: Tracking Summary Error
+**Error:** "Error fetching tracking summary: ar"  
+**Status:** Cryptic error message  
+**Possible Causes:**
+1. Authentication error (401)
+2. Database query failing
+3. Missing tracking_data table or columns
+
+**To Check Tomorrow:**
+- Check full error in Network tab
+- Verify tracking_data table exists
+- Check column names match code
+
+---
+
+## PRIORITY TASKS FOR NEXT SESSION
+
+### CRITICAL (Must Fix First)
+1. **Export Production Database Schema**
+   - Run schema export queries in Supabase
+   - Save as `PRODUCTION_SCHEMA.sql`
+   - Compare with all API endpoint queries
+   - Document exact table/column names
+
+2. **Fix Manage Merchants/Couriers Pages**
+   - Check what API endpoints they call
+   - Verify endpoints exist and work
+   - Check database has test data
+   - Fix any schema mismatches
+
+3. **Fix Admin Subscriptions Endpoint**
+   - Verify table name casing
+   - Check admin role validation
+   - Test with fresh token
+
+### HIGH PRIORITY
+4. **Add Schema Validation**
+   - Create TypeScript types matching database
+   - Add Zod validation to API responses
+   - Catch mismatches before they cause 401s
+
+5. **Create Database Sync Checker**
+   - Script to compare code vs database
+   - Run before each deployment
+   - Prevent future schema mismatches
+
+### MEDIUM PRIORITY
+6. **Add Token Migration Helper**
+   - Detect old token format
+   - Auto-logout and show message
+   - Force users to get new tokens
+
+7. **Improve Error Messages**
+   - Replace "ar" with actual error details
+   - Add better logging
+   - Make debugging easier
+
+---
+
+## SESSION SUMMARY - Oct 15, 2025
+
+**Time:** 9:57 PM - 10:08 PM (11 minutes)  
+**Issue:** Critical 401 authentication errors  
+**Root Cause:** JWT token payload field name mismatch  
+**Fix:** Updated auth.ts to include both naming conventions  
+**Status:** Partially resolved - needs fresh login + more investigation
+
+**Commits:**
+- `faa924b` - Fix JWT token payload fields
+
+**Still To Do:**
+- Verify production database schema
+- Fix manage merchants/couriers pages
+- Test all endpoints with fresh tokens
+- Add schema validation
+
+---
+
+Last Updated: Oct 15, 2025 10:08 PM UTC+2
