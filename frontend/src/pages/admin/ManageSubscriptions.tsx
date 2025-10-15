@@ -133,15 +133,76 @@ export const ManageSubscriptions: React.FC = () => {
   // Addons - keep empty for now (can be added later)
   const addons: Addon[] = [];
 
+  // Mutation for updating plan
+  const updatePlanMutation = useMutation({
+    mutationFn: async (plan: SubscriptionPlan) => {
+      const response = await apiClient.put('/api/admin/subscription-plans-v2', plan);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'subscription-plans'] });
+      setEditDialogOpen(false);
+    }
+  });
+
+  // Mutation for creating plan
+  const createPlanMutation = useMutation({
+    mutationFn: async (plan: Partial<SubscriptionPlan>) => {
+      const response = await apiClient.post('/api/admin/subscription-plans-v2', plan);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'subscription-plans'] });
+      setEditDialogOpen(false);
+    }
+  });
+
+  // Mutation for deleting plan
+  const deletePlanMutation = useMutation({
+    mutationFn: async (planId: string) => {
+      const response = await apiClient.delete(`/api/admin/subscription-plans-v2?plan_id=${planId}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'subscription-plans'] });
+    }
+  });
+
   const handleEditPlan = (plan: SubscriptionPlan) => {
     setSelectedPlan(plan);
     setEditDialogOpen(true);
   };
 
+  const handleNewPlan = () => {
+    setSelectedPlan({
+      plan_id: '',
+      plan_name: '',
+      user_role: 'merchant',
+      price_monthly: 0,
+      price_yearly: 0,
+      features_json: {},
+      limits_json: {},
+      is_active: true
+    });
+    setEditDialogOpen(true);
+  };
+
   const handleSavePlan = () => {
-    // API call to save plan
-    console.log('Saving plan:', selectedPlan);
-    setEditDialogOpen(false);
+    if (!selectedPlan) return;
+
+    if (selectedPlan.plan_id) {
+      // Update existing plan
+      updatePlanMutation.mutate(selectedPlan);
+    } else {
+      // Create new plan
+      createPlanMutation.mutate(selectedPlan);
+    }
+  };
+
+  const handleDeletePlan = (planId: string) => {
+    if (confirm('Are you sure you want to delete this plan? This cannot be undone.')) {
+      deletePlanMutation.mutate(planId);
+    }
   };
 
   const renderPlanTable = (plans: SubscriptionPlan[]) => (
@@ -184,7 +245,12 @@ export const ManageSubscriptions: React.FC = () => {
                 <IconButton size="small" onClick={() => handleEditPlan(plan)}>
                   <Edit />
                 </IconButton>
-                <IconButton size="small" color="error">
+                <IconButton 
+                  size="small" 
+                  color="error"
+                  onClick={() => handleDeletePlan(plan.plan_id)}
+                  disabled={deletePlanMutation.isPending}
+                >
                   <Delete />
                 </IconButton>
               </TableCell>
@@ -226,7 +292,11 @@ export const ManageSubscriptions: React.FC = () => {
           <Typography variant="h4">
             Subscription Management
           </Typography>
-          <Button variant="contained" startIcon={<Add />}>
+          <Button 
+            variant="contained" 
+            startIcon={<Add />}
+            onClick={handleNewPlan}
+          >
             New Plan
           </Button>
         </Box>
@@ -366,9 +436,11 @@ export const ManageSubscriptions: React.FC = () => {
           )}
         </TabPanel>
 
-        {/* Edit Dialog */}
+        {/* Edit/Create Dialog */}
         <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="md" fullWidth>
-          <DialogTitle>Edit Subscription Plan</DialogTitle>
+          <DialogTitle>
+            {selectedPlan?.plan_id ? 'Edit Subscription Plan' : 'Create New Subscription Plan'}
+          </DialogTitle>
           <DialogContent>
             <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={12}>
@@ -420,8 +492,23 @@ export const ManageSubscriptions: React.FC = () => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSavePlan} variant="contained">Save Changes</Button>
+            <Button 
+              onClick={() => setEditDialogOpen(false)}
+              disabled={updatePlanMutation.isPending || createPlanMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSavePlan} 
+              variant="contained"
+              disabled={updatePlanMutation.isPending || createPlanMutation.isPending}
+            >
+              {updatePlanMutation.isPending || createPlanMutation.isPending ? (
+                <CircularProgress size={24} />
+              ) : (
+                selectedPlan?.plan_id ? 'Save Changes' : 'Create Plan'
+              )}
+            </Button>
           </DialogActions>
         </Dialog>
       </Box>
