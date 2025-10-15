@@ -22,7 +22,9 @@ import {
   Chip,
   Box,
   Tab,
-  Tabs
+  Tabs,
+  CircularProgress,
+  Alert
 } from '@mui/material';
 import {
   Edit,
@@ -32,6 +34,8 @@ import {
   People,
   TrendingUp
 } from '@mui/icons-material';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '../../lib/api-client';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -76,108 +80,58 @@ export const ManageSubscriptions: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
+  const queryClient = useQueryClient();
   
-  // Mock data - would come from API
-  const merchantPlans: SubscriptionPlan[] = [
-    {
-      plan_id: '1',
-      plan_name: 'Merchant Tier 1',
-      user_role: 'merchant',
-      price_monthly: 29.00,
-      price_yearly: 290.00,
-      features_json: { features: ['2 couriers', '2 markets', 'Lead marketplace'] },
-      limits_json: { couriers: 2, markets: 2 },
-      is_active: true,
-      active_subscribers: 45,
-      monthly_revenue: 1305.00
-    },
-    {
-      plan_id: '2',
-      plan_name: 'Merchant Tier 2',
-      user_role: 'merchant',
-      price_monthly: 79.00,
-      price_yearly: 790.00,
-      features_json: { features: ['4 couriers', '4 markets', 'Data export'] },
-      limits_json: { couriers: 4, markets: 4 },
-      is_active: true,
-      active_subscribers: 28,
-      monthly_revenue: 2212.00
-    },
-    {
-      plan_id: '3',
-      plan_name: 'Merchant Tier 3',
-      user_role: 'merchant',
-      price_monthly: 199.00,
-      price_yearly: 1990.00,
-      features_json: { features: ['Unlimited', 'Postal codes', 'API access'] },
-      limits_json: { couriers: -1, markets: -1 },
-      is_active: true,
-      active_subscribers: 12,
-      monthly_revenue: 2388.00
+  // Fetch subscription plans from API
+  const { data: plansData, isLoading: plansLoading, error: plansError } = useQuery({
+    queryKey: ['admin', 'subscription-plans'],
+    queryFn: async () => {
+      const response = await apiClient.get('/api/admin/subscription-plans');
+      return response.data;
     }
-  ];
+  });
 
-  const courierPlans: SubscriptionPlan[] = [
-    {
-      plan_id: '4',
-      plan_name: 'Courier Tier 1',
-      user_role: 'courier',
-      price_monthly: 19.00,
-      price_yearly: 190.00,
-      features_json: { features: ['1 market', 'Performance dashboard'] },
-      limits_json: { markets: 1 },
-      is_active: true,
-      active_subscribers: 67,
-      monthly_revenue: 1273.00
-    },
-    {
-      plan_id: '5',
-      plan_name: 'Courier Tier 2',
-      user_role: 'courier',
-      price_monthly: 49.00,
-      price_yearly: 490.00,
-      features_json: { features: ['4 markets', 'Data export'] },
-      limits_json: { markets: 4 },
-      is_active: true,
-      active_subscribers: 34,
-      monthly_revenue: 1666.00
-    },
-    {
-      plan_id: '6',
-      plan_name: 'Courier Tier 3',
-      user_role: 'courier',
-      price_monthly: 99.00,
-      price_yearly: 990.00,
-      features_json: { features: ['Unlimited markets', 'API access'] },
-      limits_json: { markets: -1 },
-      is_active: true,
-      active_subscribers: 15,
-      monthly_revenue: 1485.00
+  // Fetch active subscriptions for statistics
+  const { data: subscriptionsData, isLoading: subscriptionsLoading } = useQuery({
+    queryKey: ['admin', 'subscriptions'],
+    queryFn: async () => {
+      const response = await apiClient.get('/api/admin/subscriptions');
+      return response.data;
     }
-  ];
+  });
 
-  const addons: Addon[] = [
-    {
-      addon_id: '1',
-      addon_name: 'Extra Market Access',
-      addon_type: 'market',
-      user_role: 'merchant',
-      price: 15.00,
-      billing_cycle: 'monthly',
-      description: 'Add 1 additional market',
-      is_active: true
-    },
-    {
-      addon_id: '2',
-      addon_name: 'Postal Code Deep Dive',
-      addon_type: 'postal_code',
-      user_role: 'courier',
-      price: 20.00,
-      billing_cycle: 'monthly',
-      description: 'Unlock postal code analytics',
-      is_active: true
-    }
-  ];
+  // Separate plans by role
+  const merchantPlans: SubscriptionPlan[] = plansData?.data?.filter((p: SubscriptionPlan) => p.user_role === 'merchant') || [];
+  const courierPlans: SubscriptionPlan[] = plansData?.data?.filter((p: SubscriptionPlan) => p.user_role === 'courier') || [];
+
+  // Calculate statistics from subscriptions data
+  const totalSubscribers = subscriptionsData?.data?.length || 0;
+  const monthlyRevenue = subscriptionsData?.data?.reduce((sum: number, sub: any) => {
+    const plan = plansData?.data?.find((p: SubscriptionPlan) => p.plan_id === sub.plan_id);
+    return sum + (plan?.price_monthly || 0);
+  }, 0) || 0;
+
+  // Calculate subscriber count per plan
+  const planSubscriberCounts = subscriptionsData?.data?.reduce((acc: any, sub: any) => {
+    acc[sub.plan_id] = (acc[sub.plan_id] || 0) + 1;
+    return acc;
+  }, {}) || {};
+
+  // Add subscriber counts and revenue to plans
+  const enrichedMerchantPlans = merchantPlans.map(plan => ({
+    ...plan,
+    active_subscribers: planSubscriberCounts[plan.plan_id] || 0,
+    monthly_revenue: (planSubscriberCounts[plan.plan_id] || 0) * plan.price_monthly
+  }));
+
+  const enrichedCourierPlans = courierPlans.map(plan => ({
+    ...plan,
+    active_subscribers: planSubscriberCounts[plan.plan_id] || 0,
+    monthly_revenue: (planSubscriberCounts[plan.plan_id] || 0) * plan.price_monthly
+  }));
+
+  // Addons - keep empty for now (can be added later)
+  const addons: Addon[] = [];
 
   const handleEditPlan = (plan: SubscriptionPlan) => {
     setSelectedPlan(plan);
@@ -241,6 +195,30 @@ export const ManageSubscriptions: React.FC = () => {
     </TableContainer>
   );
 
+  // Show loading state
+  if (plansLoading || subscriptionsLoading) {
+    return (
+      <Container maxWidth="xl">
+        <Box sx={{ py: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
+  // Show error state
+  if (plansError) {
+    return (
+      <Container maxWidth="xl">
+        <Box sx={{ py: 4 }}>
+          <Alert severity="error">
+            Failed to load subscription plans. Please try again.
+          </Alert>
+        </Box>
+      </Container>
+    );
+  }
+
   return (
     <Container maxWidth="xl">
       <Box sx={{ py: 4 }}>
@@ -264,7 +242,7 @@ export const ManageSubscriptions: React.FC = () => {
                       Total Subscribers
                     </Typography>
                     <Typography variant="h4">
-                      201
+                      {totalSubscribers}
                     </Typography>
                   </Box>
                   <People color="primary" sx={{ fontSize: 48 }} />
@@ -281,7 +259,7 @@ export const ManageSubscriptions: React.FC = () => {
                       Monthly Revenue
                     </Typography>
                     <Typography variant="h4">
-                      $10,329
+                      ${monthlyRevenue.toFixed(2)}
                     </Typography>
                   </Box>
                   <AttachMoney color="success" sx={{ fontSize: 48 }} />
@@ -295,10 +273,10 @@ export const ManageSubscriptions: React.FC = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <Box>
                     <Typography color="text.secondary" gutterBottom>
-                      Growth Rate
+                      Active Plans
                     </Typography>
                     <Typography variant="h4">
-                      +12.5%
+                      {(merchantPlans.length + courierPlans.length)}
                     </Typography>
                   </Box>
                   <TrendingUp color="info" sx={{ fontSize: 48 }} />
@@ -319,59 +297,73 @@ export const ManageSubscriptions: React.FC = () => {
 
         {/* Merchant Plans Tab */}
         <TabPanel value={activeTab} index={0}>
-          {renderPlanTable(merchantPlans)}
+          {enrichedMerchantPlans.length > 0 ? (
+            renderPlanTable(enrichedMerchantPlans)
+          ) : (
+            <Alert severity="info">No merchant plans found.</Alert>
+          )}
         </TabPanel>
 
         {/* Courier Plans Tab */}
         <TabPanel value={activeTab} index={1}>
-          {renderPlanTable(courierPlans)}
+          {enrichedCourierPlans.length > 0 ? (
+            renderPlanTable(enrichedCourierPlans)
+          ) : (
+            <Alert severity="info">No courier plans found.</Alert>
+          )}
         </TabPanel>
 
         {/* Add-ons Tab */}
         <TabPanel value={activeTab} index={2}>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Add-on Name</TableCell>
-                  <TableCell>Type</TableCell>
-                  <TableCell>Role</TableCell>
-                  <TableCell>Price</TableCell>
-                  <TableCell>Billing</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {addons.map((addon) => (
-                  <TableRow key={addon.addon_id}>
-                    <TableCell>{addon.addon_name}</TableCell>
-                    <TableCell>
-                      <Chip label={addon.addon_type} size="small" />
-                    </TableCell>
-                    <TableCell>{addon.user_role}</TableCell>
-                    <TableCell>${addon.price}</TableCell>
-                    <TableCell>{addon.billing_cycle}</TableCell>
-                    <TableCell>
-                      <Chip 
-                        label={addon.is_active ? 'Active' : 'Inactive'} 
-                        color={addon.is_active ? 'success' : 'default'}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton size="small">
-                        <Edit />
-                      </IconButton>
-                      <IconButton size="small" color="error">
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
+          {addons.length > 0 ? (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Add-on Name</TableCell>
+                    <TableCell>Type</TableCell>
+                    <TableCell>Role</TableCell>
+                    <TableCell>Price</TableCell>
+                    <TableCell>Billing</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Actions</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {addons.map((addon) => (
+                    <TableRow key={addon.addon_id}>
+                      <TableCell>{addon.addon_name}</TableCell>
+                      <TableCell>
+                        <Chip label={addon.addon_type} size="small" />
+                      </TableCell>
+                      <TableCell>{addon.user_role}</TableCell>
+                      <TableCell>${addon.price}</TableCell>
+                      <TableCell>{addon.billing_cycle}</TableCell>
+                      <TableCell>
+                        <Chip 
+                          label={addon.is_active ? 'Active' : 'Inactive'} 
+                          color={addon.is_active ? 'success' : 'default'}
+                          size="small"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <IconButton size="small">
+                          <Edit />
+                        </IconButton>
+                        <IconButton size="small" color="error">
+                          <Delete />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <Alert severity="info">
+              No add-ons configured yet. Add-ons allow users to purchase additional features beyond their subscription plan.
+            </Alert>
+          )}
         </TabPanel>
 
         {/* Edit Dialog */}
