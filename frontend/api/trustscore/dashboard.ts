@@ -72,19 +72,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             SELECT 
               1 as total_couriers,
               1 as active_couriers,
-              COALESCE(c.trust_score, 0) as avg_trust_score,
+              COALESCE(c.customer_rating * 20, 0) as avg_trust_score,
               COUNT(DISTINCT r.review_id) as total_reviews,
               COALESCE(AVG(r.rating), 0) as avg_rating,
               COUNT(DISTINCT o.order_id) as total_orders_processed,
               COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders,
               COALESCE(ROUND((COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END)::NUMERIC / 
                 NULLIF(COUNT(DISTINCT o.order_id), 0) * 100), 2), 0) as avg_completion_rate,
-              COALESCE(c.on_time_rate, 0) as avg_on_time_rate
+              COALESCE(c.on_time_delivery_rate, 0) as avg_on_time_rate
             FROM couriers c
             LEFT JOIN orders o ON c.courier_id = o.courier_id
             LEFT JOIN reviews r ON o.order_id = r.order_id
             WHERE c.user_id = $1
-            GROUP BY c.trust_score, c.on_time_rate
+            GROUP BY c.customer_rating, c.on_time_delivery_rate
           `, [userId]);
         } else if (userRole === 'merchant') {
           // Merchant: Get stats for their store's orders only
@@ -92,14 +92,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             SELECT 
               COUNT(DISTINCT o.courier_id) as total_couriers,
               COUNT(DISTINCT o.courier_id) as active_couriers,
-              COALESCE(AVG(c.trust_score), 0) as avg_trust_score,
+              COALESCE(AVG(c.customer_rating * 20), 0) as avg_trust_score,
               COUNT(DISTINCT r.review_id) as total_reviews,
               COALESCE(AVG(r.rating), 0) as avg_rating,
               COUNT(DISTINCT o.order_id) as total_orders_processed,
               COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END) as delivered_orders,
               COALESCE(ROUND((COUNT(DISTINCT CASE WHEN o.order_status = 'delivered' THEN o.order_id END)::NUMERIC / 
                 NULLIF(COUNT(DISTINCT o.order_id), 0) * 100), 2), 0) as avg_completion_rate,
-              COALESCE(AVG(CASE WHEN o.order_status = 'delivered' THEN 100 ELSE 0 END), 0) as avg_on_time_rate
+              COALESCE(AVG(c.on_time_delivery_rate), 0) as avg_on_time_rate
             FROM orders o
             LEFT JOIN stores s ON o.store_id = s.store_id
             LEFT JOIN couriers c ON o.courier_id = c.courier_id
