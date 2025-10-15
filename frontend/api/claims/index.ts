@@ -45,7 +45,7 @@ async function getClaims(req: VercelRequest, res: VercelResponse, user: any) {
     let claimQuery = `
       SELECT c.*, 
         o.order_number,
-        s.shop_name,
+        s.store_name,
         co.courier_name,
         json_agg(
           json_build_object(
@@ -59,14 +59,14 @@ async function getClaims(req: VercelRequest, res: VercelResponse, user: any) {
       FROM claims c
       LEFT JOIN claim_timeline ct ON c.claim_id = ct.claim_id
       LEFT JOIN orders o ON c.order_id = o.order_id
-      LEFT JOIN shops s ON o.shop_id = s.shop_id
+      LEFT JOIN stores s ON o.store_id = s.store_id
       LEFT JOIN couriers co ON o.courier_id = co.courier_id
       WHERE c.claim_id = $1
     `;
     const claimParams: any[] = [claim_id];
 
     // RLS will handle role-based access control automatically
-    claimQuery += ` GROUP BY c.claim_id, o.order_number, s.shop_name, co.courier_name`;
+    claimQuery += ` GROUP BY c.claim_id, o.order_number, s.store_name, co.courier_name`;
 
     // Use RLS context
     const claimResult = await withRLS(pool, { userId: user.userId || user.user_id, role: user.role || user.user_role }, async (client) => {
@@ -85,10 +85,10 @@ async function getClaims(req: VercelRequest, res: VercelResponse, user: any) {
 
   // Get all claims for user (role-based filtering)
   let query = `
-    SELECT c.*, o.order_number, s.shop_name as store_name, co.courier_name
+    SELECT c.*, o.order_number, s.store_name, co.courier_name
     FROM claims c
     LEFT JOIN orders o ON c.order_id = o.order_id
-    LEFT JOIN shops s ON o.shop_id = s.shop_id
+    LEFT JOIN stores s ON o.store_id = s.store_id
     LEFT JOIN couriers co ON o.courier_id = co.courier_id
     WHERE 1=1
   `;
