@@ -64,6 +64,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_update_postal_code_location ON postal_codes;
+
 CREATE TRIGGER trigger_update_postal_code_location
     BEFORE INSERT OR UPDATE OF latitude, longitude ON postal_codes
     FOR EACH ROW
