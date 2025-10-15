@@ -87,13 +87,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const jwtRefreshSecret = getJWTRefreshSecret();
 
         const accessToken = jwt.sign(
-          { userId: user.user_id, email: user.email, role: user.user_role },
+          { user_id: user.user_id, userId: user.user_id, email: user.email, user_role: user.user_role, role: user.user_role },
           jwtSecret,
           { expiresIn: '1h' }
         );
 
         const refreshToken = jwt.sign(
-          { userId: user.user_id },
+          { user_id: user.user_id, userId: user.user_id },
           jwtRefreshSecret,
           { expiresIn: '7d' }
         );
@@ -180,13 +180,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const jwtRefreshSecret = getJWTRefreshSecret();
 
         const accessToken = jwt.sign(
-          { userId: newUser.user_id, email: newUser.email, role: newUser.user_role },
+          { user_id: newUser.user_id, userId: newUser.user_id, email: newUser.email, user_role: newUser.user_role, role: newUser.user_role },
           jwtSecret,
           { expiresIn: '1h' }
         );
 
         const refreshToken = jwt.sign(
-          { userId: newUser.user_id },
+          { user_id: newUser.user_id, userId: newUser.user_id },
           jwtRefreshSecret,
           { expiresIn: '7d' }
         );
@@ -261,13 +261,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           const jwtSecret = getJWTSecret();
           
           const newAccessToken = jwt.sign(
-            { userId: user.user_id, email: user.email, role: user.user_role },
+            { user_id: user.user_id, userId: user.user_id, email: user.email, user_role: user.user_role, role: user.user_role },
             jwtSecret,
             { expiresIn: '1h' }
           );
 
           const newRefreshToken = jwt.sign(
-            { userId: user.user_id },
+            { user_id: user.user_id, userId: user.user_id },
             jwtRefreshSecret,
             { expiresIn: '7d' }
           );
