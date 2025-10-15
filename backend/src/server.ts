@@ -48,6 +48,7 @@ import uploadRoutes from './routes/upload';
 import reviewsRoutes from './routes/reviews';
 import webhooksRoutes from './routes/webhooks';
 import sessionsRoutes from './routes/sessions';
+import claimsRoutes from './routes/claims';
 
 
 class Server {
@@ -159,6 +160,7 @@ class Server {
     this.app.use('/api/dashboard', dashboardRoutes);
     this.app.use('/api/tracking', dashboardRoutes);
     this.app.use('/api/subscriptions', subscriptionsRoutes);
+    this.app.use('/api/claims', claimsRoutes);
     this.app.use('/api/upload', uploadRoutes);
     this.app.use('/api/reviews', reviewsRoutes);
     this.app.use('/api/webhooks', webhooksRoutes);

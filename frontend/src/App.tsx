@@ -5,7 +5,7 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '@/store/authStore';
 import { AppLayout } from '@/components/layout/AppLayout';
-// import { SessionExpiredModal } from '@/components/SessionExpiredModal';
+import { SessionExpiredModal } from '@/components/SessionExpiredModal';
 import { AuthPage } from '@/pages/AuthPage';
 import { Dashboard } from '@/pages/Dashboard';
 import { TrustScores } from '@/pages/TrustScores';
@@ -406,7 +406,7 @@ const App: React.FC = () => {
           }}
         />
         <SentryTestButton />
-        {/* <SessionExpiredModal /> - Disabled: causes render errors */}
+        <SessionExpiredModal />
       </ThemeProvider>
     </QueryClientProvider>
   );

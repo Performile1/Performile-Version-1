@@ -182,5 +182,205 @@ router.get('/stores', async (req: Request, res: Response) => {
   }
 });
 
+// Get subscription plans
+router.get('/subscriptions', async (req: Request, res: Response) => {
+  try {
+    const { user_type, include_inactive } = req.query;
+
+    let query = 'SELECT * FROM subscription_plans WHERE 1=1';
+    const params: any[] = [];
+    let paramIndex = 1;
+
+    if (user_type) {
+      query += ` AND user_type = $${paramIndex}`;
+      params.push(user_type);
+      paramIndex++;
+    }
+
+    if (include_inactive !== 'true') {
+      query += ' AND is_active = true';
+    }
+
+    query += ' ORDER BY user_type, tier, price_monthly';
+
+    const result = await database.query(query, params);
+
+    res.json({
+      success: true,
+      plans: result.rows
+    });
+  } catch (error) {
+    logger.error('[Admin] Get subscription plans error', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch subscription plans'
+    });
+  }
+});
+
+// Create subscription plan
+router.post('/subscriptions', async (req: Request, res: Response) => {
+  try {
+    const {
+      plan_name,
+      user_type,
+      tier,
+      price_monthly,
+      price_yearly,
+      features,
+      max_orders,
+      max_team_members,
+      is_active
+    } = req.body;
+
+    const result = await database.query(
+      `INSERT INTO subscription_plans (
+        plan_name,
+        user_type,
+        tier,
+        price_monthly,
+        price_yearly,
+        features,
+        max_orders,
+        max_team_members,
+        is_active
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING *`,
+      [
+        plan_name,
+        user_type,
+        tier,
+        price_monthly,
+        price_yearly,
+        features ? JSON.stringify(features) : null,
+        max_orders || null,
+        max_team_members || null,
+        is_active !== false
+      ]
+    );
+
+    res.json({
+      success: true,
+      plan: result.rows[0],
+      message: 'Subscription plan created successfully'
+    });
+  } catch (error) {
+    logger.error('[Admin] Create subscription plan error', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create subscription plan'
+    });
+  }
+});
+
+// Update subscription plan
+router.put('/subscriptions', async (req: Request, res: Response) => {
+  try {
+    const { plan_id } = req.query;
+    const {
+      plan_name,
+      user_type,
+      tier,
+      price_monthly,
+      price_yearly,
+      features,
+      max_orders,
+      max_team_members,
+      is_active
+    } = req.body;
+
+    if (!plan_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing plan_id parameter'
+      });
+    }
+
+    const result = await database.query(
+      `UPDATE subscription_plans 
+       SET plan_name = $1,
+           user_type = $2,
+           tier = $3,
+           price_monthly = $4,
+           price_yearly = $5,
+           features = $6,
+           max_orders = $7,
+           max_team_members = $8,
+           is_active = $9,
+           updated_at = NOW()
+       WHERE plan_id = $10
+       RETURNING *`,
+      [
+        plan_name,
+        user_type,
+        tier,
+        price_monthly,
+        price_yearly,
+        features ? JSON.stringify(features) : null,
+        max_orders || null,
+        max_team_members || null,
+        is_active !== false,
+        plan_id
+      ]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Subscription plan not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      plan: result.rows[0],
+      message: 'Subscription plan updated successfully'
+    });
+  } catch (error) {
+    logger.error('[Admin] Update subscription plan error', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update subscription plan'
+    });
+  }
+});
+
+// Delete subscription plan
+router.delete('/subscriptions', async (req: Request, res: Response) => {
+  try {
+    const { plan_id } = req.query;
+
+    if (!plan_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing plan_id parameter'
+      });
+    }
+
+    const result = await database.query(
+      'DELETE FROM subscription_plans WHERE plan_id = $1 RETURNING *',
+      [plan_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Subscription plan not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Subscription plan deleted successfully'
+    });
+  } catch (error) {
+    logger.error('[Admin] Delete subscription plan error', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete subscription plan'
+    });
+  }
+});
+
 export default router;
 

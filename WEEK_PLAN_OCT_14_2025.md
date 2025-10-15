@@ -386,12 +386,13 @@ Update this section each day with actual progress
 - [ ] First tests written
 - **Coverage:** __%
 
-#### Tuesday Oct 15
-- [ ] SessionExpiredModal fixed
-- [ ] 401 errors resolved
-- [ ] API tests written
-- [ ] Other tables RLS tested
-- **Coverage:** __%
+#### Tuesday Oct 15 ✅
+- [x] SessionExpiredModal fixed
+- [x] 401 errors resolved (created /api/claims and /api/admin/subscriptions)
+- [x] API tests written (auth, orders, RLS policies)
+- [x] Other tables RLS tested (reviews, claims, users)
+- [x] Test infrastructure setup (Jest config, test docs)
+- **Coverage:** TBD (run `npm run test:coverage`)
 
 #### Wednesday Oct 16
 - [ ] DB pool centralized

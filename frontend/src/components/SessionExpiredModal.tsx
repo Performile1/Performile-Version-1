@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sessionEvents } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
@@ -9,28 +9,34 @@ export const SessionExpiredModal = () => {
   const navigate = useNavigate();
   const { clearAuth } = useAuthStore();
 
-  useEffect(() => {
-    // Subscribe to session expiration events
-    const unsubscribe = sessionEvents.subscribe(() => {
-      setIsOpen(true);
-    });
-
-    return () => {
-      unsubscribe();
-    };
+  // Memoize the session handler to prevent re-subscriptions
+  const handleSessionExpired = useCallback(() => {
+    setIsOpen(true);
   }, []);
 
-  const handleLogin = () => {
+  useEffect(() => {
+    // Subscribe to session expiration events
+    const unsubscribe = sessionEvents.subscribe(handleSessionExpired);
+
+    // Cleanup subscription on unmount
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
+  }, [handleSessionExpired]);
+
+  const handleLogin = useCallback(() => {
     setIsOpen(false);
     clearAuth();
     navigate('/login', { state: { sessionExpired: true } });
-  };
+  }, [clearAuth, navigate]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsOpen(false);
     clearAuth();
     navigate('/login');
-  };
+  }, [clearAuth, navigate]);
 
   if (!isOpen) return null;
 
