@@ -29,23 +29,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         SELECT 
           us.subscription_id,
           sp.plan_name,
+          sp.user_role,
+          sp.features_json,
+          sp.limits_json,
           us.status,
-          us.current_period_start,
-          us.current_period_end,
-          CASE 
-            WHEN us.billing_cycle = 'monthly' THEN sp.price_per_month
-            WHEN us.billing_cycle = 'yearly' THEN sp.price_per_year
-            ELSE sp.price_per_month
-          END as price,
-          us.billing_cycle,
-          us.stripe_subscription_id,
-          us.stripe_customer_id
-        FROM user_subscriptions us
-        JOIN subscription_plans sp ON us.subscription_plan_id = sp.subscription_plan_id
+          us.start_date as current_period_start,
+          us.end_date as current_period_end,
+          sp.price_monthly as price,
+          'monthly' as billing_cycle
+        FROM "UserSubscriptions" us
+        JOIN "SubscriptionPlans" sp ON us.plan_id = sp.plan_id
         WHERE us.user_id = $1
-        ORDER BY us.created_at DESC
+          AND us.status = 'active'
+        ORDER BY us.start_date DESC
         LIMIT 1
-      `, [user.user_id]);
+      `, [user.userId || user.user_id]);
 
       if (result.rows.length === 0) {
         return res.status(200).json({

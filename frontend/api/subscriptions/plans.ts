@@ -21,9 +21,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           price_monthly,
           price_yearly,
           features_json,
+          limits_json,
           is_active,
           created_at
-        FROM subscriptionplans
+        FROM "SubscriptionPlans"
         WHERE is_active = TRUE
       `;
 

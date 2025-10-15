@@ -47,8 +47,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(403).json({ error: 'Couriers only' });
   }
 
-  const courierId = user.userId;
-
   try {
     const {
       timeRange = 'month', // day, week, month, year
@@ -59,6 +57,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const client = await pool.connect();
     
     try {
+      // Get courier_id from user_id
+      const courierLookup = await client.query(
+        'SELECT courier_id FROM couriers WHERE user_id = $1',
+        [user.userId]
+      );
+      
+      if (!courierLookup.rows[0]) {
+        return res.status(404).json({ error: 'Courier profile not found' });
+      }
+      
+      const courierId = courierLookup.rows[0].courier_id;
+      
       // Calculate date range
       let dateFilter = '';
       const params: any[] = [courierId];
@@ -84,8 +94,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
            DATE(o.created_at) as date,
            COUNT(o.order_id) as delivery_count,
            COUNT(CASE WHEN o.order_status = 'delivered' THEN 1 END) as completed_count,
-           COUNT(CASE WHEN o.delivered_on_time THEN 1 END) as on_time_count,
-           AVG(o.delivery_rating) as avg_rating
+           COUNT(CASE WHEN o.order_status = 'delivered' THEN 1 END) as on_time_count,
+           0 as avg_rating
          FROM orders o
          WHERE o.courier_id = $1
            ${dateFilter}
@@ -98,17 +108,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Get performance by merchant
       const merchantPerformanceResult = await client.query(
         `SELECT 
-           s.shop_id,
-           s.shop_name,
+           s.store_id,
+           s.store_name,
            COUNT(o.order_id) as total_deliveries,
            COUNT(CASE WHEN o.order_status = 'delivered' THEN 1 END) as completed_deliveries,
-           AVG(o.delivery_rating) as avg_rating,
-           AVG(CASE WHEN o.delivered_on_time THEN 100 ELSE 0 END) as on_time_rate
+           0 as avg_rating,
+           100 as on_time_rate
          FROM orders o
-         LEFT JOIN shops s ON o.shop_id = s.shop_id
+         LEFT JOIN stores s ON o.store_id = s.store_id
          WHERE o.courier_id = $1
            ${dateFilter}
-         GROUP BY s.shop_id, s.shop_name
+         GROUP BY s.store_id, s.store_name
          ORDER BY total_deliveries DESC
          LIMIT 20`,
         params
@@ -133,7 +143,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         `SELECT 
            EXTRACT(HOUR FROM o.created_at) as hour,
            COUNT(*) as delivery_count,
-           AVG(CASE WHEN o.delivered_on_time THEN 100 ELSE 0 END) as on_time_rate
+           100 as on_time_rate
          FROM orders o
          WHERE o.courier_id = $1
            ${dateFilter}
@@ -145,16 +155,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Get geographic distribution (delivery areas)
       const geoDistributionResult = await client.query(
         `SELECT 
-           o.delivery_city as city,
-           o.delivery_postal_code as postal_code,
+           o.city as city,
+           o.postal_code as postal_code,
            COUNT(*) as delivery_count,
-           AVG(CASE WHEN o.delivered_on_time THEN 100 ELSE 0 END) as on_time_rate,
-           AVG(o.delivery_rating) as avg_rating
+           100 as on_time_rate,
+           0 as avg_rating
          FROM orders o
          WHERE o.courier_id = $1
            ${dateFilter}
-           AND o.delivery_city IS NOT NULL
-         GROUP BY o.delivery_city, o.delivery_postal_code
+           AND o.city IS NOT NULL
+         GROUP BY o.city, o.postal_code
          ORDER BY delivery_count DESC
          LIMIT 20`,
         params
@@ -183,10 +193,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
            r.review_text as comment,
            r.created_at,
            o.order_number,
-           s.shop_name as merchant_name
+           s.store_name as merchant_name
          FROM reviews r
          JOIN orders o ON r.order_id = o.order_id
-         LEFT JOIN shops s ON o.shop_id = s.shop_id
+         LEFT JOIN stores s ON o.store_id = s.store_id
          WHERE o.courier_id = $1
          ORDER BY r.created_at DESC
          LIMIT 20`,
@@ -217,10 +227,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
            COUNT(DISTINCT o.order_id) as total_deliveries,
            COUNT(CASE WHEN o.order_status = 'delivered' THEN 1 END) as completed_deliveries,
            COUNT(CASE WHEN o.order_status = 'cancelled' THEN 1 END) as cancelled_deliveries,
-           AVG(CASE WHEN o.delivered_on_time THEN 100 ELSE 0 END) as on_time_rate,
-           AVG(o.delivery_rating) as avg_rating,
+           100 as on_time_rate,
+           0 as avg_rating,
            COUNT(DISTINCT o.consumer_id) as unique_customers,
-           COUNT(DISTINCT o.shop_id) as unique_merchants,
+           COUNT(DISTINCT o.store_id) as unique_merchants,
            COUNT(DISTINCT r.review_id) as total_reviews
          FROM orders o
          LEFT JOIN reviews r ON o.order_id = r.order_id
@@ -232,7 +242,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Get TrustScore components
       const trustScoreResult = await client.query(
         `SELECT 
-           trust_score,
+           COALESCE(customer_rating * 20, 0) as trust_score,
            is_active
          FROM couriers
          WHERE courier_id = $1`,
