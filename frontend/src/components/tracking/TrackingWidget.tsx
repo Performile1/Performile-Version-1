@@ -17,8 +17,8 @@ import {
   Warning,
   TrendingUp,
 } from '@mui/icons-material';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { apiClient } from '@/services/apiClient';
 
 interface TrackingSummary {
   total: number;
@@ -47,7 +47,7 @@ export const TrackingWidget: React.FC = () => {
 
   const fetchTrackingSummary = async () => {
     try {
-      const response = await axios.get('/api/tracking/summary');
+      const response = await apiClient.get('/tracking/summary');
       setSummary(response.data.data);
     } catch (error) {
       console.error('Error fetching tracking summary:', error);
