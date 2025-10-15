@@ -243,5 +243,8 @@ This will import ~16,000 Swedish postal codes.
 -- SUCCESS
 -- ============================================================================
 
-RAISE NOTICE '✅ Sample postal codes imported successfully!';
-RAISE NOTICE 'Ready to test radius-based courier matching.';
+DO $$
+BEGIN
+    RAISE NOTICE '✅ Sample postal codes imported successfully!';
+    RAISE NOTICE 'Ready to test radius-based courier matching.';
+END $$;
