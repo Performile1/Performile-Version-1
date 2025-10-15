@@ -50,7 +50,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Get tracking summary for user's orders
-    // Note: orders table uses store_id, not merchant_id
+    // Note: orders table uses store_id, stores table uses owner_user_id
     const summaryQuery = `
       SELECT 
         COUNT(*) as total,
@@ -61,7 +61,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       FROM tracking_data td
       LEFT JOIN orders o ON td.order_id = o.order_id
       LEFT JOIN stores s ON o.store_id = s.store_id
-      WHERE (s.user_id = $1 OR td.order_id IS NULL)
+      WHERE (s.owner_user_id = $1 OR td.order_id IS NULL)
         AND td.status NOT IN ('delivered', 'cancelled')
         AND td.created_at > NOW() - INTERVAL '30 days'
     `;
@@ -79,7 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       FROM tracking_data td
       LEFT JOIN orders o ON td.order_id = o.order_id
       LEFT JOIN stores s ON o.store_id = s.store_id
-      WHERE (s.user_id = $1 OR td.order_id IS NULL)
+      WHERE (s.owner_user_id = $1 OR td.order_id IS NULL)
       ORDER BY td.last_updated DESC
       LIMIT 10
     `;
