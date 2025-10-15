@@ -37,6 +37,7 @@ import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { UsageDashboard } from '@/components/subscription/UsageDashboard';
 
 interface SubscriptionData {
   subscription_id: string;
@@ -175,6 +176,11 @@ export const BillingPortal: React.FC = () => {
         <Typography variant="body1" color="text.secondary">
           Manage your subscription, payment methods, and invoices
         </Typography>
+      </Box>
+
+      {/* Usage Dashboard */}
+      <Box sx={{ mb: 3 }}>
+        <UsageDashboard />
       </Box>
 
       {/* Current Subscription */}
