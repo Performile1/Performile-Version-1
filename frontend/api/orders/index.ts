@@ -64,8 +64,20 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
     const queryParams: any[] = [];
     let paramCount = 0;
 
-    // RLS will handle role-based filtering automatically
-    // No need for manual WHERE clauses based on role
+    // Role-based filtering
+    const userRole = user.role || user.user_role;
+    const userId = user.userId || user.user_id;
+    
+    if (userRole === 'courier') {
+      // Couriers only see orders assigned to their courier company
+      whereClause += ` AND o.courier_id = (SELECT courier_id FROM couriers WHERE user_id = $${++paramCount})`;
+      queryParams.push(userId);
+    } else if (userRole === 'merchant') {
+      // Merchants only see orders from their stores
+      whereClause += ` AND o.store_id IN (SELECT store_id FROM stores WHERE owner_user_id = $${++paramCount})`;
+      queryParams.push(userId);
+    }
+    // Admin sees all orders (no additional filter)
 
     // Search filter
     if (search) {
