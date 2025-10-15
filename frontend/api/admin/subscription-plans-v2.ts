@@ -50,16 +50,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         SELECT 
           plan_id,
           plan_name,
-          user_role,
-          price_monthly,
-          price_yearly,
-          features_json,
-          limits_json,
+          plan_slug,
+          user_type as user_role,
+          tier,
+          monthly_price as price_monthly,
+          annual_price as price_yearly,
+          currency,
+          max_orders_per_month,
+          max_emails_per_month,
+          max_couriers,
+          max_team_members,
+          max_shops,
+          features as features_json,
+          description,
+          is_popular,
           is_active,
           created_at,
           updated_at
-        FROM "SubscriptionPlans"
-        ORDER BY user_role, price_monthly
+        FROM subscription_plans
+        ORDER BY user_type, tier
       `);
 
       return res.status(200).json({
@@ -74,8 +83,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         user_role,
         price_monthly,
         price_yearly,
-        features_json,
-        limits_json,
+        description,
+        max_couriers,
+        max_shops,
         is_active = true
       } = req.body;
 
@@ -92,20 +102,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         });
       }
 
+      // Generate plan_slug
+      const plan_slug = `${user_role}-${plan_name.toLowerCase().replace(/\s+/g, '-')}`;
+
       const result = await client.query(`
-        INSERT INTO "SubscriptionPlans" (
-          plan_name, user_role, price_monthly, price_yearly,
-          features_json, limits_json, is_active
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO subscription_plans (
+          plan_name, plan_slug, user_type, monthly_price, annual_price,
+          description, max_couriers, max_shops, is_active, currency
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *
       `, [
         plan_name,
+        plan_slug,
         user_role,
         price_monthly,
         price_yearly || price_monthly * 10, // Default yearly = 10x monthly
-        features_json || {},
-        limits_json || {},
-        is_active
+        description || '',
+        max_couriers || null,
+        max_shops || null,
+        is_active,
+        'USD'
       ]);
 
       return res.status(201).json({
@@ -121,8 +137,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         plan_name,
         price_monthly,
         price_yearly,
-        features_json,
-        limits_json,
+        description,
+        max_couriers,
+        max_shops,
         is_active
       } = req.body;
 
@@ -131,23 +148,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       const result = await client.query(`
-        UPDATE "SubscriptionPlans"
+        UPDATE subscription_plans
         SET 
           plan_name = COALESCE($1, plan_name),
-          price_monthly = COALESCE($2, price_monthly),
-          price_yearly = COALESCE($3, price_yearly),
-          features_json = COALESCE($4, features_json),
-          limits_json = COALESCE($5, limits_json),
-          is_active = COALESCE($6, is_active),
+          monthly_price = COALESCE($2, monthly_price),
+          annual_price = COALESCE($3, annual_price),
+          description = COALESCE($4, description),
+          max_couriers = COALESCE($5, max_couriers),
+          max_shops = COALESCE($6, max_shops),
+          is_active = COALESCE($7, is_active),
           updated_at = NOW()
-        WHERE plan_id = $7
+        WHERE plan_id = $8
         RETURNING *
       `, [
         plan_name,
         price_monthly,
         price_yearly,
-        features_json,
-        limits_json,
+        description,
+        max_couriers,
+        max_shops,
         is_active,
         plan_id
       ]);
@@ -173,8 +192,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Check if plan has active subscriptions
       const checkResult = await client.query(`
         SELECT COUNT(*) as count
-        FROM "UserSubscriptions"
-        WHERE plan_id = $1 AND status = 'active'
+        FROM user_subscriptions
+        WHERE subscription_plan_id = $1 AND status = 'active'
       `, [plan_id]);
 
       if (parseInt(checkResult.rows[0].count) > 0) {
@@ -184,7 +203,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       const result = await client.query(`
-        DELETE FROM "SubscriptionPlans"
+        DELETE FROM subscription_plans
         WHERE plan_id = $1
         RETURNING *
       `, [plan_id]);

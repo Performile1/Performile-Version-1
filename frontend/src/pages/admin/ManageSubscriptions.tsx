@@ -182,6 +182,8 @@ export const ManageSubscriptions: React.FC = () => {
       price_yearly: 0,
       features_json: {},
       limits_json: {},
+      max_couriers: null,
+      max_shops: null,
       is_active: true
     });
     setEditDialogOpen(true);
@@ -227,8 +229,8 @@ export const ManageSubscriptions: React.FC = () => {
               <TableCell>${plan.price_monthly}</TableCell>
               <TableCell>${plan.price_yearly}</TableCell>
               <TableCell>
-                {plan.limits_json.couriers === -1 ? 'Unlimited' : plan.limits_json.couriers} couriers,{' '}
-                {plan.limits_json.markets === -1 ? 'Unlimited' : plan.limits_json.markets} markets
+                {plan.max_couriers === null || plan.max_couriers === -1 ? 'Unlimited' : plan.max_couriers} couriers,{' '}
+                {plan.max_shops === null || plan.max_shops === -1 ? 'Unlimited' : plan.max_shops} shops
               </TableCell>
               <TableCell>
                 <Chip label={plan.active_subscribers} color="primary" size="small" />
@@ -476,17 +478,19 @@ export const ManageSubscriptions: React.FC = () => {
                   fullWidth
                   label="Courier Limit"
                   type="number"
-                  value={selectedPlan?.limits_json.couriers || 0}
-                  helperText="-1 for unlimited"
+                  value={selectedPlan?.max_couriers || ''}
+                  onChange={(e) => setSelectedPlan(prev => prev ? {...prev, max_couriers: e.target.value ? parseInt(e.target.value) : null} : null)}
+                  helperText="Leave empty for unlimited"
                 />
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="Market Limit"
+                  label="Shop Limit"
                   type="number"
-                  value={selectedPlan?.limits_json.markets || 0}
-                  helperText="-1 for unlimited"
+                  value={selectedPlan?.max_shops || ''}
+                  onChange={(e) => setSelectedPlan(prev => prev ? {...prev, max_shops: e.target.value ? parseInt(e.target.value) : null} : null)}
+                  helperText="Leave empty for unlimited"
                 />
               </Grid>
             </Grid>
