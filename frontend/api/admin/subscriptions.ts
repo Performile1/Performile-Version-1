@@ -43,7 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 async function getSubscriptionPlans(req: VercelRequest, res: VercelResponse) {
   const { user_type, include_inactive } = req.query;
 
-  let query = 'SELECT * FROM subscriptionplans WHERE 1=1';
+  let query = 'SELECT * FROM SubscriptionPlans WHERE 1=1';
   const params: any[] = [];
 
   if (user_type) {
@@ -55,7 +55,7 @@ async function getSubscriptionPlans(req: VercelRequest, res: VercelResponse) {
     query += ' AND is_active = true';
   }
 
-  query += ' ORDER BY user_role, price_monthly';
+  query += ' ORDER BY user_role, price_per_month';
 
   const result = await pool.query(query, params);
 
