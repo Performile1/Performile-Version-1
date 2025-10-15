@@ -394,6 +394,7 @@ const App: React.FC = () => {
             />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
+          <SessionExpiredModal />
         </Router>
         <Toaster
           position="top-right"
@@ -406,7 +407,6 @@ const App: React.FC = () => {
           }}
         />
         <SentryTestButton />
-        <SessionExpiredModal />
       </ThemeProvider>
     </QueryClientProvider>
   );
