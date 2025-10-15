@@ -21,9 +21,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const user = (req as any).user;
 
   try {
+    const userId = user.userId || user.user_id;
     const result = await pool.query(
       'SELECT * FROM get_merchant_couriers($1)',
-      [user.user_id]
+      [userId]
     );
 
     return res.status(200).json({

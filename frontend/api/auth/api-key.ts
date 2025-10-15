@@ -20,9 +20,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'GET') {
     // Get existing API key or generate new one
     try {
+      const userId = user.userId || user.user_id;
       const result = await pool.query(
         'SELECT api_key FROM users WHERE user_id = $1',
-        [user.user_id]
+        [userId]
       );
 
       let apiKey = result.rows[0]?.api_key;
@@ -33,7 +34,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         
         await pool.query(
           'UPDATE users SET api_key = $1 WHERE user_id = $2',
-          [apiKey, user.user_id]
+          [apiKey, userId]
         );
       }
 
@@ -54,11 +55,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'POST') {
     // Regenerate API key
     try {
+      const userId = user.userId || user.user_id;
       const newApiKey = 'pk_' + randomBytes(32).toString('hex');
 
       await pool.query(
         'UPDATE users SET api_key = $1 WHERE user_id = $2',
-        [newApiKey, user.user_id]
+        [newApiKey, userId]
       );
 
       return res.status(200).json({
