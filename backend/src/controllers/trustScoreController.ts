@@ -331,16 +331,21 @@ export class TrustScoreController {
 
       const cacheKey = `dashboard:${userRole}:${userId}:${JSON.stringify({ country, postal_code, min_reviews, limit })}`;
       
-      // Try cache first
-      const cached = await redisClient.get(cacheKey);
-      if (cached) {
-        const cachedData = JSON.parse(cached);
-        res.json({
-          success: true,
-          data: cachedData,
-          message: 'Dashboard data retrieved successfully (cached)'
-        });
-        return;
+      // Try cache first (optional - don't fail if Redis unavailable)
+      try {
+        const cached = await redisClient.get(cacheKey);
+        if (cached) {
+          const cachedData = JSON.parse(cached);
+          res.json({
+            success: true,
+            data: cachedData,
+            message: 'Dashboard data retrieved successfully (cached)'
+          });
+          return;
+        }
+      } catch (cacheError) {
+        logger.warn('[Dashboard] Cache read failed, continuing without cache', { error: cacheError });
+        // Continue without cache
       }
 
       // Get dashboard data from view
@@ -445,8 +450,12 @@ export class TrustScoreController {
         }
       };
 
-      // Cache for 15 minutes
-      await redisClient.set(cacheKey, JSON.stringify(dashboardData), 900);
+      // Cache for 15 minutes (optional)
+      try {
+        await redisClient.set(cacheKey, JSON.stringify(dashboardData), 900);
+      } catch (cacheError) {
+        logger.warn('[Dashboard] Cache write failed', { error: cacheError });
+      }
 
       res.json({
         success: true,
