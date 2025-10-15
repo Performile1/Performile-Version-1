@@ -76,7 +76,7 @@ export const ClaimsPage: React.FC = () => {
   const { data: claimsData, isLoading } = useQuery({
     queryKey: ['claims'],
     queryFn: async () => {
-      const response = await axios.get('/api/claims');
+      const response = await apiClient.get('/claims');
       return response.data.data;
     },
   });
@@ -84,7 +84,7 @@ export const ClaimsPage: React.FC = () => {
   // Create claim mutation
   const createClaimMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await axios.post('/api/claims', data);
+      const response = await apiClient.post('/claims', data);
       return response.data;
     },
     onSuccess: () => {
@@ -101,7 +101,7 @@ export const ClaimsPage: React.FC = () => {
   // Submit claim mutation
   const submitClaimMutation = useMutation({
     mutationFn: async (claim_id: string) => {
-      const response = await axios.post('/api/claims/submit', { claim_id });
+      const response = await apiClient.post('/claims/submit', { claim_id });
       return response.data;
     },
     onSuccess: (data) => {
