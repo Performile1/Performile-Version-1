@@ -48,12 +48,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(403).json({ error: 'Couriers only' });
   }
 
-  const courierId = user.userId;
-
   try {
     // Use RLS context - all queries will be automatically filtered
     const result = await withRLS(pool, { userId: user.userId, role: user.role }, async (client) => {
-      // Get courier's company info (RLS filters by courier_id)
+      // Get courier's company info by user_id (not courier_id)
       const courierInfoResult = await client.query(
         `SELECT 
            courier_id,
@@ -66,9 +64,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
            contact_email,
            contact_phone
          FROM couriers 
-         WHERE courier_id = $1`,
-        [courierId]
+         WHERE user_id = $1`,
+        [user.userId]
       );
+      
+      if (!courierInfoResult.rows[0]) {
+        throw new Error('Courier profile not found for this user');
+      }
+      
+      const courierId = courierInfoResult.rows[0].courier_id;
 
       const courierInfo = courierInfoResult.rows[0];
 
