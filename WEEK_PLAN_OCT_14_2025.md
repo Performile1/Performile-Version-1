@@ -461,17 +461,21 @@ Update this section each day with actual progress
 
 **PostHog Analytics:**
 ```
+VITE_ENABLE_ANALYTICS=true
 VITE_POSTHOG_KEY=your_posthog_project_key
 VITE_POSTHOG_HOST=https://us.i.posthog.com
 ```
 
-**Note:** PostHog is currently disabled in production to prevent console errors. Add these environment variables in Vercel dashboard when you have a valid PostHog project set up.
+**Note:** PostHog is currently disabled by default to prevent console errors. You must explicitly enable it with `VITE_ENABLE_ANALYTICS=true` along with a valid PostHog key.
 
 **Steps to Enable:**
 1. Create PostHog account at https://posthog.com
 2. Create a new project
 3. Copy the project API key
-4. Add to Vercel → Project Settings → Environment Variables
+4. Add to Vercel → Project Settings → Environment Variables:
+   - `VITE_ENABLE_ANALYTICS=true`
+   - `VITE_POSTHOG_KEY=your_key_here`
+   - `VITE_POSTHOG_HOST=https://us.i.posthog.com`
 5. Redeploy the application
 
 ---

@@ -8,8 +8,13 @@ import { initAnalytics } from './lib/analytics';
 // Initialize Sentry as early as possible
 initSentry();
 
-// Initialize PostHog analytics
-initAnalytics();
+// Initialize PostHog analytics only if explicitly enabled
+// Disabled by default to prevent errors in production
+if (import.meta.env.VITE_ENABLE_ANALYTICS === 'true') {
+  initAnalytics();
+} else {
+  console.info('📊 Analytics disabled (set VITE_ENABLE_ANALYTICS=true to enable)');
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
