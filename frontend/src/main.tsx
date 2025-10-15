@@ -4,6 +4,7 @@ import App from './App';
 import './index.css';
 import { initSentry } from './config/sentry';
 import { initAnalytics } from './lib/analytics';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Initialize Sentry as early as possible
 initSentry();
@@ -18,6 +19,8 @@ if (import.meta.env.VITE_ENABLE_ANALYTICS === 'true') {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>,
 );
