@@ -98,6 +98,9 @@ END $$;
 -- 4. REMOVE DUPLICATE COLUMN: orders.shop_id (keep store_id)
 -- ============================================================================
 
+-- First, drop dependent views
+DROP VIEW IF EXISTS vw_merchant_shop_overview CASCADE;
+
 -- Check if shop_id has any non-null values
 DO $$
 DECLARE
@@ -110,10 +113,12 @@ BEGIN
     IF shop_id_count > 0 THEN
         RAISE NOTICE '⚠️  WARNING: orders.shop_id has % non-null values. Keeping for now.', shop_id_count;
         RAISE NOTICE 'Manual review needed: Determine if shop_id should map to store_id';
+        RAISE NOTICE 'Note: vw_merchant_shop_overview view was dropped';
     ELSE
         -- Safe to drop if no data
-        ALTER TABLE orders DROP COLUMN IF EXISTS shop_id;
+        ALTER TABLE orders DROP COLUMN IF EXISTS shop_id CASCADE;
         RAISE NOTICE '✅ Removed duplicate column orders.shop_id';
+        RAISE NOTICE 'Note: vw_merchant_shop_overview view was dropped';
     END IF;
 END $$;
 
