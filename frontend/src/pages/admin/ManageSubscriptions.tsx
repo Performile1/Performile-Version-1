@@ -35,7 +35,7 @@ import {
   TrendingUp
 } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '../../lib/api-client';
+import { apiClient } from '@/services/apiClient';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -60,6 +60,8 @@ interface SubscriptionPlan {
   price_yearly: number;
   features_json: any;
   limits_json: any;
+  max_couriers?: number | null;
+  max_shops?: number | null;
   is_active: boolean;
   active_subscribers?: number;
   monthly_revenue?: number;
