@@ -354,6 +354,8 @@ export const applySecurityMiddleware = (
   if (options.requireAuth) {
     try {
       user = verifyTokenSecure(req);
+      // Attach user to request for downstream handlers
+      (req as any).user = user;
     } catch (error: any) {
       res.status(401).json({
         success: false,
