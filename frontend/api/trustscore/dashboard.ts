@@ -102,39 +102,51 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       // Get top performers from cache (fast!)
-      const topPerformers = await client.query(`
-        SELECT 
-          ca.courier_id,
-          ca.courier_name,
-          ca.trust_score as overall_score,
-          ca.total_reviews,
-          ca.total_orders,
-          ca.delivered_orders,
-          ca.completion_rate,
-          ca.on_time_rate
-        FROM courier_analytics ca
-        JOIN couriers c ON ca.courier_id = c.courier_id
-        WHERE c.is_active = TRUE
-        ORDER BY ca.trust_score DESC NULLS LAST
-        LIMIT 5
-      `);
+      let topPerformers;
+      try {
+        topPerformers = await client.query(`
+          SELECT 
+            ca.courier_id,
+            ca.courier_name,
+            ca.trust_score as overall_score,
+            ca.total_reviews,
+            ca.total_orders,
+            ca.delivered_orders,
+            ca.completion_rate,
+            ca.on_time_rate
+          FROM courier_analytics ca
+          JOIN couriers c ON ca.courier_id = c.courier_id
+          WHERE c.is_active = TRUE
+          ORDER BY ca.trust_score DESC NULLS LAST
+          LIMIT 5
+        `);
+      } catch (error: any) {
+        console.error('[Dashboard API] Error fetching top performers:', error.message);
+        topPerformers = { rows: [] };
+      }
 
       // Get recent reviews
-      const recentReviews = await client.query(`
-        SELECT 
-          r.review_id,
-          r.rating,
-          r.review_text as comment,
-          r.created_at,
-          c.courier_name,
-          s.store_name
-        FROM reviews r
-        JOIN orders o ON r.order_id = o.order_id
-        JOIN couriers c ON o.courier_id = c.courier_id
-        JOIN stores s ON o.store_id = s.store_id
-        ORDER BY r.created_at DESC
-        LIMIT 10
-      `);
+      let recentReviews;
+      try {
+        recentReviews = await client.query(`
+          SELECT 
+            r.review_id,
+            r.rating,
+            r.review_text as comment,
+            r.created_at,
+            c.courier_name,
+            s.store_name
+          FROM reviews r
+          JOIN orders o ON r.order_id = o.order_id
+          JOIN couriers c ON o.courier_id = c.courier_id
+          JOIN stores s ON o.store_id = s.store_id
+          ORDER BY r.created_at DESC
+          LIMIT 10
+        `);
+      } catch (error: any) {
+        console.error('[Dashboard API] Error fetching recent reviews:', error.message);
+        recentReviews = { rows: [] };
+      }
 
       return res.status(200).json({
         success: true,
