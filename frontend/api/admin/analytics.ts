@@ -132,7 +132,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           COALESCE(ROUND(AVG(r.rating), 2), 0) as avg_rating,
           
           -- Customer details
-          COALESCE(COUNT(DISTINCT o.customer_id), 0) as unique_customers,
+          COALESCE(COUNT(DISTINCT o.consumer_id), 0) as unique_customers,
           COALESCE(COUNT(DISTINCT s.store_id), 0) as total_stores_served,
           
           -- Trust score (use avg_rating * 20 if analytics cache doesn't exist)
