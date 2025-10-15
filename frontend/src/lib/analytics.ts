@@ -5,6 +5,12 @@ export const initAnalytics = () => {
   const apiKey = import.meta.env.VITE_POSTHOG_KEY;
   const apiHost = import.meta.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com';
 
+  // Disable PostHog in production until properly configured
+  if (import.meta.env.PROD && !apiKey) {
+    console.info('📊 Analytics disabled in production (not configured)');
+    return;
+  }
+
   if (!apiKey) {
     console.warn('⚠️ PostHog API key not configured. Analytics disabled.');
     return;
@@ -13,15 +19,23 @@ export const initAnalytics = () => {
   try {
     posthog.init(apiKey, {
       api_host: apiHost,
-      autocapture: false, // Disable automatic capture to reduce errors
-      capture_pageview: false, // Manual page view tracking
+      autocapture: false,
+      capture_pageview: false,
       capture_pageleave: false,
       
-      // Disable session recording in production to avoid errors
+      // Disable all external dependencies
       disable_session_recording: true,
+      disable_surveys: true,
+      disable_external_dependency_loading: true,
       
       // Reduce network requests
       persistence: 'localStorage',
+      
+      // Advanced config to prevent errors
+      advanced_disable_decide: true, // Disable feature flags API calls
+      advanced_disable_feature_flags: true,
+      advanced_disable_feature_flags_on_first_load: true,
+      advanced_disable_toolbar_metrics: true,
       
       // Error handling
       on_xhr_error: (failedRequest) => {
