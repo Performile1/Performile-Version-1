@@ -88,7 +88,7 @@ export const ManageSubscriptions: React.FC = () => {
   const { data: plansData, isLoading: plansLoading, error: plansError } = useQuery({
     queryKey: ['admin', 'subscription-plans'],
     queryFn: async () => {
-      const response = await apiClient.get('/api/admin/subscription-plans');
+      const response = await apiClient.get('/api/admin/subscription-plans-v2');
       return response.data;
     }
   });
