@@ -2,6 +2,14 @@ import { Router, Request, Response } from 'express';
 import database from '../config/database';
 import { authenticateToken, requireRole } from '../middleware/auth';
 import logger from '../utils/logger';
+import { queryOne, queryMany } from '../utils/dbHelpers';
+import {
+  tryCatch,
+  NotFoundError,
+  AuthorizationError,
+  sendSuccessResponse,
+  sendPaginatedResponse
+} from '../utils/errorHandler';
 
 const router = Router();
 
@@ -250,84 +258,60 @@ router.get(
 router.get(
   '/:orderId',
   authenticateToken,
-  async (req: Request, res: Response) => {
-    try {
-      const { orderId } = req.params;
-      const userId = (req as any).user?.user_id;
-      const userRole = (req as any).user?.user_role;
+  tryCatch(async (req: Request, res: Response) => {
+    const { orderId } = req.params;
+    const userId = (req as any).user?.user_id;
+    const userRole = (req as any).user?.user_role;
 
-      logger.info('[Orders] Get single order', { orderId, userId, userRole });
+    logger.info('[Orders] Get single order', { orderId, userId, userRole });
 
-      const query = `
-        SELECT 
-          o.*,
-          m.store_name,
-          m.merchant_id,
-          CONCAT(cu.first_name, ' ', cu.last_name) as courier_name,
-          c.courier_id
-        FROM orders o
-        LEFT JOIN merchants m ON o.merchant_id = m.merchant_id
-        LEFT JOIN couriers c ON o.courier_id = c.courier_id
-        LEFT JOIN users cu ON c.user_id = cu.user_id
-        WHERE o.order_id = $1
-      `;
+    // Get order with details
+    const order = await queryOne<any>(`
+      SELECT 
+        o.*,
+        m.store_name,
+        m.merchant_id,
+        CONCAT(cu.first_name, ' ', cu.last_name) as courier_name,
+        c.courier_id
+      FROM orders o
+      LEFT JOIN merchants m ON o.merchant_id = m.merchant_id
+      LEFT JOIN couriers c ON o.courier_id = c.courier_id
+      LEFT JOIN users cu ON c.user_id = cu.user_id
+      WHERE o.order_id = $1
+    `, [orderId]);
 
-      const result = await database.query(query, [orderId]);
-
-      if (result.rows.length === 0) {
-        return res.status(404).json({
-          success: false,
-          error: 'Order not found'
-        });
-      }
-
-      const order = result.rows[0];
-
-      // Check access permissions
-      if (userRole !== 'admin') {
-        let hasAccess = false;
-
-        if (userRole === 'merchant') {
-          const merchantResult = await database.query(
-            'SELECT merchant_id FROM merchants WHERE user_id = $1',
-            [userId]
-          );
-          hasAccess = merchantResult.rows.length > 0 && 
-                     merchantResult.rows[0].merchant_id === order.merchant_id;
-        } else if (userRole === 'courier') {
-          const courierResult = await database.query(
-            'SELECT courier_id FROM couriers WHERE user_id = $1',
-            [userId]
-          );
-          hasAccess = courierResult.rows.length > 0 && 
-                     courierResult.rows[0].courier_id === order.courier_id;
-        } else if (userRole === 'consumer') {
-          // Check if consumer email matches
-          const userEmail = (req as any).user?.email;
-          hasAccess = userEmail && order.consumer_email === userEmail;
-        }
-
-        if (!hasAccess) {
-          return res.status(403).json({
-            success: false,
-            error: 'Access denied'
-          });
-        }
-      }
-
-      res.json({
-        success: true,
-        order
-      });
-    } catch (error) {
-      logger.error('[Orders] Get single order error', error);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to fetch order',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+    if (!order) {
+      throw new NotFoundError('Order');
     }
-  }
+
+    // Check access permissions
+    if (userRole !== 'admin') {
+      let hasAccess = false;
+
+      if (userRole === 'merchant') {
+        const merchant = await queryOne<{ merchant_id: string }>(
+          'SELECT merchant_id FROM merchants WHERE user_id = $1',
+          [userId]
+        );
+        hasAccess = merchant !== null && merchant.merchant_id === order.merchant_id;
+      } else if (userRole === 'courier') {
+        const courier = await queryOne<{ courier_id: string }>(
+          'SELECT courier_id FROM couriers WHERE user_id = $1',
+          [userId]
+        );
+        hasAccess = courier !== null && courier.courier_id === order.courier_id;
+      } else if (userRole === 'consumer') {
+        const userEmail = (req as any).user?.email;
+        hasAccess = userEmail && order.consumer_email === userEmail;
+      }
+
+      if (!hasAccess) {
+        throw new AuthorizationError();
+      }
+    }
+
+    sendSuccessResponse(res, order);
+  })
 );
 
 export default router;
