@@ -11,7 +11,6 @@
 -- Problem: subscription_plans.plan_id is INTEGER but references are UUID
 -- Solution: Change couriers and stores to use INTEGER
 
--- First, check if there are any existing references
 DO $$
 BEGIN
     RAISE NOTICE 'Checking for existing subscription plan references...';
