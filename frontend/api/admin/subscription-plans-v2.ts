@@ -1,8 +1,15 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { getPool } from '../lib/db';
+import { Pool } from 'pg';
 import jwt from 'jsonwebtoken';
 
-const pool = getPool();
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+});
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 function verifyToken(authHeader: string | undefined): any {
