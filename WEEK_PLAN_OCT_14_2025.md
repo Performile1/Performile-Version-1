@@ -402,11 +402,12 @@ Update this section each day with actual progress
 - [x] Server integration completed
 - **Coverage:** TBD (utilities ready for testing)
 
-#### Thursday Oct 17
-- [ ] Subscription limits implemented
-- [ ] Usage dashboard created
-- [ ] Limit tests written
-- **Coverage:** __%
+#### Thursday Oct 17 ✅
+- [x] Subscription limits implemented (backend utilities + middleware)
+- [x] Usage tracking system created (API endpoints)
+- [x] Usage dashboard created (frontend component)
+- [x] Integrated into existing BillingPortal page
+- **Coverage:** TBD (ready for testing)
 
 #### Friday Oct 18
 - [ ] Missing endpoints implemented
