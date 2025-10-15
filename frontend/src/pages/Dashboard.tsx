@@ -208,29 +208,26 @@ export const Dashboard: React.FC = () => {
             <Grid item xs={12} sm={6} md={4}>
               <StatCard
                 title="My Trust Score"
-                value="85.2"
+                value={stats?.avg_trust_score ? Number(stats.avg_trust_score).toFixed(1) : '0'}
                 icon={<Star />}
                 color="warning.main"
-                trend={2.3}
                 subtitle="Industry average: 78.4"
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <StatCard
                 title="Orders This Month"
-                value="1,247"
+                value={stats?.total_orders_processed ? Number(stats.total_orders_processed).toLocaleString() : '0'}
                 icon={<LocalShipping />}
                 color="primary.main"
-                trend={12}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <StatCard
                 title="On-Time Rate"
-                value="92.1%"
+                value={stats?.avg_on_time_rate ? `${Number(stats.avg_on_time_rate).toFixed(1)}%` : '0%'}
                 icon={<Schedule />}
                 color="success.main"
-                trend={-1.2}
               />
             </Grid>
           </Grid>
