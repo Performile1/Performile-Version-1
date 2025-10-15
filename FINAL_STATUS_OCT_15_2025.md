@@ -170,4 +170,58 @@
 
 ---
 
-Last Updated: Oct 15, 2025 5:24 PM UTC+2
+## NEXT PRIORITY: POSTAL CODE PROXIMITY SYSTEM
+
+### Business Need
+- Show couriers within delivery radius of postal code
+- Display analytics/ratings for nearby areas (not just exact postal code)
+- Enable smart courier recommendations in checkout/plugins
+
+### Implementation Plan
+
+#### Phase 1: Database Setup (30 min)
+1. Create postal_codes table with lat/lon
+2. Add PostGIS extension for geographic calculations
+3. Create distance calculation function
+4. Add indexes for performance
+
+#### Phase 2: Postal Code Service (1 hour)
+1. Build API service with Nominatim fallback
+2. Implement caching logic
+3. Add radius search functionality
+4. Create helper functions for distance calculations
+
+#### Phase 3: Dataset Import (1 hour)
+1. Download Swedish postal code dataset (Geonames)
+2. Create import script
+3. Populate database with ~16,000 Swedish postal codes
+4. Verify data quality
+
+#### Phase 4: Integration (2 hours)
+1. Update courier coverage_areas to use radius
+2. Modify analytics queries to aggregate by radius
+3. Update checkout logic to find nearby couriers
+4. Add postal code validation
+
+#### Phase 5: Testing (1 hour)
+1. Test distance calculations
+2. Verify radius searches
+3. Performance testing with indexes
+4. Edge case handling
+
+### Technical Approach
+- Use Nominatim API (free, no key) with database caching
+- PostGIS for geographic calculations
+- Haversine formula for distance (km)
+- Default radius: 10-20km for urban, 50km for rural
+
+### Files to Create
+- database/create-postal-codes-table.sql
+- database/import-postal-codes.sql
+- frontend/api/lib/postal-code-service.ts
+- frontend/api/postal-codes/search.ts
+- frontend/api/postal-codes/radius.ts
+
+---
+
+Last Updated: Oct 15, 2025 5:55 PM UTC+2
