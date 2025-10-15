@@ -177,7 +177,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     },
     {
       label: 'Courier Directory',
-      path: '/courier-directory',
+      path: '/couriers',
       icon: DirectionsCar,
       roles: ['merchant'],
     },
