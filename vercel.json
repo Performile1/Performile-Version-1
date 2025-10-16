@@ -4,7 +4,7 @@
   "outputDirectory": "apps/web/dist",
   "installCommand": "npm install --legacy-peer-deps",
   "functions": {
-    "apps/api/**/*.ts": {
+    "api/**/*.ts": {
       "runtime": "@vercel/node@3.0.0",
       "maxDuration": 60
     }
@@ -22,10 +22,6 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/apps/api/:path*"
-    },
     {
       "source": "/((?!api).*)",
       "destination": "/apps/web/dist/index.html"
