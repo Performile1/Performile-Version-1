@@ -39,7 +39,7 @@
     "deploy:ci": "npm ci && npm run build && npm run vercel:deploy"
   },
   "engines": {
-    "node": "22.x",
+    "node": "20.x",
     "npm": ">=10.0.0"
   },
   "keywords": [
