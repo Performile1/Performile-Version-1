@@ -7,6 +7,7 @@ import { EnhancedRegisterFormV2 } from '@/components/auth/EnhancedRegisterFormV2
 
 export const AuthPage: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   // Check if we're on the login page (default to login if not on /register)
   const [isLogin, setIsLogin] = useState(location.pathname !== '/register');
 
