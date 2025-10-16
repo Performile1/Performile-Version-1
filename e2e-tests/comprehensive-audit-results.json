@@ -1,0 +1,201 @@
+{
+  "timestamp": "2025-10-16T06:16:43.901Z",
+  "roles": {
+    "admin": {
+      "navigation": {
+        "found": [],
+        "missing": [
+          "Dashboard",
+          "Trust Scores",
+          "Orders",
+          "Track Shipment",
+          "Claims",
+          "Users",
+          "Manage Merchants",
+          "Manage Couriers",
+          "Review Builder",
+          "Subscriptions",
+          "Team",
+          "Analytics",
+          "E-commerce",
+          "Email Templates",
+          "Settings"
+        ],
+        "extra": []
+      },
+      "apiEndpoints": {
+        "called": [
+          "/api/4510142570758224/envelope/"
+        ],
+        "notCalled": [
+          "/api/users",
+          "/api/couriers",
+          "/api/stores",
+          "/api/orders",
+          "/api/reviews",
+          "/api/admin/analytics",
+          "/api/admin/subscriptions",
+          "/api/trustscore/dashboard"
+        ],
+        "errors": []
+      },
+      "missingFeatures": [
+        "Lead Marketplace",
+        "Messaging System",
+        "Review Request Automation",
+        "Market Share Analytics",
+        "Platform Metrics Dashboard"
+      ],
+      "pages": [],
+      "consoleErrors": [
+        "Login error details: {message: timeout of 10000ms exceeded, response: undefined, status: undefined, url: /api/auth}",
+        "Login error: Error: Request timeout - please try again\n    at Rke.login (https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:484:6900)\n    at async login (https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:487:92922)\n    at async S (https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:497:18917)\n    at async https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:494:53343"
+      ],
+      "networkErrors": [],
+      "scores": {
+        "navigation": 0,
+        "api": 13,
+        "overall": 7
+      }
+    },
+    "merchant": {
+      "navigation": {
+        "found": [],
+        "missing": [
+          "Dashboard",
+          "Trust Scores",
+          "Orders",
+          "Track Shipment",
+          "Claims",
+          "Team",
+          "Analytics",
+          "E-commerce",
+          "Email Templates",
+          "Courier Preferences",
+          "My Subscription",
+          "Courier Directory",
+          "Checkout Analytics",
+          "Settings"
+        ],
+        "extra": []
+      },
+      "apiEndpoints": {
+        "called": [
+          "/api/4510142570758224/envelope/"
+        ],
+        "notCalled": [
+          "/api/orders",
+          "/api/couriers",
+          "/api/trustscore/dashboard",
+          "/api/merchant/analytics",
+          "/api/merchant/checkout-analytics"
+        ],
+        "errors": []
+      },
+      "missingFeatures": [
+        "Review Request Interface",
+        "Automated Review Sending",
+        "Shop Analytics Snapshots",
+        "E-commerce Webhooks",
+        "Bulk Order Import",
+        "Courier Selection at Checkout"
+      ],
+      "pages": [],
+      "consoleErrors": [
+        "Login error details: {message: timeout of 10000ms exceeded, response: undefined, status: undefined, url: /api/auth}",
+        "Login error: Error: Request timeout - please try again\n    at Rke.login (https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:484:6900)\n    at async login (https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:487:92922)\n    at async S (https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:497:18917)\n    at async https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:494:53343"
+      ],
+      "networkErrors": [],
+      "scores": {
+        "navigation": 0,
+        "api": 20,
+        "overall": 10
+      }
+    },
+    "courier": {
+      "navigation": {
+        "found": [],
+        "missing": [
+          "Dashboard",
+          "Orders",
+          "Track Shipment",
+          "Team",
+          "Analytics",
+          "Checkout Analytics",
+          "Settings"
+        ],
+        "extra": []
+      },
+      "apiEndpoints": {
+        "called": [
+          "/api/4510142570758224/envelope/"
+        ],
+        "notCalled": [
+          "/api/orders",
+          "/api/courier/analytics",
+          "/api/courier/checkout-analytics",
+          "/api/trustscore/dashboard"
+        ],
+        "errors": []
+      },
+      "missingFeatures": [
+        "Lead Marketplace",
+        "Document Upload Interface",
+        "Service Type Configuration",
+        "API Credentials Management",
+        "Delivery Proof Upload"
+      ],
+      "pages": [],
+      "consoleErrors": [
+        "Login error details: {message: timeout of 10000ms exceeded, response: undefined, status: undefined, url: /api/auth}",
+        "Login error: Error: Request timeout - please try again\n    at Rke.login (https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:484:6900)\n    at async login (https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:487:92922)\n    at async S (https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:497:18917)\n    at async https://frontend-two-swart-31.vercel.app/assets/js/index-ZYY7QS3m.js:494:53343"
+      ],
+      "networkErrors": [],
+      "scores": {
+        "navigation": 0,
+        "api": 25,
+        "overall": 13
+      }
+    },
+    "consumer": {
+      "navigation": {
+        "found": [],
+        "missing": [
+          "Dashboard",
+          "Trust Scores",
+          "Orders",
+          "Track Shipment",
+          "My Reviews",
+          "Settings"
+        ],
+        "extra": []
+      },
+      "apiEndpoints": {
+        "called": [
+          "/api/4510142570758224/envelope/",
+          "/api/auth",
+          "/api/notifications",
+          "/api/trustscore/dashboard",
+          "/api/couriers",
+          "/api/stores",
+          "/api/orders"
+        ],
+        "notCalled": [],
+        "errors": []
+      },
+      "missingFeatures": [
+        "Message Composer",
+        "Conversation List",
+        "Review Submission Form"
+      ],
+      "pages": [],
+      "consoleErrors": [],
+      "networkErrors": [],
+      "scores": {
+        "navigation": 0,
+        "api": 233,
+        "overall": 117
+      }
+    }
+  }
+}

@@ -3,6 +3,13 @@ import { TrustScore, ApiResponse, FilterQuery, PaginationQuery } from '../types'
 import database from '../config/database';
 import redisClient from '../config/redis';
 import logger from '../utils/logger';
+import {
+  calculateTrustScore,
+  getTrustScore,
+  getCourierAnalytics,
+  getLeaderboard,
+  recalculateAllTrustScores
+} from '../services/trustScoreService';
 
 export class TrustScoreController {
   // Get courier trust scores with filtering and pagination

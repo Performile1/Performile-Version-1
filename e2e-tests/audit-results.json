@@ -1,98 +1,347 @@
 {
-  "timestamp": "2025-10-16T05:52:55.942Z",
+  "timestamp": "2025-10-16T06:19:28.066Z",
   "roles": {
     "admin": {
-      "menuItems": [
-        "Dashboard",
-        "Trust Scores",
-        "Orders",
-        "Track Shipment",
-        "Claims",
-        "Users",
-        "Manage Merchants",
-        "Manage Couriers",
-        "Review Builder",
-        "Subscriptions",
-        "Team",
-        "Analytics",
-        "E-commerce",
-        "Email Templates",
-        "Checkout Analytics",
-        "Checkout Analytics",
-        "Settings"
-      ],
-      "pages": [
+      "menuItems": [],
+      "pages": [],
+      "consoleErrors": [],
+      "networkErrors": [],
+      "apiCalls": [
         {
-          "name": "Dashboard",
-          "url": "https://frontend-two-swart-31.vercel.app/#/dashboard",
-          "errors": 0,
-          "emptyStates": 0,
-          "screenshot": "admin-dashboard.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         },
         {
-          "name": "Trust Scores",
-          "url": "https://frontend-two-swart-31.vercel.app/#/trustscores",
-          "errors": 0,
-          "emptyStates": 0,
-          "screenshot": "admin-trust-scores.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         },
         {
-          "name": "Orders",
-          "url": "https://frontend-two-swart-31.vercel.app/#/orders",
-          "errors": 0,
-          "emptyStates": 0,
-          "screenshot": "admin-orders.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         },
         {
-          "name": "Track Shipment",
-          "url": "https://frontend-two-swart-31.vercel.app/#/tracking",
-          "errors": 1,
-          "emptyStates": 0,
-          "screenshot": "admin-track-shipment.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         },
         {
-          "name": "Claims",
-          "url": "https://frontend-two-swart-31.vercel.app/#/claims",
-          "errors": 0,
-          "emptyStates": 0,
-          "screenshot": "admin-claims.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         },
         {
-          "name": "Users",
-          "url": "https://frontend-two-swart-31.vercel.app/#/users",
-          "errors": 0,
-          "emptyStates": 0,
-          "screenshot": "admin-users.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         },
         {
-          "name": "Manage Merchants",
-          "url": "https://frontend-two-swart-31.vercel.app/#/admin/merchants",
-          "errors": 0,
-          "emptyStates": 0,
-          "screenshot": "admin-manage-merchants.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         },
         {
-          "name": "Manage Couriers",
-          "url": "https://frontend-two-swart-31.vercel.app/#/admin/couriers",
-          "errors": 0,
-          "emptyStates": 0,
-          "screenshot": "admin-manage-couriers.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         },
         {
-          "name": "Review Builder",
-          "url": "https://frontend-two-swart-31.vercel.app/#/admin/reviews",
-          "errors": 1,
-          "emptyStates": 4,
-          "screenshot": "admin-review-builder.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         },
         {
-          "name": "Subscriptions",
-          "url": "https://frontend-two-swart-31.vercel.app/#/admin/subscriptions",
-          "errors": 0,
-          "emptyStates": 0,
-          "screenshot": "admin-subscriptions.png"
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
         }
-      ]
+      ],
+      "uniqueEndpoints": [
+        "POST /api/4510142570758224/envelope/"
+      ],
+      "apiAnalysis": {
+        "total": 1,
+        "successful": 1,
+        "failed": 0,
+        "missing": 0,
+        "missingEndpoints": []
+      }
+    },
+    "merchant": {
+      "menuItems": [],
+      "pages": [],
+      "consoleErrors": [],
+      "networkErrors": [],
+      "apiCalls": [
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        }
+      ],
+      "uniqueEndpoints": [
+        "POST /api/4510142570758224/envelope/"
+      ],
+      "apiAnalysis": {
+        "total": 1,
+        "successful": 1,
+        "failed": 0,
+        "missing": 0,
+        "missingEndpoints": []
+      }
+    },
+    "courier": {
+      "menuItems": [],
+      "pages": [],
+      "consoleErrors": [],
+      "networkErrors": [],
+      "apiCalls": [
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        }
+      ],
+      "uniqueEndpoints": [
+        "POST /api/4510142570758224/envelope/"
+      ],
+      "apiAnalysis": {
+        "total": 1,
+        "successful": 1,
+        "failed": 0,
+        "missing": 0,
+        "missingEndpoints": []
+      }
+    },
+    "consumer": {
+      "menuItems": [],
+      "pages": [],
+      "consoleErrors": [],
+      "networkErrors": [],
+      "apiCalls": [
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        },
+        {
+          "url": "https://o4510142564007936.ingest.de.sentry.io/api/4510142570758224/envelope/?sentry_version=7&sentry_key=91b5a7e039d5f36a198c54695b3f44a1&sentry_client=sentry.javascript.react%2F10.20.0",
+          "status": 200,
+          "method": "POST",
+          "statusText": ""
+        }
+      ],
+      "uniqueEndpoints": [
+        "POST /api/4510142570758224/envelope/"
+      ],
+      "apiAnalysis": {
+        "total": 1,
+        "successful": 1,
+        "failed": 0,
+        "missing": 0,
+        "missingEndpoints": []
+      }
     }
   }
 }
