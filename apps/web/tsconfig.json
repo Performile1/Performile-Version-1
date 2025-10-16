@@ -27,8 +27,7 @@
     "allowJs": true,
     "checkJs": false,
     "noImplicitAny": false,
-    "skipLibCheck": true,
-    "suppressImplicitAnyIndexErrors": true
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*",
