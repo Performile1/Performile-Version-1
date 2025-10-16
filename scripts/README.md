@@ -4,7 +4,7 @@ This directory contains scripts for setting up and managing the Performile datab
 
 ## Prerequisites
 
-- Node.js 18 or later
+- Node.js 22 or later
 - npm or yarn
 - Supabase project with PostgreSQL database
 

@@ -40,7 +40,7 @@
 - **Styling:** Emotion (CSS-in-JS)
 
 **Backend:**
-- **Runtime:** Node.js 18+
+- **Runtime:** Node.js 22+
 - **Platform:** Vercel Serverless Functions
 - **Language:** TypeScript
 - **Database:** PostgreSQL (Supabase)
@@ -126,7 +126,7 @@
 ### Prerequisites
 
 **Required:**
-- Node.js >= 18.0.0
+- Node.js >= 22.0.0
 - npm or yarn
 - Git
 - Code editor (VS Code recommended)

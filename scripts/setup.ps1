@@ -11,7 +11,7 @@ if (!(Get-Command docker -ErrorAction SilentlyContinue)) {
 
 # Check if Node.js is installed
 if (!(Get-Command node -ErrorAction SilentlyContinue)) {
-    Write-Host "❌ Node.js is not installed. Please install Node.js 18+ first." -ForegroundColor Red
+    Write-Host "❌ Node.js is not installed. Please install Node.js 22+ first." -ForegroundColor Red
     exit 1
 }
 

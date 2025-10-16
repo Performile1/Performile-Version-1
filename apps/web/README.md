@@ -15,7 +15,7 @@ This is the frontend for the Performile logistics performance platform, built wi
 ## Development
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 22+
 - npm 9+
 
 ### Setup

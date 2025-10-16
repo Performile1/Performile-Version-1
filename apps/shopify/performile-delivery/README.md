@@ -25,7 +25,7 @@ Show verified courier ratings directly in your Shopify checkout to increase cust
 ### Prerequisites
 
 - Shopify Partner account
-- Node.js 18+ installed
+- Node.js 22+ installed
 - Shopify CLI installed (`npm install -g @shopify/cli`)
 - Performile account and API key
 

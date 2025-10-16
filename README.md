@@ -20,7 +20,7 @@ A comprehensive full-stack logistics performance platform that enables consumers
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ and npm
+- Node.js 22+ and npm
 - Supabase account (for database)
 - Vercel account (for deployment)
 
