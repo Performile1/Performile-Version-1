@@ -55,7 +55,7 @@
   "author": "Performile Team",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.0.0",
     "typescript": "^5.0.0",
     "vercel": "^41.0.2",
     "vite": "^7.1.7"
