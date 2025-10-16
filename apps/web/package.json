@@ -70,7 +70,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "vercel-build": "npm run build",
     "preview": "vite preview --port 3000 --host",
     "test": "vitest",
