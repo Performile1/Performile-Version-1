@@ -521,7 +521,7 @@ performile-platform/
 ## 2. Setup & Installation
 
 ### Prerequisites
-- Node.js >= 18.0.0
+- Node.js >= 22.0.0
 - npm or yarn
 - Supabase account
 - Vercel account (for deployment)

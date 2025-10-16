@@ -152,7 +152,7 @@
 - Axios 1.6.7
 
 ### **Backend:**
-- Node.js 18+
+- Node.js 22+
 - Express.js
 - PostgreSQL 14+
 - Vercel Serverless Functions

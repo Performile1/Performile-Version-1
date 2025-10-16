@@ -245,7 +245,7 @@ This document consolidates key information from all 41 documentation files.
 - **Icons:** Lucide React
 
 ### Backend
-- **Runtime:** Node.js 18+
+- **Runtime:** Node.js 22+
 - **Platform:** Vercel Serverless Functions
 - **Language:** TypeScript
 - **Database:** PostgreSQL (Supabase)

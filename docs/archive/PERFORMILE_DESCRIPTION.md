@@ -312,7 +312,7 @@ Our proprietary **TrustScore** is a comprehensive 0-100 rating that evaluates co
 - **Build Tool**: Vite
 
 ### Backend
-- **Runtime**: Node.js 18 (Serverless)
+- **Runtime**: Node.js 22 (Serverless)
 - **Platform**: Vercel Edge Functions
 - **Language**: TypeScript
 - **Authentication**: JWT with refresh tokens
