@@ -39,8 +39,8 @@
     "deploy:ci": "npm ci && npm run build && npm run vercel:deploy"
   },
   "engines": {
-    "node": "18.x",
-    "npm": ">=9.0.0"
+    "node": "22.x",
+    "npm": ">=10.0.0"
   },
   "keywords": [
     "logistics",
