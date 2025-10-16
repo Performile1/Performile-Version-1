@@ -18,5 +18,9 @@
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.40.0"
+  },
+  "engines": {
+    "node": "22.x",
+    "npm": ">=10.0.0"
   }
 }
