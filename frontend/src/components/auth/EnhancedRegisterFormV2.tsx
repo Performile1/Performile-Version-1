@@ -116,10 +116,10 @@ export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ on
         }
       }
 
-      // Login and redirect
+      // Login after registration - let App.tsx route handle redirect
       const authStore = useAuthStore.getState();
       await authStore.login({ email: data.email, password: data.password });
-      navigate('/dashboard');
+      // Redirect handled by App.tsx based on isAuthenticated state
     } catch (err: any) {
       setError(err.message || 'Registration failed');
       setIsSubmitting(false);

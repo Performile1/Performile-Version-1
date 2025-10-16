@@ -1,0 +1,98 @@
+{
+  "timestamp": "2025-10-16T05:52:55.942Z",
+  "roles": {
+    "admin": {
+      "menuItems": [
+        "Dashboard",
+        "Trust Scores",
+        "Orders",
+        "Track Shipment",
+        "Claims",
+        "Users",
+        "Manage Merchants",
+        "Manage Couriers",
+        "Review Builder",
+        "Subscriptions",
+        "Team",
+        "Analytics",
+        "E-commerce",
+        "Email Templates",
+        "Checkout Analytics",
+        "Checkout Analytics",
+        "Settings"
+      ],
+      "pages": [
+        {
+          "name": "Dashboard",
+          "url": "https://frontend-two-swart-31.vercel.app/#/dashboard",
+          "errors": 0,
+          "emptyStates": 0,
+          "screenshot": "admin-dashboard.png"
+        },
+        {
+          "name": "Trust Scores",
+          "url": "https://frontend-two-swart-31.vercel.app/#/trustscores",
+          "errors": 0,
+          "emptyStates": 0,
+          "screenshot": "admin-trust-scores.png"
+        },
+        {
+          "name": "Orders",
+          "url": "https://frontend-two-swart-31.vercel.app/#/orders",
+          "errors": 0,
+          "emptyStates": 0,
+          "screenshot": "admin-orders.png"
+        },
+        {
+          "name": "Track Shipment",
+          "url": "https://frontend-two-swart-31.vercel.app/#/tracking",
+          "errors": 1,
+          "emptyStates": 0,
+          "screenshot": "admin-track-shipment.png"
+        },
+        {
+          "name": "Claims",
+          "url": "https://frontend-two-swart-31.vercel.app/#/claims",
+          "errors": 0,
+          "emptyStates": 0,
+          "screenshot": "admin-claims.png"
+        },
+        {
+          "name": "Users",
+          "url": "https://frontend-two-swart-31.vercel.app/#/users",
+          "errors": 0,
+          "emptyStates": 0,
+          "screenshot": "admin-users.png"
+        },
+        {
+          "name": "Manage Merchants",
+          "url": "https://frontend-two-swart-31.vercel.app/#/admin/merchants",
+          "errors": 0,
+          "emptyStates": 0,
+          "screenshot": "admin-manage-merchants.png"
+        },
+        {
+          "name": "Manage Couriers",
+          "url": "https://frontend-two-swart-31.vercel.app/#/admin/couriers",
+          "errors": 0,
+          "emptyStates": 0,
+          "screenshot": "admin-manage-couriers.png"
+        },
+        {
+          "name": "Review Builder",
+          "url": "https://frontend-two-swart-31.vercel.app/#/admin/reviews",
+          "errors": 1,
+          "emptyStates": 4,
+          "screenshot": "admin-review-builder.png"
+        },
+        {
+          "name": "Subscriptions",
+          "url": "https://frontend-two-swart-31.vercel.app/#/admin/subscriptions",
+          "errors": 0,
+          "emptyStates": 0,
+          "screenshot": "admin-subscriptions.png"
+        }
+      ]
+    }
+  }
+}

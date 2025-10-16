@@ -215,7 +215,7 @@ export const TrackingPage: React.FC = () => {
                 </Typography>
 
                 <Stepper orientation="vertical">
-                  {trackingData.events.map((event, index) => (
+                  {(trackingData.events || []).map((event, index) => (
                     <Step key={index} active={true} completed={index > 0}>
                       <StepLabel>
                         <Typography variant="subtitle2">
@@ -237,7 +237,7 @@ export const TrackingPage: React.FC = () => {
                   ))}
                 </Stepper>
 
-                {trackingData.events.length === 0 && (
+                {(!trackingData.events || trackingData.events.length === 0) && (
                   <Alert severity="info">
                     No tracking events available yet
                   </Alert>

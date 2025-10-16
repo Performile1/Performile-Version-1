@@ -9,14 +9,6 @@ export const AuthPage: React.FC = () => {
   const location = useLocation();
   // Check if we're on the login page (default to login if not on /register)
   const [isLogin, setIsLogin] = useState(location.pathname !== '/register');
-  const { isAuthenticated } = useAuthStore();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     // Update form based on current path

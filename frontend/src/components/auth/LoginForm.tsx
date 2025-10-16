@@ -60,8 +60,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const onSubmit = async (data: LoginCredentials) => {
     try {
       const success = await login(data);
-      if (success) {
-        navigate('/dashboard');
+      // Don't manually navigate - let App.tsx route handle redirect based on isAuthenticated
+      // This prevents race conditions with multiple navigation attempts
+      if (!success) {
+        setError('root', {
+          type: 'manual',
+          message: 'Login failed. Please check your credentials and try again.',
+        });
       }
     } catch (error: any) {
       setError('root', {

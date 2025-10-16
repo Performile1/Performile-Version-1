@@ -115,6 +115,9 @@ export const Analytics: React.FC = () => {
   });
 
   const courierData = Array.isArray(analyticsData?.data) ? analyticsData.data : [];
+  
+  // Ensure courierData is always an array to prevent .slice() errors
+  const safeCourierData = Array.isArray(courierData) ? courierData : [];
 
   // Mock data for demonstration
   const performanceData = [
@@ -144,9 +147,9 @@ export const Analytics: React.FC = () => {
 
   // For admin: Use real courier data, for others: use mock data
   const competitorData = React.useMemo(() => {
-    if (user?.user_role === 'admin' && Array.isArray(courierData) && courierData.length > 0) {
+    if (user?.user_role === 'admin' && safeCourierData.length > 0) {
       try {
-        return courierData.map((courier: any) => ({
+        return safeCourierData.map((courier: any) => ({
           name: courier.courier_name || 'Unknown',
           trustScore: Number(courier.overall_score || (courier.avg_rating ? courier.avg_rating * 20 : 0) || 0),
           marketShare: Number(courier.total_orders || 0),
@@ -357,16 +360,16 @@ export const Analytics: React.FC = () => {
                 </Alert>
               )}
               
-              {!analyticsLoading && !analyticsError && courierData.length === 0 && (
+              {!analyticsLoading && !analyticsError && safeCourierData.length === 0 && (
                 <Alert severity="warning">
                   No courier data available. Make sure you've run the seed-demo-data.sql script in Supabase.
                 </Alert>
               )}
               
-              {courierData.length > 0 && (
+              {safeCourierData.length > 0 && (
                 <>
               <Grid container spacing={2}>
-                {courierData.slice(0, 5).map((courier: any, index: number) => (
+                {safeCourierData.slice(0, 5).map((courier: any, index: number) => (
                   <Grid item xs={12} md={6} lg={4} key={courier.courier_id}>
                     <Card variant="outlined">
                       <CardContent>

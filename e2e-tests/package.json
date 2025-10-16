@@ -1,0 +1,22 @@
+{
+  "name": "performile-e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for Performile platform",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:merchant": "playwright test merchant-audit.spec.js --headed",
+    "test:all-roles": "playwright test all-roles-audit.spec.js --headed",
+    "test:all-roles-fast": "playwright test all-roles-audit.spec.js",
+    "test:comprehensive": "playwright test comprehensive-audit.spec.js --headed",
+    "test:comprehensive-fast": "playwright test comprehensive-audit.spec.js",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report"
+  },
+  "keywords": ["playwright", "testing", "e2e"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}
