@@ -55,6 +55,7 @@ import usageRoutes from './routes/usage';
 import storesRoutes from './routes/stores';
 import notificationsRoutes from './routes/notifications';
 import paymentsRoutes from './routes/payments';
+import settingsRoutes from './routes/settings';
 
 
 class Server {
@@ -179,6 +180,7 @@ class Server {
     this.app.use('/api/stores', storesRoutes);
     this.app.use('/api/notifications', notificationsRoutes);
     this.app.use('/api/payments', paymentsRoutes);
+    this.app.use('/api/admin/settings', settingsRoutes);
     // Alias for review requests (frontend compatibility)
     this.app.use('/api/review-requests', reviewsRoutes);
 

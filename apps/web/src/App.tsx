@@ -15,6 +15,7 @@ import { ManageMerchants } from '@/pages/admin/ManageMerchants';
 import { ManageCouriers } from '@/pages/admin/ManageCouriers';
 import { ReviewBuilder } from '@/pages/admin/ReviewBuilder';
 import SubscriptionManagement from '@/pages/admin/SubscriptionManagement';
+import SystemSettings from '@/pages/admin/SystemSettings';
 import { CourierDirectory } from '@/pages/courier/CourierDirectory';
 import { CourierCheckoutAnalytics } from '@/pages/courier/CourierCheckoutAnalytics';
 import { MerchantCheckoutAnalytics } from '@/pages/merchant/MerchantCheckoutAnalytics';
@@ -293,6 +294,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute requiredRoles={['admin']}>
                   <SubscriptionManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/system-settings"
+              element={
+                <ProtectedRoute requiredRoles={['admin']}>
+                  <SystemSettings />
                 </ProtectedRoute>
               }
             />

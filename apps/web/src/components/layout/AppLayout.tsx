@@ -140,6 +140,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       roles: ['admin'],
     },
     {
+      label: 'System Settings',
+      path: '/admin/system-settings',
+      icon: Settings,
+      roles: ['admin'],
+    },
+    {
       label: 'Team',
       path: '/team',
       icon: Group,
