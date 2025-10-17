@@ -832,6 +832,41 @@ DROP TABLE IF EXISTS new_table;
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE
-**LAST UPDATED:** October 17, 2025
+### **RULE #14: PACKAGE.JSON VALIDATION**
+
+**MANDATORY BEFORE CREATING COMPONENTS:**
+
+```bash
+# Step 1: Check if package exists
+npm list package-name
+
+# Step 2: If missing, add to package.json
+npm install package-name
+
+# Step 3: Verify version compatibility
+npm list
+
+# Step 4: Test build (if possible)
+npm run build
+```
+
+**WHY:** Prevents build failures from missing dependencies
+
+**EXAMPLE:**
+```json
+{
+  "dependencies": {
+    "chart.js": "^4.4.1",
+    "react-chartjs-2": "^5.2.0"
+  }
+}
+```
+
+**DELIVERABLE:** Updated package.json committed BEFORE component code
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.16
+**LAST UPDATED:** October 17, 2025 (Week 2 Complete)
 **NEXT REVIEW:** Before Week 3
+**NEXT VERSION:** v1.17
