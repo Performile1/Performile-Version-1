@@ -22,6 +22,9 @@ import { MerchantCheckoutAnalytics } from '@/pages/merchant/MerchantCheckoutAnal
 import { TeamManagement } from '@/pages/team/TeamManagement';
 import { AcceptInvitation } from '@/pages/team/AcceptInvitation';
 import { Analytics } from './pages/Analytics';
+import AdminAnalytics from './pages/analytics/AdminAnalytics';
+import MerchantAnalytics from './pages/analytics/MerchantAnalytics';
+import CourierAnalytics from './pages/analytics/CourierAnalytics';
 import { ReviewRequestSettings } from './pages/settings/ReviewRequestSettings';
 import { CourierPreferences } from './pages/settings/CourierPreferences';
 import ProximitySettings from './pages/settings/ProximitySettings';
@@ -327,6 +330,30 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute requiredRoles={['admin', 'merchant', 'courier']}>
                   <Analytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analytics/admin"
+              element={
+                <ProtectedRoute requiredRoles={['admin']}>
+                  <AdminAnalytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analytics/merchant"
+              element={
+                <ProtectedRoute requiredRoles={['merchant']}>
+                  <MerchantAnalytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analytics/courier"
+              element={
+                <ProtectedRoute requiredRoles={['courier']}>
+                  <CourierAnalytics />
                 </ProtectedRoute>
               }
             />
