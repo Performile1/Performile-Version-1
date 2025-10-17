@@ -866,7 +866,58 @@ npm run build
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.16
-**LAST UPDATED:** October 17, 2025 (Week 2 Complete)
-**NEXT REVIEW:** Before Week 3
-**NEXT VERSION:** v1.17
+### **RULE #15: SAFE DATABASE EVOLUTION**
+
+**WHEN MODIFYING EXISTING TABLES:**
+
+**ALLOWED:**
+- ✅ ADD new columns with DEFAULT values
+- ✅ ADD new indexes
+- ✅ ADD new constraints (if they don't break existing data)
+- ✅ RENAME tables (with migration path)
+- ✅ CREATE views on existing tables
+
+**MIGRATION STRATEGY:**
+```sql
+-- Step 1: Create new table/column
+ALTER TABLE old_table ADD COLUMN new_column TYPE DEFAULT value;
+
+-- Step 2: Backfill data (if needed)
+UPDATE old_table SET new_column = calculated_value;
+
+-- Step 3: Create view for backward compatibility (if renaming)
+CREATE VIEW old_name AS SELECT * FROM new_name;
+
+-- Step 4: Update application code
+
+-- Step 5: Drop view after transition period
+-- DROP VIEW old_name; (only after confirming no usage)
+```
+
+**FORBIDDEN:**
+- ❌ DROP columns with production data
+- ❌ CHANGE column types that break existing data
+- ❌ DROP tables without migration path
+- ❌ REMOVE constraints that applications depend on
+
+**SAFE RENAME PATTERN:**
+```sql
+-- Rename table safely
+ALTER TABLE old_name RENAME TO new_name;
+
+-- Create view for backward compatibility
+CREATE VIEW old_name AS SELECT * FROM new_name;
+
+-- Update application code gradually
+
+-- Drop view after transition (30+ days)
+```
+
+**DELIVERABLE:** Migration script with rollback plan
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.17
+**LAST UPDATED:** October 17, 2025 (Week 3 Start)
+**NEXT REVIEW:** After Week 3
+**NEXT VERSION:** v1.18
