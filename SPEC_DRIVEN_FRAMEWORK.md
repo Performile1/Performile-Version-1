@@ -390,6 +390,7 @@ subscription_plans columns:
   - max_shops INTEGER
   - max_orders_per_month INTEGER
   - max_emails_per_month INTEGER
+  - max_reports_per_month INTEGER
   - features JSONB
 ```
 
@@ -462,6 +463,45 @@ if (currentShops >= maxShops) {
 - Using premium features
 - Accessing advanced analytics
 - API rate limits
+
+---
+
+### **RULE #14: PACKAGE.JSON VALIDATION**
+
+**BEFORE EVERY FRONTEND FEATURE:**
+1. ✅ Check if new npm packages are needed
+2. ✅ Add to package.json BEFORE creating components
+3. ✅ Verify versions are compatible
+4. ✅ Test build locally if possible
+
+**COMMON PACKAGES TO CHECK:**
+```json
+{
+  "chart.js": "^4.4.1",           // For charts
+  "react-chartjs-2": "^5.2.0",    // React wrapper for charts
+  "@mui/material": "^5.15.6",     // Material-UI components
+  "@mui/icons-material": "^5.15.6", // Material-UI icons
+  "@tanstack/react-query": "^5.17.19", // Data fetching
+  "react-router-dom": "^6.20.0",  // Routing
+  "react-hot-toast": "^2.4.1",    // Notifications
+  "axios": "^1.6.7",              // HTTP client
+  "zustand": "^4.4.6"             // State management
+}
+```
+
+**VALIDATION SCRIPT:**
+```bash
+# Before committing frontend changes
+cd apps/web
+npm install --legacy-peer-deps
+npm run build
+```
+
+**IF BUILD FAILS:**
+1. Check error message for missing imports
+2. Add missing packages to package.json
+3. Commit package.json first
+4. Then commit components
 
 ---
 
