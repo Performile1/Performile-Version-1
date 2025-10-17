@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS webhooks (
 -- Migrate from ecommerce_integrations
 INSERT INTO webhooks (
   webhook_id,
+  user_id,
   shop_id,
   integration_type,
   platform_name,
@@ -79,28 +80,31 @@ INSERT INTO webhooks (
   updated_at
 )
 SELECT 
-  integration_id,
-  shop_id,
+  e.integration_id,
+  s.user_id,
+  e.shop_id,
   'ecommerce',
-  platform_name,
-  platform_url,
-  api_key,
-  api_secret,
-  COALESCE(webhook_url, 'https://performile.com/webhooks/' || integration_id::text),
-  is_active,
-  last_sync_at,
-  sync_status,
-  sync_error,
-  total_orders_synced,
-  last_order_synced_at,
-  created_at,
-  updated_at
-FROM ecommerce_integrations
+  e.platform_name,
+  e.platform_url,
+  e.api_key,
+  e.api_secret,
+  COALESCE(e.webhook_url, 'https://performile.com/webhooks/' || e.integration_id::text),
+  e.is_active,
+  e.last_sync_at,
+  e.sync_status,
+  e.sync_error,
+  e.total_orders_synced,
+  e.last_order_synced_at,
+  e.created_at,
+  e.updated_at
+FROM ecommerce_integrations e
+LEFT JOIN stores s ON s.store_id = e.shop_id
 ON CONFLICT (webhook_id) DO NOTHING;
 
 -- Migrate from shopintegrations (if different from ecommerce_integrations)
 INSERT INTO webhooks (
   webhook_id,
+  user_id,
   shop_id,
   integration_type,
   platform_name,
@@ -118,24 +122,26 @@ INSERT INTO webhooks (
   updated_at
 )
 SELECT 
-  integration_id,
-  shop_id,
+  si.integration_id,
+  s.user_id,
+  si.shop_id,
   'ecommerce',
-  platform_name,
-  platform_url,
-  api_key,
-  api_secret,
-  COALESCE(webhook_url, 'https://performile.com/webhooks/' || integration_id::text),
-  is_active,
-  last_sync_at,
-  sync_status,
-  sync_error,
-  total_orders_synced,
-  last_order_synced_at,
-  created_at,
-  updated_at
-FROM shopintegrations
-WHERE integration_id NOT IN (SELECT webhook_id FROM webhooks)
+  si.platform_name,
+  si.platform_url,
+  si.api_key,
+  si.api_secret,
+  COALESCE(si.webhook_url, 'https://performile.com/webhooks/' || si.integration_id::text),
+  si.is_active,
+  si.last_sync_at,
+  si.sync_status,
+  si.sync_error,
+  si.total_orders_synced,
+  si.last_order_synced_at,
+  si.created_at,
+  si.updated_at
+FROM shopintegrations si
+LEFT JOIN stores s ON s.store_id = si.shop_id
+WHERE si.integration_id NOT IN (SELECT webhook_id FROM webhooks)
 ON CONFLICT (webhook_id) DO NOTHING;
 
 -- ============================================================================
