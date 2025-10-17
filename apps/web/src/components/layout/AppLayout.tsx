@@ -116,36 +116,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       roles: ['admin'],
     },
     {
-      label: 'Manage Merchants',
-      path: '/admin/merchants',
-      icon: Business,
-      roles: ['admin'],
-    },
-    {
-      label: 'Manage Couriers',
-      path: '/admin/couriers',
-      icon: DirectionsCar,
-      roles: ['admin'],
-    },
-    {
-      label: 'Review Builder',
-      path: '/admin/reviews',
-      icon: Star,
-      roles: ['admin'],
-    },
-    {
-      label: 'Subscriptions',
-      path: '/admin/subscriptions',
-      icon: Subscriptions,
-      roles: ['admin'],
-    },
-    {
-      label: 'System Settings',
-      path: '/admin/system-settings',
-      icon: Settings,
-      roles: ['admin'],
-    },
-    {
       label: 'Team',
       path: '/team',
       icon: Group,
@@ -156,18 +126,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       path: '/analytics',
       icon: Assessment,
       roles: ['admin', 'merchant', 'courier'],
-    },
-    {
-      label: 'E-commerce',
-      path: '/integrations/ecommerce',
-      icon: ShoppingCart,
-      roles: ['admin', 'merchant'],
-    },
-    {
-      label: 'Email Templates',
-      path: '/settings/email-templates',
-      icon: Email,
-      roles: ['admin', 'merchant'],
     },
     {
       label: 'Courier Preferences',
@@ -215,7 +173,69 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       label: 'Settings',
       path: '/settings',
       icon: Settings,
-      roles: ['admin', 'merchant', 'courier', 'consumer'],
+      roles: ['admin'],
+      children: [
+        {
+          label: 'Manage Merchants',
+          path: '/admin/merchants',
+          icon: Business,
+          roles: ['admin'],
+        },
+        {
+          label: 'Manage Couriers',
+          path: '/admin/couriers',
+          icon: DirectionsCar,
+          roles: ['admin'],
+        },
+        {
+          label: 'Subscriptions',
+          path: '/admin/subscriptions',
+          icon: Subscriptions,
+          roles: ['admin'],
+        },
+        {
+          label: 'System Settings',
+          path: '/admin/system-settings',
+          icon: Settings,
+          roles: ['admin'],
+        },
+        {
+          label: 'E-commerce',
+          path: '/integrations/ecommerce',
+          icon: ShoppingCart,
+          roles: ['admin'],
+        },
+        {
+          label: 'Users',
+          path: '/admin/users',
+          icon: People,
+          roles: ['admin'],
+        },
+        {
+          label: 'Team',
+          path: '/admin/team',
+          icon: Group,
+          roles: ['admin'],
+        },
+        {
+          label: 'Email Templates',
+          path: '/settings/email-templates',
+          icon: Email,
+          roles: ['admin'],
+        },
+        {
+          label: 'Review Builder',
+          path: '/admin/reviews',
+          icon: Star,
+          roles: ['admin'],
+        },
+      ],
+    },
+    {
+      label: 'Settings',
+      path: '/settings',
+      icon: Settings,
+      roles: ['merchant', 'courier', 'consumer'],
     },
   ];
 
