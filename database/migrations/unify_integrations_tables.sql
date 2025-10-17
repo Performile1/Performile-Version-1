@@ -21,7 +21,7 @@ SELECT 'shopintegrations' as table_name, COUNT(*) as row_count FROM shopintegrat
 CREATE TABLE IF NOT EXISTS webhooks (
   webhook_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
-  shop_id UUID REFERENCES stores(store_id) ON DELETE CASCADE,
+  shop_id UUID REFERENCES stores(shop_id) ON DELETE CASCADE,
   
   -- Integration details
   integration_type VARCHAR(50) NOT NULL DEFAULT 'ecommerce', -- 'ecommerce', 'courier', 'custom'
@@ -81,7 +81,7 @@ INSERT INTO webhooks (
 )
 SELECT 
   e.integration_id,
-  s.user_id,
+  s.merchant_id,
   e.shop_id,
   'ecommerce',
   e.platform_name,
@@ -98,7 +98,7 @@ SELECT
   e.created_at,
   e.updated_at
 FROM ecommerce_integrations e
-LEFT JOIN stores s ON s.store_id = e.shop_id
+LEFT JOIN stores s ON s.shop_id = e.shop_id
 ON CONFLICT (webhook_id) DO NOTHING;
 
 -- Migrate from shopintegrations (if different from ecommerce_integrations)
@@ -123,7 +123,7 @@ INSERT INTO webhooks (
 )
 SELECT 
   si.integration_id,
-  s.user_id,
+  s.merchant_id,
   si.shop_id,
   'ecommerce',
   si.platform_name,
@@ -140,7 +140,7 @@ SELECT
   si.created_at,
   si.updated_at
 FROM shopintegrations si
-LEFT JOIN stores s ON s.store_id = si.shop_id
+LEFT JOIN stores s ON s.shop_id = si.shop_id
 WHERE si.integration_id NOT IN (SELECT webhook_id FROM webhooks)
 ON CONFLICT (webhook_id) DO NOTHING;
 
@@ -220,28 +220,28 @@ ALTER TABLE webhooks ENABLE ROW LEVEL SECURITY;
 CREATE POLICY webhooks_select_own ON webhooks
   FOR SELECT
   USING (auth.uid() = user_id OR shop_id IN (
-    SELECT store_id FROM stores WHERE user_id = auth.uid()
+    SELECT shop_id FROM stores WHERE merchant_id = auth.uid()
   ));
 
 -- Policy: Users can insert their own webhooks
 CREATE POLICY webhooks_insert_own ON webhooks
   FOR INSERT
   WITH CHECK (auth.uid() = user_id OR shop_id IN (
-    SELECT store_id FROM stores WHERE user_id = auth.uid()
+    SELECT shop_id FROM stores WHERE merchant_id = auth.uid()
   ));
 
 -- Policy: Users can update their own webhooks
 CREATE POLICY webhooks_update_own ON webhooks
   FOR UPDATE
   USING (auth.uid() = user_id OR shop_id IN (
-    SELECT store_id FROM stores WHERE user_id = auth.uid()
+    SELECT shop_id FROM stores WHERE merchant_id = auth.uid()
   ));
 
 -- Policy: Users can delete their own webhooks
 CREATE POLICY webhooks_delete_own ON webhooks
   FOR DELETE
   USING (auth.uid() = user_id OR shop_id IN (
-    SELECT store_id FROM stores WHERE user_id = auth.uid()
+    SELECT shop_id FROM stores WHERE merchant_id = auth.uid()
   ));
 
 -- Policy: Admins can view all webhooks

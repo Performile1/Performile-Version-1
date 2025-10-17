@@ -11,7 +11,7 @@
 CREATE TABLE IF NOT EXISTS api_keys (
   api_key_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
-  shop_id UUID REFERENCES stores(store_id) ON DELETE CASCADE,
+  shop_id UUID REFERENCES stores(shop_id) ON DELETE CASCADE,
   key_name VARCHAR(255) NOT NULL,
   api_key TEXT NOT NULL UNIQUE, -- Hashed with bcrypt
   api_key_prefix VARCHAR(10) NOT NULL, -- First 8 chars for display (e.g., "pk_live_")

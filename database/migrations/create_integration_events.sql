@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS integration_events (
   courier_name VARCHAR(255),
   integration_id UUID, -- Reference to courier_api_credentials, webhooks, or api_keys
   user_id UUID REFERENCES users(user_id) ON DELETE SET NULL,
-  shop_id UUID REFERENCES stores(store_id) ON DELETE SET NULL,
+  shop_id UUID REFERENCES stores(shop_id) ON DELETE SET NULL,
   event_data JSONB, -- Full event payload
   status VARCHAR(50) DEFAULT 'pending', -- 'success', 'failed', 'pending', 'retrying'
   error_message TEXT,
