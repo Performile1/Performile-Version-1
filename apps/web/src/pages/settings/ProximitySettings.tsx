@@ -25,6 +25,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
+import { ProximityMap } from '@/components/maps/ProximityMap';
 
 interface PostalCodeRange {
   start: string;
@@ -418,7 +419,7 @@ export const ProximitySettings: React.FC = () => {
           </Card>
         </Grid>
 
-        {/* Map Preview (Placeholder) */}
+        {/* Map Preview */}
         <Grid item xs={12}>
           <Card>
             <CardContent>
@@ -427,28 +428,29 @@ export const ProximitySettings: React.FC = () => {
               </Typography>
               <Divider sx={{ mb: 2 }} />
 
-              <Box
-                sx={{
-                  height: 300,
-                  bgcolor: 'grey.100',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 1,
-                }}
-              >
-                <Box sx={{ textAlign: 'center' }}>
-                  <MapIcon sx={{ fontSize: 60, color: 'grey.400', mb: 1 }} />
-                  <Typography variant="body1" color="text.secondary">
-                    Map integration coming soon
+              <ProximityMap
+                latitude={formData.latitude}
+                longitude={formData.longitude}
+                radius={formData.delivery_range_km}
+                height={400}
+                zoom={10}
+              />
+
+              {formData.latitude && formData.longitude && (
+                <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Location:</strong> {formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}
                   </Typography>
-                  {formData.latitude && formData.longitude && (
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                      Location: {formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Coverage Radius:</strong> {formData.delivery_range_km} km
+                  </Typography>
+                  {formData.city && (
+                    <Typography variant="body2" color="text.secondary">
+                      <strong>City:</strong> {formData.city}, {formData.country}
                     </Typography>
                   )}
                 </Box>
-              </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>
