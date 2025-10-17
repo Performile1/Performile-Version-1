@@ -254,6 +254,190 @@ database/migrations/
 - SPEC files
 - README if needed
 
+### **RULE #11: UI/UX CONSISTENCY**
+
+**NO EXTRA MENU ITEMS:**
+- ❌ Don't create new top-level menu items
+- ✅ Use existing menu structure
+- ✅ Add as submenu under existing items
+- ✅ Group related features together
+
+**MENU STRUCTURE RULES:**
+```
+Admin Menu:
+  ├── Dashboard
+  ├── System Settings (existing)
+  │   ├── General
+  │   ├── Email
+  │   ├── Security
+  │   └── [NEW FEATURES GO HERE]
+  ├── Analytics (existing)
+  │   ├── Platform Overview
+  │   ├── Reports
+  │   └── [NEW ANALYTICS HERE]
+  └── Users/Stores/Couriers
+
+Merchant Menu:
+  ├── Dashboard
+  ├── Orders
+  ├── Analytics (existing)
+  │   └── [MERCHANT ANALYTICS HERE]
+  ├── Settings
+  │   ├── Shop Settings
+  │   ├── Proximity Settings (existing)
+  │   └── [NEW SETTINGS HERE]
+  └── Integrations
+
+Courier Menu:
+  ├── Dashboard
+  ├── Deliveries
+  ├── Analytics (existing)
+  │   └── [COURIER ANALYTICS HERE]
+  └── Settings
+      ├── Profile
+      ├── Proximity Settings (existing)
+      └── [NEW SETTINGS HERE]
+```
+
+**BEFORE ADDING NEW MENU:**
+1. Check if existing menu can accommodate
+2. Consider using tabs within existing page
+3. Consider using modal/drawer instead
+4. Only create new menu if absolutely necessary
+
+### **RULE #12: USER ROLES & PERMISSIONS**
+
+**ROLES IN DATABASE:**
+- `admin` - Full access
+- `merchant` - Store management
+- `courier` - Delivery management
+- `user` - Basic access
+
+**ROLE-BASED ACCESS:**
+```typescript
+// Always check user role
+const userRole = decoded.role; // from JWT
+
+// Admin-only endpoints
+if (userRole !== 'admin') {
+  throw new Error('Admin access required');
+}
+
+// Merchant-only endpoints
+if (userRole !== 'merchant') {
+  throw new Error('Merchant access required');
+}
+
+// Multi-role endpoints
+if (!['admin', 'merchant'].includes(userRole)) {
+  throw new Error('Unauthorized');
+}
+```
+
+**RLS POLICIES MUST MATCH:**
+```sql
+-- User can only see their own data
+CREATE POLICY user_select_own ON table_name
+  FOR SELECT
+  USING (auth.uid() = user_id);
+
+-- Admin can see everything
+CREATE POLICY admin_select_all ON table_name
+  FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users 
+      WHERE users.user_id = auth.uid() 
+      AND users.user_role = 'admin'
+    )
+  );
+```
+
+### **RULE #13: SUBSCRIPTION LIMITS**
+
+**SUBSCRIPTION TABLES:**
+- `subscription_plans` - Plan definitions
+- `user_subscriptions` - User's active subscription
+
+**PLAN LIMITS (from database validation):**
+```
+subscription_plans columns:
+  - max_shops INTEGER
+  - max_orders_per_month INTEGER
+  - max_emails_per_month INTEGER
+  - features JSONB
+```
+
+**ALWAYS CHECK LIMITS:**
+```typescript
+// Before creating new shop
+const subscription = await getSubscription(userId);
+const currentShops = await countUserShops(userId);
+
+if (currentShops >= subscription.max_shops) {
+  throw new Error('Shop limit reached. Upgrade your plan.');
+}
+
+// Before processing order
+const ordersThisMonth = await countOrdersThisMonth(userId);
+
+if (ordersThisMonth >= subscription.max_orders_per_month) {
+  throw new Error('Monthly order limit reached. Upgrade your plan.');
+}
+
+// Before sending email
+const emailsThisMonth = await countEmailsThisMonth(userId);
+
+if (emailsThisMonth >= subscription.max_emails_per_month) {
+  throw new Error('Email limit reached. Upgrade your plan.');
+}
+```
+
+**FEATURE FLAGS:**
+```typescript
+// Check if feature is enabled in plan
+const subscription = await getSubscription(userId);
+const features = subscription.features; // JSONB
+
+if (!features.proximity_matching) {
+  throw new Error('Proximity matching not available in your plan.');
+}
+
+if (!features.advanced_analytics) {
+  throw new Error('Advanced analytics not available in your plan.');
+}
+```
+
+**FRONTEND LIMITS:**
+```typescript
+// Show upgrade prompt when limit reached
+if (currentShops >= maxShops) {
+  return (
+    <Alert severity="warning">
+      You've reached your shop limit ({maxShops}). 
+      <Button onClick={handleUpgrade}>Upgrade Plan</Button>
+    </Alert>
+  );
+}
+
+// Disable features not in plan
+<Button 
+  disabled={!features.proximity_matching}
+  onClick={handleProximitySettings}
+>
+  Proximity Settings
+  {!features.proximity_matching && <LockIcon />}
+</Button>
+```
+
+**SUBSCRIPTION CHECKS REQUIRED FOR:**
+- Creating new shops/stores
+- Processing orders
+- Sending emails/notifications
+- Using premium features
+- Accessing advanced analytics
+- API rate limits
+
 ---
 
 ## 📊 SPRINT WORKFLOW
@@ -536,6 +720,11 @@ DROP TABLE IF EXISTS new_table;
 - [ ] Connection pooling used
 - [ ] JWT auth implemented
 - [ ] Error handling added
+- [ ] No new top-level menu items
+- [ ] Features added to existing menus
+- [ ] User role checks implemented
+- [ ] Subscription limits enforced
+- [ ] Feature flags checked
 
 **After Implementation:**
 - [ ] Verification queries run
