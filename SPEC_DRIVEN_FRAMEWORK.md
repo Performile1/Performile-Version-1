@@ -256,54 +256,79 @@ database/migrations/
 
 ### **RULE #11: UI/UX CONSISTENCY**
 
-**NO EXTRA MENU ITEMS:**
-- ❌ Don't create new top-level menu items
-- ✅ Use existing menu structure
-- ✅ Add as submenu under existing items
-- ✅ Group related features together
+**SMART MENU ORGANIZATION:**
+- ✅ Create new menu items when features are distinct
+- ✅ Group related features together in same view
+- ✅ Use tabs/accordions for subcategories within a page
+- ✅ Keep navigation logical and discoverable
 
-**MENU STRUCTURE RULES:**
+**GROUPING STRATEGY:**
 ```
-Admin Menu:
-  ├── Dashboard
-  ├── System Settings (existing)
-  │   ├── General
-  │   ├── Email
-  │   ├── Security
-  │   └── [NEW FEATURES GO HERE]
-  ├── Analytics (existing)
-  │   ├── Platform Overview
-  │   ├── Reports
-  │   └── [NEW ANALYTICS HERE]
-  └── Users/Stores/Couriers
+If features are related → Same page with tabs/accordions
+If features are distinct → Separate menu items
 
-Merchant Menu:
-  ├── Dashboard
-  ├── Orders
-  ├── Analytics (existing)
-  │   └── [MERCHANT ANALYTICS HERE]
-  ├── Settings
-  │   ├── Shop Settings
-  │   ├── Proximity Settings (existing)
-  │   └── [NEW SETTINGS HERE]
-  └── Integrations
-
-Courier Menu:
-  ├── Dashboard
-  ├── Deliveries
-  ├── Analytics (existing)
-  │   └── [COURIER ANALYTICS HERE]
-  └── Settings
-      ├── Profile
-      ├── Proximity Settings (existing)
-      └── [NEW SETTINGS HERE]
+Examples:
+✅ System Settings page with tabs: General, Email, Security, Features
+✅ Analytics page with accordions: Platform, Shops, Couriers
+✅ Proximity Settings page with sections: Location, Range, Postal Codes
+✅ Reports as separate menu (distinct from Analytics)
+✅ Notifications as separate menu (distinct from Settings)
 ```
 
-**BEFORE ADDING NEW MENU:**
-1. Check if existing menu can accommodate
-2. Consider using tabs within existing page
-3. Consider using modal/drawer instead
-4. Only create new menu if absolutely necessary
+**WITHIN-PAGE ORGANIZATION:**
+```typescript
+// Use Material-UI Tabs for related subcategories
+<Tabs value={activeTab} onChange={handleTabChange}>
+  <Tab label="General" />
+  <Tab label="Email" />
+  <Tab label="Security" />
+  <Tab label="Features" />
+</Tabs>
+
+// Use Accordions for collapsible sections
+<Accordion>
+  <AccordionSummary>Location Settings</AccordionSummary>
+  <AccordionDetails>[Location form]</AccordionDetails>
+</Accordion>
+<Accordion>
+  <AccordionSummary>Range Settings</AccordionSummary>
+  <AccordionDetails>[Range form]</AccordionDetails>
+</Accordion>
+
+// Use Cards for grouped content
+<Grid container spacing={3}>
+  <Grid item xs={12} md={6}>
+    <Card><CardContent>[Section 1]</CardContent></Card>
+  </Grid>
+  <Grid item xs={12} md={6}>
+    <Card><CardContent>[Section 2]</CardContent></Card>
+  </Grid>
+</Grid>
+```
+
+**DECISION TREE:**
+```
+New Feature?
+  ├─ Is it related to existing feature?
+  │  ├─ YES → Add to existing page as tab/accordion/section
+  │  └─ NO → Continue
+  │
+  ├─ Does it fit existing menu category?
+  │  ├─ YES → Add to that menu
+  │  └─ NO → Continue
+  │
+  └─ Create new menu item (it's distinct enough)
+```
+
+**EXAMPLES:**
+```
+✅ GOOD: Analytics Dashboard with tabs for Platform/Shop/Courier views
+✅ GOOD: Settings page with accordions for different setting types
+✅ GOOD: Reports as separate menu (not under Analytics)
+✅ GOOD: Notifications as separate menu (not under Settings)
+❌ BAD: Separate menu for each analytics type
+❌ BAD: Separate menu for each setting category
+```
 
 ### **RULE #12: USER ROLES & PERMISSIONS**
 
@@ -720,8 +745,8 @@ DROP TABLE IF EXISTS new_table;
 - [ ] Connection pooling used
 - [ ] JWT auth implemented
 - [ ] Error handling added
-- [ ] No new top-level menu items
-- [ ] Features added to existing menus
+- [ ] Related features grouped with tabs/accordions
+- [ ] Menu structure is logical and discoverable
 - [ ] User role checks implemented
 - [ ] Subscription limits enforced
 - [ ] Feature flags checked
