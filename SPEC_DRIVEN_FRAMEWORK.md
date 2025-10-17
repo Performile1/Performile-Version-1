@@ -917,7 +917,201 @@ CREATE VIEW old_name AS SELECT * FROM new_name;
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.17
-**LAST UPDATED:** October 17, 2025 (Week 3 Start)
+### **RULE #16: DATABASE VALIDATION BEFORE MIGRATION (HARD)**
+
+**MANDATORY BEFORE ANY MIGRATION:**
+
+```sql
+-- Step 1: Check table type (TABLE vs VIEW)
+SELECT table_type FROM information_schema.tables 
+WHERE table_name = 'target_table';
+
+-- Step 2: Get actual columns
+SELECT column_name, data_type, is_nullable
+FROM information_schema.columns 
+WHERE table_name = 'target_table'
+ORDER BY ordinal_position;
+
+-- Step 3: Check for views
+SELECT viewname, definition 
+FROM pg_views 
+WHERE viewname = 'target_table';
+
+-- Step 4: Verify data exists
+SELECT COUNT(*) as row_count FROM target_table;
+
+-- Step 5: Check constraints
+SELECT constraint_name, constraint_type
+FROM information_schema.table_constraints
+WHERE table_name = 'target_table';
+```
+
+**WHY:** Prevents migration failures from incorrect assumptions about table structure
+
+**DELIVERABLE:** Validation report showing table type, columns, constraints, row count
+
+---
+
+### **RULE #17: PREFIXED TABLE NAMES FOR NEW FEATURES (HARD)**
+
+**WHEN CREATING TABLES FOR NEW FEATURES:**
+
+Use feature prefix to avoid conflicts:
+- `week3_webhooks` instead of `webhooks`
+- `analytics_metrics` instead of `metrics`
+- `integration_events` instead of `events`
+
+**PATTERN:**
+```sql
+-- ❌ BAD - Generic name, potential conflicts
+CREATE TABLE webhooks (...);
+
+-- ✅ GOOD - Prefixed, clear ownership
+CREATE TABLE week3_webhooks (...);
+```
+
+**BENEFITS:**
+- No conflicts with existing tables
+- Clear feature ownership
+- Easy to identify and manage
+- Enables parallel development
+- Safe to drop if feature fails
+
+**WHY:** Prevents conflicts, enables safe experimentation, clear separation
+
+---
+
+### **RULE #18: NO ASSUMPTIONS ABOUT TABLE STRUCTURE (HARD)**
+
+**NEVER ASSUME:**
+- ❌ Column names without verification
+- ❌ Table vs View
+- ❌ Primary key columns
+- ❌ Foreign key relationships
+- ❌ Data types
+- ❌ Constraints
+
+**ALWAYS VERIFY:**
+```sql
+-- Before writing any query
+SELECT column_name, data_type 
+FROM information_schema.columns 
+WHERE table_name = 'target_table';
+```
+
+**EXAMPLE OF FAILURE:**
+```sql
+-- Assumed shop_id exists
+SELECT * FROM stores WHERE shop_id = '...';
+-- ERROR: column shop_id does not exist
+
+-- Should have verified first
+-- Actual column: store_id
+```
+
+**WHY:** Database schema changes, views replace tables, columns get renamed
+
+**DELIVERABLE:** Validation query results before writing migration
+
+---
+
+### **RULE #19: DUAL-MODE DEVELOPMENT (MEDIUM)**
+
+**FOR STABLE DEVELOPMENT:**
+
+```
+main (stable, production-ready)
+  ↓ merge only when tested
+dev (active development, tested features)
+  ↓ merge after feature complete
+feature/week3-integrations (experimental)
+```
+
+**WORKFLOW:**
+1. Create feature branch from dev
+2. Develop and test in feature branch
+3. Merge to dev when feature works
+4. Test in dev environment
+5. Merge to main when stable
+
+**WHY:** Allows development without breaking production
+
+**DELIVERABLE:** Branch strategy documented in README
+
+---
+
+### **RULE #20: ROLLBACK SCRIPTS REQUIRED (MEDIUM)**
+
+**FOR EVERY MIGRATION:**
+
+Create paired scripts:
+```sql
+-- 001_create_webhooks_UP.sql
+CREATE TABLE week3_webhooks (...);
+CREATE INDEX idx_webhooks_user ON week3_webhooks(user_id);
+
+-- 001_create_webhooks_DOWN.sql
+DROP INDEX IF EXISTS idx_webhooks_user;
+DROP TABLE IF EXISTS week3_webhooks;
+```
+
+**TEST ROLLBACK BEFORE APPLYING:**
+```bash
+# Apply migration
+psql -f 001_create_webhooks_UP.sql
+
+# Test rollback
+psql -f 001_create_webhooks_DOWN.sql
+
+# If rollback works, apply for real
+psql -f 001_create_webhooks_UP.sql
+```
+
+**WHY:** Enables quick recovery from failed migrations
+
+**DELIVERABLE:** UP and DOWN scripts for every migration
+
+---
+
+### **RULE #21: WEEKLY AUDIT REPORTS (SOFT)**
+
+**EVERY FRIDAY:**
+- Document what was completed
+- List current blockers
+- Update roadmap
+- Review framework effectiveness
+- Identify technical debt
+
+**TEMPLATE:** Use `PERFORMILE_PROJECT_AUDIT_[DATE].md`
+
+**WHY:** Maintains visibility, tracks progress, identifies issues early
+
+---
+
+### **RULE #22: DECISION LOGS (SOFT)**
+
+**FOR MAJOR DECISIONS:**
+
+Document using this format:
+```markdown
+## Decision: [Title]
+**Date:** [Date]
+**Context:** [Why decision needed]
+**Options:**
+- Option A: [Description] - Pros/Cons
+- Option B: [Description] - Pros/Cons
+- Option C: [Description] - Pros/Cons
+**Decision:** [Chosen option]
+**Reasoning:** [Why chosen]
+**Impact:** [What changes]
+```
+
+**WHY:** Provides context for future developers, prevents repeated mistakes
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.18
+**LAST UPDATED:** October 17, 2025, 10:13 PM (Week 3 Day 1)
+**RULES:** 22 (16 Hard, 4 Medium, 2 Soft)
 **NEXT REVIEW:** After Week 3
-**NEXT VERSION:** v1.18
+**NEXT VERSION:** v1.19
