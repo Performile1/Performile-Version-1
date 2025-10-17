@@ -17,10 +17,10 @@ BEGIN
     SELECT 1 FROM pg_constraint 
     WHERE conname = 'stores_pkey' AND conrelid = 'stores'::regclass
   ) THEN
-    ALTER TABLE stores ADD PRIMARY KEY (shop_id);
-    RAISE NOTICE 'Added primary key to stores.shop_id';
+    ALTER TABLE stores ADD PRIMARY KEY (store_id);
+    RAISE NOTICE 'Added primary key to stores.store_id';
   ELSE
-    RAISE NOTICE 'Primary key already exists on stores.shop_id';
+    RAISE NOTICE 'Primary key already exists on stores.store_id';
   END IF;
 END $$;
 
@@ -156,7 +156,7 @@ BEGIN
       e.created_at,
       e.updated_at
     FROM ecommerce_integrations e
-    LEFT JOIN stores s ON s.shop_id = e.shop_id
+    LEFT JOIN stores s ON s.store_id = e.shop_id
     ON CONFLICT (webhook_id) DO NOTHING;
     
     RAISE NOTICE 'Migrated data from ecommerce_integrations';
@@ -202,7 +202,7 @@ BEGIN
       si.created_at,
       si.updated_at
     FROM shopintegrations si
-    LEFT JOIN stores s ON s.shop_id = si.shop_id
+    LEFT JOIN stores s ON s.store_id = si.shop_id
     WHERE si.integration_id NOT IN (SELECT webhook_id FROM webhooks)
     ON CONFLICT (webhook_id) DO NOTHING;
     
@@ -310,28 +310,28 @@ DROP POLICY IF EXISTS webhooks_select_own ON webhooks;
 CREATE POLICY webhooks_select_own ON webhooks
   FOR SELECT
   USING (auth.uid() = user_id OR shop_id IN (
-    SELECT shop_id FROM stores WHERE merchant_id = auth.uid()
+    SELECT store_id FROM stores WHERE merchant_id = auth.uid()
   ));
 
 DROP POLICY IF EXISTS webhooks_insert_own ON webhooks;
 CREATE POLICY webhooks_insert_own ON webhooks
   FOR INSERT
   WITH CHECK (auth.uid() = user_id OR shop_id IN (
-    SELECT shop_id FROM stores WHERE merchant_id = auth.uid()
+    SELECT store_id FROM stores WHERE merchant_id = auth.uid()
   ));
 
 DROP POLICY IF EXISTS webhooks_update_own ON webhooks;
 CREATE POLICY webhooks_update_own ON webhooks
   FOR UPDATE
   USING (auth.uid() = user_id OR shop_id IN (
-    SELECT shop_id FROM stores WHERE merchant_id = auth.uid()
+    SELECT store_id FROM stores WHERE merchant_id = auth.uid()
   ));
 
 DROP POLICY IF EXISTS webhooks_delete_own ON webhooks;
 CREATE POLICY webhooks_delete_own ON webhooks
   FOR DELETE
   USING (auth.uid() = user_id OR shop_id IN (
-    SELECT shop_id FROM stores WHERE merchant_id = auth.uid()
+    SELECT store_id FROM stores WHERE merchant_id = auth.uid()
   ));
 
 DROP POLICY IF EXISTS webhooks_admin_all ON webhooks;
