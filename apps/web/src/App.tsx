@@ -28,6 +28,8 @@ import CourierAnalytics from './pages/analytics/CourierAnalytics';
 import { ReviewRequestSettings } from './pages/settings/ReviewRequestSettings';
 import { CourierPreferences } from './pages/settings/CourierPreferences';
 import ProximitySettings from './pages/settings/ProximitySettings';
+import NotificationPreferences from './pages/settings/NotificationPreferences';
+import NotificationCenter from './pages/notifications/NotificationCenter';
 import { PluginSetup } from './pages/integrations/PluginSetup';
 import { TrackingPage } from './pages/TrackingPage';
 import { ClaimsPage } from './pages/ClaimsPage';
@@ -426,6 +428,22 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute requiredRoles={['merchant', 'courier']}>
                   <ProximitySettings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationPreferences />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationCenter />
                 </ProtectedRoute>
               }
             />
