@@ -16,27 +16,21 @@ ADD COLUMN IF NOT EXISTS max_reports_per_month INTEGER DEFAULT 10;
 -- 2. UPDATE EXISTING PLANS WITH APPROPRIATE LIMITS
 -- ============================================================================
 
--- Update based on plan_name (since tier might be INTEGER)
--- Free/Basic tier: 10 reports per month
+-- Update based on actual tier values from database
+-- Tier 1 (Starter/Individual): 10 reports per month
 UPDATE subscription_plans 
 SET max_reports_per_month = 10 
-WHERE LOWER(plan_name) LIKE '%free%' 
-   OR LOWER(plan_name) LIKE '%basic%'
-   OR tier = 0;
+WHERE tier = 1;
 
--- Pro/Professional tier: 50 reports per month
+-- Tier 2 (Professional): 50 reports per month
 UPDATE subscription_plans 
 SET max_reports_per_month = 50 
-WHERE LOWER(plan_name) LIKE '%pro%' 
-   OR LOWER(plan_name) LIKE '%professional%'
-   OR tier = 1;
+WHERE tier = 2;
 
--- Enterprise/Unlimited tier: Unlimited (999999)
+-- Tier 3 (Enterprise/Fleet): Unlimited (999999)
 UPDATE subscription_plans 
 SET max_reports_per_month = 999999 
-WHERE LOWER(plan_name) LIKE '%enterprise%' 
-   OR LOWER(plan_name) LIKE '%unlimited%'
-   OR tier >= 2;
+WHERE tier = 3;
 
 -- ============================================================================
 -- 3. VERIFICATION
