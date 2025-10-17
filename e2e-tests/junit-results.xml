@@ -1,36 +1,10 @@
-<testsuites id="" name="" tests="16" failures="4" skipped="0" errors="0" time="87.102599">
-<testsuite name="all-users-comprehensive.spec.js" timestamp="2025-10-17T06:49:01.292Z" hostname="chromium" tests="16" failures="4" skipped="0" time="79.545" errors="0">
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.1 - Admin Login" classname="all-users-comprehensive.spec.js" time="6.922">
-<failure message="all-users-comprehensive.spec.js:70:5 1.1 - Admin Login" type="FAILURE">
-<![CDATA[  [chromium] › all-users-comprehensive.spec.js:70:5 › COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.1 - Admin Login 
-
-    Error: expect(received).toBeTruthy()
-
-    Received: null
-
-      81 |       
-      82 |       const token = await page.evaluate(() => localStorage.getItem('access_token'));
-    > 83 |       expect(token).toBeTruthy();
-         |                     ^
-      84 |       
-      85 |       expect(apiLogger.validateCall('/api/auth/login', 200)).toBe(true);
-      86 |       console.log('✅ Admin login successful');
-        at C:\Users\ricka\Downloads\performile-platform-main\performile-platform-main\e2e-tests\tests\all-users-comprehensive.spec.js:83:21
-
-    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    ..\test-results\all-users-comprehensive-CO-e285b-ion-Tests-1-1---Admin-Login-chromium\test-failed-1.png
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    ..\test-results\all-users-comprehensive-CO-e285b-ion-Tests-1-1---Admin-Login-chromium\video.webm
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    Error Context: ..\test-results\all-users-comprehensive-CO-e285b-ion-Tests-1-1---Admin-Login-chromium\error-context.md
-]]>
-</failure>
+<testsuites id="" name="" tests="16" failures="0" skipped="0" errors="0" time="87.238226">
+<testsuite name="all-users-comprehensive.spec.js" timestamp="2025-10-17T09:10:10.694Z" hostname="chromium" tests="16" failures="0" skipped="0" time="84.77" errors="0">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.1 - Admin Login" classname="all-users-comprehensive.spec.js" time="7.255">
 <system-out>
 <![CDATA[
 🧪 Test 1.1: Admin Login
+✅ Admin login successful
 
 ================================================================================
 
@@ -48,57 +22,25 @@ Failed requests: 0
 Total API calls: 1
 Failed calls: 0
 Slow calls (>1s): 1
-Average response time: 1542.00ms
+Average response time: 1442.00ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
 
 === Slow API Calls (>1s) ===
-[1542ms] POST /api/auth
+[1442ms] POST /api/auth
 ================================================================================
 
 
 API logs exported to: api-logs/1.1---Admin-Login.json
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-e285b-ion-Tests-1-1---Admin-Login-chromium\test-failed-1.png]]
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-e285b-ion-Tests-1-1---Admin-Login-chromium\video.webm]]
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-e285b-ion-Tests-1-1---Admin-Login-chromium\error-context.md]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.2 - Merchant Login" classname="all-users-comprehensive.spec.js" time="2.728">
-<failure message="all-users-comprehensive.spec.js:89:5 1.2 - Merchant Login" type="FAILURE">
-<![CDATA[  [chromium] › all-users-comprehensive.spec.js:89:5 › COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.2 - Merchant Login 
-
-    Error: expect(received).toBeTruthy()
-
-    Received: null
-
-      100 |       
-      101 |       const token = await page.evaluate(() => localStorage.getItem('access_token'));
-    > 102 |       expect(token).toBeTruthy();
-          |                     ^
-      103 |       
-      104 |       expect(apiLogger.validateCall('/api/auth/login', 200)).toBe(true);
-      105 |       console.log('✅ Merchant login successful');
-        at C:\Users\ricka\Downloads\performile-platform-main\performile-platform-main\e2e-tests\tests\all-users-comprehensive.spec.js:102:21
-
-    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    ..\test-results\all-users-comprehensive-CO-63dd2--Tests-1-2---Merchant-Login-chromium\test-failed-1.png
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    ..\test-results\all-users-comprehensive-CO-63dd2--Tests-1-2---Merchant-Login-chromium\video.webm
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    Error Context: ..\test-results\all-users-comprehensive-CO-63dd2--Tests-1-2---Merchant-Login-chromium\error-context.md
-]]>
-</failure>
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.2 - Merchant Login" classname="all-users-comprehensive.spec.js" time="4.053">
 <system-out>
 <![CDATA[
 🧪 Test 1.2: Merchant Login
+✅ Merchant login successful
 
 ================================================================================
 
@@ -113,57 +55,60 @@ API requests: 3
 Failed requests: 0
 
 === API Calls Summary ===
-Total API calls: 1
+Total API calls: 2
 Failed calls: 0
 Slow calls (>1s): 0
-Average response time: 602.00ms
+Average response time: 376.00ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
+/api/notifications: 1 calls
 ================================================================================
 
 
 API logs exported to: api-logs/1.2---Merchant-Login.json
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-63dd2--Tests-1-2---Merchant-Login-chromium\test-failed-1.png]]
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-63dd2--Tests-1-2---Merchant-Login-chromium\video.webm]]
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-63dd2--Tests-1-2---Merchant-Login-chromium\error-context.md]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.3 - Courier Login" classname="all-users-comprehensive.spec.js" time="2.942">
-<failure message="all-users-comprehensive.spec.js:108:5 1.3 - Courier Login" type="FAILURE">
-<![CDATA[  [chromium] › all-users-comprehensive.spec.js:108:5 › COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.3 - Courier Login 
-
-    Error: expect(received).toBeTruthy()
-
-    Received: null
-
-      119 |       
-      120 |       const token = await page.evaluate(() => localStorage.getItem('access_token'));
-    > 121 |       expect(token).toBeTruthy();
-          |                     ^
-      122 |       
-      123 |       expect(apiLogger.validateCall('/api/auth/login', 200)).toBe(true);
-      124 |       console.log('✅ Courier login successful');
-        at C:\Users\ricka\Downloads\performile-platform-main\performile-platform-main\e2e-tests\tests\all-users-comprehensive.spec.js:121:21
-
-    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    ..\test-results\all-users-comprehensive-CO-5a8ec-n-Tests-1-3---Courier-Login-chromium\test-failed-1.png
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    ..\test-results\all-users-comprehensive-CO-5a8ec-n-Tests-1-3---Courier-Login-chromium\video.webm
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    Error Context: ..\test-results\all-users-comprehensive-CO-5a8ec-n-Tests-1-3---Courier-Login-chromium\error-context.md
-]]>
-</failure>
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.3 - Courier Login" classname="all-users-comprehensive.spec.js" time="3.686">
 <system-out>
 <![CDATA[
 🧪 Test 1.3: Courier Login
+✅ Courier login successful
+
+================================================================================
+
+=== Console Summary ===
+Total logs: 16
+Errors: 0
+Warnings: 3
+
+=== Network Summary ===
+Total requests: 18
+API requests: 3
+Failed requests: 0
+
+=== API Calls Summary ===
+Total API calls: 2
+Failed calls: 0
+Slow calls (>1s): 0
+Average response time: 294.50ms
+
+=== Calls by Endpoint ===
+/api/auth: 1 calls
+/api/notifications: 1 calls
+================================================================================
+
+
+API logs exported to: api-logs/1.3---Courier-Login.json
+]]>
+</system-out>
+</testcase>
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.4 - Consumer Login" classname="all-users-comprehensive.spec.js" time="3.422">
+<system-out>
+<![CDATA[
+🧪 Test 1.4: Consumer Login
+✅ Consumer login successful
 
 ================================================================================
 
@@ -181,88 +126,18 @@ Failed requests: 0
 Total API calls: 1
 Failed calls: 0
 Slow calls (>1s): 0
-Average response time: 603.00ms
+Average response time: 419.00ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
 ================================================================================
 
 
-API logs exported to: api-logs/1.3---Courier-Login.json
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-5a8ec-n-Tests-1-3---Courier-Login-chromium\test-failed-1.png]]
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-5a8ec-n-Tests-1-3---Courier-Login-chromium\video.webm]]
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-5a8ec-n-Tests-1-3---Courier-Login-chromium\error-context.md]]
-]]>
-</system-out>
-</testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.4 - Consumer Login" classname="all-users-comprehensive.spec.js" time="2.93">
-<failure message="all-users-comprehensive.spec.js:127:5 1.4 - Consumer Login" type="FAILURE">
-<![CDATA[  [chromium] › all-users-comprehensive.spec.js:127:5 › COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.4 - Consumer Login 
-
-    Error: expect(received).toBeTruthy()
-
-    Received: null
-
-      138 |       
-      139 |       const token = await page.evaluate(() => localStorage.getItem('access_token'));
-    > 140 |       expect(token).toBeTruthy();
-          |                     ^
-      141 |       
-      142 |       expect(apiLogger.validateCall('/api/auth/login', 200)).toBe(true);
-      143 |       console.log('✅ Consumer login successful');
-        at C:\Users\ricka\Downloads\performile-platform-main\performile-platform-main\e2e-tests\tests\all-users-comprehensive.spec.js:140:21
-
-    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
-    ..\test-results\all-users-comprehensive-CO-74254--Tests-1-4---Consumer-Login-chromium\test-failed-1.png
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
-    ..\test-results\all-users-comprehensive-CO-74254--Tests-1-4---Consumer-Login-chromium\video.webm
-    ────────────────────────────────────────────────────────────────────────────────────────────────
-
-    Error Context: ..\test-results\all-users-comprehensive-CO-74254--Tests-1-4---Consumer-Login-chromium\error-context.md
-]]>
-</failure>
-<system-out>
-<![CDATA[
-🧪 Test 1.4: Consumer Login
-
-================================================================================
-
-=== Console Summary ===
-Total logs: 7
-Errors: 0
-Warnings: 2
-
-=== Network Summary ===
-Total requests: 15
-API requests: 1
-Failed requests: 0
-
-=== API Calls Summary ===
-Total API calls: 0
-Failed calls: 0
-Slow calls (>1s): 0
-Average response time: 0.00ms
-
-=== Calls by Endpoint ===
-================================================================================
-
-
 API logs exported to: api-logs/1.4---Consumer-Login.json
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-74254--Tests-1-4---Consumer-Login-chromium\test-failed-1.png]]
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-74254--Tests-1-4---Consumer-Login-chromium\video.webm]]
-
-[[ATTACHMENT|test-results\all-users-comprehensive-CO-74254--Tests-1-4---Consumer-Login-chromium\error-context.md]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.5 - Invalid Credentials" classname="all-users-comprehensive.spec.js" time="4.825">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 1. Authentication Tests › 1.5 - Invalid Credentials" classname="all-users-comprehensive.spec.js" time="5.654">
 <system-out>
 <![CDATA[
 🧪 Test 1.5: Invalid Credentials
@@ -276,13 +151,13 @@ Errors: 3
 Warnings: 2
 
 === Console Errors ===
-[2025-10-17T06:49:25.922Z] Failed to load resource: the server responded with a status of 401 (Unauthorized)
-[2025-10-17T06:49:25.925Z] Login error details: {message: Request failed with status code 401, response: Object, status: 401, url: https://performile-platform-main.vercel.app/api/auth}
-[2025-10-17T06:49:25.925Z] Login error: Error: Invalid credentials
-    at jxe.login (https://performile-platform-main.vercel.app/assets/js/index-C4jbIBub.js:484:6950)
-    at async login (https://performile-platform-main.vercel.app/assets/js/index-C4jbIBub.js:487:92912)
-    at async S (https://performile-platform-main.vercel.app/assets/js/index-C4jbIBub.js:497:18903)
-    at async https://performile-platform-main.vercel.app/assets/js/index-C4jbIBub.js:494:52580
+[2025-10-17T09:10:33.064Z] Failed to load resource: the server responded with a status of 401 (Unauthorized)
+[2025-10-17T09:10:33.067Z] Login error details: {message: Request failed with status code 401, response: Object, status: 401, url: https://performile-platform-main.vercel.app/api/auth}
+[2025-10-17T09:10:33.069Z] Login error: Error: Invalid credentials
+    at jxe.login (https://performile-platform-main.vercel.app/assets/js/index-B7YYf5Hu.js:484:6950)
+    at async login (https://performile-platform-main.vercel.app/assets/js/index-B7YYf5Hu.js:487:92912)
+    at async S (https://performile-platform-main.vercel.app/assets/js/index-B7YYf5Hu.js:497:18903)
+    at async https://performile-platform-main.vercel.app/assets/js/index-B7YYf5Hu.js:494:52580
 
 === Network Summary ===
 Total requests: 15
@@ -296,7 +171,7 @@ Failed requests: 1
 Total API calls: 1
 Failed calls: 1
 Slow calls (>1s): 0
-Average response time: 435.00ms
+Average response time: 301.00ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -311,7 +186,7 @@ API logs exported to: api-logs/1.5---Invalid-Credentials.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 2. Admin Dashboard Tests › 2.1 - Admin Dashboard Loads" classname="all-users-comprehensive.spec.js" time="4.466">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 2. Admin Dashboard Tests › 2.1 - Admin Dashboard Loads" classname="all-users-comprehensive.spec.js" time="5.706">
 <system-out>
 <![CDATA[
 🧪 Test 2.1: Admin Dashboard
@@ -334,8 +209,8 @@ Failed requests: 0
 === API Calls Summary ===
 Total API calls: 3
 Failed calls: 0
-Slow calls (>1s): 1
-Average response time: 938.67ms
+Slow calls (>1s): 2
+Average response time: 1184.33ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -343,7 +218,8 @@ Average response time: 938.67ms
 /api/trustscore/dashboard: 1 calls
 
 === Slow API Calls (>1s) ===
-[1418ms] GET /api/trustscore/dashboard
+[1100ms] POST /api/auth
+[1540ms] GET /api/trustscore/dashboard
 ================================================================================
 
 
@@ -351,7 +227,7 @@ API logs exported to: api-logs/2.1---Admin-Dashboard-Loads.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 2. Admin Dashboard Tests › 2.2 - Admin Can View Users" classname="all-users-comprehensive.spec.js" time="6.778">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 2. Admin Dashboard Tests › 2.2 - Admin Can View Users" classname="all-users-comprehensive.spec.js" time="6.766">
 <system-out>
 <![CDATA[
 🧪 Test 2.2: Admin View Users
@@ -371,24 +247,21 @@ API requests: 6
 Failed requests: 0
 
 === API Calls Summary ===
-Total API calls: 5
+Total API calls: 6
 Failed calls: 0
-Slow calls (>1s): 5
-Average response time: 1398.00ms
+Slow calls (>1s): 1
+Average response time: 702.50ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
-/api/notifications: 1 calls
 /api/trustscore/dashboard: 1 calls
+/api/notifications: 1 calls
 /api/dashboard/trends: 1 calls
 /api/dashboard/recent-activity: 1 calls
+/api/tracking/summary: 1 calls
 
 === Slow API Calls (>1s) ===
-[1640ms] POST /api/auth
-[1237ms] GET /api/notifications
-[1699ms] GET /api/trustscore/dashboard
-[1198ms] GET /api/dashboard/trends
-[1216ms] GET /api/dashboard/recent-activity
+[1304ms] POST /api/auth
 ================================================================================
 
 
@@ -396,7 +269,7 @@ API logs exported to: api-logs/2.2---Admin-Can-View-Users.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 3. Merchant Dashboard Tests - BUG DETECTION › 3.1 - Merchant Dashboard Bug Investigation" classname="all-users-comprehensive.spec.js" time="5.81">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 3. Merchant Dashboard Tests - BUG DETECTION › 3.1 - Merchant Dashboard Bug Investigation" classname="all-users-comprehensive.spec.js" time="5.585">
 <system-out>
 <![CDATA[
 🔍 Test 3.1: MERCHANT DASHBOARD BUG INVESTIGATION
@@ -409,9 +282,9 @@ Headings: []
 ⚠️ FAILED API CALLS: 0
 
 📊 TOTAL API CALLS: 3
-  POST /api/auth - 200 (1111ms)
-  GET /api/notifications - 200 (947ms)
-  GET /api/trustscore/dashboard - 200 (1455ms)
+  POST /api/auth - 200 (1090ms)
+  GET /api/notifications - 200 (856ms)
+  GET /api/trustscore/dashboard - 200 (1385ms)
 
 ✅ Merchant dashboard investigation complete - CHECK LOGS
 
@@ -431,7 +304,7 @@ Failed requests: 0
 Total API calls: 3
 Failed calls: 0
 Slow calls (>1s): 2
-Average response time: 1171.00ms
+Average response time: 1110.33ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -439,8 +312,8 @@ Average response time: 1171.00ms
 /api/trustscore/dashboard: 1 calls
 
 === Slow API Calls (>1s) ===
-[1111ms] POST /api/auth
-[1455ms] GET /api/trustscore/dashboard
+[1090ms] POST /api/auth
+[1385ms] GET /api/trustscore/dashboard
 ================================================================================
 
 
@@ -448,7 +321,7 @@ API logs exported to: api-logs/3.1---Merchant-Dashboard-Bug-Investigation.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 3. Merchant Dashboard Tests - BUG DETECTION › 3.2 - Merchant Orders Section" classname="all-users-comprehensive.spec.js" time="7.572">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 3. Merchant Dashboard Tests - BUG DETECTION › 3.2 - Merchant Orders Section" classname="all-users-comprehensive.spec.js" time="8.348">
 <system-out>
 <![CDATA[
 🧪 Test 3.2: Merchant Orders
@@ -471,7 +344,7 @@ Failed requests: 0
 Total API calls: 4
 Failed calls: 0
 Slow calls (>1s): 3
-Average response time: 1221.00ms
+Average response time: 1155.25ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -480,9 +353,9 @@ Average response time: 1221.00ms
 /api/tracking/summary: 1 calls
 
 === Slow API Calls (>1s) ===
-[1132ms] POST /api/auth
-[1473ms] GET /api/trustscore/dashboard
-[1308ms] GET /api/tracking/summary
+[1067ms] POST /api/auth
+[1353ms] GET /api/trustscore/dashboard
+[1345ms] GET /api/tracking/summary
 ================================================================================
 
 
@@ -490,14 +363,14 @@ API logs exported to: api-logs/3.2---Merchant-Orders-Section.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 3. Merchant Dashboard Tests - BUG DETECTION › 3.3 - Merchant Dashboard Performance" classname="all-users-comprehensive.spec.js" time="5.253">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 3. Merchant Dashboard Tests - BUG DETECTION › 3.3 - Merchant Dashboard Performance" classname="all-users-comprehensive.spec.js" time="5.559">
 <system-out>
 <![CDATA[
 🧪 Test 3.3: Merchant Performance
-Average API response: 1182.33ms
+Average API response: 1128.67ms
 Slow calls (>1s): 2
-  ⚠️ POST /api/auth - 1109ms
-  ⚠️ GET /api/trustscore/dashboard - 1473ms
+  ⚠️ POST /api/auth - 1110ms
+  ⚠️ GET /api/trustscore/dashboard - 1334ms
 ✅ Performance check complete
 
 ================================================================================
@@ -516,7 +389,7 @@ Failed requests: 0
 Total API calls: 3
 Failed calls: 0
 Slow calls (>1s): 2
-Average response time: 1182.33ms
+Average response time: 1128.67ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -524,8 +397,8 @@ Average response time: 1182.33ms
 /api/trustscore/dashboard: 1 calls
 
 === Slow API Calls (>1s) ===
-[1109ms] POST /api/auth
-[1473ms] GET /api/trustscore/dashboard
+[1110ms] POST /api/auth
+[1334ms] GET /api/trustscore/dashboard
 ================================================================================
 
 
@@ -533,7 +406,7 @@ API logs exported to: api-logs/3.3---Merchant-Dashboard-Performance.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 4. Courier Dashboard Tests › 4.1 - Courier Dashboard Loads" classname="all-users-comprehensive.spec.js" time="4.83">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 4. Courier Dashboard Tests › 4.1 - Courier Dashboard Loads" classname="all-users-comprehensive.spec.js" time="4.852">
 <system-out>
 <![CDATA[
 🧪 Test 4.1: Courier Dashboard
@@ -557,7 +430,7 @@ Failed requests: 0
 Total API calls: 3
 Failed calls: 0
 Slow calls (>1s): 0
-Average response time: 468.67ms
+Average response time: 441.00ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -570,7 +443,7 @@ API logs exported to: api-logs/4.1---Courier-Dashboard-Loads.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 4. Courier Dashboard Tests › 4.2 - Courier Deliveries Section" classname="all-users-comprehensive.spec.js" time="4.845">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 4. Courier Dashboard Tests › 4.2 - Courier Deliveries Section" classname="all-users-comprehensive.spec.js" time="4.541">
 <system-out>
 <![CDATA[
 🧪 Test 4.2: Courier Deliveries
@@ -593,7 +466,7 @@ Failed requests: 0
 Total API calls: 3
 Failed calls: 0
 Slow calls (>1s): 0
-Average response time: 501.33ms
+Average response time: 465.00ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -606,7 +479,7 @@ API logs exported to: api-logs/4.2---Courier-Deliveries-Section.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 5. Consumer Tests › 5.1 - Consumer Page Loads" classname="all-users-comprehensive.spec.js" time="4.307">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 5. Consumer Tests › 5.1 - Consumer Page Loads" classname="all-users-comprehensive.spec.js" time="4.196">
 <system-out>
 <![CDATA[
 🧪 Test 5.1: Consumer Page
@@ -630,7 +503,7 @@ Failed requests: 0
 Total API calls: 3
 Failed calls: 0
 Slow calls (>1s): 0
-Average response time: 446.67ms
+Average response time: 445.00ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -643,7 +516,7 @@ API logs exported to: api-logs/5.1---Consumer-Page-Loads.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 5. Consumer Tests › 5.2 - Consumer Tracking Available" classname="all-users-comprehensive.spec.js" time="4.252">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 5. Consumer Tests › 5.2 - Consumer Tracking Available" classname="all-users-comprehensive.spec.js" time="4.27">
 <system-out>
 <![CDATA[
 🧪 Test 5.2: Consumer Tracking
@@ -666,7 +539,7 @@ Failed requests: 0
 Total API calls: 3
 Failed calls: 0
 Slow calls (>1s): 0
-Average response time: 474.00ms
+Average response time: 468.33ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -679,7 +552,7 @@ API logs exported to: api-logs/5.2---Consumer-Tracking-Available.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 6. Cross-Cutting Tests › 6.1 - Logout Functionality" classname="all-users-comprehensive.spec.js" time="5.451">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 6. Cross-Cutting Tests › 6.1 - Logout Functionality" classname="all-users-comprehensive.spec.js" time="5.418">
 <system-out>
 <![CDATA[
 🧪 Test 6.1: Logout
@@ -700,21 +573,19 @@ API requests: 6
 Failed requests: 0
 
 === API Calls Summary ===
-Total API calls: 5
+Total API calls: 4
 Failed calls: 0
-Slow calls (>1s): 2
-Average response time: 711.00ms
+Slow calls (>1s): 1
+Average response time: 663.00ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
 /api/notifications: 1 calls
 /api/trustscore/dashboard: 1 calls
 /api/dashboard/trends: 1 calls
-/api/dashboard/recent-activity: 1 calls
 
 === Slow API Calls (>1s) ===
-[1044ms] GET /api/dashboard/trends
-[1034ms] GET /api/dashboard/recent-activity
+[1008ms] GET /api/dashboard/trends
 ================================================================================
 
 
@@ -722,11 +593,11 @@ API logs exported to: api-logs/6.1---Logout-Functionality.json
 ]]>
 </system-out>
 </testcase>
-<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 6. Cross-Cutting Tests › 6.2 - API Performance Overall" classname="all-users-comprehensive.spec.js" time="5.634">
+<testcase name="COMPREHENSIVE E2E TESTS - ALL USERS › 6. Cross-Cutting Tests › 6.2 - API Performance Overall" classname="all-users-comprehensive.spec.js" time="5.459">
 <system-out>
 <![CDATA[
 🧪 Test 6.2: Overall API Performance
-Average API response: 1110.33ms
+Average API response: 1105.33ms
 Slow calls (>1s): 2
 Failed calls: 0
 ✅ Performance analysis complete
@@ -747,7 +618,7 @@ Failed requests: 0
 Total API calls: 3
 Failed calls: 0
 Slow calls (>1s): 2
-Average response time: 1110.33ms
+Average response time: 1105.33ms
 
 === Calls by Endpoint ===
 /api/auth: 1 calls
@@ -755,8 +626,8 @@ Average response time: 1110.33ms
 /api/trustscore/dashboard: 1 calls
 
 === Slow API Calls (>1s) ===
-[1104ms] POST /api/auth
-[1347ms] GET /api/trustscore/dashboard
+[1107ms] POST /api/auth
+[1344ms] GET /api/trustscore/dashboard
 ================================================================================
 
 

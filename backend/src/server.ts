@@ -52,6 +52,9 @@ import webhooksRoutes from './routes/webhooks';
 import sessionsRoutes from './routes/sessions';
 import claimsRoutes from './routes/claims';
 import usageRoutes from './routes/usage';
+import storesRoutes from './routes/stores';
+import notificationsRoutes from './routes/notifications';
+import paymentsRoutes from './routes/payments';
 
 
 class Server {
@@ -173,6 +176,11 @@ class Server {
     this.app.use('/api/reviews', reviewsRoutes);
     this.app.use('/api/webhooks', webhooksRoutes);
     this.app.use('/api/auth/sessions', sessionsRoutes);
+    this.app.use('/api/stores', storesRoutes);
+    this.app.use('/api/notifications', notificationsRoutes);
+    this.app.use('/api/payments', paymentsRoutes);
+    // Alias for review requests (frontend compatibility)
+    this.app.use('/api/review-requests', reviewsRoutes);
 
     // API documentation endpoint
     this.app.get('/api', (req, res) => {

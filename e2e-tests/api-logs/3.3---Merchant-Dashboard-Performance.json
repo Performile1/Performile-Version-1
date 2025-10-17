@@ -3,7 +3,7 @@
     "totalCalls": 3,
     "failedCalls": 0,
     "slowCalls": 2,
-    "averageResponseTime": 1182.3333333333333
+    "averageResponseTime": 1128.6666666666667
   },
   "calls": [
     {
@@ -26,19 +26,19 @@
         "email": "merchant@performile.com",
         "password": "Test1234!"
       },
-      "timestamp": "2025-10-17T06:49:54.789Z",
+      "timestamp": "2025-10-17T09:11:04.866Z",
       "responseStatus": 200,
       "responseHeaders": {
         "cache-control": "public, max-age=0, must-revalidate",
         "content-length": "959",
         "content-type": "application/json; charset=utf-8",
-        "date": "Fri, 17 Oct 2025 06:49:56 GMT",
-        "etag": "W/\"3bf-tVuD8uW+pmPn5YZM5eyobbg+LRc\"",
+        "date": "Fri, 17 Oct 2025 09:11:06 GMT",
+        "etag": "W/\"3bf-s13YJRQhSaYgSjyj7a70sLay0yc\"",
         "server": "Vercel",
-        "set-cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjA2ODczOTZ9.nETV6c_mpP7p42DtugKyvrQzKLUIAKfu_KiNXix9yWE; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600\nrefreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjEyODg1OTZ9.WpOfsShtD3JbHb6ZeW6AFnsfy6AYqZZyuzMABsXsAzw; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800",
+        "set-cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjA2OTU4NjZ9.54CgzVHfk76dyY4nBsS60oRYTXco07FWQSznuAJhFD8; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600\nrefreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjEyOTcwNjZ9.WjNlpqeRJRGd24lOstkLdjGL8y8UftPVcs1lBnK9EgA; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800",
         "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
         "x-vercel-cache": "MISS",
-        "x-vercel-id": "arn1::iad1::nbmdp-1760683795411-f948608f10e8"
+        "x-vercel-id": "arn1::iad1::7qjxl-1760692265400-1d51b4a161d3"
       },
       "responseBody": {
         "success": true,
@@ -52,15 +52,15 @@
             "is_verified": true,
             "is_active": true,
             "created_at": "2025-10-15T11:19:06.523Z",
-            "updated_at": "2025-10-17T06:49:50.127Z"
+            "updated_at": "2025-10-17T09:10:59.669Z"
           },
           "tokens": {
-            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjA2ODczOTZ9.nETV6c_mpP7p42DtugKyvrQzKLUIAKfu_KiNXix9yWE",
-            "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjEyODg1OTZ9.WpOfsShtD3JbHb6ZeW6AFnsfy6AYqZZyuzMABsXsAzw"
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjA2OTU4NjZ9.54CgzVHfk76dyY4nBsS60oRYTXco07FWQSznuAJhFD8",
+            "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjEyOTcwNjZ9.WjNlpqeRJRGd24lOstkLdjGL8y8UftPVcs1lBnK9EgA"
           }
         }
       },
-      "duration": 1109
+      "duration": 1110
     },
     {
       "id": "api-2",
@@ -69,8 +69,8 @@
       "requestHeaders": {
         "accept": "application/json, text/plain, */*",
         "accept-language": "en-US",
-        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjA2ODczOTZ9.nETV6c_mpP7p42DtugKyvrQzKLUIAKfu_KiNXix9yWE",
-        "cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjA2ODczOTZ9.nETV6c_mpP7p42DtugKyvrQzKLUIAKfu_KiNXix9yWE; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjEyODg1OTZ9.WpOfsShtD3JbHb6ZeW6AFnsfy6AYqZZyuzMABsXsAzw",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjA2OTU4NjZ9.54CgzVHfk76dyY4nBsS60oRYTXco07FWQSznuAJhFD8",
+        "cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjA2OTU4NjZ9.54CgzVHfk76dyY4nBsS60oRYTXco07FWQSznuAJhFD8; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjEyOTcwNjZ9.WjNlpqeRJRGd24lOstkLdjGL8y8UftPVcs1lBnK9EgA",
         "referer": "https://performile-platform-main.vercel.app/",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
         "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
@@ -78,25 +78,25 @@
         "sec-ch-ua-platform": "\"Windows\""
       },
       "requestBody": null,
-      "timestamp": "2025-10-17T06:49:56.156Z",
+      "timestamp": "2025-10-17T09:11:06.158Z",
       "responseStatus": 200,
       "responseHeaders": {
         "cache-control": "public, max-age=0, must-revalidate",
         "content-length": "42",
         "content-type": "application/json; charset=utf-8",
-        "date": "Fri, 17 Oct 2025 06:49:57 GMT",
+        "date": "Fri, 17 Oct 2025 09:11:07 GMT",
         "etag": "W/\"2a-6gWpphAwsoxckd+fZ6FNH1mOKbk\"",
         "server": "Vercel",
         "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
         "x-vercel-cache": "BYPASS",
-        "x-vercel-id": "arn1::iad1::ft4lx-1760683796778-b2c6c78e84e0"
+        "x-vercel-id": "arn1::iad1::vvsb9-1760692266703-67158b366648"
       },
       "responseBody": {
         "success": true,
         "data": [],
         "unreadCount": 0
       },
-      "duration": 965
+      "duration": 942
     },
     {
       "id": "api-3",
@@ -105,8 +105,8 @@
       "requestHeaders": {
         "accept": "application/json, text/plain, */*",
         "accept-language": "en-US",
-        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjA2ODczOTZ9.nETV6c_mpP7p42DtugKyvrQzKLUIAKfu_KiNXix9yWE",
-        "cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjA2ODczOTZ9.nETV6c_mpP7p42DtugKyvrQzKLUIAKfu_KiNXix9yWE; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiaWF0IjoxNzYwNjgzNzk2LCJleHAiOjE3NjEyODg1OTZ9.WpOfsShtD3JbHb6ZeW6AFnsfy6AYqZZyuzMABsXsAzw",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjA2OTU4NjZ9.54CgzVHfk76dyY4nBsS60oRYTXco07FWQSznuAJhFD8",
+        "cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjA2OTU4NjZ9.54CgzVHfk76dyY4nBsS60oRYTXco07FWQSznuAJhFD8; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiaWF0IjoxNzYwNjkyMjY2LCJleHAiOjE3NjEyOTcwNjZ9.WjNlpqeRJRGd24lOstkLdjGL8y8UftPVcs1lBnK9EgA",
         "referer": "https://performile-platform-main.vercel.app/",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
         "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
@@ -114,18 +114,18 @@
         "sec-ch-ua-platform": "\"Windows\""
       },
       "requestBody": null,
-      "timestamp": "2025-10-17T06:49:56.160Z",
+      "timestamp": "2025-10-17T09:11:06.179Z",
       "responseStatus": 200,
       "responseHeaders": {
         "cache-control": "public, max-age=0, must-revalidate",
         "content-encoding": "br",
         "content-type": "application/json; charset=utf-8",
-        "date": "Fri, 17 Oct 2025 06:49:58 GMT",
+        "date": "Fri, 17 Oct 2025 09:11:07 GMT",
         "etag": "W/\"9bb-t9ZCjT8ZBn0MoF/+gVC1RY2YjW8\"",
         "server": "Vercel",
         "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
         "x-vercel-cache": "BYPASS",
-        "x-vercel-id": "arn1::iad1::22btp-1760683796860-752777e36688",
+        "x-vercel-id": "arn1::iad1::lcjhx-1760692266706-946a78f33c55",
         "transfer-encoding": "chunked"
       },
       "responseBody": {
@@ -238,7 +238,7 @@
           ]
         }
       },
-      "duration": 1473
+      "duration": 1334
     }
   ]
 }

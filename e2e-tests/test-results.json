@@ -91,7 +91,7 @@
               "specs": [
                 {
                   "title": "1.1 - Admin Login",
-                  "ok": false,
+                  "ok": true,
                   "tags": [],
                   "tests": [
                     {
@@ -104,31 +104,15 @@
                         {
                           "workerIndex": 0,
                           "parallelIndex": 0,
-                          "status": "failed",
-                          "duration": 6922,
-                          "error": {
-                            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m",
-                            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n    at C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js:83:21",
-                            "location": {
-                              "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                              "column": 21,
-                              "line": 83
-                            },
-                            "snippet": "\u001b[0m \u001b[90m 81 |\u001b[39m       \n \u001b[90m 82 |\u001b[39m       \u001b[36mconst\u001b[39m token \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m localStorage\u001b[33m.\u001b[39mgetItem(\u001b[32m'access_token'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 83 |\u001b[39m       expect(token)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 84 |\u001b[39m       \n \u001b[90m 85 |\u001b[39m       expect(apiLogger\u001b[33m.\u001b[39mvalidateCall(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 86 |\u001b[39m       console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Admin login successful'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
-                          },
-                          "errors": [
-                            {
-                              "location": {
-                                "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                                "column": 21,
-                                "line": 83
-                              },
-                              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n\n\u001b[0m \u001b[90m 81 |\u001b[39m       \n \u001b[90m 82 |\u001b[39m       \u001b[36mconst\u001b[39m token \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m localStorage\u001b[33m.\u001b[39mgetItem(\u001b[32m'access_token'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 83 |\u001b[39m       expect(token)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 84 |\u001b[39m       \n \u001b[90m 85 |\u001b[39m       expect(apiLogger\u001b[33m.\u001b[39mvalidateCall(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 86 |\u001b[39m       console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Admin login successful'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js:83:21\u001b[22m"
-                            }
-                          ],
+                          "status": "passed",
+                          "duration": 7255,
+                          "errors": [],
                           "stdout": [
                             {
                               "text": "\n🧪 Test 1.1: Admin Login\n"
+                            },
+                            {
+                              "text": "✅ Admin login successful\n"
                             },
                             {
                               "text": "\n================================================================================\n"
@@ -170,7 +154,7 @@
                               "text": "Slow calls (>1s): 1\n"
                             },
                             {
-                              "text": "Average response time: 1542.00ms\n"
+                              "text": "Average response time: 1442.00ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -182,7 +166,7 @@
                               "text": "\n=== Slow API Calls (>1s) ===\n"
                             },
                             {
-                              "text": "[1542ms] POST /api/auth\n"
+                              "text": "[1442ms] POST /api/auth\n"
                             },
                             {
                               "text": "================================================================================\n\n"
@@ -193,33 +177,12 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:02.315Z",
+                          "startTime": "2025-10-17T09:10:11.930Z",
                           "annotations": [],
-                          "attachments": [
-                            {
-                              "name": "screenshot",
-                              "contentType": "image/png",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-e285b-ion-Tests-1-1---Admin-Login-chromium\\test-failed-1.png"
-                            },
-                            {
-                              "name": "video",
-                              "contentType": "video/webm",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-e285b-ion-Tests-1-1---Admin-Login-chromium\\video.webm"
-                            },
-                            {
-                              "name": "error-context",
-                              "contentType": "text/markdown",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-e285b-ion-Tests-1-1---Admin-Login-chromium\\error-context.md"
-                            }
-                          ],
-                          "errorLocation": {
-                            "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                            "column": 21,
-                            "line": 83
-                          }
+                          "attachments": []
                         }
                       ],
-                      "status": "unexpected"
+                      "status": "expected"
                     }
                   ],
                   "id": "a385564e29364fbe1250-d76b19657a5e4d0e1c74",
@@ -229,7 +192,7 @@
                 },
                 {
                   "title": "1.2 - Merchant Login",
-                  "ok": false,
+                  "ok": true,
                   "tags": [],
                   "tests": [
                     {
@@ -240,33 +203,17 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 1,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
-                          "status": "failed",
-                          "duration": 2728,
-                          "error": {
-                            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m",
-                            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n    at C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js:102:21",
-                            "location": {
-                              "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                              "column": 21,
-                              "line": 102
-                            },
-                            "snippet": "\u001b[0m \u001b[90m 100 |\u001b[39m       \n \u001b[90m 101 |\u001b[39m       \u001b[36mconst\u001b[39m token \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m localStorage\u001b[33m.\u001b[39mgetItem(\u001b[32m'access_token'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 102 |\u001b[39m       expect(token)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 103 |\u001b[39m       \n \u001b[90m 104 |\u001b[39m       expect(apiLogger\u001b[33m.\u001b[39mvalidateCall(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 105 |\u001b[39m       console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Merchant login successful'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
-                          },
-                          "errors": [
-                            {
-                              "location": {
-                                "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                                "column": 21,
-                                "line": 102
-                              },
-                              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n\n\u001b[0m \u001b[90m 100 |\u001b[39m       \n \u001b[90m 101 |\u001b[39m       \u001b[36mconst\u001b[39m token \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m localStorage\u001b[33m.\u001b[39mgetItem(\u001b[32m'access_token'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 102 |\u001b[39m       expect(token)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 103 |\u001b[39m       \n \u001b[90m 104 |\u001b[39m       expect(apiLogger\u001b[33m.\u001b[39mvalidateCall(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 105 |\u001b[39m       console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Merchant login successful'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js:102:21\u001b[22m"
-                            }
-                          ],
+                          "status": "passed",
+                          "duration": 4053,
+                          "errors": [],
                           "stdout": [
                             {
                               "text": "\n🧪 Test 1.2: Merchant Login\n"
+                            },
+                            {
+                              "text": "✅ Merchant login successful\n"
                             },
                             {
                               "text": "\n================================================================================\n"
@@ -299,7 +246,7 @@
                               "text": "\n=== API Calls Summary ===\n"
                             },
                             {
-                              "text": "Total API calls: 1\n"
+                              "text": "Total API calls: 2\n"
                             },
                             {
                               "text": "Failed calls: 0\n"
@@ -308,13 +255,16 @@
                               "text": "Slow calls (>1s): 0\n"
                             },
                             {
-                              "text": "Average response time: 602.00ms\n"
+                              "text": "Average response time: 376.00ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
                             },
                             {
                               "text": "/api/auth: 1 calls\n"
+                            },
+                            {
+                              "text": "/api/notifications: 1 calls\n"
                             },
                             {
                               "text": "================================================================================\n\n"
@@ -325,43 +275,22 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:11.007Z",
+                          "startTime": "2025-10-17T09:10:19.538Z",
                           "annotations": [],
-                          "attachments": [
-                            {
-                              "name": "screenshot",
-                              "contentType": "image/png",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-63dd2--Tests-1-2---Merchant-Login-chromium\\test-failed-1.png"
-                            },
-                            {
-                              "name": "video",
-                              "contentType": "video/webm",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-63dd2--Tests-1-2---Merchant-Login-chromium\\video.webm"
-                            },
-                            {
-                              "name": "error-context",
-                              "contentType": "text/markdown",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-63dd2--Tests-1-2---Merchant-Login-chromium\\error-context.md"
-                            }
-                          ],
-                          "errorLocation": {
-                            "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                            "column": 21,
-                            "line": 102
-                          }
+                          "attachments": []
                         }
                       ],
-                      "status": "unexpected"
+                      "status": "expected"
                     }
                   ],
                   "id": "a385564e29364fbe1250-12a5ddc781514a5831d4",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 89,
+                  "line": 94,
                   "column": 5
                 },
                 {
                   "title": "1.3 - Courier Login",
-                  "ok": false,
+                  "ok": true,
                   "tags": [],
                   "tests": [
                     {
@@ -372,33 +301,115 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 2,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
-                          "status": "failed",
-                          "duration": 2942,
-                          "error": {
-                            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m",
-                            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n    at C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js:121:21",
-                            "location": {
-                              "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                              "column": 21,
-                              "line": 121
-                            },
-                            "snippet": "\u001b[0m \u001b[90m 119 |\u001b[39m       \n \u001b[90m 120 |\u001b[39m       \u001b[36mconst\u001b[39m token \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m localStorage\u001b[33m.\u001b[39mgetItem(\u001b[32m'access_token'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 121 |\u001b[39m       expect(token)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 122 |\u001b[39m       \n \u001b[90m 123 |\u001b[39m       expect(apiLogger\u001b[33m.\u001b[39mvalidateCall(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 124 |\u001b[39m       console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Courier login successful'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
-                          },
-                          "errors": [
-                            {
-                              "location": {
-                                "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                                "column": 21,
-                                "line": 121
-                              },
-                              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n\n\u001b[0m \u001b[90m 119 |\u001b[39m       \n \u001b[90m 120 |\u001b[39m       \u001b[36mconst\u001b[39m token \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m localStorage\u001b[33m.\u001b[39mgetItem(\u001b[32m'access_token'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 121 |\u001b[39m       expect(token)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 122 |\u001b[39m       \n \u001b[90m 123 |\u001b[39m       expect(apiLogger\u001b[33m.\u001b[39mvalidateCall(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 124 |\u001b[39m       console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Courier login successful'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js:121:21\u001b[22m"
-                            }
-                          ],
+                          "status": "passed",
+                          "duration": 3686,
+                          "errors": [],
                           "stdout": [
                             {
                               "text": "\n🧪 Test 1.3: Courier Login\n"
+                            },
+                            {
+                              "text": "✅ Courier login successful\n"
+                            },
+                            {
+                              "text": "\n================================================================================\n"
+                            },
+                            {
+                              "text": "\n=== Console Summary ===\n"
+                            },
+                            {
+                              "text": "Total logs: 16\n"
+                            },
+                            {
+                              "text": "Errors: 0\n"
+                            },
+                            {
+                              "text": "Warnings: 3\n"
+                            },
+                            {
+                              "text": "\n=== Network Summary ===\n"
+                            },
+                            {
+                              "text": "Total requests: 18\n"
+                            },
+                            {
+                              "text": "API requests: 3\n"
+                            },
+                            {
+                              "text": "Failed requests: 0\n"
+                            },
+                            {
+                              "text": "\n=== API Calls Summary ===\n"
+                            },
+                            {
+                              "text": "Total API calls: 2\n"
+                            },
+                            {
+                              "text": "Failed calls: 0\n"
+                            },
+                            {
+                              "text": "Slow calls (>1s): 0\n"
+                            },
+                            {
+                              "text": "Average response time: 294.50ms\n"
+                            },
+                            {
+                              "text": "\n=== Calls by Endpoint ===\n"
+                            },
+                            {
+                              "text": "/api/auth: 1 calls\n"
+                            },
+                            {
+                              "text": "/api/notifications: 1 calls\n"
+                            },
+                            {
+                              "text": "================================================================================\n\n"
+                            },
+                            {
+                              "text": "\nAPI logs exported to: api-logs/1.3---Courier-Login.json\n"
+                            }
+                          ],
+                          "stderr": [],
+                          "retry": 0,
+                          "startTime": "2025-10-17T09:10:23.626Z",
+                          "annotations": [],
+                          "attachments": []
+                        }
+                      ],
+                      "status": "expected"
+                    }
+                  ],
+                  "id": "a385564e29364fbe1250-7c98be790d8655f87489",
+                  "file": "all-users-comprehensive.spec.js",
+                  "line": 118,
+                  "column": 5
+                },
+                {
+                  "title": "1.4 - Consumer Login",
+                  "ok": true,
+                  "tags": [],
+                  "tests": [
+                    {
+                      "timeout": 30000,
+                      "annotations": [],
+                      "expectedStatus": "passed",
+                      "projectId": "chromium",
+                      "projectName": "chromium",
+                      "results": [
+                        {
+                          "workerIndex": 0,
+                          "parallelIndex": 0,
+                          "status": "passed",
+                          "duration": 3422,
+                          "errors": [],
+                          "stdout": [
+                            {
+                              "text": "\n🧪 Test 1.4: Consumer Login\n"
+                            },
+                            {
+                              "text": "✅ Consumer login successful\n"
                             },
                             {
                               "text": "\n================================================================================\n"
@@ -440,7 +451,7 @@
                               "text": "Slow calls (>1s): 0\n"
                             },
                             {
-                              "text": "Average response time: 603.00ms\n"
+                              "text": "Average response time: 419.00ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -452,172 +463,22 @@
                               "text": "================================================================================\n\n"
                             },
                             {
-                              "text": "\nAPI logs exported to: api-logs/1.3---Courier-Login.json\n"
-                            }
-                          ],
-                          "stderr": [],
-                          "retry": 0,
-                          "startTime": "2025-10-17T06:49:14.983Z",
-                          "annotations": [],
-                          "attachments": [
-                            {
-                              "name": "screenshot",
-                              "contentType": "image/png",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-5a8ec-n-Tests-1-3---Courier-Login-chromium\\test-failed-1.png"
-                            },
-                            {
-                              "name": "video",
-                              "contentType": "video/webm",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-5a8ec-n-Tests-1-3---Courier-Login-chromium\\video.webm"
-                            },
-                            {
-                              "name": "error-context",
-                              "contentType": "text/markdown",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-5a8ec-n-Tests-1-3---Courier-Login-chromium\\error-context.md"
-                            }
-                          ],
-                          "errorLocation": {
-                            "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                            "column": 21,
-                            "line": 121
-                          }
-                        }
-                      ],
-                      "status": "unexpected"
-                    }
-                  ],
-                  "id": "a385564e29364fbe1250-7c98be790d8655f87489",
-                  "file": "all-users-comprehensive.spec.js",
-                  "line": 108,
-                  "column": 5
-                },
-                {
-                  "title": "1.4 - Consumer Login",
-                  "ok": false,
-                  "tags": [],
-                  "tests": [
-                    {
-                      "timeout": 30000,
-                      "annotations": [],
-                      "expectedStatus": "passed",
-                      "projectId": "chromium",
-                      "projectName": "chromium",
-                      "results": [
-                        {
-                          "workerIndex": 3,
-                          "parallelIndex": 0,
-                          "status": "failed",
-                          "duration": 2930,
-                          "error": {
-                            "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m",
-                            "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n    at C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js:140:21",
-                            "location": {
-                              "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                              "column": 21,
-                              "line": 140
-                            },
-                            "snippet": "\u001b[0m \u001b[90m 138 |\u001b[39m       \n \u001b[90m 139 |\u001b[39m       \u001b[36mconst\u001b[39m token \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m localStorage\u001b[33m.\u001b[39mgetItem(\u001b[32m'access_token'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 140 |\u001b[39m       expect(token)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 141 |\u001b[39m       \n \u001b[90m 142 |\u001b[39m       expect(apiLogger\u001b[33m.\u001b[39mvalidateCall(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 143 |\u001b[39m       console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Consumer login successful'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
-                          },
-                          "errors": [
-                            {
-                              "location": {
-                                "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                                "column": 21,
-                                "line": 140
-                              },
-                              "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeTruthy\u001b[2m()\u001b[22m\n\nReceived: \u001b[31mnull\u001b[39m\n\n\u001b[0m \u001b[90m 138 |\u001b[39m       \n \u001b[90m 139 |\u001b[39m       \u001b[36mconst\u001b[39m token \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mevaluate(() \u001b[33m=>\u001b[39m localStorage\u001b[33m.\u001b[39mgetItem(\u001b[32m'access_token'\u001b[39m))\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 140 |\u001b[39m       expect(token)\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 141 |\u001b[39m       \n \u001b[90m 142 |\u001b[39m       expect(apiLogger\u001b[33m.\u001b[39mvalidateCall(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m \u001b[35m200\u001b[39m))\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 143 |\u001b[39m       console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Consumer login successful'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js:140:21\u001b[22m"
-                            }
-                          ],
-                          "stdout": [
-                            {
-                              "text": "\n🧪 Test 1.4: Consumer Login\n"
-                            },
-                            {
-                              "text": "\n================================================================================\n"
-                            },
-                            {
-                              "text": "\n=== Console Summary ===\n"
-                            },
-                            {
-                              "text": "Total logs: 7\n"
-                            },
-                            {
-                              "text": "Errors: 0\n"
-                            },
-                            {
-                              "text": "Warnings: 2\n"
-                            },
-                            {
-                              "text": "\n=== Network Summary ===\n"
-                            },
-                            {
-                              "text": "Total requests: 15\n"
-                            },
-                            {
-                              "text": "API requests: 1\n"
-                            },
-                            {
-                              "text": "Failed requests: 0\n"
-                            },
-                            {
-                              "text": "\n=== API Calls Summary ===\n"
-                            },
-                            {
-                              "text": "Total API calls: 0\n"
-                            },
-                            {
-                              "text": "Failed calls: 0\n"
-                            },
-                            {
-                              "text": "Slow calls (>1s): 0\n"
-                            },
-                            {
-                              "text": "Average response time: 0.00ms\n"
-                            },
-                            {
-                              "text": "\n=== Calls by Endpoint ===\n"
-                            },
-                            {
-                              "text": "================================================================================\n\n"
-                            },
-                            {
                               "text": "\nAPI logs exported to: api-logs/1.4---Consumer-Login.json\n"
                             }
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:19.153Z",
+                          "startTime": "2025-10-17T09:10:27.348Z",
                           "annotations": [],
-                          "attachments": [
-                            {
-                              "name": "screenshot",
-                              "contentType": "image/png",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-74254--Tests-1-4---Consumer-Login-chromium\\test-failed-1.png"
-                            },
-                            {
-                              "name": "video",
-                              "contentType": "video/webm",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-74254--Tests-1-4---Consumer-Login-chromium\\video.webm"
-                            },
-                            {
-                              "name": "error-context",
-                              "contentType": "text/markdown",
-                              "path": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\test-results\\all-users-comprehensive-CO-74254--Tests-1-4---Consumer-Login-chromium\\error-context.md"
-                            }
-                          ],
-                          "errorLocation": {
-                            "file": "C:\\Users\\ricka\\Downloads\\performile-platform-main\\performile-platform-main\\e2e-tests\\tests\\all-users-comprehensive.spec.js",
-                            "column": 21,
-                            "line": 140
-                          }
+                          "attachments": []
                         }
                       ],
-                      "status": "unexpected"
+                      "status": "expected"
                     }
                   ],
                   "id": "a385564e29364fbe1250-d379bbe1fca1e01dc9ac",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 127,
+                  "line": 142,
                   "column": 5
                 },
                 {
@@ -633,10 +494,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 4825,
+                          "duration": 5654,
                           "errors": [],
                           "stdout": [
                             {
@@ -664,13 +525,13 @@
                               "text": "\n=== Console Errors ===\n"
                             },
                             {
-                              "text": "[2025-10-17T06:49:25.922Z] Failed to load resource: the server responded with a status of 401 (Unauthorized)\n"
+                              "text": "[2025-10-17T09:10:33.064Z] Failed to load resource: the server responded with a status of 401 (Unauthorized)\n"
                             },
                             {
-                              "text": "[2025-10-17T06:49:25.925Z] Login error details: {message: Request failed with status code 401, response: Object, status: 401, url: https://performile-platform-main.vercel.app/api/auth}\n"
+                              "text": "[2025-10-17T09:10:33.067Z] Login error details: {message: Request failed with status code 401, response: Object, status: 401, url: https://performile-platform-main.vercel.app/api/auth}\n"
                             },
                             {
-                              "text": "[2025-10-17T06:49:25.925Z] Login error: Error: Invalid credentials\n    at jxe.login (https://performile-platform-main.vercel.app/assets/js/index-C4jbIBub.js:484:6950)\n    at async login (https://performile-platform-main.vercel.app/assets/js/index-C4jbIBub.js:487:92912)\n    at async S (https://performile-platform-main.vercel.app/assets/js/index-C4jbIBub.js:497:18903)\n    at async https://performile-platform-main.vercel.app/assets/js/index-C4jbIBub.js:494:52580\n"
+                              "text": "[2025-10-17T09:10:33.069Z] Login error: Error: Invalid credentials\n    at jxe.login (https://performile-platform-main.vercel.app/assets/js/index-B7YYf5Hu.js:484:6950)\n    at async login (https://performile-platform-main.vercel.app/assets/js/index-B7YYf5Hu.js:487:92912)\n    at async S (https://performile-platform-main.vercel.app/assets/js/index-B7YYf5Hu.js:497:18903)\n    at async https://performile-platform-main.vercel.app/assets/js/index-B7YYf5Hu.js:494:52580\n"
                             },
                             {
                               "text": "\n=== Network Summary ===\n"
@@ -703,7 +564,7 @@
                               "text": "Slow calls (>1s): 0\n"
                             },
                             {
-                              "text": "Average response time: 435.00ms\n"
+                              "text": "Average response time: 301.00ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -729,7 +590,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:23.604Z",
+                          "startTime": "2025-10-17T09:10:30.799Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -739,7 +600,7 @@
                   ],
                   "id": "a385564e29364fbe1250-d9ee9deac82eef24cec0",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 146,
+                  "line": 166,
                   "column": 5
                 }
               ]
@@ -747,7 +608,7 @@
             {
               "title": "2. Admin Dashboard Tests",
               "file": "all-users-comprehensive.spec.js",
-              "line": 168,
+              "line": 188,
               "column": 8,
               "specs": [
                 {
@@ -763,10 +624,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 4466,
+                          "duration": 5706,
                           "errors": [],
                           "stdout": [
                             {
@@ -818,10 +679,10 @@
                               "text": "Failed calls: 0\n"
                             },
                             {
-                              "text": "Slow calls (>1s): 1\n"
+                              "text": "Slow calls (>1s): 2\n"
                             },
                             {
-                              "text": "Average response time: 938.67ms\n"
+                              "text": "Average response time: 1184.33ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -839,7 +700,10 @@
                               "text": "\n=== Slow API Calls (>1s) ===\n"
                             },
                             {
-                              "text": "[1418ms] GET /api/trustscore/dashboard\n"
+                              "text": "[1100ms] POST /api/auth\n"
+                            },
+                            {
+                              "text": "[1540ms] GET /api/trustscore/dashboard\n"
                             },
                             {
                               "text": "================================================================================\n\n"
@@ -850,7 +714,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:28.574Z",
+                          "startTime": "2025-10-17T09:10:36.479Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -860,7 +724,7 @@
                   ],
                   "id": "a385564e29364fbe1250-6d36e8322f6ece1042f3",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 192,
+                  "line": 212,
                   "column": 5
                 },
                 {
@@ -876,10 +740,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 6778,
+                          "duration": 6766,
                           "errors": [],
                           "stdout": [
                             {
@@ -922,16 +786,16 @@
                               "text": "\n=== API Calls Summary ===\n"
                             },
                             {
-                              "text": "Total API calls: 5\n"
+                              "text": "Total API calls: 6\n"
                             },
                             {
                               "text": "Failed calls: 0\n"
                             },
                             {
-                              "text": "Slow calls (>1s): 5\n"
+                              "text": "Slow calls (>1s): 1\n"
                             },
                             {
-                              "text": "Average response time: 1398.00ms\n"
+                              "text": "Average response time: 702.50ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -940,10 +804,10 @@
                               "text": "/api/auth: 1 calls\n"
                             },
                             {
-                              "text": "/api/notifications: 1 calls\n"
+                              "text": "/api/trustscore/dashboard: 1 calls\n"
                             },
                             {
-                              "text": "/api/trustscore/dashboard: 1 calls\n"
+                              "text": "/api/notifications: 1 calls\n"
                             },
                             {
                               "text": "/api/dashboard/trends: 1 calls\n"
@@ -952,22 +816,13 @@
                               "text": "/api/dashboard/recent-activity: 1 calls\n"
                             },
                             {
+                              "text": "/api/tracking/summary: 1 calls\n"
+                            },
+                            {
                               "text": "\n=== Slow API Calls (>1s) ===\n"
                             },
                             {
-                              "text": "[1640ms] POST /api/auth\n"
-                            },
-                            {
-                              "text": "[1237ms] GET /api/notifications\n"
-                            },
-                            {
-                              "text": "[1699ms] GET /api/trustscore/dashboard\n"
-                            },
-                            {
-                              "text": "[1198ms] GET /api/dashboard/trends\n"
-                            },
-                            {
-                              "text": "[1216ms] GET /api/dashboard/recent-activity\n"
+                              "text": "[1304ms] POST /api/auth\n"
                             },
                             {
                               "text": "================================================================================\n\n"
@@ -978,7 +833,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:33.057Z",
+                          "startTime": "2025-10-17T09:10:42.221Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -988,7 +843,7 @@
                   ],
                   "id": "a385564e29364fbe1250-a5ef3732f4a11f3832ad",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 207,
+                  "line": 227,
                   "column": 5
                 }
               ]
@@ -996,7 +851,7 @@
             {
               "title": "3. Merchant Dashboard Tests - BUG DETECTION",
               "file": "all-users-comprehensive.spec.js",
-              "line": 226,
+              "line": 246,
               "column": 8,
               "specs": [
                 {
@@ -1012,10 +867,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 5810,
+                          "duration": 5585,
                           "errors": [],
                           "stdout": [
                             {
@@ -1040,13 +895,13 @@
                               "text": "\n📊 TOTAL API CALLS: 3\n"
                             },
                             {
-                              "text": "  POST /api/auth - 200 (1111ms)\n"
+                              "text": "  POST /api/auth - 200 (1090ms)\n"
                             },
                             {
-                              "text": "  GET /api/notifications - 200 (947ms)\n"
+                              "text": "  GET /api/notifications - 200 (856ms)\n"
                             },
                             {
-                              "text": "  GET /api/trustscore/dashboard - 200 (1455ms)\n"
+                              "text": "  GET /api/trustscore/dashboard - 200 (1385ms)\n"
                             },
                             {
                               "text": "\n✅ Merchant dashboard investigation complete - CHECK LOGS\n"
@@ -1091,7 +946,7 @@
                               "text": "Slow calls (>1s): 2\n"
                             },
                             {
-                              "text": "Average response time: 1171.00ms\n"
+                              "text": "Average response time: 1110.33ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -1109,10 +964,10 @@
                               "text": "\n=== Slow API Calls (>1s) ===\n"
                             },
                             {
-                              "text": "[1111ms] POST /api/auth\n"
+                              "text": "[1090ms] POST /api/auth\n"
                             },
                             {
-                              "text": "[1455ms] GET /api/trustscore/dashboard\n"
+                              "text": "[1385ms] GET /api/trustscore/dashboard\n"
                             },
                             {
                               "text": "================================================================================\n\n"
@@ -1123,7 +978,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:39.870Z",
+                          "startTime": "2025-10-17T09:10:49.017Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -1133,7 +988,7 @@
                   ],
                   "id": "a385564e29364fbe1250-3c69b4024371b8b4746b",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 250,
+                  "line": 270,
                   "column": 5
                 },
                 {
@@ -1149,10 +1004,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 7572,
+                          "duration": 8348,
                           "errors": [],
                           "stdout": [
                             {
@@ -1204,7 +1059,7 @@
                               "text": "Slow calls (>1s): 3\n"
                             },
                             {
-                              "text": "Average response time: 1221.00ms\n"
+                              "text": "Average response time: 1155.25ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -1225,13 +1080,13 @@
                               "text": "\n=== Slow API Calls (>1s) ===\n"
                             },
                             {
-                              "text": "[1132ms] POST /api/auth\n"
+                              "text": "[1067ms] POST /api/auth\n"
                             },
                             {
-                              "text": "[1473ms] GET /api/trustscore/dashboard\n"
+                              "text": "[1353ms] GET /api/trustscore/dashboard\n"
                             },
                             {
-                              "text": "[1308ms] GET /api/tracking/summary\n"
+                              "text": "[1345ms] GET /api/tracking/summary\n"
                             },
                             {
                               "text": "================================================================================\n\n"
@@ -1242,7 +1097,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:45.711Z",
+                          "startTime": "2025-10-17T09:10:54.633Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -1252,7 +1107,7 @@
                   ],
                   "id": "a385564e29364fbe1250-51d16ac04eab9e679af6",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 290,
+                  "line": 310,
                   "column": 5
                 },
                 {
@@ -1268,26 +1123,26 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 5253,
+                          "duration": 5559,
                           "errors": [],
                           "stdout": [
                             {
                               "text": "\n🧪 Test 3.3: Merchant Performance\n"
                             },
                             {
-                              "text": "Average API response: 1182.33ms\n"
+                              "text": "Average API response: 1128.67ms\n"
                             },
                             {
                               "text": "Slow calls (>1s): 2\n"
                             },
                             {
-                              "text": "  ⚠️ POST /api/auth - 1109ms\n"
+                              "text": "  ⚠️ POST /api/auth - 1110ms\n"
                             },
                             {
-                              "text": "  ⚠️ GET /api/trustscore/dashboard - 1473ms\n"
+                              "text": "  ⚠️ GET /api/trustscore/dashboard - 1334ms\n"
                             },
                             {
                               "text": "✅ Performance check complete\n"
@@ -1332,7 +1187,7 @@
                               "text": "Slow calls (>1s): 2\n"
                             },
                             {
-                              "text": "Average response time: 1182.33ms\n"
+                              "text": "Average response time: 1128.67ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -1350,10 +1205,10 @@
                               "text": "\n=== Slow API Calls (>1s) ===\n"
                             },
                             {
-                              "text": "[1109ms] POST /api/auth\n"
+                              "text": "[1110ms] POST /api/auth\n"
                             },
                             {
-                              "text": "[1473ms] GET /api/trustscore/dashboard\n"
+                              "text": "[1334ms] GET /api/trustscore/dashboard\n"
                             },
                             {
                               "text": "================================================================================\n\n"
@@ -1364,7 +1219,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:53.324Z",
+                          "startTime": "2025-10-17T09:11:03.020Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -1374,7 +1229,7 @@
                   ],
                   "id": "a385564e29364fbe1250-193ed1f987aae2dbc5c2",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 309,
+                  "line": 329,
                   "column": 5
                 }
               ]
@@ -1382,7 +1237,7 @@
             {
               "title": "4. Courier Dashboard Tests",
               "file": "all-users-comprehensive.spec.js",
-              "line": 332,
+              "line": 352,
               "column": 8,
               "specs": [
                 {
@@ -1398,10 +1253,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 4830,
+                          "duration": 4852,
                           "errors": [],
                           "stdout": [
                             {
@@ -1456,7 +1311,7 @@
                               "text": "Slow calls (>1s): 0\n"
                             },
                             {
-                              "text": "Average response time: 468.67ms\n"
+                              "text": "Average response time: 441.00ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -1479,7 +1334,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:49:58.614Z",
+                          "startTime": "2025-10-17T09:11:08.625Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -1489,7 +1344,7 @@
                   ],
                   "id": "a385564e29364fbe1250-47ef42b62d0c59d65339",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 356,
+                  "line": 376,
                   "column": 5
                 },
                 {
@@ -1505,10 +1360,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 4845,
+                          "duration": 4541,
                           "errors": [],
                           "stdout": [
                             {
@@ -1560,7 +1415,7 @@
                               "text": "Slow calls (>1s): 0\n"
                             },
                             {
-                              "text": "Average response time: 501.33ms\n"
+                              "text": "Average response time: 465.00ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -1583,7 +1438,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:50:03.475Z",
+                          "startTime": "2025-10-17T09:11:13.509Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -1593,7 +1448,7 @@
                   ],
                   "id": "a385564e29364fbe1250-5e475954dcb7648b4339",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 371,
+                  "line": 391,
                   "column": 5
                 }
               ]
@@ -1601,7 +1456,7 @@
             {
               "title": "5. Consumer Tests",
               "file": "all-users-comprehensive.spec.js",
-              "line": 385,
+              "line": 405,
               "column": 8,
               "specs": [
                 {
@@ -1617,10 +1472,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 4307,
+                          "duration": 4196,
                           "errors": [],
                           "stdout": [
                             {
@@ -1675,7 +1530,7 @@
                               "text": "Slow calls (>1s): 0\n"
                             },
                             {
-                              "text": "Average response time: 446.67ms\n"
+                              "text": "Average response time: 445.00ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -1698,7 +1553,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:50:08.347Z",
+                          "startTime": "2025-10-17T09:11:18.077Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -1708,7 +1563,7 @@
                   ],
                   "id": "a385564e29364fbe1250-31711fa740b36d83ecc8",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 409,
+                  "line": 429,
                   "column": 5
                 },
                 {
@@ -1724,10 +1579,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 4252,
+                          "duration": 4270,
                           "errors": [],
                           "stdout": [
                             {
@@ -1779,7 +1634,7 @@
                               "text": "Slow calls (>1s): 0\n"
                             },
                             {
-                              "text": "Average response time: 474.00ms\n"
+                              "text": "Average response time: 468.33ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -1802,7 +1657,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:50:12.676Z",
+                          "startTime": "2025-10-17T09:11:22.298Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -1812,7 +1667,7 @@
                   ],
                   "id": "a385564e29364fbe1250-125f8016503e012cce26",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 424,
+                  "line": 444,
                   "column": 5
                 }
               ]
@@ -1820,7 +1675,7 @@
             {
               "title": "6. Cross-Cutting Tests",
               "file": "all-users-comprehensive.spec.js",
-              "line": 438,
+              "line": 458,
               "column": 8,
               "specs": [
                 {
@@ -1836,10 +1691,10 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 5451,
+                          "duration": 5418,
                           "errors": [],
                           "stdout": [
                             {
@@ -1885,16 +1740,16 @@
                               "text": "\n=== API Calls Summary ===\n"
                             },
                             {
-                              "text": "Total API calls: 5\n"
+                              "text": "Total API calls: 4\n"
                             },
                             {
                               "text": "Failed calls: 0\n"
                             },
                             {
-                              "text": "Slow calls (>1s): 2\n"
+                              "text": "Slow calls (>1s): 1\n"
                             },
                             {
-                              "text": "Average response time: 711.00ms\n"
+                              "text": "Average response time: 663.00ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -1912,16 +1767,10 @@
                               "text": "/api/dashboard/trends: 1 calls\n"
                             },
                             {
-                              "text": "/api/dashboard/recent-activity: 1 calls\n"
-                            },
-                            {
                               "text": "\n=== Slow API Calls (>1s) ===\n"
                             },
                             {
-                              "text": "[1044ms] GET /api/dashboard/trends\n"
-                            },
-                            {
-                              "text": "[1034ms] GET /api/dashboard/recent-activity\n"
+                              "text": "[1008ms] GET /api/dashboard/trends\n"
                             },
                             {
                               "text": "================================================================================\n\n"
@@ -1932,7 +1781,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:50:16.953Z",
+                          "startTime": "2025-10-17T09:11:26.597Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -1942,7 +1791,7 @@
                   ],
                   "id": "a385564e29364fbe1250-043492ce2de5a0dd8a80",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 461,
+                  "line": 481,
                   "column": 5
                 },
                 {
@@ -1958,17 +1807,17 @@
                       "projectName": "chromium",
                       "results": [
                         {
-                          "workerIndex": 4,
+                          "workerIndex": 0,
                           "parallelIndex": 0,
                           "status": "passed",
-                          "duration": 5634,
+                          "duration": 5459,
                           "errors": [],
                           "stdout": [
                             {
                               "text": "\n🧪 Test 6.2: Overall API Performance\n"
                             },
                             {
-                              "text": "Average API response: 1110.33ms\n"
+                              "text": "Average API response: 1105.33ms\n"
                             },
                             {
                               "text": "Slow calls (>1s): 2\n"
@@ -2019,7 +1868,7 @@
                               "text": "Slow calls (>1s): 2\n"
                             },
                             {
-                              "text": "Average response time: 1110.33ms\n"
+                              "text": "Average response time: 1105.33ms\n"
                             },
                             {
                               "text": "\n=== Calls by Endpoint ===\n"
@@ -2037,10 +1886,10 @@
                               "text": "\n=== Slow API Calls (>1s) ===\n"
                             },
                             {
-                              "text": "[1104ms] POST /api/auth\n"
+                              "text": "[1107ms] POST /api/auth\n"
                             },
                             {
-                              "text": "[1347ms] GET /api/trustscore/dashboard\n"
+                              "text": "[1344ms] GET /api/trustscore/dashboard\n"
                             },
                             {
                               "text": "================================================================================\n\n"
@@ -2051,7 +1900,7 @@
                           ],
                           "stderr": [],
                           "retry": 0,
-                          "startTime": "2025-10-17T06:50:22.431Z",
+                          "startTime": "2025-10-17T09:11:32.040Z",
                           "annotations": [],
                           "attachments": []
                         }
@@ -2061,7 +1910,7 @@
                   ],
                   "id": "a385564e29364fbe1250-c0295463430bb014e842",
                   "file": "all-users-comprehensive.spec.js",
-                  "line": 476,
+                  "line": 496,
                   "column": 5
                 }
               ]
@@ -2073,11 +1922,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-10-17T06:49:01.244Z",
-    "duration": 87102.599,
-    "expected": 12,
+    "startTime": "2025-10-17T09:10:10.464Z",
+    "duration": 87238.226,
+    "expected": 16,
     "skipped": 0,
-    "unexpected": 4,
+    "unexpected": 0,
     "flaky": 0
   }
 }
