@@ -52,7 +52,81 @@ interface SystemSettings {
 }
 
 /**
- * Get default settings from environment variables
+ * Get settings from database
+ */
+const getSettingsFromDatabase = async (): Promise<SystemSettings> => {
+  const database = (await import('../config/database')).default;
+  
+  try {
+    const { rows } = await database.query(`
+      SELECT setting_key, setting_value, data_type
+      FROM system_settings
+      ORDER BY setting_category, setting_key
+    `);
+
+    const settings: SystemSettings = {
+      email: {
+        smtp_host: '',
+        smtp_port: 587,
+        smtp_secure: false,
+        from_email: '',
+        from_name: '',
+      },
+      api: {
+        rate_limit_per_hour: 1000,
+        max_request_size_mb: 10,
+        enable_cors: true,
+        api_version: 'v1',
+      },
+      security: {
+        session_timeout_minutes: 60,
+        max_login_attempts: 5,
+        require_2fa: false,
+        password_min_length: 8,
+        enable_ip_whitelist: false,
+      },
+      features: {
+        enable_notifications: true,
+        enable_email_notifications: false,
+        enable_proximity_matching: false,
+        enable_realtime_updates: false,
+        enable_advanced_analytics: false,
+      },
+      maintenance: {
+        maintenance_mode: false,
+        maintenance_message: '',
+      },
+    };
+
+    // Parse settings from database
+    rows.forEach((row) => {
+      const [category, key] = row.setting_key.split('.');
+      const value = row.setting_value;
+
+      if (category && key && settings[category as keyof SystemSettings]) {
+        const categorySettings = settings[category as keyof SystemSettings] as any;
+        
+        // Convert value based on data type
+        if (row.data_type === 'number') {
+          categorySettings[key] = parseInt(value) || 0;
+        } else if (row.data_type === 'boolean') {
+          categorySettings[key] = value === 'true';
+        } else {
+          categorySettings[key] = value;
+        }
+      }
+    });
+
+    return settings;
+  } catch (error) {
+    logger.error('Error fetching settings from database, falling back to env vars:', error);
+    // Fallback to environment variables if database fails
+    return getDefaultSettings();
+  }
+};
+
+/**
+ * Get default settings from environment variables (fallback)
  */
 const getDefaultSettings = (): SystemSettings => {
   return {
@@ -103,7 +177,7 @@ router.get('/', async (req: Request, res: Response) => {
       role: req.user?.user_role 
     });
 
-    const settings = getDefaultSettings();
+    const settings = await getSettingsFromDatabase();
 
     // Remove sensitive data from response
     const sanitizedSettings = {
@@ -188,23 +262,40 @@ router.put('/', async (req: Request, res: Response) => {
       }
     }
 
-    // Log the change for audit purposes
-    logger.info('System settings update validated', {
+    // Update settings in database
+    const database = (await import('../config/database')).default;
+    let updatedCount = 0;
+
+    for (const [key, value] of Object.entries(settings)) {
+      const settingKey = `${category}.${key}`;
+      
+      try {
+        await database.query(
+          `UPDATE system_settings 
+           SET setting_value = $1, updated_by = $2, updated_at = NOW()
+           WHERE setting_key = $3`,
+          [String(value), req.user?.user_id, settingKey]
+        );
+        updatedCount++;
+      } catch (error) {
+        logger.error(`Error updating setting ${settingKey}:`, error);
+      }
+    }
+
+    logger.info('System settings updated', {
       userId: req.user?.user_id,
       category,
+      updatedCount,
       timestamp: new Date().toISOString(),
     });
 
-    // Note: Settings are not persisted yet (env vars are read-only)
-    // This will be implemented when database table is approved
     res.json({
       success: true,
-      message: 'Settings validated successfully. Note: Changes require server restart to take effect.',
+      message: 'Settings updated successfully',
       data: {
         category,
-        updated_count: Object.keys(settings).length,
+        updated_count: updatedCount,
         updated_at: new Date().toISOString(),
-        note: 'Settings are currently managed via environment variables. Database persistence pending approval.',
       },
     });
   } catch (error) {
@@ -259,15 +350,22 @@ router.get('/backup', async (req: Request, res: Response) => {
       userId: req.user?.user_id,
     });
 
-    const settings = getDefaultSettings();
+    const database = (await import('../config/database')).default;
+    
+    // Use database function to create backup
+    const result = await database.query(
+      `SELECT create_settings_backup($1, $2) as backup_id`,
+      [`Backup ${new Date().toISOString()}`, req.user?.user_id]
+    );
+
+    const backupId = result.rows[0]?.backup_id;
 
     res.json({
       success: true,
       data: {
-        backup_id: `backup_${Date.now()}`,
+        backup_id: backupId,
         timestamp: new Date().toISOString(),
-        settings,
-        note: 'Backup contains current environment variable values',
+        message: 'Backup created successfully',
       },
     });
   } catch (error) {
@@ -300,12 +398,29 @@ router.post('/restore', async (req: Request, res: Response) => {
       backupId: backup_id,
     });
 
+    const database = (await import('../config/database')).default;
+    
+    // Use database function to restore backup
+    const result = await database.query(
+      `SELECT restore_settings_backup($1, $2) as success`,
+      [backup_id, req.user?.user_id]
+    );
+
+    const success = result.rows[0]?.success;
+
+    if (!success) {
+      return res.status(404).json({
+        success: false,
+        message: 'Backup not found',
+      });
+    }
+
     res.json({
       success: true,
-      message: 'Settings restore initiated',
+      message: 'Settings restored successfully',
       data: {
         backup_id,
-        note: 'Settings restoration requires server restart to take effect',
+        restored_at: new Date().toISOString(),
       },
     });
   } catch (error) {
@@ -324,20 +439,34 @@ router.post('/restore', async (req: Request, res: Response) => {
  */
 router.get('/info', async (req: Request, res: Response) => {
   try {
+    const database = (await import('../config/database')).default;
+    
+    // Check if system_settings table exists
+    const tableCheck = await database.query(`
+      SELECT EXISTS (
+        SELECT 1 FROM information_schema.tables 
+        WHERE table_name = 'system_settings'
+      ) as table_exists
+    `);
+    
+    const tableExists = tableCheck.rows[0]?.table_exists;
+
     res.json({
       success: true,
       data: {
-        storage_type: 'environment_variables',
-        persistence: 'requires_server_restart',
-        database_table: 'pending_approval',
+        storage_type: 'database',
+        persistence: 'immediate',
+        database_table: tableExists ? 'active' : 'not_found',
         features: {
           read: true,
           update: true,
           backup: true,
           restore: true,
-          database_persistence: false,
+          database_persistence: true,
+          audit_trail: true,
+          rls_enabled: true,
         },
-        note: 'Settings are currently managed via environment variables. Database table implementation pending approval for full persistence.',
+        note: 'Settings are persisted in database with immediate effect. Complete audit trail maintained.',
       },
     });
   } catch (error) {

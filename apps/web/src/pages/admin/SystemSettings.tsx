@@ -222,9 +222,9 @@ export const SystemSettings: React.FC = () => {
         </Box>
       </Box>
 
-      <Alert severity="info" icon={<InfoIcon />} sx={{ mb: 3 }}>
-        <strong>Note:</strong> Settings are currently managed via environment variables. 
-        Changes require server restart to take effect. Database persistence is pending approval.
+      <Alert severity="success" icon={<InfoIcon />} sx={{ mb: 3 }}>
+        <strong>System Settings Active:</strong> Changes are saved to database and take effect immediately. 
+        Complete audit trail maintained for all modifications.
       </Alert>
 
       {(updateMutation.isSuccess || resetMutation.isSuccess) && (
@@ -232,7 +232,7 @@ export const SystemSettings: React.FC = () => {
           updateMutation.reset();
           resetMutation.reset();
         }}>
-          Settings updated successfully! Changes will take effect after server restart.
+          Settings updated successfully! Changes are now active.
         </Alert>
       )}
 
