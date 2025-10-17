@@ -185,7 +185,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       label: 'Checkout Analytics',
       path: '/courier/checkout-analytics',
       icon: Storefront,
-      roles: ['courier', 'admin'],
+      roles: ['courier'],
     },
     {
       label: 'Checkout Analytics',
