@@ -113,26 +113,34 @@ export const TrackingWidget: React.FC = () => {
           Recent Updates
         </Typography>
 
-        <List dense>
-          {summary.recentUpdates.slice(0, 5).map((update, index) => (
-            <ListItem
-              key={index}
-              sx={{
-                bgcolor: 'grey.50',
-                borderRadius: 1,
-                mb: 1,
-                cursor: 'pointer',
-                '&:hover': { bgcolor: 'grey.100' },
-              }}
-              onClick={() => navigate(`/track/${update.trackingNumber}`)}
-            >
-              <ListItemText
-                primary={`Order #${update.orderId.slice(0, 8)}`}
-                secondary={`${update.status.replace(/_/g, ' ')} • ${new Date(update.timestamp).toLocaleString()}`}
-              />
-            </ListItem>
-          ))}
-        </List>
+        {summary.recentUpdates && summary.recentUpdates.length > 0 ? (
+          <List dense>
+            {summary.recentUpdates.slice(0, 5).map((update, index) => (
+              <ListItem
+                key={index}
+                sx={{
+                  bgcolor: 'grey.50',
+                  borderRadius: 1,
+                  mb: 1,
+                  cursor: 'pointer',
+                  '&:hover': { bgcolor: 'grey.100' },
+                }}
+                onClick={() => navigate(`/track/${update.trackingNumber}`)}
+              >
+                <ListItemText
+                  primary={`Order #${update.orderId?.slice(0, 8) || 'N/A'}`}
+                  secondary={`${update.status?.replace(/_/g, ' ') || 'Unknown'} • ${new Date(update.timestamp).toLocaleString()}`}
+                />
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <Box sx={{ textAlign: 'center', py: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              No recent updates available
+            </Typography>
+          </Box>
+        )}
 
         <Button
           fullWidth
