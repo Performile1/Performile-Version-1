@@ -78,6 +78,7 @@ test.describe('COMPREHENSIVE E2E TESTS - ALL USERS', () => {
       await page.click('button[type="submit"]');
       
       await page.waitForURL('**/dashboard', { timeout: 10000 });
+      await page.waitForTimeout(500); // Wait for localStorage persistence
       
       const tokens = await page.evaluate(() => {
         const tokensStr = localStorage.getItem('performile_tokens');
@@ -101,6 +102,7 @@ test.describe('COMPREHENSIVE E2E TESTS - ALL USERS', () => {
       await page.click('button[type="submit"]');
       
       await page.waitForURL('**/dashboard', { timeout: 10000 });
+      await page.waitForTimeout(500); // Wait for localStorage persistence
       
       const tokens = await page.evaluate(() => {
         const tokensStr = localStorage.getItem('performile_tokens');
@@ -124,6 +126,7 @@ test.describe('COMPREHENSIVE E2E TESTS - ALL USERS', () => {
       await page.click('button[type="submit"]');
       
       await page.waitForURL('**/dashboard', { timeout: 10000 });
+      await page.waitForTimeout(500); // Wait for localStorage persistence
       
       const tokens = await page.evaluate(() => {
         const tokensStr = localStorage.getItem('performile_tokens');
@@ -147,6 +150,7 @@ test.describe('COMPREHENSIVE E2E TESTS - ALL USERS', () => {
       await page.click('button[type="submit"]');
       
       await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForTimeout(500); // Wait for localStorage persistence
       
       const tokens = await page.evaluate(() => {
         const tokensStr = localStorage.getItem('performile_tokens');
