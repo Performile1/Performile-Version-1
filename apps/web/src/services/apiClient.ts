@@ -108,10 +108,24 @@ class ApiClient {
         const state = useAuthStore.getState();
         let tokens = state.tokens;
         
-        // FALLBACK: If not in store, try manual localStorage backup
+        // FALLBACK: If not in store, try multiple storage locations
         if (!tokens?.accessToken) {
           try {
-            const storedTokens = localStorage.getItem('performile_tokens');
+            // Try manual backup first
+            let storedTokens = localStorage.getItem('performile_tokens');
+            
+            // Try zustand persist storage
+            if (!storedTokens) {
+              const persistedAuth = localStorage.getItem('performile-auth');
+              if (persistedAuth) {
+                const parsed = JSON.parse(persistedAuth);
+                if (parsed?.state?.tokens) {
+                  storedTokens = JSON.stringify(parsed.state.tokens);
+                  console.log('[ApiClient] Using tokens from zustand persist storage');
+                }
+              }
+            }
+            
             if (storedTokens) {
               tokens = JSON.parse(storedTokens);
               console.log('[ApiClient] Using tokens from localStorage backup');
