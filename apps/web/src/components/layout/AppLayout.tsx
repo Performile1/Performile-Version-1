@@ -176,6 +176,18 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       roles: ['admin'],
       children: [
         {
+          label: 'General Settings',
+          path: '/settings',
+          icon: Settings,
+          roles: ['admin'],
+        },
+        {
+          label: 'System Settings',
+          path: '/admin/system-settings',
+          icon: Settings,
+          roles: ['admin'],
+        },
+        {
           label: 'Manage Merchants',
           path: '/admin/merchants',
           icon: Business,
@@ -191,12 +203,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           label: 'Subscriptions',
           path: '/admin/subscriptions',
           icon: Subscriptions,
-          roles: ['admin'],
-        },
-        {
-          label: 'System Settings',
-          path: '/admin/system-settings',
-          icon: Settings,
           roles: ['admin'],
         },
         {
