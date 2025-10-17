@@ -24,6 +24,7 @@ import { AcceptInvitation } from '@/pages/team/AcceptInvitation';
 import { Analytics } from './pages/Analytics';
 import { ReviewRequestSettings } from './pages/settings/ReviewRequestSettings';
 import { CourierPreferences } from './pages/settings/CourierPreferences';
+import ProximitySettings from './pages/settings/ProximitySettings';
 import { PluginSetup } from './pages/integrations/PluginSetup';
 import { TrackingPage } from './pages/TrackingPage';
 import { ClaimsPage } from './pages/ClaimsPage';
@@ -390,6 +391,14 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute requiredRoles={['merchant']}>
                   <CourierPreferences />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/proximity"
+              element={
+                <ProtectedRoute requiredRoles={['merchant', 'courier']}>
+                  <ProximitySettings />
                 </ProtectedRoute>
               }
             />
