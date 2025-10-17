@@ -26,6 +26,7 @@
   "author": "Performile Team",
   "license": "MIT",
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
     "@types/joi": "^17.2.2",
     "axios": "^1.6.1",
     "bcrypt": "^6.0.0",

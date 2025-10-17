@@ -1,0 +1,91 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: Dashboard
+        - generic [ref=e10]:
+          - img [ref=e12]
+          - textbox "Search orders, couriers, stores..." [ref=e14]
+          - group
+        - generic [ref=e15]:
+          - button [ref=e16] [cursor=pointer]:
+            - img [ref=e17]
+          - button "0" [ref=e19] [cursor=pointer]:
+            - generic [ref=e20]:
+              - img [ref=e21]
+              - generic: "0"
+          - paragraph [ref=e23]: Merchant Demo
+          - button "account of current user" [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: M
+    - navigation "navigation menu" [ref=e26]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - img "Performile Logo" [ref=e30]
+          - generic [ref=e31]: Performile
+        - separator [ref=e32]
+        - list [ref=e34]:
+          - listitem [ref=e35]:
+            - button "Dashboard" [ref=e36] [cursor=pointer]:
+              - img [ref=e38]
+              - generic [ref=e41]: Dashboard
+          - listitem [ref=e42]:
+            - button "Trust Scores" [ref=e43] [cursor=pointer]:
+              - img [ref=e45]
+              - generic [ref=e48]: Trust Scores
+          - listitem [ref=e49]:
+            - button "Orders" [ref=e50] [cursor=pointer]:
+              - img [ref=e52]
+              - generic [ref=e55]: Orders
+          - listitem [ref=e56]:
+            - button "Track Shipment" [ref=e57] [cursor=pointer]:
+              - img [ref=e59]
+              - generic [ref=e62]: Track Shipment
+          - listitem [ref=e63]:
+            - button "Claims" [ref=e64] [cursor=pointer]:
+              - img [ref=e66]
+              - generic [ref=e69]: Claims
+          - listitem [ref=e70]:
+            - button "Team" [ref=e71] [cursor=pointer]:
+              - img [ref=e73]
+              - generic [ref=e76]: Team
+          - listitem [ref=e77]:
+            - button "Analytics" [ref=e78] [cursor=pointer]:
+              - img [ref=e80]
+              - generic [ref=e83]: Analytics
+          - listitem [ref=e84]:
+            - button "E-commerce" [ref=e85] [cursor=pointer]:
+              - img [ref=e87]
+              - generic [ref=e90]: E-commerce
+          - listitem [ref=e91]:
+            - button "Email Templates" [ref=e92] [cursor=pointer]:
+              - img [ref=e94]
+              - generic [ref=e97]: Email Templates
+          - listitem [ref=e98]:
+            - button "Courier Preferences" [ref=e99] [cursor=pointer]:
+              - img [ref=e101]
+              - generic [ref=e104]: Courier Preferences
+          - listitem [ref=e105]:
+            - button "My Subscription" [ref=e106] [cursor=pointer]:
+              - img [ref=e108]
+              - generic [ref=e111]: My Subscription
+          - listitem [ref=e112]:
+            - button "Courier Directory" [ref=e113] [cursor=pointer]:
+              - img [ref=e115]
+              - generic [ref=e118]: Courier Directory
+          - listitem [ref=e119]:
+            - button "Checkout Analytics" [ref=e120] [cursor=pointer]:
+              - img [ref=e122]
+              - generic [ref=e125]: Checkout Analytics
+          - listitem [ref=e126]:
+            - button "Settings" [ref=e127] [cursor=pointer]:
+              - img [ref=e129]
+              - generic [ref=e132]: Settings
+    - main [ref=e133]:
+      - generic [ref=e135]:
+        - heading "Good morning, Merchant!" [level=4] [ref=e136]
+        - progressbar [ref=e137]
+  - status [ref=e144]: Login successful!
+```

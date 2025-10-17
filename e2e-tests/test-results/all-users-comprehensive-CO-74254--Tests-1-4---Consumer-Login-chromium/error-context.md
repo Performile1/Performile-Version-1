@@ -1,0 +1,57 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: Dashboard
+        - generic [ref=e10]:
+          - img [ref=e12]
+          - textbox "Search orders, couriers, stores..." [ref=e14]
+          - group
+        - generic [ref=e15]:
+          - button [ref=e16] [cursor=pointer]:
+            - img [ref=e17]
+          - button [ref=e19] [cursor=pointer]:
+            - img [ref=e21]
+          - paragraph [ref=e23]: John Customer
+          - button "account of current user" [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: J
+    - navigation "navigation menu" [ref=e26]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - img "Performile Logo" [ref=e30]
+          - generic [ref=e31]: Performile
+        - separator [ref=e32]
+        - list [ref=e34]:
+          - listitem [ref=e35]:
+            - button "Dashboard" [ref=e36] [cursor=pointer]:
+              - img [ref=e38]
+              - generic [ref=e41]: Dashboard
+          - listitem [ref=e42]:
+            - button "Trust Scores" [ref=e43] [cursor=pointer]:
+              - img [ref=e45]
+              - generic [ref=e48]: Trust Scores
+          - listitem [ref=e49]:
+            - button "Orders" [ref=e50] [cursor=pointer]:
+              - img [ref=e52]
+              - generic [ref=e55]: Orders
+          - listitem [ref=e56]:
+            - button "Track Shipment" [ref=e57] [cursor=pointer]:
+              - img [ref=e59]
+              - generic [ref=e62]: Track Shipment
+          - listitem [ref=e63]:
+            - button "My Reviews" [ref=e64] [cursor=pointer]:
+              - img [ref=e66]
+              - generic [ref=e69]: My Reviews
+          - listitem [ref=e70]:
+            - button "Settings" [ref=e71] [cursor=pointer]:
+              - img [ref=e73]
+              - generic [ref=e76]: Settings
+    - main [ref=e77]:
+      - generic [ref=e79]:
+        - heading "Good morning, John!" [level=4] [ref=e80]
+        - progressbar [ref=e81]
+  - status [ref=e88]: Login successful!
+```

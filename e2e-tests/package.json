@@ -4,12 +4,11 @@
   "description": "End-to-end tests for Performile platform",
   "scripts": {
     "test": "playwright test",
+    "test:all": "playwright test tests/all-users-comprehensive.spec.js",
+    "test:all-headed": "playwright test tests/all-users-comprehensive.spec.js --headed",
+    "test:auth": "playwright test tests/auth/login.spec.js",
+    "test:merchant": "playwright test tests/merchant/dashboard.spec.js",
     "test:headed": "playwright test --headed",
-    "test:merchant": "playwright test merchant-audit.spec.js --headed",
-    "test:all-roles": "playwright test all-roles-audit.spec.js --headed",
-    "test:all-roles-fast": "playwright test all-roles-audit.spec.js",
-    "test:comprehensive": "playwright test comprehensive-audit.spec.js --headed",
-    "test:comprehensive-fast": "playwright test comprehensive-audit.spec.js",
     "test:debug": "playwright test --debug",
     "report": "playwright show-report"
   },

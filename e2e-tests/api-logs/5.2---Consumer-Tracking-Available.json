@@ -1,0 +1,244 @@
+{
+  "summary": {
+    "totalCalls": 3,
+    "failedCalls": 0,
+    "slowCalls": 0,
+    "averageResponseTime": 474
+  },
+  "calls": [
+    {
+      "id": "api-1",
+      "endpoint": "/api/auth",
+      "method": "POST",
+      "requestHeaders": {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en-US",
+        "content-type": "application/json",
+        "origin": "https://performile-platform-main.vercel.app",
+        "referer": "https://performile-platform-main.vercel.app/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+        "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "requestBody": {
+        "action": "login",
+        "email": "consumer@performile.com",
+        "password": "Test1234!"
+      },
+      "timestamp": "2025-10-17T06:50:14.488Z",
+      "responseStatus": 200,
+      "responseHeaders": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-length": "959",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Fri, 17 Oct 2025 06:50:15 GMT",
+        "etag": "W/\"3bf-Z9P3satRg6tiZcFk7Y31vn6KAqE\"",
+        "server": "Vercel",
+        "set-cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiZW1haWwiOiJjb25zdW1lckBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImNvbnN1bWVyIiwicm9sZSI6ImNvbnN1bWVyIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjA2ODc0MTV9.J2gIyvDvjd5Spx7NVTJvmkz1d3Kvd_fHybCdZ5ttd20; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600\nrefreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjEyODg2MTV9.-UkQ9AygKzP6pL3J-3QYiY_zaZCtSUK9iu3kXzVut1o; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "x-vercel-cache": "MISS",
+        "x-vercel-id": "arn1::iad1::jvdz9-1760683815108-152ccd0669a3"
+      },
+      "responseBody": {
+        "success": true,
+        "data": {
+          "user": {
+            "user_id": "33f2cc2a-71fc-4594-a10f-c0781270b4dd",
+            "email": "consumer@performile.com",
+            "user_role": "consumer",
+            "first_name": "John",
+            "last_name": "Customer",
+            "is_verified": true,
+            "is_active": true,
+            "created_at": "2025-10-15T13:48:24.346Z",
+            "updated_at": "2025-10-17T06:50:11.076Z"
+          },
+          "tokens": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiZW1haWwiOiJjb25zdW1lckBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImNvbnN1bWVyIiwicm9sZSI6ImNvbnN1bWVyIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjA2ODc0MTV9.J2gIyvDvjd5Spx7NVTJvmkz1d3Kvd_fHybCdZ5ttd20",
+            "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjEyODg2MTV9.-UkQ9AygKzP6pL3J-3QYiY_zaZCtSUK9iu3kXzVut1o"
+          }
+        }
+      },
+      "duration": 459
+    },
+    {
+      "id": "api-2",
+      "endpoint": "/api/notifications",
+      "method": "GET",
+      "requestHeaders": {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en-US",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiZW1haWwiOiJjb25zdW1lckBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImNvbnN1bWVyIiwicm9sZSI6ImNvbnN1bWVyIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjA2ODc0MTV9.J2gIyvDvjd5Spx7NVTJvmkz1d3Kvd_fHybCdZ5ttd20",
+        "cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiZW1haWwiOiJjb25zdW1lckBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImNvbnN1bWVyIiwicm9sZSI6ImNvbnN1bWVyIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjA2ODc0MTV9.J2gIyvDvjd5Spx7NVTJvmkz1d3Kvd_fHybCdZ5ttd20; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjEyODg2MTV9.-UkQ9AygKzP6pL3J-3QYiY_zaZCtSUK9iu3kXzVut1o",
+        "referer": "https://performile-platform-main.vercel.app/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+        "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "requestBody": null,
+      "timestamp": "2025-10-17T06:50:15.170Z",
+      "responseStatus": 200,
+      "responseHeaders": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-length": "42",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Fri, 17 Oct 2025 06:50:15 GMT",
+        "etag": "W/\"2a-6gWpphAwsoxckd+fZ6FNH1mOKbk\"",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "x-vercel-cache": "BYPASS",
+        "x-vercel-id": "arn1::iad1::5q222-1760683815798-e78769f4759f"
+      },
+      "responseBody": {
+        "success": true,
+        "data": [],
+        "unreadCount": 0
+      },
+      "duration": 278
+    },
+    {
+      "id": "api-3",
+      "endpoint": "/api/trustscore/dashboard",
+      "method": "GET",
+      "requestHeaders": {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en-US",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiZW1haWwiOiJjb25zdW1lckBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImNvbnN1bWVyIiwicm9sZSI6ImNvbnN1bWVyIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjA2ODc0MTV9.J2gIyvDvjd5Spx7NVTJvmkz1d3Kvd_fHybCdZ5ttd20",
+        "cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiZW1haWwiOiJjb25zdW1lckBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImNvbnN1bWVyIiwicm9sZSI6ImNvbnN1bWVyIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjA2ODc0MTV9.J2gIyvDvjd5Spx7NVTJvmkz1d3Kvd_fHybCdZ5ttd20; refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwidXNlcklkIjoiMzNmMmNjMmEtNzFmYy00NTk0LWExMGYtYzA3ODEyNzBiNGRkIiwiaWF0IjoxNzYwNjgzODE1LCJleHAiOjE3NjEyODg2MTV9.-UkQ9AygKzP6pL3J-3QYiY_zaZCtSUK9iu3kXzVut1o",
+        "referer": "https://performile-platform-main.vercel.app/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+        "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "requestBody": null,
+      "timestamp": "2025-10-17T06:50:15.176Z",
+      "responseStatus": 200,
+      "responseHeaders": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-encoding": "br",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Fri, 17 Oct 2025 06:50:16 GMT",
+        "etag": "W/\"98c-A7VN5/IQcs3DgilVr+Gj8OIPXQE\"",
+        "server": "Vercel",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "x-vercel-cache": "BYPASS",
+        "x-vercel-id": "arn1::iad1::hwjg2-1760683815798-0cc4508dc76c",
+        "transfer-encoding": "chunked"
+      },
+      "responseBody": {
+        "success": true,
+        "data": {
+          "statistics": {
+            "total_couriers": 11,
+            "active_couriers": 11,
+            "avg_trust_score": "85.66",
+            "total_reviews": 106,
+            "avg_rating": "4.28",
+            "total_orders_processed": 105,
+            "delivered_orders": 73,
+            "avg_completion_rate": "67.61",
+            "avg_on_time_rate": "0.00"
+          },
+          "couriers": [
+            {
+              "courier_id": "4a700f6b-9d73-436c-8e44-00dbe426c30c",
+              "courier_name": "Demo Courier Service",
+              "overall_score": "66.80",
+              "total_reviews": 5,
+              "total_orders": 5,
+              "delivered_orders": 5,
+              "completion_rate": "100.00",
+              "on_time_rate": "0.00"
+            },
+            {
+              "courier_id": "25ac8cfb-9d22-45f4-8357-5dce3edf8932",
+              "courier_name": "Instabox",
+              "overall_score": "0.00",
+              "total_reviews": 0,
+              "total_orders": 0,
+              "delivered_orders": 0,
+              "completion_rate": "0.00",
+              "on_time_rate": "0.00"
+            },
+            {
+              "courier_id": "50130bbc-53a8-4017-a2e9-05cec6129039",
+              "courier_name": "DHL Express",
+              "overall_score": "0.00",
+              "total_reviews": 0,
+              "total_orders": 0,
+              "delivered_orders": 0,
+              "completion_rate": "0.00",
+              "on_time_rate": "0.00"
+            },
+            {
+              "courier_id": "a17a3a63-8e86-412a-9670-0f2435d587dc",
+              "courier_name": "Schenker",
+              "overall_score": "0.00",
+              "total_reviews": 0,
+              "total_orders": 0,
+              "delivered_orders": 0,
+              "completion_rate": "0.00",
+              "on_time_rate": "0.00"
+            },
+            {
+              "courier_id": "03b204a4-1998-4b74-a5cf-37f948cd1571",
+              "courier_name": "Earlybird",
+              "overall_score": "0.00",
+              "total_reviews": 0,
+              "total_orders": 0,
+              "delivered_orders": 0,
+              "completion_rate": "0.00",
+              "on_time_rate": "0.00"
+            }
+          ],
+          "recentReviews": [
+            {
+              "review_id": "0455d237-1f12-46d3-994d-fa7c631ec5d1",
+              "rating": 5,
+              "comment": "Great service! Order 1 delivered on time.",
+              "created_at": "2025-10-15T14:06:24.891Z",
+              "courier_name": "Demo Courier Service",
+              "store_name": "Demo Store"
+            },
+            {
+              "review_id": "05cc6787-220b-43a4-90af-8a3f1415cfea",
+              "rating": 4,
+              "comment": "Great service! Order 2 delivered on time.",
+              "created_at": "2025-10-14T14:06:24.891Z",
+              "courier_name": "Demo Courier Service",
+              "store_name": "Demo Store"
+            },
+            {
+              "review_id": "aefdad38-42f3-4e53-8607-2ddf84f38369",
+              "rating": 5,
+              "comment": "Great service! Order 3 delivered on time.",
+              "created_at": "2025-10-13T14:06:24.891Z",
+              "courier_name": "Demo Courier Service",
+              "store_name": "Demo Store"
+            },
+            {
+              "review_id": "84e7bd55-68f6-4330-815d-31dfd597fa09",
+              "rating": 4,
+              "comment": "Great service! Order 4 delivered on time.",
+              "created_at": "2025-10-12T14:06:24.891Z",
+              "courier_name": "Demo Courier Service",
+              "store_name": "Demo Store"
+            },
+            {
+              "review_id": "272d2ebd-3e62-4c8b-8c4a-ba4058d32742",
+              "rating": 5,
+              "comment": "Great service! Order 5 delivered on time.",
+              "created_at": "2025-10-11T14:06:24.891Z",
+              "courier_name": "Demo Courier Service",
+              "store_name": "Demo Store"
+            }
+          ]
+        }
+      },
+      "duration": 685
+    }
+  ]
+}
