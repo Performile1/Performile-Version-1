@@ -86,7 +86,7 @@ test.describe('COMPREHENSIVE E2E TESTS - ALL USERS', () => {
       expect(tokens).toBeTruthy();
       expect(tokens.accessToken).toBeTruthy();
 
-      expect(apiLogger.validateCall('/api/auth/login', 200)).toBe(true);
+      expect(apiLogger.validateCall('/api/auth', 200)).toBe(true);
       console.log('✅ Admin login successful');
     });
 
@@ -109,7 +109,7 @@ test.describe('COMPREHENSIVE E2E TESTS - ALL USERS', () => {
       expect(tokens).toBeTruthy();
       expect(tokens.accessToken).toBeTruthy();
 
-      expect(apiLogger.validateCall('/api/auth/login', 200)).toBe(true);
+      expect(apiLogger.validateCall('/api/auth', 200)).toBe(true);
       console.log('✅ Merchant login successful');
     });
 
@@ -132,7 +132,7 @@ test.describe('COMPREHENSIVE E2E TESTS - ALL USERS', () => {
       expect(tokens).toBeTruthy();
       expect(tokens.accessToken).toBeTruthy();
 
-      expect(apiLogger.validateCall('/api/auth/login', 200)).toBe(true);
+      expect(apiLogger.validateCall('/api/auth', 200)).toBe(true);
       console.log('✅ Courier login successful');
     });
 
@@ -155,7 +155,7 @@ test.describe('COMPREHENSIVE E2E TESTS - ALL USERS', () => {
       expect(tokens).toBeTruthy();
       expect(tokens.accessToken).toBeTruthy();
 
-      expect(apiLogger.validateCall('/api/auth/login', 200)).toBe(true);
+      expect(apiLogger.validateCall('/api/auth', 200)).toBe(true);
       console.log('✅ Consumer login successful');
     });
 
