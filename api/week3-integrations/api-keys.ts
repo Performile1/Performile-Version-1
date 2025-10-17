@@ -132,7 +132,7 @@ export async function getApiKeys(req: Request, res: Response) {
     }
 
     // Never return the hashed key
-    const maskedData = data.map(key => ({
+    const maskedData = data.map((key: any) => ({
       ...key,
       api_key: undefined // Remove hashed key from response
     }));

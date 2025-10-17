@@ -145,7 +145,7 @@ export async function getCourierCredentials(req: Request, res: Response) {
     }
 
     // Mask sensitive data
-    const maskedData = data.map(cred => ({
+    const maskedData = data.map((cred: any) => ({
       ...cred,
       api_key: cred.api_key ? '***' : null,
       api_secret: cred.api_secret ? '***' : null,
