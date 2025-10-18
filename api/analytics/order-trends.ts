@@ -138,7 +138,7 @@ export default async function handler(
       // Build direct query
       let ordersQuery = supabase
         .from('orders')
-        .select('created_at, order_status, total_amount, courier_id, shop_id')
+        .select('created_at, order_status, package_value, shipping_cost, courier_id, store_id')
         .gte('created_at', startDateStr);
 
       if (entity_type === 'courier') {
@@ -208,7 +208,8 @@ export default async function handler(
         if (order.order_status === 'pending') dayData.pending_orders++;
         if (order.order_status === 'cancelled') dayData.cancelled_orders++;
         
-        dayData.total_revenue += parseFloat(order.total_amount || 0);
+        const orderValue = parseFloat(order.package_value || 0) + parseFloat(order.shipping_cost || 0);
+        dayData.total_revenue += orderValue;
       });
 
       // Calculate averages

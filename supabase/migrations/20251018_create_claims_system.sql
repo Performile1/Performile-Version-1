@@ -111,12 +111,12 @@ SELECT
   COUNT(*) FILTER (WHERE o.order_status = 'pending') as pending_orders,
   COUNT(*) FILTER (WHERE o.order_status = 'cancelled') as cancelled_orders,
   
-  -- Financial metrics
-  COALESCE(SUM(o.total_amount), 0) as total_revenue,
-  COALESCE(AVG(o.total_amount), 0) as avg_order_value,
+  -- Financial metrics (using package_value + shipping_cost)
+  COALESCE(SUM(COALESCE(o.package_value, 0) + COALESCE(o.shipping_cost, 0)), 0) as total_revenue,
+  COALESCE(AVG(COALESCE(o.package_value, 0) + COALESCE(o.shipping_cost, 0)), 0) as avg_order_value,
   
-  -- Performance metrics
-  AVG(EXTRACT(EPOCH FROM (o.delivered_at - o.created_at))/3600) as avg_delivery_hours
+  -- Performance metrics (using delivery_date instead of delivered_at)
+  AVG(EXTRACT(EPOCH FROM (o.delivery_date - o.created_at))/3600) as avg_delivery_hours
   
 FROM orders o
 LEFT JOIN couriers c ON o.courier_id = c.courier_id
