@@ -40,6 +40,26 @@ export const NotFound: React.FC = () => {
         >
           <CardContent sx={{ p: 4 }}>
             <Stack spacing={3} alignItems="center">
+              {/* Performile Logo */}
+              <Box
+                sx={{
+                  mb: 2,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <img
+                  src="/Performile-lastmile performance index.ico"
+                  alt="Performile Logo"
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    objectFit: 'contain',
+                  }}
+                />
+              </Box>
+
               {/* 404 Icon */}
               <Box
                 sx={{
