@@ -21,9 +21,14 @@ import { useAuthStore } from '@/store/authStore';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { TrackingWidget } from '@/components/tracking/TrackingWidget';
-import { PerformanceTrendsChart } from '@/components/dashboard/PerformanceTrendsChart';
-import { RecentActivityWidget } from '@/components/dashboard/RecentActivityWidget';
-import { QuickActionsPanel } from '@/components/dashboard/QuickActionsPanel';
+import { 
+  PerformanceTrendsChart,
+  RecentActivityWidget,
+  QuickActionsPanel,
+  OrderTrendsChart,
+  ClaimsTrendsChart,
+  ClaimsManagementWidget,
+} from '@/components/dashboard';
 import { CourierLogo } from '@/components/courier/CourierLogo';
 
 interface DashboardStats {
@@ -173,6 +178,7 @@ export const Dashboard: React.FC = () => {
       case 'merchant':
         return (
           <Grid container spacing={3}>
+            {/* Stats Cards */}
             <Grid item xs={12} sm={6} md={4}>
               <StatCard
                 title="On-Time Rate"
@@ -197,8 +203,49 @@ export const Dashboard: React.FC = () => {
                 color="info.main"
               />
             </Grid>
+
+            {/* Order Trends Chart */}
+            <Grid item xs={12} lg={6}>
+              <OrderTrendsChart 
+                entityType="merchant"
+                subscriptionTier={user?.subscription_tier || 'tier1'}
+              />
+            </Grid>
+
+            {/* Claims Trends Chart */}
+            <Grid item xs={12} lg={6}>
+              <ClaimsTrendsChart 
+                entityType="merchant"
+                subscriptionTier={user?.subscription_tier || 'tier1'}
+              />
+            </Grid>
+
+            {/* Claims Management Widget */}
+            <Grid item xs={12}>
+              <ClaimsManagementWidget 
+                entityType="merchant"
+                subscriptionTier={user?.subscription_tier || 'tier1'}
+              />
+            </Grid>
+
+            {/* Performance Trends */}
+            <Grid item xs={12} lg={8}>
+              <PerformanceTrendsChart />
+            </Grid>
+
+            {/* Recent Activity */}
+            <Grid item xs={12} lg={4}>
+              <RecentActivityWidget />
+            </Grid>
+
+            {/* Tracking Widget */}
             <Grid item xs={12} md={6}>
               <TrackingWidget />
+            </Grid>
+
+            {/* Quick Actions */}
+            <Grid item xs={12} md={6}>
+              <QuickActionsPanel />
             </Grid>
           </Grid>
         );
@@ -206,6 +253,7 @@ export const Dashboard: React.FC = () => {
       case 'courier':
         return (
           <Grid container spacing={3}>
+            {/* Stats Cards */}
             <Grid item xs={12} sm={6} md={4}>
               <StatCard
                 title="My Trust Score"
@@ -230,6 +278,45 @@ export const Dashboard: React.FC = () => {
                 icon={<Schedule />}
                 color="success.main"
               />
+            </Grid>
+
+            {/* Order Trends Chart */}
+            <Grid item xs={12} lg={6}>
+              <OrderTrendsChart 
+                entityType="courier"
+                subscriptionTier={user?.subscription_tier || 'tier1'}
+              />
+            </Grid>
+
+            {/* Claims Trends Chart */}
+            <Grid item xs={12} lg={6}>
+              <ClaimsTrendsChart 
+                entityType="courier"
+                subscriptionTier={user?.subscription_tier || 'tier1'}
+              />
+            </Grid>
+
+            {/* Claims Management Widget */}
+            <Grid item xs={12}>
+              <ClaimsManagementWidget 
+                entityType="courier"
+                subscriptionTier={user?.subscription_tier || 'tier1'}
+              />
+            </Grid>
+
+            {/* Performance Trends */}
+            <Grid item xs={12} lg={8}>
+              <PerformanceTrendsChart />
+            </Grid>
+
+            {/* Recent Activity */}
+            <Grid item xs={12} lg={4}>
+              <RecentActivityWidget />
+            </Grid>
+
+            {/* Quick Actions */}
+            <Grid item xs={12}>
+              <QuickActionsPanel />
             </Grid>
           </Grid>
         );
