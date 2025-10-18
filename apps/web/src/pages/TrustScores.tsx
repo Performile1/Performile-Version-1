@@ -36,10 +36,12 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
+import { CourierLogo } from '@/components/courier/CourierLogo';
 
 interface CourierTrustScore {
   courier_id: string;
   courier_name: string;
+  courier_code?: string; // Added for CourierLogo
   overall_score: number; // Changed from trust_score
   performance_grade?: string;
   avg_rating: number; // Changed from rating
@@ -167,9 +169,14 @@ export const TrustScores: React.FC = () => {
             <Card sx={{ height: '100%', cursor: 'pointer' }} onClick={() => handleViewDetails(courier)}>
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
-                    <LocalShipping />
-                  </Avatar>
+                  <Box sx={{ mr: 2 }}>
+                    <CourierLogo
+                      courierCode={courier.courier_code || courier.courier_name}
+                      courierName={courier.courier_name}
+                      size="large"
+                      variant="rounded"
+                    />
+                  </Box>
                   <Box sx={{ flexGrow: 1 }}>
                     <Typography variant="h6" noWrap>
                       {courier.courier_name}
@@ -238,9 +245,12 @@ export const TrustScores: React.FC = () => {
       >
         <DialogTitle>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Avatar sx={{ bgcolor: 'primary.main' }}>
-              <LocalShipping />
-            </Avatar>
+            <CourierLogo
+              courierCode={selectedCourier?.courier_code || selectedCourier?.courier_name || ''}
+              courierName={selectedCourier?.courier_name || ''}
+              size="xlarge"
+              variant="rounded"
+            />
             <Box>
               <Typography variant="h6">
                 {selectedCourier?.courier_name}

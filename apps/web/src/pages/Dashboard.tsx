@@ -24,6 +24,7 @@ import { TrackingWidget } from '@/components/tracking/TrackingWidget';
 import { PerformanceTrendsChart } from '@/components/dashboard/PerformanceTrendsChart';
 import { RecentActivityWidget } from '@/components/dashboard/RecentActivityWidget';
 import { QuickActionsPanel } from '@/components/dashboard/QuickActionsPanel';
+import { CourierLogo } from '@/components/courier/CourierLogo';
 
 interface DashboardStats {
   total_couriers: number;
@@ -300,9 +301,34 @@ export const Dashboard: React.FC = () => {
                 <Card>
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
-                        {index + 1}
-                      </Avatar>
+                      <Box sx={{ position: 'relative', mr: 2 }}>
+                        <CourierLogo
+                          courierCode={courier.courier_code || courier.courier_name}
+                          courierName={courier.courier_name}
+                          size="large"
+                          variant="rounded"
+                        />
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: -8,
+                            right: -8,
+                            width: 24,
+                            height: 24,
+                            borderRadius: '50%',
+                            bgcolor: 'primary.main',
+                            color: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '0.75rem',
+                            fontWeight: 'bold',
+                            border: '2px solid white',
+                          }}
+                        >
+                          {index + 1}
+                        </Box>
+                      </Box>
                       <Box sx={{ flexGrow: 1 }}>
                         <Typography variant="h6" noWrap>
                           {courier.courier_name}
