@@ -211,10 +211,10 @@ async function createClaim(req: VercelRequest, res: VercelResponse, user: any, l
     });
   }
 
-  // Get merchant (user_id) from store
+  // Get merchant (owner_user_id) from store
   const { data: shopData } = await supabase
     .from('stores')
-    .select('user_id')
+    .select('owner_user_id')
     .eq('store_id', orderData.store_id)
     .single();
 
@@ -224,7 +224,7 @@ async function createClaim(req: VercelRequest, res: VercelResponse, user: any, l
     .insert({
       order_id,
       courier_id: orderData.courier_id,
-      merchant_id: shopData?.user_id || user.user_id,
+      merchant_id: shopData?.owner_user_id || user.user_id,
       claim_type,
       status: 'open',
       priority,

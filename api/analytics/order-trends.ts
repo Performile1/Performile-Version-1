@@ -144,11 +144,11 @@ export default async function handler(
       if (entity_type === 'courier') {
         ordersQuery = ordersQuery.eq('courier_id', entity_id);
       } else {
-        // For merchant, join with stores table to get user_id (merchant)
+        // For merchant, join with stores table to get owner_user_id (merchant)
         const { data: shops } = await supabase
           .from('stores')
           .select('store_id')
-          .eq('user_id', entity_id);
+          .eq('owner_user_id', entity_id);
         
         if (shops && shops.length > 0) {
           const shopIds = shops.map(s => s.store_id);
