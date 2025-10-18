@@ -32,6 +32,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
+import { CourierLogo } from '@/components/courier/CourierLogo';
 import {
   LineChart,
   Line,
@@ -295,9 +296,15 @@ export const MerchantCheckoutAnalytics: React.FC = () => {
                   {courierPerformance.map((courier: any) => (
                     <TableRow key={courier.courier_id}>
                       <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <LocalShipping fontSize="small" />
-                          {courier.courier_name}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                          <CourierLogo
+                            courierCode={courier.courier_code || courier.courier_name}
+                            courierName={courier.courier_name}
+                            size="small"
+                            variant="rounded"
+                            showName={false}
+                          />
+                          <Typography variant="body2">{courier.courier_name}</Typography>
                         </Box>
                       </TableCell>
                       <TableCell align="right">{courier.total_appearances}</TableCell>
