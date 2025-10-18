@@ -120,8 +120,8 @@ SELECT
   
 FROM orders o
 LEFT JOIN couriers c ON o.courier_id = c.courier_id
-LEFT JOIN stores s ON o.shop_id = s.shop_id
-GROUP BY DATE(o.created_at), o.courier_id, c.courier_name, s.merchant_id, s.shop_name;
+LEFT JOIN stores s ON o.store_id = s.store_id
+GROUP BY DATE(o.created_at), o.courier_id, c.courier_name, s.merchant_id, s.store_name;
 
 -- Create index on materialized view
 CREATE INDEX idx_order_trends_date ON order_trends(trend_date DESC);

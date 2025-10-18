@@ -200,7 +200,7 @@ async function createClaim(req: VercelRequest, res: VercelResponse, user: any, l
   // Get order details to determine courier_id and merchant_id
   const { data: orderData, error: orderError } = await supabase
     .from('orders')
-    .select('courier_id, shop_id')
+    .select('courier_id, store_id')
     .eq('order_id', order_id)
     .single();
 
@@ -211,11 +211,11 @@ async function createClaim(req: VercelRequest, res: VercelResponse, user: any, l
     });
   }
 
-  // Get merchant_id from shop
+  // Get merchant_id from store
   const { data: shopData } = await supabase
     .from('stores')
     .select('merchant_id')
-    .eq('shop_id', orderData.shop_id)
+    .eq('store_id', orderData.store_id)
     .single();
 
   // Create claim

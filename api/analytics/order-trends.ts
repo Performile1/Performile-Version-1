@@ -147,12 +147,12 @@ export default async function handler(
         // For merchant, join with stores table to get merchant_id
         const { data: shops } = await supabase
           .from('stores')
-          .select('shop_id')
+          .select('store_id')
           .eq('merchant_id', entity_id);
         
         if (shops && shops.length > 0) {
-          const shopIds = shops.map(s => s.shop_id);
-          ordersQuery = ordersQuery.in('shop_id', shopIds);
+          const shopIds = shops.map(s => s.store_id);
+          ordersQuery = ordersQuery.in('store_id', shopIds);
         } else {
           // No shops found for this merchant
           return res.status(200).json({
