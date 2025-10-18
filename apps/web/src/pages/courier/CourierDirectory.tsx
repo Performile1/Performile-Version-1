@@ -22,6 +22,7 @@ import {
   TrendingUp as TrendingUpIcon,
   LocalShipping as CourierIcon,
 } from '@mui/icons-material';
+import { CourierLogo } from '@/components/courier/CourierLogo';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
@@ -249,9 +250,34 @@ export const CourierDirectory: React.FC = () => {
               <Card>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
-                      #{index + 1}
-                    </Avatar>
+                    <Box sx={{ position: 'relative', mr: 2 }}>
+                      <CourierLogo
+                        courierCode={courier.courier_code || `Courier-${index + 1}`}
+                        courierName={`Courier #${courier.courier_id.substring(0, 8)}`}
+                        size="large"
+                        variant="rounded"
+                      />
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: -8,
+                          right: -8,
+                          width: 24,
+                          height: 24,
+                          borderRadius: '50%',
+                          bgcolor: 'primary.main',
+                          color: 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem',
+                          fontWeight: 'bold',
+                          border: '2px solid white',
+                        }}
+                      >
+                        #{index + 1}
+                      </Box>
+                    </Box>
                     <Box sx={{ flexGrow: 1 }}>
                       <Typography variant="h6">
                         Courier #{courier.courier_id.substring(0, 8)}

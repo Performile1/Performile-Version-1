@@ -28,18 +28,8 @@ import {
   Tooltip,
   Badge,
 } from '@mui/material';
-import {
-  Add,
-  DragIndicator,
-  Delete,
-  Star,
-  Lock,
-  Upgrade,
-  Info,
-  Edit,
-  Check,
-  Close,
-} from '@mui/icons-material';
+import { Star, DragIndicator, Edit, Check, Close, Add, Delete, Lock } from '@mui/icons-material';
+import { CourierLogo } from '@/components/courier/CourierLogo';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -57,6 +47,7 @@ interface Courier {
   priority_level: number;
   total_deliveries: number;
   reliability_score: number;
+  courier_code: string;
 }
 
 interface AvailableCourier {
@@ -68,6 +59,7 @@ interface AvailableCourier {
   total_deliveries: number;
   is_selected: boolean;
   can_add_more: boolean;
+  courier_code: string;
 }
 
 interface SubscriptionInfo {
@@ -462,18 +454,12 @@ export const MerchantCourierSettings: React.FC = () => {
                       <DragIndicator />
                     </IconButton>
 
-                    <Avatar 
-                      src={getCourierLogo(courier.courier_name, courier.logo_url)}
-                      alt={courier.courier_name}
-                      sx={{ width: 56, height: 56 }}
-                      imgProps={{
-                        onError: (e: any) => {
-                          e.target.src = courier.logo_url || '';
-                        }
-                      }}
-                    >
-                      {courier.courier_name.charAt(0)}
-                    </Avatar>
+                    <CourierLogo
+                      courierCode={courier.courier_code || courier.courier_name}
+                      courierName={courier.courier_name}
+                      size="large"
+                      variant="rounded"
+                    />
 
                     <Box sx={{ flexGrow: 1 }}>
                       {editingCourier === courier.courier_id ? (
@@ -593,17 +579,12 @@ export const MerchantCourierSettings: React.FC = () => {
                       badgeContent={!canAddMore ? <Lock fontSize="small" /> : null}
                       color="error"
                     >
-                      <Avatar 
-                        src={getCourierLogo(courier.courier_name, courier.logo_url)}
-                        sx={{ width: 48, height: 48 }}
-                        imgProps={{
-                          onError: (e: any) => {
-                            e.target.src = courier.logo_url || '';
-                          }
-                        }}
-                      >
-                        {courier.courier_name.charAt(0)}
-                      </Avatar>
+                      <CourierLogo
+                        courierCode={courier.courier_code || courier.courier_name}
+                        courierName={courier.courier_name}
+                        size="medium"
+                        variant="rounded"
+                      />
                     </Badge>
                   </ListItemAvatar>
                   <ListItemText

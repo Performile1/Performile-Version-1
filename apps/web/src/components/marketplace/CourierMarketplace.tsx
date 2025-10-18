@@ -26,6 +26,7 @@ import {
   LocalShipping
 } from '@mui/icons-material';
 import { CompetitorData } from '@/types/analytics';
+import { CourierLogo } from '@/components/courier/CourierLogo';
 
 interface CourierCardProps {
   courier: CompetitorData;
@@ -39,9 +40,20 @@ const CourierCard: React.FC<CourierCardProps> = ({ courier, onUnlock, onSendLead
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
           <Box display="flex" alignItems="center">
-            <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
-              <LocalShipping />
-            </Avatar>
+            {courier.isUnlocked ? (
+              <Box sx={{ mr: 2 }}>
+                <CourierLogo
+                  courierCode={courier.courier_code || `Courier ${courier.anonymizedId}`}
+                  courierName={`Courier ${courier.anonymizedId}`}
+                  size="medium"
+                  variant="rounded"
+                />
+              </Box>
+            ) : (
+              <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                <LocalShipping />
+              </Avatar>
+            )}
             <Box>
               <Typography variant="h6">
                 {courier.isUnlocked ? `Courier ${courier.anonymizedId}` : 'Anonymous Courier'}
