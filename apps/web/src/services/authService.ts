@@ -23,7 +23,7 @@ const API_BASE_URL = getApiBaseUrl();
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
-  timeout: 10000, // 10 second timeout
+  timeout: 30000, // 30 second timeout (increased for serverless cold starts)
 });
 
 // Request interceptor to add auth token
@@ -101,7 +101,7 @@ class AuthService {
             'Content-Type': 'application/json',
           },
           withCredentials: true,
-          timeout: 10000,
+          timeout: 30000, // 30 second timeout for serverless cold starts
         }
       );
       
