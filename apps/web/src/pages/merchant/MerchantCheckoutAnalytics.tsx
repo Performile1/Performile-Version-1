@@ -54,16 +54,31 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#FF6B9D'
 export const MerchantCheckoutAnalytics: React.FC = () => {
   const { user } = useAuthStore();
   const [timeRange, setTimeRange] = useState('30d');
+  const [postalCode, setPostalCode] = useState<string>('');
 
   // Fetch merchant checkout analytics
   const { data: analyticsData, isLoading } = useQuery({
-    queryKey: ['merchant-checkout-analytics', user?.user_id, timeRange],
+    queryKey: ['merchant-checkout-analytics', user?.user_id, timeRange, postalCode],
     queryFn: async () => {
-      const response = await apiClient.get(`/merchant/checkout-analytics?timeRange=${timeRange}`);
+      const params = new URLSearchParams({ timeRange });
+      if (postalCode) {
+        params.append('postalCode', postalCode);
+      }
+      const response = await apiClient.get(`/merchant/checkout-analytics?${params.toString()}`);
       return response.data.data;
     },
     enabled: !!user,
   });
+
+  // Anonymize courier names when postal code is selected
+  const anonymizeCourierName = (courierName: string, index: number): string => {
+    if (!postalCode) return courierName;
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    return `Competitor ${letters[index % letters.length]}`;
+  };
+
+  // Check if we should show anonymized data
+  const showAnonymized = !!postalCode;
 
   if (isLoading) {
     return (
@@ -92,8 +107,8 @@ export const MerchantCheckoutAnalytics: React.FC = () => {
   const { summary, courierPerformance, trends, recentCheckouts } = analyticsData;
 
   // Prepare courier selection data for pie chart
-  const courierSelectionData = courierPerformance?.map((courier: any) => ({
-    name: courier.courier_name,
+  const courierSelectionData = courierPerformance?.map((courier: any, index: number) => ({
+    name: showAnonymized ? anonymizeCourierName(courier.courier_name, index) : courier.courier_name,
     value: parseInt(courier.times_selected),
   })) || [];
 
@@ -117,19 +132,45 @@ export const MerchantCheckoutAnalytics: React.FC = () => {
             Track courier selections and checkout performance
           </Typography>
         </Box>
-        <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Time Range</InputLabel>
-          <Select
-            value={timeRange}
-            label="Time Range"
-            onChange={(e) => setTimeRange(e.target.value)}
-          >
-            <MenuItem value="7d">Last 7 Days</MenuItem>
-            <MenuItem value="30d">Last 30 Days</MenuItem>
-            <MenuItem value="90d">Last 90 Days</MenuItem>
-          </Select>
-        </FormControl>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <FormControl sx={{ minWidth: 120 }}>
+            <InputLabel>Time Range</InputLabel>
+            <Select
+              value={timeRange}
+              label="Time Range"
+              onChange={(e) => setTimeRange(e.target.value)}
+            >
+              <MenuItem value="7d">Last 7 Days</MenuItem>
+              <MenuItem value="30d">Last 30 Days</MenuItem>
+              <MenuItem value="90d">Last 90 Days</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl sx={{ minWidth: 150 }}>
+            <InputLabel>Postal Code</InputLabel>
+            <Select
+              value={postalCode}
+              label="Postal Code"
+              onChange={(e) => setPostalCode(e.target.value)}
+            >
+              <MenuItem value="">All Postal Codes</MenuItem>
+              <MenuItem value="1000">1000</MenuItem>
+              <MenuItem value="2000">2000</MenuItem>
+              <MenuItem value="3000">3000</MenuItem>
+              <MenuItem value="4000">4000</MenuItem>
+              <MenuItem value="5000">5000</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
       </Box>
+
+      {/* Anonymization Notice */}
+      {showAnonymized && (
+        <Alert severity="info" sx={{ mb: 3 }}>
+          <Typography variant="body2">
+            <strong>Privacy Mode:</strong> Courier names are anonymized as "Competitor A", "Competitor B", etc. when filtering by postal code to protect competitive data.
+          </Typography>
+        </Alert>
+      )}
 
       {/* Summary Cards */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
@@ -293,18 +334,37 @@ export const MerchantCheckoutAnalytics: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {courierPerformance.map((courier: any) => (
+                  {courierPerformance.map((courier: any, index: number) => (
                     <TableRow key={courier.courier_id}>
                       <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                          <CourierLogo
-                            courierCode={courier.courier_code || courier.courier_name}
-                            courierName={courier.courier_name}
-                            size="small"
-                            variant="rounded"
-                            showName={false}
-                          />
-                          <Typography variant="body2">{courier.courier_name}</Typography>
+                          {showAnonymized ? (
+                            <Box sx={{ 
+                              width: 32, 
+                              height: 32, 
+                              borderRadius: 1,
+                              bgcolor: COLORS[index % COLORS.length],
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '0.875rem'
+                            }}>
+                              {String.fromCharCode(65 + index)}
+                            </Box>
+                          ) : (
+                            <CourierLogo
+                              courierCode={courier.courier_code || courier.courier_name}
+                              courierName={courier.courier_name}
+                              size="small"
+                              variant="rounded"
+                              showName={false}
+                            />
+                          )}
+                          <Typography variant="body2">
+                            {showAnonymized ? anonymizeCourierName(courier.courier_name, index) : courier.courier_name}
+                          </Typography>
                         </Box>
                       </TableCell>
                       <TableCell align="right">{courier.total_appearances}</TableCell>
