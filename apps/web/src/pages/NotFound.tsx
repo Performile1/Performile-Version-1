@@ -9,7 +9,7 @@ import {
   Button,
   Stack,
 } from '@mui/material';
-import { SearchOff, Home, ArrowBack } from '@mui/icons-material';
+import { SearchOff, Home, ArrowBack, Close } from '@mui/icons-material';
 
 export const NotFound: React.FC = () => {
   const navigate = useNavigate();
@@ -33,11 +33,7 @@ export const NotFound: React.FC = () => {
       }}
     >
       <Container maxWidth="sm">
-        <Card
-          sx={{
-            boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
-          }}
-        >
+        <Card sx={{ maxWidth: 500, mx: 'auto' }}>
           <CardContent sx={{ p: 4 }}>
             <Stack spacing={3} alignItems="center">
               {/* Performile Logo */}
@@ -60,19 +56,37 @@ export const NotFound: React.FC = () => {
                 />
               </Box>
 
-              {/* 404 Icon */}
+              {/* 404 Icon - Magnifying Glass with X */}
               <Box
                 sx={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: '50%',
+                  position: 'relative',
+                  width: 120,
+                  height: 120,
+                  borderRadius: 3,
                   background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <SearchOff sx={{ fontSize: 50, color: 'white' }} />
+                <SearchOff sx={{ fontSize: 60, color: 'white' }} />
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                    width: 28,
+                    height: 28,
+                    borderRadius: '50%',
+                    bgcolor: '#ef4444',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                  }}
+                >
+                  <Close sx={{ fontSize: 18, color: 'white' }} />
+                </Box>
               </Box>
 
               {/* 404 Text */}

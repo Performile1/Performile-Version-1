@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Box, Button, Container, Typography, Paper, Stack, Card, CardContent, Alert, Collapse } from '@mui/material';
-import { ErrorOutline, Refresh, Home, BugReport, ExpandMore, ExpandLess } from '@mui/icons-material';
+import { ErrorOutline, Refresh, Home, BugReport, ExpandMore, ExpandLess, SearchOff, Close } from '@mui/icons-material';
 
 interface Props {
   children: ReactNode;
@@ -125,7 +125,7 @@ export class ErrorBoundary extends Component<Props, State> {
             p: 3,
           }}
         >
-          <Card sx={{ maxWidth: 600, width: '100%', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+          <Card sx={{ maxWidth: 500, width: '100%', mx: 'auto' }}>
             <CardContent sx={{ p: 4 }}>
               <Stack spacing={3} alignItems="center">
                 {/* Performile Logo */}
@@ -148,24 +148,47 @@ export class ErrorBoundary extends Component<Props, State> {
                   />
                 </Box>
 
-                {/* Error Icon */}
+                {/* Error Icon - Magnifying Glass with X */}
                 <Box
                   sx={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                    position: 'relative',
+                    width: 120,
+                    height: 120,
+                    borderRadius: 3,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}
                 >
-                  <ErrorOutline
+                  <SearchOff
                     sx={{
-                      fontSize: 40,
+                      fontSize: 60,
                       color: 'white',
                     }}
                   />
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      width: 28,
+                      height: 28,
+                      borderRadius: '50%',
+                      bgcolor: '#ef4444',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                    }}
+                  >
+                    <Close
+                      sx={{
+                        fontSize: 18,
+                        color: 'white',
+                      }}
+                    />
+                  </Box>
                 </Box>
 
                 {/* Error Title */}
