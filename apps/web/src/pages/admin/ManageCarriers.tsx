@@ -37,16 +37,21 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { apiClient } from '@/services/apiClient';
 import toast from 'react-hot-toast';
+import { CourierLogo } from '@/components/courier/CourierLogo';
+import { IntegrationStatusBadge } from '@/components/courier/IntegrationStatusBadge';
 
 interface Carrier {
   courier_id: string;
   courier_name: string;
+  courier_code?: string; // Added for CourierLogo
   contact_email: string;
   contact_phone: string;
   service_areas: string[];
   is_active: boolean;
   trust_score?: number;
   total_orders?: number;
+  has_api_integration?: boolean; // Added for integration status
+  integration_status?: string; // Added for integration status
   created_at: string;
 }
 
@@ -218,14 +223,25 @@ export const ManageCarriers: React.FC = () => {
             {(carriers || []).map((carrier: Carrier) => (
               <TableRow key={carrier.courier_id}>
                 <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar sx={{ mr: 2, bgcolor: 'primary.main' }}>
-                      <LocalShipping />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="subtitle2">
-                        {carrier.courier_name}
-                      </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <CourierLogo
+                      courierCode={carrier.courier_code || carrier.courier_name}
+                      courierName={carrier.courier_name}
+                      size="medium"
+                      variant="rounded"
+                    />
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography variant="subtitle2">
+                          {carrier.courier_name}
+                        </Typography>
+                        {carrier.has_api_integration && (
+                          <IntegrationStatusBadge
+                            status={carrier.integration_status || 'not_configured'}
+                            size="small"
+                          />
+                        )}
+                      </Box>
                       <Typography variant="caption" color="text.secondary">
                         ID: {carrier.courier_id.slice(0, 8)}...
                       </Typography>
