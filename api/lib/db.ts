@@ -17,12 +17,16 @@ export const getPool = (): Pool => {
     
     pool = new Pool({
       connectionString,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      ssl: {
+        rejectUnauthorized: false, // Required for Supabase
+      },
       max: 1, // Minimal connections for serverless
       min: 0, // No minimum connections
-      idleTimeoutMillis: 5000, // Release idle connections very quickly
-      connectionTimeoutMillis: 10000, // Fail fast if can't connect
+      idleTimeoutMillis: 10000, // 10 seconds
+      connectionTimeoutMillis: 20000, // 20 second connection timeout
       statement_timeout: 30000, // 30 second query timeout
+      keepAlive: true,
+      keepAliveInitialDelayMillis: 10000,
     });
 
     // Handle pool errors
