@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performile Token Checker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 24px;
+            font-size: 28px;
+        }
+        
+        .status-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .status-card.expired {
+            border-left-color: #ef4444;
+            background: #fee;
+        }
+        
+        .status-card.expiring {
+            border-left-color: #f59e0b;
+            background: #fffbeb;
+        }
+        
+        .status-card.valid {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .label {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        
+        .value {
+            font-size: 16px;
+            color: #1f2937;
+            word-break: break-all;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .badge.expired {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .badge.expiring {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .badge.valid {
+            background: #10b981;
+            color: white;
+        }
+        
+        .badge.none {
+            background: #6b7280;
+            color: white;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 16px;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .info {
+            background: #e0e7ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #4338ca;
+        }
+        
+        .error {
+            background: #fee;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Performile Token Checker</h1>
+        
+        <div id="results"></div>
+        
+        <button onclick="checkTokens()">🔄 Refresh Status</button>
+        <button onclick="clearTokens()" style="background: #ef4444; margin-top: 8px;">🗑️ Clear All Tokens</button>
+    </div>
+
+    <script>
+        function checkTokens() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            try {
+                // Check performile-auth
+                const authData = localStorage.getItem('performile-auth');
+                const tokensData = localStorage.getItem('performile_tokens');
+                
+                if (!authData && !tokensData) {
+                    resultsDiv.innerHTML = `
+                        <div class="error">
+                            <strong>❌ No tokens found!</strong><br>
+                            You need to login to generate tokens.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let accessToken = null;
+                let refreshToken = null;
+                
+                // Try to get from performile-auth
+                if (authData) {
+                    try {
+                        const parsed = JSON.parse(authData);
+                        accessToken = parsed?.state?.tokens?.accessToken;
+                        refreshToken = parsed?.state?.tokens?.refreshToken;
+                    } catch (e) {
+                        console.error('Failed to parse performile-auth:', e);
+                    }
+                }
+                
+                // Fallback to performile_tokens
+                if (!accessToken && tokensData) {
+                    try {
+                        const parsed = JSON.parse(tokensData);
+                        accessToken = parsed?.accessToken;
+                        refreshToken = parsed?.refreshToken;
+                    } catch (e) {
+                        console.error('Failed to parse performile_tokens:', e);
+                    }
+                }
+                
+                if (!accessToken) {
+                    resultsDiv.innerHTML = `
+                        <div class="error">
+                            <strong>⚠️ Tokens found but invalid!</strong><br>
+                            Please clear tokens and login again.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Decode access token
+                const accessPayload = decodeToken(accessToken);
+                const refreshPayload = refreshToken ? decodeToken(refreshToken) : null;
+                
+                const now = Math.floor(Date.now() / 1000);
+                
+                // Access token status
+                const accessExpired = accessPayload.exp < now;
+                const accessMinutesLeft = Math.floor((accessPayload.exp - now) / 60);
+                const accessStatus = accessExpired ? 'expired' : (accessMinutesLeft < 5 ? 'expiring' : 'valid');
+                const accessBadgeText = accessExpired ? 'EXPIRED' : (accessMinutesLeft < 5 ? 'EXPIRING SOON' : 'VALID');
+                
+                // Refresh token status
+                let refreshStatus = 'none';
+                let refreshBadgeText = 'N/A';
+                let refreshMinutesLeft = 0;
+                
+                if (refreshPayload) {
+                    const refreshExpired = refreshPayload.exp < now;
+                    refreshMinutesLeft = Math.floor((refreshPayload.exp - now) / 60);
+                    refreshStatus = refreshExpired ? 'expired' : (refreshMinutesLeft < 60 ? 'expiring' : 'valid');
+                    refreshBadgeText = refreshExpired ? 'EXPIRED' : (refreshMinutesLeft < 60 ? 'EXPIRING SOON' : 'VALID');
+                }
+                
+                resultsDiv.innerHTML = `
+                    <div class="status-card ${accessStatus}">
+                        <div class="label">Access Token</div>
+                        <div class="value">
+                            Expires: ${new Date(accessPayload.exp * 1000).toLocaleString()}<br>
+                            ${accessExpired ? 
+                                `<strong>Expired ${Math.abs(accessMinutesLeft)} minutes ago</strong>` : 
+                                `Valid for ${accessMinutesLeft} minutes`
+                            }
+                        </div>
+                        <span class="badge ${accessStatus}">${accessBadgeText}</span>
+                    </div>
+                    
+                    ${refreshPayload ? `
+                        <div class="status-card ${refreshStatus}">
+                            <div class="label">Refresh Token</div>
+                            <div class="value">
+                                Expires: ${new Date(refreshPayload.exp * 1000).toLocaleString()}<br>
+                                Valid for ${Math.floor(refreshMinutesLeft / 60)} hours
+                            </div>
+                            <span class="badge ${refreshStatus}">${refreshBadgeText}</span>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="status-card">
+                        <div class="label">User Info</div>
+                        <div class="value">
+                            Email: ${accessPayload.email || 'N/A'}<br>
+                            Role: ${accessPayload.user_role || accessPayload.role || 'N/A'}<br>
+                            User ID: ${accessPayload.user_id || accessPayload.userId || 'N/A'}
+                        </div>
+                    </div>
+                    
+                    ${accessExpired ? `
+                        <div class="error">
+                            <strong>⚠️ Action Required!</strong><br>
+                            Your access token has expired. Please clear tokens and login again.
+                        </div>
+                    ` : `
+                        <div class="info">
+                            <strong>✅ Tokens are valid!</strong><br>
+                            Your session is active and will auto-refresh when needed.
+                        </div>
+                    `}
+                `;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Error checking tokens!</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        function decodeToken(token) {
+            const parts = token.split('.');
+            if (parts.length !== 3) {
+                throw new Error('Invalid token format');
+            }
+            const payload = JSON.parse(atob(parts[1]));
+            return payload;
+        }
+        
+        function clearTokens() {
+            if (confirm('Are you sure you want to clear all tokens? You will need to login again.')) {
+                localStorage.removeItem('performile-auth');
+                localStorage.removeItem('performile_tokens');
+                alert('✅ Tokens cleared! Please login again.');
+                checkTokens();
+            }
+        }
+        
+        // Check on load
+        checkTokens();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(checkTokens, 30000);
+    </script>
+</body>
+</html>

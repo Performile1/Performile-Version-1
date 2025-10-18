@@ -165,12 +165,20 @@ export const useAuthStore = create<AuthStore>()(
           const { tokens, isAuthenticated } = get();
           
           if (!isAuthenticated || !tokens?.accessToken) {
+            console.log('[AuthStore] No tokens to validate');
             return;
           }
 
           // Decode token to check expiration
           const decoded: any = jwtDecode(tokens.accessToken);
           const now = Math.floor(Date.now() / 1000);
+          
+          console.log('[AuthStore] Token validation:', {
+            exp: decoded.exp,
+            now: now,
+            expired: decoded.exp < now,
+            expiresInMinutes: Math.floor((decoded.exp - now) / 60)
+          });
           
           // If token expired or expires in less than 5 minutes, try to refresh
           if (decoded.exp && decoded.exp < now + 300) {
@@ -180,14 +188,19 @@ export const useAuthStore = create<AuthStore>()(
             if (!refreshSuccess) {
               console.log('[AuthStore] Token refresh failed, clearing auth');
               get().clearAuth();
-              // Don't show toast during initial load, it will redirect to login
+              toast.error('Your session has expired. Please log in again.');
+            } else {
+              console.log('[AuthStore] Token refreshed successfully');
             }
+          } else {
+            console.log('[AuthStore] Token is still valid');
           }
         } catch (error) {
           console.error('[AuthStore] Token validation error:', error);
           // If token is invalid, clear auth silently
           try {
             get().clearAuth();
+            toast.error('Invalid session. Please log in again.');
           } catch (clearError) {
             console.error('[AuthStore] Error clearing auth:', clearError);
           }

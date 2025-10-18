@@ -135,12 +135,18 @@ class ApiClient {
           }
         }
         
-        // Debug logging (always on for now)
-        console.log('[ApiClient] Auth state:', { hasTokens: !!tokens, hasAccessToken: !!tokens?.accessToken });
+        // Debug logging
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[ApiClient] Request:', { 
+            url: config.url, 
+            hasToken: !!tokens?.accessToken,
+            method: config.method 
+          });
+        }
         
         if (tokens?.accessToken) {
           config.headers.Authorization = `Bearer ${tokens.accessToken}`;
-        } else {
+        } else if (process.env.NODE_ENV === 'development') {
           console.warn('[ApiClient] No access token available for request:', config.url);
         }
         
@@ -212,15 +218,21 @@ class ApiClient {
           return Promise.reject(new Error('Authentication required'));
         } else if (error.response?.status === 403) {
           toast.error('You do not have permission to perform this action');
+        } else if (error.response?.status === 404) {
+          // Log 404 but don't show toast - let components handle it
+          console.warn('[ApiClient] 404 Not Found:', error.config?.url);
+          return Promise.reject(new Error('Resource not found'));
         } else if (error.response?.status === 429) {
           toast.error('Too many requests. Please try again later.');
+        } else if (error.response?.status >= 500) {
+          toast.error('Server error. Please try again later.');
         } else if (error.response?.data?.message) {
           toast.error(error.response.data.message);
         } else if (error.message === 'Network Error') {
           toast.error('Network error. Please check your connection.');
         } else if (error.code === 'ECONNABORTED') {
           toast.error('Request timeout. Please try again.');
-        } else if (error.message && !error.message.includes('Session expired')) {
+        } else if (error.message && !error.message.includes('Session expired') && !error.message.includes('Resource not found')) {
           toast.error(error.message);
         }
 

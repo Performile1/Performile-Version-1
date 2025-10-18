@@ -6,7 +6,9 @@ import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '@/store/authStore';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { SessionExpiredModal } from '@/components/SessionExpiredModal';
+import { NotLoggedInModal } from '@/components/auth/NotLoggedInModal';
 import { AuthPage } from '@/pages/AuthPage';
+import { NotFound } from '@/pages/NotFound';
 import { Dashboard } from '@/pages/Dashboard';
 import { TrustScores } from '@/pages/TrustScores';
 import { ManageCarriers } from '@/pages/admin/ManageCarriers';
@@ -130,11 +132,41 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRoles
 };
 
 const App: React.FC = () => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, validateStoredToken } = useAuthStore();
+  const [showNotLoggedIn, setShowNotLoggedIn] = React.useState(false);
+  const [isValidating, setIsValidating] = React.useState(true);
 
-  // Token validation disabled - causes render errors
-  // Tokens are validated automatically by apiClient interceptor on first API call
-  // This is safer and doesn't block initial render
+  // Validate tokens on app load
+  React.useEffect(() => {
+    const validateTokens = async () => {
+      try {
+        console.log('[App] Validating stored tokens on load...');
+        await validateStoredToken();
+      } catch (error) {
+        console.error('[App] Token validation failed:', error);
+      } finally {
+        setIsValidating(false);
+      }
+    };
+
+    validateTokens();
+  }, []); // Run once on mount
+
+  // Listen for authentication errors
+  React.useEffect(() => {
+    const handleAuthError = () => {
+      if (!isAuthenticated && !isValidating) {
+        setShowNotLoggedIn(true);
+      }
+    };
+
+    // You can add event listeners here if needed
+    // For now, we'll rely on the SessionExpiredModal for 401 errors
+
+    return () => {
+      // Cleanup
+    };
+  }, [isAuthenticated, isValidating]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -473,9 +505,15 @@ const App: React.FC = () => {
                 <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
               }
             />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            
+            {/* 404 Not Found - Must be last */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <SessionExpiredModal />
+          <NotLoggedInModal 
+            isOpen={showNotLoggedIn} 
+            onClose={() => setShowNotLoggedIn(false)}
+          />
         </Router>
         <Toaster
           position="top-right"

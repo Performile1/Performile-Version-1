@@ -150,20 +150,33 @@ class ErrorBoundary extends Component<Props, State> {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            minHeight: '50vh',
+            minHeight: '100vh',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             p: 3,
           }}
         >
-          <Card sx={{ maxWidth: 600, width: '100%' }}>
-            <CardContent>
+          <Card sx={{ maxWidth: 600, width: '100%', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+            <CardContent sx={{ p: 4 }}>
               <Stack spacing={3} alignItems="center">
                 {/* Error Icon */}
-                <ErrorOutline
+                <Box
                   sx={{
-                    fontSize: 64,
-                    color: 'error.main',
+                    width: 80,
+                    height: 80,
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
-                />
+                >
+                  <ErrorOutline
+                    sx={{
+                      fontSize: 40,
+                      color: 'white',
+                    }}
+                  />
+                </Box>
 
                 {/* Error Title */}
                 <Typography variant="h5" component="h2" textAlign="center" fontWeight="bold">
