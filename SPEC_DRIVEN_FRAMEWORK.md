@@ -505,6 +505,365 @@ npm run build
 
 ---
 
+### **RULE #15: AUDIT EXISTING FILES BEFORE CHANGES**
+
+**BEFORE MODIFYING ANY FILE:**
+
+**Step 1: Check if file exists**
+```bash
+# Use grep or find to locate file
+grep -r "filename" .
+find . -name "filename.ts"
+```
+
+**Step 2: Read and analyze existing file**
+```bash
+# Read the file completely
+cat path/to/file.ts
+
+# Check imports
+grep "^import" path/to/file.ts
+
+# Check exports
+grep "^export" path/to/file.ts
+
+# Check function signatures
+grep "function\|const.*=.*=>" path/to/file.ts
+```
+
+**Step 3: Document current state**
+```markdown
+## File Audit: filename.ts
+
+### Current State:
+- Lines of code: X
+- Imports: [list]
+- Exports: [list]
+- Functions: [list]
+- Dependencies: [list]
+
+### Proposed Changes:
+- Add: [what]
+- Modify: [what]
+- Remove: [what]
+
+### Impact Analysis:
+- Files affected: [list]
+- Breaking changes: [yes/no]
+- Tests needed: [list]
+```
+
+**Step 4: Check for conflicts**
+- Are there duplicate functions?
+- Are there naming conflicts?
+- Are there import conflicts?
+- Are there type conflicts?
+
+**NEVER:**
+- ❌ Assume file doesn't exist
+- ❌ Overwrite without reading
+- ❌ Delete existing functionality
+- ❌ Change function signatures without checking usage
+
+**ALWAYS:**
+- ✅ Read file first
+- ✅ Understand existing code
+- ✅ Document changes
+- ✅ Check for conflicts
+- ✅ Test after changes
+
+---
+
+### **RULE #16: CHECK FOR EXISTING API CALLS**
+
+**BEFORE CREATING NEW API ENDPOINT:**
+
+**Step 1: Search for existing endpoints**
+```bash
+# Search in api folder
+grep -r "export.*handler\|export default" api/
+
+# Search for similar routes
+grep -r "/api/endpoint-name" .
+
+# Check API client
+grep -r "axios\|fetch" apps/web/src/services/
+```
+
+**Step 2: Check existing API services**
+```typescript
+// Common API service files to check:
+- apps/web/src/services/apiClient.ts
+- apps/web/src/services/authService.ts
+- apps/web/src/services/orderService.ts
+- apps/web/src/services/courierService.ts
+- api/lib/*.ts
+```
+
+**Step 3: Document existing APIs**
+```markdown
+## Existing API Endpoints
+
+### Similar Endpoints Found:
+1. GET /api/existing-endpoint
+   - Purpose: [what it does]
+   - Can we use it? [yes/no]
+   - Modifications needed: [list]
+
+2. POST /api/another-endpoint
+   - Purpose: [what it does]
+   - Can we reuse? [yes/no]
+   - Why not: [reason]
+
+### Decision:
+- [ ] Use existing endpoint
+- [ ] Modify existing endpoint
+- [ ] Create new endpoint (justify why)
+```
+
+**REUSE CHECKLIST:**
+- [ ] Does existing endpoint do what we need?
+- [ ] Can we extend it with query params?
+- [ ] Can we add optional fields?
+- [ ] Would modification break existing usage?
+
+**CREATE NEW ONLY IF:**
+- ✅ No similar endpoint exists
+- ✅ Existing endpoint can't be extended
+- ✅ Modification would break existing usage
+- ✅ Different authentication/authorization needed
+
+**EXAMPLES:**
+```typescript
+// ❌ BAD - Creating duplicate
+POST /api/orders/create  // Already have POST /api/orders
+
+// ✅ GOOD - Reusing existing
+POST /api/orders  // Use existing endpoint
+
+// ❌ BAD - Creating when can extend
+GET /api/orders/merchant  // Can use GET /api/orders?role=merchant
+
+// ✅ GOOD - Extending existing
+GET /api/orders?role=merchant&status=pending
+
+// ✅ GOOD - New endpoint justified
+POST /api/orders/bulk-import  // Different purpose, can't reuse
+```
+
+---
+
+### **RULE #17: CHECK EXISTING TABLES BEFORE CREATING NEW**
+
+**BEFORE CREATING NEW TABLE:**
+
+**Step 1: Search for similar tables**
+```sql
+-- List all tables
+SELECT table_name FROM information_schema.tables 
+WHERE table_schema = 'public' 
+ORDER BY table_name;
+
+-- Search for tables with similar names
+SELECT table_name FROM information_schema.tables 
+WHERE table_name LIKE '%keyword%';
+
+-- Check table columns
+SELECT table_name, column_name, data_type 
+FROM information_schema.columns
+WHERE table_name IN ('table1', 'table2')
+ORDER BY table_name, ordinal_position;
+```
+
+**Step 2: Analyze existing tables**
+```markdown
+## Table Analysis
+
+### Existing Tables Found:
+1. **similar_table_1**
+   - Columns: [list]
+   - Purpose: [what it stores]
+   - Can we use it? [yes/no]
+   - Why not: [reason]
+
+2. **similar_table_2**
+   - Columns: [list]
+   - Purpose: [what it stores]
+   - Can we extend it? [yes/no]
+   - How: [add columns/use JSONB]
+
+### Decision:
+- [ ] Use existing table
+- [ ] Extend existing table (add columns)
+- [ ] Create new table (justify why)
+```
+
+**REUSE STRATEGIES:**
+
+**Strategy 1: Use existing table as-is**
+```sql
+-- If table has what we need
+SELECT * FROM existing_table WHERE condition;
+```
+
+**Strategy 2: Add columns to existing table**
+```sql
+-- If table is close but missing fields
+ALTER TABLE existing_table 
+ADD COLUMN IF NOT EXISTS new_field VARCHAR(255);
+```
+
+**Strategy 3: Use JSONB for flexibility**
+```sql
+-- If table has metadata/data JSONB column
+UPDATE existing_table 
+SET metadata = metadata || '{"new_field": "value"}'::jsonb
+WHERE id = 123;
+```
+
+**Strategy 4: Create view**
+```sql
+-- If need different perspective of existing data
+CREATE VIEW new_view AS
+SELECT col1, col2, col3 
+FROM existing_table
+WHERE condition;
+```
+
+**CREATE NEW TABLE ONLY IF:**
+- ✅ No similar table exists
+- ✅ Data structure is fundamentally different
+- ✅ Extending existing table would cause conflicts
+- ✅ Different access patterns/RLS needed
+- ✅ High volume data needs separation
+
+**EXAMPLES:**
+```sql
+-- ❌ BAD - Creating duplicate
+CREATE TABLE merchant_shops (...);  
+-- Already have: stores table
+
+-- ✅ GOOD - Reusing existing
+-- Use stores table instead
+
+-- ❌ BAD - Creating when can extend
+CREATE TABLE order_metadata (...);  
+-- orders table has metadata JSONB
+
+-- ✅ GOOD - Using JSONB
+UPDATE orders SET metadata = metadata || '{"key": "value"}'::jsonb;
+
+-- ✅ GOOD - New table justified
+CREATE TABLE week3_webhooks (...);  
+-- Different purpose, clean separation, no conflicts
+```
+
+**PREFIXING STRATEGY:**
+When creating new tables for features:
+- Use feature prefix: `week3_`, `analytics_`, `integration_`
+- Prevents conflicts with existing tables
+- Clear ownership and purpose
+- Easy to identify and manage
+
+---
+
+### **RULE #18: CONFLICT DETECTION CHECKLIST**
+
+**BEFORE ANY IMPLEMENTATION:**
+
+**1. File Conflicts**
+```bash
+# Check if file exists
+ls -la path/to/file.ts
+
+# Check for similar filenames
+find . -name "*similar*"
+
+# Check imports in existing files
+grep -r "import.*from.*'./file'" .
+```
+
+**2. Function/Component Conflicts**
+```bash
+# Search for function name
+grep -r "function functionName\|const functionName" .
+
+# Search for component name
+grep -r "export.*ComponentName\|const ComponentName" .
+
+# Check for duplicate exports
+grep -r "export { functionName }" .
+```
+
+**3. API Route Conflicts**
+```bash
+# Check for route
+grep -r "/api/route-name" .
+
+# Check for similar routes
+grep -r "/api/similar" api/
+
+# Check route definitions
+cat api/index.ts
+```
+
+**4. Database Conflicts**
+```sql
+-- Check table exists
+SELECT EXISTS (
+  SELECT FROM information_schema.tables 
+  WHERE table_name = 'table_name'
+);
+
+-- Check column exists
+SELECT EXISTS (
+  SELECT FROM information_schema.columns 
+  WHERE table_name = 'table_name' 
+  AND column_name = 'column_name'
+);
+
+-- Check for similar tables
+SELECT table_name FROM information_schema.tables 
+WHERE table_name LIKE '%keyword%';
+```
+
+**5. Type/Interface Conflicts**
+```bash
+# Search for type definition
+grep -r "type TypeName\|interface TypeName" .
+
+# Check for duplicate types
+grep -r "export type TypeName" .
+```
+
+**6. Import Conflicts**
+```typescript
+// Check for circular dependencies
+// Check for duplicate imports
+// Check for conflicting versions
+```
+
+**CONFLICT RESOLUTION:**
+
+**If conflict found:**
+1. ✅ Document the conflict
+2. ✅ Analyze which is correct
+3. ✅ Choose resolution strategy:
+   - Reuse existing (preferred)
+   - Rename new (if both needed)
+   - Merge functionality
+   - Deprecate old (with migration)
+4. ✅ Update all references
+5. ✅ Test thoroughly
+
+**NEVER:**
+- ❌ Silently overwrite
+- ❌ Create duplicates
+- ❌ Ignore conflicts
+- ❌ Assume no conflicts
+
+---
+
 ## 📊 SPRINT WORKFLOW
 
 ### **PHASE 1: PLANNING (Before Sprint)**
