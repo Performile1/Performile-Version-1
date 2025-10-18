@@ -12,10 +12,67 @@ interface CourierLogoProps {
 }
 
 /**
+ * Normalize courier code to handle variants
+ * E.g., "DHL Express", "DHL Freight", "DHL eCommerce" all use "dhl" logo
+ * 
+ * @param courierCode - Original courier code or name
+ * @param courierName - Full courier name for additional context
+ * @returns Normalized courier code for logo lookup
+ */
+const normalizeCourierCode = (courierCode: string, courierName: string): string => {
+  const code = courierCode.toLowerCase();
+  const name = courierName.toLowerCase();
+  
+  // DHL variants: DHL Express, DHL Freight, DHL eCommerce, DHL Supply Chain, etc.
+  if (code.includes('dhl') || name.includes('dhl')) {
+    return 'dhl';
+  }
+  
+  // FedEx variants: FedEx Express, FedEx Ground, FedEx Freight, FedEx International
+  if (code.includes('fedex') || name.includes('fedex')) {
+    return 'fedex';
+  }
+  
+  // UPS variants: UPS Express, UPS Ground, UPS Freight, UPS Mail Innovations
+  if (code.includes('ups') || name.includes('ups')) {
+    return 'ups';
+  }
+  
+  // TNT (now part of FedEx)
+  if (code.includes('tnt') || name.includes('tnt')) {
+    return 'tnt';
+  }
+  
+  // DPD variants: DPD Classic, DPD Express, DPD Direct
+  if (code.includes('dpd') || name.includes('dpd')) {
+    return 'dpd';
+  }
+  
+  // GLS variants: GLS Express, GLS Parcel
+  if (code.includes('gls') || name.includes('gls')) {
+    return 'gls';
+  }
+  
+  // Hermes/Evri variants
+  if (code.includes('hermes') || name.includes('hermes') || code.includes('evri') || name.includes('evri')) {
+    return 'hermes';
+  }
+  
+  // PostNL variants
+  if (code.includes('postnl') || name.includes('postnl')) {
+    return 'postnl';
+  }
+  
+  // Default: return original code
+  return code;
+};
+
+/**
  * CourierLogo Component
  * 
  * Displays courier logo from public/courier-logos/ folder
  * Falls back to first letter avatar if logo not found
+ * Automatically handles courier variants (e.g., DHL Express, DHL Freight use same logo)
  * 
  * @param courierCode - Courier code (e.g., 'dhl', 'fedex')
  * @param courierName - Full courier name (e.g., 'DHL Express')
@@ -32,7 +89,9 @@ export const CourierLogo: React.FC<CourierLogoProps> = ({
   variant = 'circular',
   tooltip = true,
 }) => {
-  const logoPath = `/courier-logos/${courierCode.toLowerCase()}_logo.jpeg`;
+  // Normalize courier code to handle variants (DHL Express, DHL Freight, etc.)
+  const normalizedCode = normalizeCourierCode(courierCode, courierName);
+  const logoPath = `/courier-logos/${normalizedCode}_logo.jpeg`;
   
   const sizes = {
     small: 32,
