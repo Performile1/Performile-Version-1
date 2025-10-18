@@ -48,6 +48,7 @@ import { toast } from 'react-hot-toast';
 import { exportOrdersToCSV } from '@/utils/exportToCSV';
 import { OrderFilters, OrderFilterValues } from '@/components/orders/OrderFilters';
 import { BulkActionsBar } from '@/components/orders/BulkActionsBar';
+import { CourierLogo } from '@/components/courier/CourierLogo';
 import { OrderDetailsDrawer } from '@/components/orders/OrderDetailsDrawer';
 
 interface Order {
@@ -56,6 +57,7 @@ interface Order {
   order_number?: string;
   store_name?: string;
   courier_name?: string;
+  courier_code?: string; // Added for CourierLogo
   consumer_email?: string;
   order_status: 'pending' | 'confirmed' | 'picked_up' | 'in_transit' | 'delivered' | 'cancelled' | 'failed';
   order_date: string;
@@ -617,7 +619,24 @@ const Orders: React.FC = () => {
                   </TableCell>
                   <TableCell>{order.order_number || '-'}</TableCell>
                   <TableCell>{order.store_name || '-'}</TableCell>
-                  <TableCell>{order.courier_name || '-'}</TableCell>
+                  <TableCell>
+                    {order.courier_name ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <CourierLogo
+                          courierCode={order.courier_code || order.courier_name}
+                          courierName={order.courier_name}
+                          size="small"
+                          variant="rounded"
+                          showName={false}
+                        />
+                        <Typography variant="body2" noWrap>
+                          {order.courier_name}
+                        </Typography>
+                      </Box>
+                    ) : (
+                      '-'
+                    )}
+                  </TableCell>
                   <TableCell>
                     <Chip
                       label={statusLabels[order.order_status]}
@@ -762,7 +781,16 @@ const Orders: React.FC = () => {
                 >
                   {couriers.map((courier: any) => (
                     <MenuItem key={courier.courier_id} value={courier.courier_id}>
-                      {courier.courier_name}
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <CourierLogo
+                          courierCode={courier.courier_code || courier.courier_name}
+                          courierName={courier.courier_name}
+                          size="small"
+                          variant="rounded"
+                          showName={false}
+                        />
+                        <Typography>{courier.courier_name}</Typography>
+                      </Box>
                     </MenuItem>
                   ))}
                 </Select>
