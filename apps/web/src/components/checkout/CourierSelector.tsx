@@ -19,10 +19,12 @@ import {
   Speed,
   Star,
 } from '@mui/icons-material';
+import { CourierLogo } from '@/components/courier/CourierLogo';
 
 interface Courier {
   courier_id: string;
   courier_name: string;
+  courier_code?: string; // Added for CourierLogo
   company_name: string;
   logo_url: string | null;
   trust_score: number;
@@ -176,25 +178,15 @@ export const CourierSelector: React.FC<CourierSelectorProps> = ({
                     sx={{ mr: 1 }}
                   />
 
-                  <Avatar
-                    src={courier.logo_url || undefined}
-                    alt={courier.courier_name}
-                    variant="rounded"
-                    sx={{ 
-                      mr: 2, 
-                      width: 60, 
-                      height: 60,
-                      bgcolor: courier.logo_url ? 'white' : 'primary.main',
-                      border: '1px solid',
-                      borderColor: 'divider',
-                      '& img': {
-                        objectFit: 'contain',
-                        padding: 1
-                      }
-                    }}
-                  >
-                    {courier.courier_name.charAt(0)}
-                  </Avatar>
+                  <Box sx={{ mr: 2 }}>
+                    <CourierLogo
+                      courierCode={courier.courier_code || courier.courier_name}
+                      courierName={courier.courier_name}
+                      size="large"
+                      variant="rounded"
+                      showName={false}
+                    />
+                  </Box>
 
                   <Box sx={{ flexGrow: 1 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
