@@ -145,12 +145,15 @@ export const Analytics: React.FC = () => {
     { name: 'Response Time', value: 2.3, color: '#FF8042' }
   ];
 
-  // For admin: Use real courier data, for others: use mock data
+  // For admin: Use real courier data (DE-ANONYMIZED), for others: use mock data
+  // IMPORTANT: Admins ALWAYS see real courier names, even with postal code filter
+  // This is intentional - admins need full transparency for platform management
   const competitorData = React.useMemo(() => {
     if (user?.user_role === 'admin' && safeCourierData.length > 0) {
       try {
+        // Admin sees REAL courier names (not "Competitor A", "Competitor B", etc.)
         return safeCourierData.map((courier: any) => ({
-          name: courier.courier_name || 'Unknown',
+          name: courier.courier_name || 'Unknown', // REAL NAME for admins
           trustScore: Number(courier.overall_score || (courier.avg_rating ? courier.avg_rating * 20 : 0) || 0),
           marketShare: Number(courier.total_orders || 0),
           unlocked: true, // Admin sees all data
@@ -164,7 +167,8 @@ export const Analytics: React.FC = () => {
       }
     }
     
-    // Mock data for non-admin users
+    // Mock data for non-admin users (ANONYMIZED as "Competitor A", "Competitor B", etc.)
+    // This protects courier competitive data from merchants and other non-admin users
     return [
       { name: 'Competitor A', trustScore: 85, marketShare: 25, unlocked: false, totalOrders: 0, avgRating: 0, successRate: 0 },
       { name: 'Competitor B', trustScore: 78, marketShare: 18, unlocked: true, totalOrders: 0, avgRating: 0, successRate: 0 },
