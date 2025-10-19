@@ -48,15 +48,26 @@ export const SubscriptionPlans: React.FC = () => {
   const [loadingPlanId, setLoadingPlanId] = useState<number | null>(null);
 
   // Fetch subscription plans
-  const { data: plans, isLoading } = useQuery({
+  const { data: plans, isLoading, error } = useQuery({
     queryKey: ['subscription-plans', user?.user_role],
     queryFn: async () => {
-      const response = await apiClient.get('/admin/subscriptions');
-      const allPlans = response.data.plans || [];
-      // Filter by user role
-      return allPlans.filter((p: SubscriptionPlan) => p.user_type === user?.user_role);
+      try {
+        // Try to fetch from admin endpoint (requires auth)
+        const response = await apiClient.get('/admin/subscriptions');
+        const allPlans = response.data.plans || [];
+        // Filter by user role if logged in
+        if (user?.user_role) {
+          return allPlans.filter((p: SubscriptionPlan) => p.user_type === user.user_role);
+        }
+        return allPlans;
+      } catch (error: any) {
+        // If not authenticated or endpoint doesn't exist, return empty array
+        // This will trigger the "no plans available" message
+        console.error('Failed to fetch subscription plans:', error);
+        return [];
+      }
     },
-    enabled: !!user,
+    retry: false, // Don't retry on failure
   });
 
   const handleSelectPlan = async (plan: SubscriptionPlan) => {

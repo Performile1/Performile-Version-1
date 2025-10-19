@@ -30,7 +30,141 @@
 
 ### **MORNING SESSION (9:00 AM - 12:00 PM)**
 
-#### **9:00 - 9:30 AM: Vercel Public Site Deployment**
+#### **9:00 - 9:30 AM: Fix Subscription Plans System**
+
+**CRITICAL ISSUES FOUND:**
+
+1. **No Public API** - Public pricing page can't fetch plans
+2. **No Plans in Database** - subscription_plans table is empty or missing plans
+3. **No Role-Specific Plans** - Need separate plans for Merchant and Courier
+4. **Wrong API Endpoint** - Using `/admin/subscriptions` which requires auth
+
+---
+
+**Task 1: Create Subscription Plans in Database (15 min)**
+
+**SQL to Run:**
+```sql
+-- Insert Merchant Plans
+INSERT INTO subscription_plans (
+  plan_name, plan_slug, user_type, tier,
+  monthly_price, annual_price,
+  features, max_orders_per_month, max_emails_per_month,
+  is_active, is_popular
+) VALUES
+-- Merchant Starter
+('Starter', 'merchant-starter', 'merchant', 'basic',
+ 29, 290,
+ '["100 orders/month", "Basic analytics", "Email support", "API access"]'::jsonb,
+ 100, 500, true, false),
+
+-- Merchant Professional (Most Popular)
+('Professional', 'merchant-professional', 'merchant', 'professional',
+ 79, 790,
+ '["1,000 orders/month", "Advanced analytics", "Priority support", "Webhook integration", "Custom branding"]'::jsonb,
+ 1000, 5000, true, true),
+
+-- Merchant Enterprise
+('Enterprise', 'merchant-enterprise', 'merchant', 'enterprise',
+ 199, 1990,
+ '["Unlimited orders", "Premium analytics", "24/7 support", "Dedicated account manager", "White-label solution"]'::jsonb,
+ 999999, 999999, true, false),
+
+-- Courier Basic
+('Basic', 'courier-basic', 'courier', 'basic',
+ 19, 190,
+ '["50 deliveries/month", "Basic tracking", "Email support", "Mobile app access"]'::jsonb,
+ 50, 200, true, false),
+
+-- Courier Pro (Most Popular)
+('Pro', 'courier-pro', 'courier', 'professional',
+ 49, 490,
+ '["500 deliveries/month", "Advanced tracking", "Priority support", "Route optimization", "Performance analytics"]'::jsonb,
+ 500, 2000, true, true),
+
+-- Courier Premium
+('Premium', 'courier-premium', 'courier', 'enterprise',
+ 99, 990,
+ '["Unlimited deliveries", "Premium features", "24/7 support", "API access", "Custom integrations"]'::jsonb,
+ 999999, 999999, true, false);
+```
+
+---
+
+**Task 2: Create Public Subscriptions API (5 min)**
+
+**File to Create:** `api/subscriptions/public.ts`
+
+```typescript
+import { Request, Response } from '@vercel/node';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.VITE_SUPABASE_URL!,
+  process.env.VITE_SUPABASE_ANON_KEY!
+);
+
+export default async function handler(req: Request, res: Response) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { user_type } = req.query;
+
+    let query = supabase
+      .from('subscription_plans')
+      .select('*')
+      .eq('is_active', true)
+      .order('monthly_price', { ascending: true });
+
+    // Filter by user type if provided
+    if (user_type && (user_type === 'merchant' || user_type === 'courier')) {
+      query = query.eq('user_type', user_type);
+    }
+
+    const { data: plans, error } = await query;
+
+    if (error) throw error;
+
+    return res.status(200).json({
+      success: true,
+      plans: plans || [],
+    });
+  } catch (error: any) {
+    console.error('Error fetching public plans:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to fetch subscription plans',
+      message: error.message,
+    });
+  }
+}
+```
+
+---
+
+**Task 3: Update SubscriptionPlans.tsx (5 min)**
+
+```typescript
+// Change from:
+const response = await apiClient.get('/admin/subscriptions');
+
+// To:
+const response = await apiClient.get('/api/subscriptions/public', {
+  params: { user_type: user?.user_role }
+});
+```
+
+---
+
+**Task 4: Update BillingPortal.tsx (5 min)**
+
+Same fix - use public API instead of admin API for fetching available plans to upgrade to.
+
+---
+
+#### **9:15 - 9:30 AM: Vercel Public Site Deployment**
 
 **Task:** Deploy public pages to Vercel as separate site
 
@@ -272,7 +406,13 @@ VITE_STRIPE_PUBLIC_KEY=pk_live_...
 - [ ] Check payment integration
 - [ ] Test email sending
 - [ ] Review security settings
-- [ ] **FIX: Verify Session Expired Modal only shows on protected routes** ✅ (Fixed Oct 19)
+- [x] **FIX: Session Expired Modal only shows on protected routes** ✅ (Fixed Oct 19)
+- [ ] **FIX: Insert subscription plans into database** ⏳ (Scheduled for Oct 20, 9:00 AM)
+  - [ ] 3 Merchant plans (Starter $29, Professional $79, Enterprise $199)
+  - [ ] 3 Courier plans (Basic $19, Pro $49, Premium $99)
+- [ ] **FIX: Create public subscriptions API endpoint** ⏳ (Scheduled for Oct 20, 9:00 AM)
+- [ ] **FIX: Update SubscriptionPlans.tsx to use public API** ⏳ (Scheduled for Oct 20, 9:00 AM)
+- [ ] **FIX: Update BillingPortal.tsx to use public API** ⏳ (Scheduled for Oct 20, 9:00 AM)
 
 ### **Deployment**
 - [ ] Deploy public site to Vercel
