@@ -17,7 +17,6 @@ import {
   ExpandLess,
   Home,
   SearchOff,
-  Close,
 } from '@mui/icons-material';
 
 interface Props {
@@ -180,7 +179,7 @@ class ErrorBoundary extends Component<Props, State> {
                   />
                 </Box>
 
-                {/* Error Icon - Magnifying Glass with X */}
+                {/* Error Icon - Magnifying Glass */}
                 <Box
                   sx={{
                     position: 'relative',
@@ -199,28 +198,6 @@ class ErrorBoundary extends Component<Props, State> {
                       color: 'white',
                     }}
                   />
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: 8,
-                      right: 8,
-                      width: 28,
-                      height: 28,
-                      borderRadius: '50%',
-                      bgcolor: '#ef4444',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    <Close
-                      sx={{
-                        fontSize: 18,
-                        color: 'white',
-                      }}
-                    />
-                  </Box>
                 </Box>
 
                 {/* Error Title */}

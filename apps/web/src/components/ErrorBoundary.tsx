@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Box, Button, Container, Typography, Paper, Stack, Card, CardContent, Alert, Collapse } from '@mui/material';
-import { ErrorOutline, Refresh, Home, BugReport, ExpandMore, ExpandLess, SearchOff, Close } from '@mui/icons-material';
+import { ErrorOutline, Refresh, Home, BugReport, ExpandMore, ExpandLess, SearchOff } from '@mui/icons-material';
 
 interface Props {
   children: ReactNode;
@@ -167,28 +167,6 @@ export class ErrorBoundary extends Component<Props, State> {
                       color: 'white',
                     }}
                   />
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: 8,
-                      right: 8,
-                      width: 28,
-                      height: 28,
-                      borderRadius: '50%',
-                      bgcolor: '#ef4444',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    <Close
-                      sx={{
-                        fontSize: 18,
-                        color: 'white',
-                      }}
-                    />
-                  </Box>
                 </Box>
 
                 {/* Error Title */}
