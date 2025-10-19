@@ -5,3 +5,5 @@
 
 export { ServicePerformanceCard } from './ServicePerformanceCard';
 export { ServiceComparisonChart } from './ServiceComparisonChart';
+export { GeographicHeatmap } from './GeographicHeatmap';
+export { ServiceReviewsList } from './ServiceReviewsList';
