@@ -107,7 +107,32 @@ export const OrderTrendsChart: React.FC<OrderTrendsChartProps> = ({
     enabled: !!user,
   });
 
-  // Calculate summary statistics
+  // Early return for loading state
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300 }}>
+            <CircularProgress />
+          </Box>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent>
+          <Alert severity="error">
+            Failed to load order trends. Please try again later.
+          </Alert>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Calculate summary statistics (only after data is loaded and validated)
   const calculateSummary = () => {
     if (!trendsData || trendsData.length === 0) {
       return {
@@ -153,30 +178,6 @@ export const OrderTrendsChart: React.FC<OrderTrendsChartProps> = ({
     Pending: item.pending_orders,
     Cancelled: item.cancelled_orders,
   })) || [];
-
-  if (isLoading) {
-    return (
-      <Card>
-        <CardContent>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 300 }}>
-            <CircularProgress />
-          </Box>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card>
-        <CardContent>
-          <Alert severity="error">
-            Failed to load order trends. Please try again later.
-          </Alert>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card>

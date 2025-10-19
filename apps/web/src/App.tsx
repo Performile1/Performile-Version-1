@@ -35,6 +35,10 @@ import ProximitySettings from './pages/settings/ProximitySettings';
 import NotificationPreferences from './pages/settings/NotificationPreferences';
 import NotificationCenter from './pages/notifications/NotificationCenter';
 import { PluginSetup } from './pages/integrations/PluginSetup';
+import { CourierIntegrationSettings } from './pages/integrations/CourierIntegrationSettings';
+import { WebhookManagement } from './pages/integrations/WebhookManagement';
+import { ApiKeysManagement } from './pages/integrations/ApiKeysManagement';
+import { IntegrationDashboard } from './pages/integrations/IntegrationDashboard';
 import { TrackingPage } from './pages/TrackingPage';
 import { ClaimsPage } from './pages/ClaimsPage';
 import { MessagingCenter } from './components/messaging/MessagingCenter';
@@ -448,6 +452,38 @@ const App: React.FC = () => {
             <Route
               path="/invite/:token"
               element={<AcceptInvitation />}
+            />
+            <Route
+              path="/integrations"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant']}>
+                  <IntegrationDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/integrations/couriers"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant']}>
+                  <CourierIntegrationSettings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/integrations/webhooks"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant']}>
+                  <WebhookManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/integrations/api-keys"
+              element={
+                <ProtectedRoute requiredRoles={['admin', 'merchant']}>
+                  <ApiKeysManagement />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/integrations/ecommerce"
