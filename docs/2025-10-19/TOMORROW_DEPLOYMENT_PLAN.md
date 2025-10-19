@@ -272,6 +272,7 @@ VITE_STRIPE_PUBLIC_KEY=pk_live_...
 - [ ] Check payment integration
 - [ ] Test email sending
 - [ ] Review security settings
+- [ ] **FIX: Verify Session Expired Modal only shows on protected routes** ✅ (Fixed Oct 19)
 
 ### **Deployment**
 - [ ] Deploy public site to Vercel
@@ -463,6 +464,32 @@ TTL: 3600
 - [ ] Security headers set
 - [ ] Content Security Policy
 - [ ] Regular security audits
+- [x] **Session Expired Modal only on protected routes** ✅
+
+### **Session Expired Modal Fix (Completed Oct 19)**
+
+**Issue:**
+The "Session Expired" modal was showing on ALL pages, including public pages like Home, Contact, and Info. This created a poor user experience for visitors who weren't logged in.
+
+**Solution:**
+Modified `App.tsx` to only render `SessionExpiredModal` when user is authenticated:
+
+```tsx
+{/* Only show session modal on protected routes (when user is authenticated) */}
+{isAuthenticated && <SessionExpiredModal />}
+```
+
+**Result:**
+- ✅ Modal only shows for logged-in users
+- ✅ Public pages (Home, Contact, Info) are not affected
+- ✅ Better user experience for visitors
+- ✅ Security maintained for authenticated sessions
+
+**Modal Content:**
+- Title: "Session Expired"
+- Message: "Your session has expired due to inactivity. Please log in again to continue using Performile."
+- Actions: "Log In Again" and "Close" buttons
+- Tip: "Your session will automatically extend while you're active. Sessions expire after 15 minutes of inactivity for your security."
 
 ---
 

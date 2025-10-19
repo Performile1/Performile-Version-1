@@ -553,7 +553,8 @@ const App: React.FC = () => {
             {/* 404 Not Found - Must be last */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <SessionExpiredModal />
+          {/* Only show session modal on protected routes (when user is authenticated) */}
+          {isAuthenticated && <SessionExpiredModal />}
           <NotLoggedInModal 
             isOpen={showNotLoggedIn} 
             onClose={() => setShowNotLoggedIn(false)}
