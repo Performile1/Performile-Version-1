@@ -53,6 +53,9 @@ import SubscriptionSuccess from './pages/SubscriptionSuccess';
 import SubscriptionCancel from './pages/SubscriptionCancel';
 import ResetPassword from './pages/ResetPassword';
 import BillingPortal from './pages/BillingPortal';
+import Home from './pages/Home';
+import Contact from './pages/Contact';
+import Info from './pages/Info';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -191,9 +194,13 @@ const App: React.FC = () => {
                 isAuthenticated ? <Navigate to="/dashboard" replace /> : <AuthPage />
               }
             />
+            {/* Public Pages */}
+            <Route path="/home" element={<Home />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/info" element={<Info />} />
             <Route path="/review/:token" element={<PublicReview />} />
             <Route path="/track/:trackingNumber?" element={<TrackingPage />} />
-            <Route path="/subscription" element={<Navigate to="/subscription/plans" replace />} />
+            {/* Public subscription plans page (for non-logged-in users) */}
             <Route path="/subscription/plans" element={<SubscriptionPlans />} />
             <Route path="/subscription/success" element={<SubscriptionSuccess />} />
             <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
@@ -539,7 +546,7 @@ const App: React.FC = () => {
             <Route
               path="/"
               element={
-                <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
+                <Navigate to={isAuthenticated ? "/dashboard" : "/home"} replace />
               }
             />
             
