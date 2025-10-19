@@ -78,7 +78,7 @@ function parseForm(req: VercelRequest): Promise<{ fields: formidable.Fields; fil
       keepExtensions: true,
     });
 
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, (err: Error | null, fields: formidable.Fields, files: formidable.Files) => {
       if (err) reject(err);
       else resolve({ fields, files });
     });
