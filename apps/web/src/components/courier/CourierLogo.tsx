@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Avatar, Typography, Tooltip } from '@mui/material';
 import { LocalShipping } from '@mui/icons-material';
 
@@ -107,6 +107,8 @@ export const CourierLogo: React.FC<CourierLogoProps> = ({
   variant = 'circular',
   tooltip = true,
 }) => {
+  const [imageError, setImageError] = useState(false);
+  
   // Normalize courier code to handle variants (DHL Express, DHL Freight, etc.)
   const normalizedCode = normalizeCourierCode(courierCode, courierName);
   const logoPath = `/courier-logos/${normalizedCode}_logo.jpeg`;
@@ -129,7 +131,7 @@ export const CourierLogo: React.FC<CourierLogoProps> = ({
 
   const avatarElement = (
     <Avatar
-      src={logoPath}
+      src={!imageError ? logoPath : undefined}
       alt={`${courierName} logo`}
       sx={{
         width: avatarSize,
@@ -143,9 +145,9 @@ export const CourierLogo: React.FC<CourierLogoProps> = ({
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       }}
       imgProps={{
-        onError: (e: any) => {
-          // Fallback to initials if image fails to load
-          e.target.style.display = 'none';
+        onError: () => {
+          // Set error state to prevent further attempts and console errors
+          setImageError(true);
         },
       }}
     >

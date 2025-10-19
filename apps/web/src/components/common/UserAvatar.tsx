@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Avatar, Tooltip } from '@mui/material';
 
 interface UserAvatarProps {
@@ -75,6 +75,8 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   tooltip = true,
   type = 'user',
 }) => {
+  const [imageError, setImageError] = useState(false);
+  
   const sizes = {
     small: 32,
     medium: 48,
@@ -94,7 +96,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   const avatarElement = (
     <Avatar
-      src={imageUrl || undefined}
+      src={!imageError && imageUrl ? imageUrl : undefined}
       alt={`${name} avatar`}
       sx={{
         width: avatarSize,
@@ -108,9 +110,9 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       }}
       imgProps={{
-        onError: (e: any) => {
-          // Hide image on error to show initials
-          e.target.style.display = 'none';
+        onError: () => {
+          // Set error state to prevent further attempts and console errors
+          setImageError(true);
         },
       }}
     >
