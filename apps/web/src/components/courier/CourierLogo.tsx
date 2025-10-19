@@ -12,6 +12,24 @@ interface CourierLogoProps {
 }
 
 /**
+ * Generate a consistent color based on courier name
+ * Uses a hash function to ensure same name always gets same color
+ */
+const stringToColor = (str: string): string => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  // Generate HSL color with good saturation and lightness for readability
+  const hue = Math.abs(hash % 360);
+  const saturation = 65 + (Math.abs(hash) % 20); // 65-85%
+  const lightness = 45 + (Math.abs(hash) % 15); // 45-60%
+  
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
+
+/**
  * Normalize courier code to handle variants
  * E.g., "DHL Express", "DHL Freight", "DHL eCommerce" all use "dhl" logo
  * 
@@ -107,6 +125,7 @@ export const CourierLogo: React.FC<CourierLogoProps> = ({
   };
 
   const avatarSize = sizes[size];
+  const backgroundColor = stringToColor(courierName);
 
   const avatarElement = (
     <Avatar
@@ -116,13 +135,16 @@ export const CourierLogo: React.FC<CourierLogoProps> = ({
         width: avatarSize,
         height: avatarSize,
         borderRadius: borderRadius[variant],
-        bgcolor: 'primary.main',
+        bgcolor: backgroundColor,
+        color: '#ffffff',
         fontSize: avatarSize / 2.5,
         fontWeight: 'bold',
+        textTransform: 'uppercase',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       }}
       imgProps={{
         onError: (e: any) => {
-          // Fallback to icon if image fails to load
+          // Fallback to initials if image fails to load
           e.target.style.display = 'none';
         },
       }}

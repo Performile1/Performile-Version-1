@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Card,
-  CardContent,
+  Paper,
   Typography,
   Table,
   TableBody,
@@ -10,23 +9,22 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Chip,
   IconButton,
+  Chip,
   TextField,
   InputAdornment,
-  Button,
-  Grid,
-  Avatar,
   Menu,
   MenuItem,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Tabs,
-  Tab,
+  Button,
+  Avatar,
   Alert,
+  CircularProgress,
 } from '@mui/material';
+import { UserAvatar } from '@/components/common/UserAvatar';
 import {
   Search as SearchIcon,
   MoreVert as MoreVertIcon,
@@ -314,9 +312,11 @@ export const ManageMerchants: React.FC = () => {
                   <TableRow key={merchant.user_id} hover>
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Avatar sx={{ bgcolor: 'primary.main' }}>
-                          {merchant.first_name?.[0]}{merchant.last_name?.[0]}
-                        </Avatar>
+                        <UserAvatar
+                          name={`${merchant.first_name} ${merchant.last_name}`}
+                          size="medium"
+                          type="consumer"
+                        />
                         <Box>
                           <Typography variant="body2" fontWeight="medium">
                             {merchant.first_name} {merchant.last_name}
