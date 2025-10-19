@@ -24,6 +24,9 @@ import {
   BugReport as LogsIcon,
 } from '@mui/icons-material';
 
+// Import Week 4 Service Analytics
+import ServiceAnalytics from './admin/ServiceAnalytics';
+
 // Import sub-components
 // TODO: Create these components
 // import { AdminPlatformSettings } from '@/components/settings/admin/AdminPlatformSettings';
@@ -248,7 +251,7 @@ const AdminSettings: React.FC = () => {
       </TabPanel>
 
       <TabPanel value={tabValue} index={5}>
-        <Typography>Analytics Settings - Coming Soon</Typography>
+        <ServiceAnalytics />
       </TabPanel>
 
       <TabPanel value={tabValue} index={6}>

@@ -8,7 +8,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Container,
   Typography,
   Grid,
   Card,
@@ -110,7 +109,7 @@ export const ServiceAnalytics: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <Box>
       {/* Header */}
       <Box mb={4}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -309,7 +308,7 @@ export const ServiceAnalytics: React.FC = () => {
           </TabPanel>
         </>
       )}
-    </Container>
+    </Box>
   );
 };
 
