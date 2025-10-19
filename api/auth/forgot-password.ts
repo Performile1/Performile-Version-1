@@ -89,27 +89,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 <p><strong>This link will expire in 1 hour.</strong></p>
                 <p>If you didn't request this password reset, you can safely ignore this email. Your password will not be changed.</p>
                 <div class="footer">
-                  <p>© 2025 Performile. All rights reserved.</p>
+                  <p> 2025 Performile. All rights reserved.</p>
                 </div>
               </div>
             </div>
           </body>
           </html>
         `,
-        text: `
-          Hi ${user.first_name || 'there'},
-          
-          We received a request to reset your password for your Performile account.
-          
-          Click the link below to reset your password:
-          ${resetUrl}
-          
-          This link will expire in 1 hour.
-          
-          If you didn't request this password reset, you can safely ignore this email.
-          
-          © 2025 Performile
-        `
       });
 
       return res.status(200).json({
