@@ -74,8 +74,15 @@ export const env = {
   
   ENCRYPTION_KEY: getOptionalEnvVar('ENCRYPTION_KEY'),
   
+  JWT_SECRET: getOptionalEnvVar('JWT_SECRET', 'your-secret-key-change-in-production'),
+  
   NODE_ENV: getOptionalEnvVar('NODE_ENV', 'development'),
   
   isProduction: getOptionalEnvVar('NODE_ENV') === 'production',
   isDevelopment: getOptionalEnvVar('NODE_ENV') === 'development',
 };
+
+// Helper function for JWT secret (for backwards compatibility)
+export function getJWTSecret(): string {
+  return env.JWT_SECRET;
+}
