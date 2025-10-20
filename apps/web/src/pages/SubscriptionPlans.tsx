@@ -47,28 +47,24 @@ export const SubscriptionPlans: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [loadingPlanId, setLoadingPlanId] = useState<number | null>(null);
 
-  // Fetch subscription plans
-  const { data: plans, isLoading, error } = useQuery({
+  // Fetch subscription plans from public API
+  const { data: plansResponse, isLoading, error } = useQuery({
     queryKey: ['subscription-plans', user?.user_role],
     queryFn: async () => {
       try {
-        // Try to fetch from admin endpoint (requires auth)
-        const response = await apiClient.get('/admin/subscriptions');
-        const allPlans = response.data.plans || [];
-        // Filter by user role if logged in
-        if (user?.user_role) {
-          return allPlans.filter((p: SubscriptionPlan) => p.user_type === user.user_role);
-        }
-        return allPlans;
+        // Use public API endpoint (no auth required)
+        const params = user?.user_role ? { user_type: user.user_role } : {};
+        const response = await apiClient.get('/api/subscriptions/public', { params });
+        return response.data;
       } catch (error: any) {
-        // If not authenticated or endpoint doesn't exist, return empty array
-        // This will trigger the "no plans available" message
         console.error('Failed to fetch subscription plans:', error);
-        return [];
+        return { success: false, plans: [] };
       }
     },
     retry: false, // Don't retry on failure
   });
+
+  const plans = plansResponse?.plans || [];
 
   const handleSelectPlan = async (plan: SubscriptionPlan) => {
     if (!user) {
