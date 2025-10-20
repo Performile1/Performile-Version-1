@@ -58,7 +58,7 @@ export const SubscriptionPlans: React.FC = () => {
         // Use public API endpoint (no auth required)
         // If user is logged in, use their role, otherwise use selected type
         const userType = user?.user_role || selectedUserType;
-        const response = await apiClient.get('/api/subscriptions/public', { 
+        const response = await apiClient.get('/subscriptions/public', { 
           params: { user_type: userType } 
         });
         return response.data;
