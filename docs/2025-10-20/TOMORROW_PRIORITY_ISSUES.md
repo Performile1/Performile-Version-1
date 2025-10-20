@@ -118,6 +118,10 @@ GET /api/subscriptions/[something] → 404 Not Found
 
 ## 🎯 TOMORROW'S ACTION PLAN
 
+### **MORNING SESSION (3-4 hours)**
+
+---
+
 ### **Priority 1: Fix Admin Save Functionality** ⚡ CRITICAL
 **Time Estimate:** 30 minutes
 
@@ -155,8 +159,40 @@ GET /api/subscriptions/[something] → 404 Not Found
 
 ---
 
-### **Priority 3: Simplify Subscription Views** 📋 HIGH
-**Time Estimate:** 1 hour
+### **Priority 3: Add Missing Navigation Menu Items** 📋 HIGH
+**Time Estimate:** 30 minutes
+
+**Problem:**
+- Parcel Points not visible in menu
+- Service Performance not visible in menu
+- Coverage Checker not visible in menu
+- Map Integration not accessible
+
+**Steps:**
+1. Check navigation component
+2. Add missing menu items
+3. Configure role-based visibility
+4. Test with different user roles
+5. Verify all routes work
+
+**Files to Modify:**
+- `apps/web/src/components/layout/Navigation.tsx`
+- `apps/web/src/components/layout/Sidebar.tsx`
+- Router configuration
+
+**Menu Items to Add:**
+```typescript
+// For Merchants & Couriers
+- Parcel Points (🗺️)
+- Service Performance (📊)
+- Coverage Checker (📍)
+- Map Integration (🌍)
+```
+
+---
+
+### **Priority 4: Simplify Subscription Views** 📋 HIGH
+**Time Estimate:** 45 minutes
 
 **Steps:**
 1. **Keep for Public (not logged in):**
@@ -180,6 +216,228 @@ GET /api/subscriptions/[something] → 404 Not Found
 - `apps/web/src/pages/MySubscription.tsx` (create new)
 - `apps/web/src/components/dashboard/SubscriptionCard.tsx` (update)
 - Router configuration
+
+---
+
+### **AFTERNOON SESSION (3-4 hours)**
+
+---
+
+### **Priority 5: Courier API Research & Integration Plan** 📦 HIGH
+**Time Estimate:** 1 hour
+
+**Goal:** Research and document courier API integrations
+
+**Steps:**
+1. Research top 5 courier APIs:
+   - DHL Express API
+   - FedEx API
+   - UPS API
+   - Royal Mail API
+   - DPD API
+
+2. Document for each:
+   - Authentication method
+   - API endpoints needed
+   - Rate limits
+   - Pricing
+   - Test account requirements
+   - Integration complexity
+
+3. Create integration templates
+4. Build mock data for testing
+5. Document what user needs to sign up for
+
+**Deliverables:**
+- `docs/COURIER_API_INTEGRATION_GUIDE.md`
+- `api/integrations/courier-template.ts`
+- Mock data for testing
+
+**Questions to Answer:**
+- Which couriers are most important?
+- Should we start with mock data or real APIs?
+- Can user create test accounts?
+
+---
+
+### **Priority 6: Homepage Enhancements** 🎨 HIGH
+**Time Estimate:** 2 hours
+
+**Goal:** Make homepage showcase the system better
+
+**A. Top Navigation Bar** (30 min)
+```typescript
+// Add to homepage
+- Logo (left)
+- Features link
+- Pricing link
+- About link
+- Login button (right)
+- Get Started button (right, primary)
+```
+
+**B. Feature Showcase with Screenshots** (45 min)
+```typescript
+// Add section showing:
+- Analytics Dashboard (screenshot)
+- Parcel Points Map (screenshot)
+- Service Performance (screenshot)
+- Reviews & Ratings (screenshot)
+```
+
+**C. Interactive Parcel Points Demo** (30 min)
+```typescript
+// Add public demo:
+- Interactive map
+- Sample parcel points
+- Address search
+- "Sign up to see all" CTA
+```
+
+**D. Social Proof Section** (15 min)
+```typescript
+// Add section:
+- User statistics (1,000+ merchants, etc.)
+- Testimonials
+- Star ratings
+- Company logos (if available)
+```
+
+**Files to Create/Modify:**
+- `apps/web/src/pages/HomePage.tsx` (enhance)
+- `apps/web/src/components/home/TopNavigation.tsx` (new)
+- `apps/web/src/components/home/FeatureShowcase.tsx` (new)
+- `apps/web/src/components/home/ParcelPointsDemo.tsx` (new)
+- `apps/web/src/components/home/SocialProof.tsx` (new)
+
+**Screenshots Needed:**
+- [ ] Dashboard analytics view
+- [ ] Parcel points map
+- [ ] Service performance charts
+- [ ] Reviews interface
+
+---
+
+### **Priority 7: AI Chat Function** 🤖 HIGH
+**Time Estimate:** 1.5 hours
+
+**Goal:** Implement AI chatbot using OpenAI GPT-4
+
+**A. Setup OpenAI Integration** (30 min)
+```typescript
+// Install dependencies
+npm install openai
+
+// Create API endpoint
+api/chat/ai-assistant.ts
+
+// Environment variables
+OPENAI_API_KEY=sk-...
+```
+
+**B. Create Chat Widget Component** (45 min)
+```typescript
+// Create component
+apps/web/src/components/chat/AIChatWidget.tsx
+
+// Features:
+- Bottom right floating button
+- Expandable chat window
+- Message history
+- Typing indicators
+- Context-aware responses
+```
+
+**C. Implement RAG (Retrieval Augmented Generation)** (15 min)
+```typescript
+// Feed AI with:
+- Documentation (from docs folder)
+- Subscription plans
+- Feature descriptions
+- FAQs
+- Common issues
+```
+
+**System Prompt:**
+```
+You are Performile AI Assistant.
+
+Context:
+- Performile is a delivery performance platform
+- We have 7 subscription plans (3 merchant, 4 courier)
+- Features: tracking, analytics, reviews, parcel points
+- Users can be: merchants, couriers, or admins
+
+Help users with:
+- Understanding features
+- Choosing plans
+- Troubleshooting issues
+- Finding information
+
+Be friendly, concise, and helpful.
+```
+
+**Files to Create:**
+- `api/chat/ai-assistant.ts` (new)
+- `apps/web/src/components/chat/AIChatWidget.tsx` (new)
+- `apps/web/src/components/chat/ChatMessage.tsx` (new)
+- `apps/web/src/hooks/useAIChat.ts` (new)
+- `apps/web/src/lib/openai.ts` (new)
+
+**No Custom Training Needed:**
+- ✅ Use GPT-4 with your docs as context
+- ✅ Implement RAG for relevant information
+- ✅ Cost-effective ($0.01 per 1K tokens)
+
+---
+
+### **Priority 8: Playwright Testing Setup** 🧪 MEDIUM
+**Time Estimate:** 1 hour
+
+**Goal:** Set up automated testing framework
+
+**A. Install Playwright** (10 min)
+```bash
+npm init playwright@latest
+```
+
+**B. Create Test Structure** (20 min)
+```
+tests/
+├── auth.spec.ts          # Login, register, logout
+├── subscriptions.spec.ts # Plan selection, admin save
+├── navigation.spec.ts    # Menu items, routing
+├── parcel-points.spec.ts # Map, search, coverage
+├── chat.spec.ts          # AI chat functionality
+└── helpers/
+    ├── login.ts          # Login helpers
+    └── fixtures.ts       # Test data
+```
+
+**C. Write Critical Tests** (30 min)
+```typescript
+// Priority tests:
+1. User registration with plan selection
+2. Admin can save plan changes
+3. Merchant can view subscription
+4. All navigation menu items visible
+5. Parcel points map loads
+6. AI chat opens and responds
+```
+
+**Files to Create:**
+- `playwright.config.ts`
+- `tests/auth.spec.ts`
+- `tests/subscriptions.spec.ts`
+- `tests/navigation.spec.ts`
+- `tests/helpers/login.ts`
+- `.github/workflows/playwright.yml` (CI/CD)
+
+**Test Coverage Goals:**
+- ✅ Critical user flows: 100%
+- ✅ Navigation: 100%
+- ✅ Admin functions: 100%
+- ⏳ All features: 80%+
 
 ---
 
@@ -391,13 +649,131 @@ USING (auth.jwt() ->> 'user_role' = 'admin');
 
 ## 🚀 ESTIMATED TIME
 
-**Total Time for Tomorrow:** 3-4 hours
-- Fix admin save: 30 min
-- Fix 404 errors: 45 min
-- Create "My Subscription": 1 hour
-- Testing: 30 min
-- Documentation: 15 min
-- Buffer: 30-60 min
+**Total Time for Tomorrow:** 8-9 hours (Full Day)
+
+### **Morning Session (3-4 hours):**
+- Fix admin save: 30 min ⚡
+- Fix 404 errors: 45 min ⚡
+- Add navigation items: 30 min
+- Simplify subscription views: 45 min
+- Buffer: 30 min
+
+### **Afternoon Session (5-6 hours):**
+- Courier API research: 1 hour
+- Homepage enhancements: 2 hours
+- AI chat implementation: 1.5 hours
+- Playwright testing setup: 1 hour
+- Documentation: 30 min
+- Buffer: 30 min
+
+---
+
+## 🎯 SUCCESS CRITERIA
+
+**Tomorrow's work is complete when:**
+- ✅ Admin can save plan changes
+- ✅ Merchants can view their subscription (no 404)
+- ✅ Couriers can view their subscription (no 404)
+- ✅ All navigation menu items visible
+- ✅ Clear separation between public and logged-in views
+- ✅ Homepage has Login/Register buttons
+- ✅ Homepage showcases features with screenshots
+- ✅ AI chat widget functional
+- ✅ Courier API integration guide complete
+- ✅ Playwright tests running
+- ✅ All user flows tested and working
+- ✅ Documentation updated
+
+---
+
+## 📋 DELIVERABLES
+
+**Code:**
+- [ ] Fixed admin save functionality
+- [ ] Fixed 404 errors
+- [ ] "My Subscription" page
+- [ ] Updated navigation menu
+- [ ] Enhanced homepage with top nav
+- [ ] Feature showcase section
+- [ ] AI chat widget
+- [ ] Playwright test suite
+
+**Documentation:**
+- [ ] Courier API integration guide
+- [ ] AI chat implementation docs
+- [ ] Playwright testing guide
+- [ ] Updated PERFORMILE_MASTER
+- [ ] End of day summary
+
+**Research:**
+- [ ] Top 5 courier APIs documented
+- [ ] Integration templates created
+- [ ] Mock data prepared
+
+---
+
+## 💡 STRATEGIC DECISIONS NEEDED
+
+### **1. Feature Placement Strategy**
+**Decision:** Hybrid approach (public preview + logged-in full)
+- ✅ Public homepage shows feature previews
+- ✅ Logged-in users get full functionality
+- ✅ Clear value proposition before signup
+
+### **2. Courier API Approach**
+**Decision Needed:**
+- Option A: Start with mock data (faster)
+- Option B: User creates test accounts (real APIs)
+- Option C: Hybrid (mocks first, then real)
+
+### **3. AI Chat Scope**
+**Decision:** OpenAI GPT-4 with RAG
+- ✅ No custom training needed
+- ✅ Use existing documentation
+- ✅ Cost-effective implementation
+- ✅ Available on all pages
+
+### **4. Testing Priority**
+**Decision:** Focus on critical flows first
+- ✅ Auth flows (login, register)
+- ✅ Subscription flows (select, save)
+- ✅ Navigation (all menu items)
+- ⏳ Feature testing (later)
+
+---
+
+## 🎓 LEARNING OBJECTIVES
+
+**Tomorrow you'll learn:**
+1. How to implement AI chat with OpenAI
+2. How to set up Playwright testing
+3. How courier API integrations work
+4. How to enhance homepage for conversions
+5. How to fix navigation and routing issues
+
+---
+
+## 📞 QUESTIONS TO ANSWER TOMORROW
+
+1. **Courier APIs:**
+   - Which couriers are most important for your market?
+   - Can you create test accounts?
+   - Should we start with mock data?
+
+2. **Homepage:**
+   - Do we have screenshots to use?
+   - Should we take new screenshots?
+   - What testimonials to show?
+
+3. **AI Chat:**
+   - Should it be on all pages?
+   - What tone/personality?
+   - What limitations to set?
+
+4. **Testing:**
+   - What's the priority for test coverage?
+   - Should tests run on every commit?
+   - What browsers to test?
 
 ---
 
@@ -410,4 +786,4 @@ USING (auth.jwt() ->> 'user_role' = 'admin');
 
 **END OF PRIORITY ISSUES DOCUMENT**
 
-*Get some rest! We'll tackle these tomorrow! 😊*
+*Get some rest! Big day tomorrow with lots of exciting features! 😊🚀*
