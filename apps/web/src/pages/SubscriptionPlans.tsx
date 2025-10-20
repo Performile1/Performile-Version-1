@@ -46,15 +46,21 @@ export const SubscriptionPlans: React.FC = () => {
   const navigate = useNavigate();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [loadingPlanId, setLoadingPlanId] = useState<number | null>(null);
+  const [selectedUserType, setSelectedUserType] = useState<'merchant' | 'courier'>(
+    user?.user_role === 'courier' ? 'courier' : 'merchant'
+  );
 
   // Fetch subscription plans from public API
   const { data: plansResponse, isLoading, error } = useQuery({
-    queryKey: ['subscription-plans', user?.user_role],
+    queryKey: ['subscription-plans', selectedUserType],
     queryFn: async () => {
       try {
         // Use public API endpoint (no auth required)
-        const params = user?.user_role ? { user_type: user.user_role } : {};
-        const response = await apiClient.get('/api/subscriptions/public', { params });
+        // If user is logged in, use their role, otherwise use selected type
+        const userType = user?.user_role || selectedUserType;
+        const response = await apiClient.get('/api/subscriptions/public', { 
+          params: { user_type: userType } 
+        });
         return response.data;
       } catch (error: any) {
         console.error('Failed to fetch subscription plans:', error);
@@ -68,7 +74,18 @@ export const SubscriptionPlans: React.FC = () => {
 
   const handleSelectPlan = async (plan: SubscriptionPlan) => {
     if (!user) {
-      navigate('/auth');
+      // Redirect to register with plan info
+      navigate('/register', { 
+        state: { 
+          selectedPlan: {
+            id: plan.subscription_plan_id,
+            name: plan.plan_name,
+            price: billingCycle === 'monthly' ? plan.price_per_month : plan.price_per_year,
+            cycle: billingCycle,
+            user_type: plan.user_type
+          }
+        } 
+      });
       return;
     }
 
@@ -138,6 +155,40 @@ export const SubscriptionPlans: React.FC = () => {
           <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.9)', mb: 4 }}>
             Start optimizing your delivery performance today
           </Typography>
+
+          {/* User Type Toggle (only show if not logged in) */}
+          {!user && (
+            <Box sx={{ mb: 3 }}>
+              <ToggleButtonGroup
+                value={selectedUserType}
+                exclusive
+                onChange={(_, value) => value && setSelectedUserType(value)}
+                sx={{
+                  background: 'white',
+                  mb: 2,
+                  '& .MuiToggleButton-root': {
+                    px: 4,
+                    py: 1.5,
+                    border: 'none',
+                    '&.Mui-selected': {
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      color: 'white',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      }
+                    }
+                  }
+                }}
+              >
+                <ToggleButton value="merchant">
+                  💼 Merchant Plans
+                </ToggleButton>
+                <ToggleButton value="courier">
+                  🚗 Courier Plans
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+          )}
 
           {/* Billing Cycle Toggle */}
           <ToggleButtonGroup
