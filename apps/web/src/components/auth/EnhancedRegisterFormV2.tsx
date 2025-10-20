@@ -10,20 +10,33 @@ import {
   StepLabel,
   Alert,
   CircularProgress,
-  Link
+  Link,
+  Chip,
+  Divider
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EditIcon from '@mui/icons-material/Edit';
 import { useAuthStore } from '@/store/authStore';
 import { RegisterForm } from './RegisterForm';
 import { apiClient } from '@/services/apiClient';
 
+interface SelectedPlan {
+  id: number;
+  name: string;
+  price: number;
+  cycle: 'monthly' | 'yearly';
+  user_type: 'merchant' | 'courier';
+}
+
 interface EnhancedRegisterFormProps {
   onSwitchToLogin: () => void;
+  selectedPlan?: SelectedPlan;
 }
 
 const steps = ['Account', 'Platform', 'Branding', 'Plan'];
 
-export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ onSwitchToLogin }) => {
+export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ onSwitchToLogin, selectedPlan }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -145,6 +158,70 @@ export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ on
       case 0:
         return (
           <Box>
+            {/* Selected Plan Display */}
+            {selectedPlan && (
+              <Card 
+                sx={{ 
+                  mb: 3, 
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white'
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CheckCircleIcon sx={{ color: 'white' }} />
+                      <Typography variant="h6">
+                        Selected Plan: {selectedPlan.name}
+                      </Typography>
+                    </Box>
+                    <Chip 
+                      label={selectedPlan.user_type === 'merchant' ? '💼 Merchant' : '🚗 Courier'}
+                      sx={{ 
+                        backgroundColor: 'rgba(255,255,255,0.2)',
+                        color: 'white',
+                        fontWeight: 'bold'
+                      }}
+                    />
+                  </Box>
+                  
+                  <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.3)' }} />
+                  
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box>
+                      <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                        ${selectedPlan.price}
+                        <Typography component="span" variant="body1" sx={{ ml: 1 }}>
+                          / {selectedPlan.cycle === 'monthly' ? 'month' : 'year'}
+                        </Typography>
+                      </Typography>
+                      {selectedPlan.cycle === 'yearly' && (
+                        <Typography variant="body2" sx={{ mt: 0.5, opacity: 0.9 }}>
+                          💰 Save 16.7% with annual billing
+                        </Typography>
+                      )}
+                    </Box>
+                    
+                    <Button
+                      variant="outlined"
+                      startIcon={<EditIcon />}
+                      onClick={() => navigate('/subscription/plans')}
+                      sx={{
+                        color: 'white',
+                        borderColor: 'white',
+                        '&:hover': {
+                          borderColor: 'white',
+                          backgroundColor: 'rgba(255,255,255,0.1)'
+                        }
+                      }}
+                    >
+                      Change Plan
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            )}
+
             <RegisterForm 
               onSwitchToLogin={onSwitchToLogin}
               onSuccess={handleRegistrationSuccess}

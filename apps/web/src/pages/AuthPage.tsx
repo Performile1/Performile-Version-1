@@ -11,6 +11,9 @@ export const AuthPage: React.FC = () => {
   // Check if we're on the login page (default to login if not on /register)
   const [isLogin, setIsLogin] = useState(location.pathname !== '/register');
 
+  // Get selected plan from navigation state
+  const selectedPlan = (location.state as any)?.selectedPlan;
+
   useEffect(() => {
     // Update form based on current path
     setIsLogin(location.pathname !== '/register');
@@ -32,7 +35,10 @@ export const AuthPage: React.FC = () => {
             {isLogin ? (
               <LoginForm onSwitchToRegister={() => navigate('/register')} />
             ) : (
-              <EnhancedRegisterFormV2 onSwitchToLogin={() => navigate('/login')} />
+              <EnhancedRegisterFormV2 
+                onSwitchToLogin={() => navigate('/login')} 
+                selectedPlan={selectedPlan}
+              />
             )}
           </Box>
         </Fade>
