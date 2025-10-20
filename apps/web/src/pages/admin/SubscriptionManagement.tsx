@@ -38,6 +38,7 @@ import {
   Close as CloseIcon
 } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '@/services/apiClient';
 
 interface SubscriptionPlan {
   plan_id: number;
@@ -69,12 +70,16 @@ const SubscriptionManagement: React.FC = () => {
   const queryClient = useQueryClient();
 
   // Fetch subscription plans
-  const { data: plansData } = useQuery({
-    queryKey: ['subscription-plans', activeTab],
+  const { data: plansData, isLoading, error } = useQuery({
+    queryKey: ['admin-subscription-plans', activeTab],
     queryFn: async () => {
-      const response = await fetch(`/api/admin/subscriptions?user_type=${activeTab}&include_inactive=true`);
-      if (!response.ok) throw new Error('Failed to fetch plans');
-      return response.json();
+      const response = await apiClient.get('/admin/subscriptions', {
+        params: { 
+          user_type: activeTab,
+          include_inactive: true 
+        }
+      });
+      return response.data;
     }
   });
 
