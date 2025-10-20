@@ -5,7 +5,7 @@
  * Created: October 20, 2025
  */
 
-import { Request, Response } from 'express';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -26,7 +26,7 @@ const supabase = createClient(
  *   plans: SubscriptionPlan[]
  * }
  */
-export default async function handler(req: Request, res: Response) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Only allow GET requests
   if (req.method !== 'GET') {
     return res.status(405).json({ 
