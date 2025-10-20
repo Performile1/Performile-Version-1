@@ -26,7 +26,7 @@ INSERT INTO subscription_plans (
   'Enterprise',
   'courier-enterprise',
   'courier',
-  'enterprise',
+  4,
   199,
   1990,
   '["Unlimited deliveries", "White-label solution", "24/7 priority support", "Dedicated account manager", "API access", "Custom integrations", "Fleet management", "Advanced analytics", "Priority listings", "Custom branding"]'::jsonb,
