@@ -48,6 +48,7 @@ import ServiceRatingForm from './components/rating/ServiceRatingForm';
 import { SentryTestButton } from './components/debug/SentryTestButton';
 import { PublicReview } from './pages/PublicReview';
 import Pricing from './pages/Pricing';
+import { AIChatWidget } from './components/chat/AIChatWidget';
 import SubscriptionPlans from './pages/SubscriptionPlans';
 import SubscriptionSuccess from './pages/SubscriptionSuccess';
 import SubscriptionCancel from './pages/SubscriptionCancel';
@@ -581,6 +582,7 @@ const App: React.FC = () => {
           }}
         />
         <SentryTestButton />
+        <AIChatWidget position="bottom-right" />
       </ThemeProvider>
     </QueryClientProvider>
   );

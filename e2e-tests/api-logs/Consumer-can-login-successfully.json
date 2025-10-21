@@ -1,0 +1,9 @@
+{
+  "summary": {
+    "totalCalls": 0,
+    "failedCalls": 0,
+    "slowCalls": 0,
+    "averageResponseTime": 0
+  },
+  "calls": []
+}

@@ -1,0 +1,283 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]: Dashboard
+          - generic [ref=e10]:
+            - img [ref=e12]
+            - textbox "Search orders, couriers, stores..." [ref=e14]
+            - group
+          - generic [ref=e15]:
+            - button [ref=e16] [cursor=pointer]:
+              - img [ref=e17]
+            - button "0" [ref=e19] [cursor=pointer]:
+              - generic [ref=e20]:
+                - img [ref=e21]
+                - generic: "0"
+            - paragraph [ref=e23]: Courier Demo
+            - button "account of current user" [ref=e24] [cursor=pointer]:
+              - generic [ref=e25]: C
+      - navigation "navigation menu" [ref=e26]:
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - img "Performile Logo" [ref=e30]
+            - generic [ref=e31]: Performile
+          - separator [ref=e32]
+          - list [ref=e34]:
+            - listitem [ref=e35]:
+              - button "Dashboard" [ref=e36] [cursor=pointer]:
+                - img [ref=e38]
+                - generic [ref=e41]: Dashboard
+            - listitem [ref=e42]:
+              - button "Orders" [ref=e43] [cursor=pointer]:
+                - img [ref=e45]
+                - generic [ref=e48]: Orders
+            - listitem [ref=e49]:
+              - button "Track Shipment" [ref=e50] [cursor=pointer]:
+                - img [ref=e52]
+                - generic [ref=e55]: Track Shipment
+            - listitem [ref=e56]:
+              - button "Team" [ref=e57] [cursor=pointer]:
+                - img [ref=e59]
+                - generic [ref=e62]: Team
+            - listitem [ref=e63]:
+              - button "Analytics" [ref=e64] [cursor=pointer]:
+                - img [ref=e66]
+                - generic [ref=e69]: Analytics
+            - listitem [ref=e70]:
+              - button "My Subscription" [ref=e71] [cursor=pointer]:
+                - img [ref=e73]
+                - generic [ref=e76]: My Subscription
+            - listitem [ref=e77]:
+              - button "Parcel Points" [ref=e78] [cursor=pointer]:
+                - img [ref=e80]
+                - generic [ref=e83]: Parcel Points
+            - listitem [ref=e84]:
+              - button "Service Performance" [ref=e85] [cursor=pointer]:
+                - img [ref=e87]
+                - generic [ref=e90]: Service Performance
+            - listitem [ref=e91]:
+              - button "Coverage Checker" [ref=e92] [cursor=pointer]:
+                - img [ref=e94]
+                - generic [ref=e97]: Coverage Checker
+            - listitem [ref=e98]:
+              - button "Checkout Analytics" [ref=e99] [cursor=pointer]:
+                - img [ref=e101]
+                - generic [ref=e104]: Checkout Analytics
+            - listitem [ref=e105]:
+              - button "Marketplace" [ref=e106] [cursor=pointer]:
+                - img [ref=e108]
+                - generic [ref=e111]: Marketplace
+            - listitem [ref=e112]:
+              - button "Settings" [ref=e113] [cursor=pointer]:
+                - img [ref=e115]
+                - generic [ref=e118]: Settings
+      - main [ref=e119]:
+        - generic [ref=e121]:
+          - heading "Good morning, Courier!" [level=4] [ref=e122]
+          - paragraph [ref=e123]: Here's what's happening with your logistics performance today.
+          - generic [ref=e124]:
+            - generic [ref=e128]:
+              - img [ref=e130]
+              - generic [ref=e132]:
+                - generic [ref=e133]: "90.0"
+                - paragraph [ref=e134]: My Trust Score
+                - text: "Industry average: 78.4"
+            - generic [ref=e138]:
+              - img [ref=e140]
+              - generic [ref=e142]:
+                - generic [ref=e143]: "5"
+                - paragraph [ref=e144]: Orders This Month
+            - generic [ref=e148]:
+              - img [ref=e150]
+              - generic [ref=e153]:
+                - generic [ref=e154]: 92.5%
+                - paragraph [ref=e155]: On-Time Rate
+            - alert [ref=e159]:
+              - img [ref=e161]
+              - generic [ref=e163]: Failed to load order trends. Please try again later.
+            - alert [ref=e167]:
+              - img [ref=e169]
+              - generic [ref=e171]: Failed to load claims trends. Please try again later.
+            - alert [ref=e175]:
+              - img [ref=e177]
+              - generic [ref=e179]: Failed to load claims. Please try again later.
+            - generic [ref=e182]:
+              - generic [ref=e183]:
+                - heading "Performance Trends" [level=6] [ref=e184]
+                - group [ref=e185]:
+                  - button "7 Days" [pressed] [ref=e186] [cursor=pointer]: 7 Days
+                  - button "30 Days" [ref=e187] [cursor=pointer]: 30 Days
+              - generic [ref=e189]:
+                - img [ref=e190]:
+                  - generic [ref=e195]:
+                    - generic [ref=e197]: Oct 14
+                    - generic [ref=e199]: Oct 15
+                    - generic [ref=e201]: Oct 16
+                    - generic [ref=e203]: Oct 17
+                    - generic [ref=e205]: Oct 18
+                    - generic [ref=e207]: Oct 19
+                    - generic [ref=e209]: Oct 20
+                    - generic [ref=e211]: Oct 21
+                  - generic [ref=e213]:
+                    - generic [ref=e215]: "0"
+                    - generic [ref=e217]: "0.25"
+                    - generic [ref=e219]: "0.5"
+                    - generic [ref=e221]: "0.75"
+                    - generic [ref=e223]: "1"
+                  - generic [ref=e225]:
+                    - generic [ref=e227]: "0"
+                    - generic [ref=e229]: "2"
+                    - generic [ref=e231]: "4"
+                    - generic [ref=e233]: "6"
+                    - generic [ref=e235]: "8"
+                - list [ref=e276]:
+                  - listitem [ref=e277]:
+                    - img [ref=e278]
+                    - text: Orders
+                  - listitem [ref=e280]:
+                    - img [ref=e281]
+                    - text: Reviews
+                  - listitem [ref=e283]:
+                    - img [ref=e284]
+                    - text: Avg TrustScore
+                - generic:
+                  - generic:
+                    - paragraph: Oct 19
+                    - list:
+                      - listitem: "Orders : 0"
+                      - listitem: "Reviews : 0"
+                      - listitem: "Avg TrustScore : 0"
+            - generic [ref=e288]:
+              - generic [ref=e289]:
+                - heading "Recent Activity" [level=6] [ref=e290]
+                - img [ref=e291]
+              - list [ref=e293]:
+                - listitem [ref=e294]:
+                  - img [ref=e297]
+                  - generic [ref=e299]:
+                    - generic [ref=e301]:
+                      - paragraph [ref=e302]: New Review
+                      - generic [ref=e304]: review
+                    - paragraph [ref=e305]:
+                      - generic [ref=e306]:
+                        - paragraph [ref=e307]: 5 stars
+                        - text: 5d ago
+                - listitem [ref=e308]:
+                  - img [ref=e311]
+                  - generic [ref=e313]:
+                    - generic [ref=e315]:
+                      - paragraph [ref=e316]: New Review
+                      - generic [ref=e318]: review
+                    - paragraph [ref=e319]:
+                      - generic [ref=e320]:
+                        - paragraph [ref=e321]: 4 stars
+                        - text: 6d ago
+                - listitem [ref=e322]:
+                  - img [ref=e325]
+                  - generic [ref=e327]:
+                    - generic [ref=e329]:
+                      - paragraph [ref=e330]: New Order
+                      - generic [ref=e332]: order
+                    - paragraph [ref=e333]:
+                      - generic [ref=e334]:
+                        - paragraph [ref=e335]: "Order #ORD-2025-00001"
+                        - text: 6d ago
+                - listitem [ref=e336]:
+                  - img [ref=e339]
+                  - generic [ref=e341]:
+                    - generic [ref=e343]:
+                      - paragraph [ref=e344]: New Order
+                      - generic [ref=e346]: order
+                    - paragraph [ref=e347]:
+                      - generic [ref=e348]:
+                        - paragraph [ref=e349]: "Order #ORD-2025-00002"
+                        - text: 10/13/2025
+                - listitem [ref=e350]:
+                  - img [ref=e353]
+                  - generic [ref=e355]:
+                    - generic [ref=e357]:
+                      - paragraph [ref=e358]: New Review
+                      - generic [ref=e360]: review
+                    - paragraph [ref=e361]:
+                      - generic [ref=e362]:
+                        - paragraph [ref=e363]: 5 stars
+                        - text: 10/13/2025
+                - listitem [ref=e364]:
+                  - img [ref=e367]
+                  - generic [ref=e369]:
+                    - generic [ref=e371]:
+                      - paragraph [ref=e372]: New Review
+                      - generic [ref=e374]: review
+                    - paragraph [ref=e375]:
+                      - generic [ref=e376]:
+                        - paragraph [ref=e377]: 4 stars
+                        - text: 10/12/2025
+                - listitem [ref=e378]:
+                  - img [ref=e381]
+                  - generic [ref=e383]:
+                    - generic [ref=e385]:
+                      - paragraph [ref=e386]: New Order
+                      - generic [ref=e388]: order
+                    - paragraph [ref=e389]:
+                      - generic [ref=e390]:
+                        - paragraph [ref=e391]: "Order #ORD-2025-00003"
+                        - text: 10/12/2025
+                - listitem [ref=e392]:
+                  - img [ref=e395]
+                  - generic [ref=e397]:
+                    - generic [ref=e399]:
+                      - paragraph [ref=e400]: New Order
+                      - generic [ref=e402]: order
+                    - paragraph [ref=e403]:
+                      - generic [ref=e404]:
+                        - paragraph [ref=e405]: "Order #ORD-2025-00004"
+                        - text: 10/11/2025
+                - listitem [ref=e406]:
+                  - img [ref=e409]
+                  - generic [ref=e411]:
+                    - generic [ref=e413]:
+                      - paragraph [ref=e414]: New Review
+                      - generic [ref=e416]: review
+                    - paragraph [ref=e417]:
+                      - generic [ref=e418]:
+                        - paragraph [ref=e419]: 5 stars
+                        - text: 10/11/2025
+                - listitem [ref=e420]:
+                  - img [ref=e423]
+                  - generic [ref=e425]:
+                    - generic [ref=e427]:
+                      - paragraph [ref=e428]: New Order
+                      - generic [ref=e430]: order
+                    - paragraph [ref=e431]:
+                      - generic [ref=e432]:
+                        - paragraph [ref=e433]: "Order #ORD-2025-00005"
+                        - text: 10/10/2025
+            - generic [ref=e436]:
+              - heading "Quick Actions" [level=6] [ref=e437]
+              - generic [ref=e438]:
+                - button "TrustScores" [ref=e440] [cursor=pointer]:
+                  - img [ref=e442]
+                  - generic [ref=e444]: TrustScores
+                - button "My Orders" [ref=e446] [cursor=pointer]:
+                  - img [ref=e448]
+                  - generic [ref=e450]: My Orders
+                - button "My TrustScore" [ref=e452] [cursor=pointer]:
+                  - img [ref=e454]
+                  - generic [ref=e456]: My TrustScore
+                - button "Settings" [ref=e458] [cursor=pointer]:
+                  - img [ref=e460]
+                  - generic [ref=e462]: Settings
+    - generic:
+      - status [ref=e468]: Server error. Please try again later.
+      - status [ref=e474]: Server error. Please try again later.
+      - status [ref=e480]: Server error. Please try again later.
+      - status [ref=e486]: Server error. Please try again later.
+      - status [ref=e492]: Server error. Please try again later.
+      - status [ref=e498]: Server error. Please try again later.
+  - generic [ref=e499]: "2"
+```

@@ -1,0 +1,66 @@
+{
+  "summary": {
+    "totalCalls": 1,
+    "failedCalls": 0,
+    "slowCalls": 0,
+    "averageResponseTime": 415
+  },
+  "calls": [
+    {
+      "id": "api-1",
+      "endpoint": "/api/auth",
+      "method": "POST",
+      "requestHeaders": {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en-US",
+        "content-type": "application/json",
+        "origin": "https://performile-platform-main.vercel.app",
+        "referer": "https://performile-platform-main.vercel.app/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.37 Safari/537.36",
+        "sec-ch-ua": "\"HeadlessChrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "requestBody": {
+        "action": "login",
+        "email": "admin@performile.com",
+        "password": "Test1234!"
+      },
+      "timestamp": "2025-10-21T07:44:43.919Z",
+      "responseStatus": 200,
+      "responseHeaders": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "content-length": "938",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Tue, 21 Oct 2025 07:44:45 GMT",
+        "etag": "W/\"3aa-HPSrWzwdgK0iYYPj6VzChCJPFN4\"",
+        "server": "Vercel",
+        "set-cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiZW1haWwiOiJhZG1pbkBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYxMDMyNjg1LCJleHAiOjE3NjEwMzYyODV9.WkdsvnlqJez2HKSKQHBwUCpF29BURyTWBjDR6aFnAtI; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600\nrefreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiaWF0IjoxNzYxMDMyNjg1LCJleHAiOjE3NjE2Mzc0ODV9.s14yRWGz1e85jQPitp4hHW4CKt8dBp9Eua1HJqMQCO4; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800",
+        "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
+        "x-vercel-cache": "MISS",
+        "x-vercel-id": "arn1::iad1::rqbgs-1761032684879-ca9459ecf5b6"
+      },
+      "responseBody": {
+        "success": true,
+        "data": {
+          "user": {
+            "user_id": "738b2a23-f7a9-4c14-a4d0-cdc05a5592fa",
+            "email": "admin@performile.com",
+            "user_role": "admin",
+            "first_name": "Admin",
+            "last_name": "User",
+            "is_verified": true,
+            "is_active": true,
+            "created_at": "2025-10-15T11:19:06.523Z",
+            "updated_at": "2025-10-21T07:44:04.902Z"
+          },
+          "tokens": {
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiZW1haWwiOiJhZG1pbkBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYxMDMyNjg1LCJleHAiOjE3NjEwMzYyODV9.WkdsvnlqJez2HKSKQHBwUCpF29BURyTWBjDR6aFnAtI",
+            "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiaWF0IjoxNzYxMDMyNjg1LCJleHAiOjE3NjE2Mzc0ODV9.s14yRWGz1e85jQPitp4hHW4CKt8dBp9Eua1HJqMQCO4"
+          }
+        }
+      },
+      "duration": 415
+    }
+  ]
+}

@@ -1,0 +1,441 @@
+# API Call Report
+
+## Summary
+- Total API Calls: 9
+- Failed Calls: 3
+- Slow Calls (>1s): 0
+- Average Response Time: 429.67ms
+
+## Calls by Endpoint
+- /api/auth: 1 calls
+- /api/notifications: 1 calls
+- /api/trustscore/dashboard: 1 calls
+- /api/dashboard/trends: 1 calls
+- /api/dashboard/recent-activity: 1 calls
+- /api/analytics/order-trends: 1 calls
+- /api/analytics/claims-trends: 1 calls
+- /api/tracking/summary: 1 calls
+- /api/claims: 1 calls
+
+## All API Calls
+
+### 1. POST /api/auth
+- Status: 200
+- Duration: 403ms
+- Timestamp: 2025-10-21T07:46:06.191Z
+- Request Body: ```json
+{
+  "action": "login",
+  "email": "merchant@performile.com",
+  "password": "Test1234!"
+}
+```
+- Response Body: ```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "user_id": "fc1a0fdb-a82c-4a83-82bb-fa7a4b4b13c9",
+      "email": "merchant@performile.com",
+      "user_role": "merchant",
+      "first_name": "Merchant",
+      "last_name": "Demo",
+      "is_verified": true,
+      "is_active": true,
+      "created_at": "2025-10-15T11:19:06.523Z",
+      "updated_at": "2025-10-21T07:46:02.434Z"
+    },
+    "tokens": {
+      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiZW1haWwiOiJtZXJjaGFudEBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6Im1lcmNoYW50Iiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzYxMDMyNzY3LCJleHAiOjE3NjEwMzYzNjd9.3lmLQ-xdDZwkbJFCEngEl55vSsckk2oSjfuJlQZvh3Q",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwidXNlcklkIjoiZmMxYTBmZGItYTgyYy00YTgzLTgyYmItZmE3YTRiNGIxM2M5IiwiaWF0IjoxNzYxMDMyNzY3LCJleHAiOjE3NjE2Mzc1Njd9.RGjvVAbdp71561hcy7tU2DICrFo9bZF5bi5vWj_G3zI"
+    }
+  }
+}
+```
+
+### 2. GET /api/notifications
+- Status: 200
+- Duration: 190ms
+- Timestamp: 2025-10-21T07:46:06.764Z
+- Response Body: ```json
+{
+  "success": true,
+  "data": [],
+  "unreadCount": 0
+}
+```
+
+### 3. GET /api/trustscore/dashboard
+- Status: 200
+- Duration: 613ms
+- Timestamp: 2025-10-21T07:46:06.769Z
+- Response Body: ```json
+{
+  "success": true,
+  "data": {
+    "statistics": {
+      "total_couriers": "2",
+      "active_couriers": "2",
+      "avg_trust_score": "90.0000000000000000",
+      "total_reviews": "5",
+      "avg_rating": "4.6000000000000000",
+      "total_orders_processed": "20",
+      "delivered_orders": "5",
+      "avg_completion_rate": "25.00",
+      "avg_on_time_rate": "92.5000000000000000"
+    },
+    "couriers": [
+      {
+        "courier_id": "4a700f6b-9d73-436c-8e44-00dbe426c30c",
+        "courier_name": "Demo Courier Service",
+        "overall_score": "66.80",
+        "total_reviews": 5,
+        "total_orders": 5,
+        "delivered_orders": 5,
+        "completion_rate": "100.00",
+        "on_time_rate": "0.00"
+      },
+      {
+        "courier_id": "25ac8cfb-9d22-45f4-8357-5dce3edf8932",
+        "courier_name": "Instabox",
+        "overall_score": "0.00",
+        "total_reviews": 0,
+        "total_orders": 0,
+        "delivered_orders": 0,
+        "completion_rate": "0.00",
+        "on_time_rate": "0.00"
+      },
+      {
+        "courier_id": "50130bbc-53a8-4017-a2e9-05cec6129039",
+        "courier_name": "DHL Express",
+        "overall_score": "0.00",
+        "total_reviews": 0,
+        "total_orders": 0,
+        "delivered_orders": 0,
+        "completion_rate": "0.00",
+        "on_time_rate": "0.00"
+      },
+      {
+        "courier_id": "a17a3a63-8e86-412a-9670-0f2435d587dc",
+        "courier_name": "Schenker",
+        "overall_score": "0.00",
+        "total_reviews": 0,
+        "total_orders": 0,
+        "delivered_orders": 0,
+        "completion_rate": "0.00",
+        "on_time_rate": "0.00"
+      },
+      {
+        "courier_id": "03b204a4-1998-4b74-a5cf-37f948cd1571",
+        "courier_name": "Earlybird",
+        "overall_score": "0.00",
+        "total_reviews": 0,
+        "total_orders": 0,
+        "delivered_orders": 0,
+        "completion_rate": "0.00",
+        "on_time_rate": "0.00"
+      }
+    ],
+    "recentReviews": [
+      {
+        "review_id": "0455d237-1f12-46d3-994d-fa7c631ec5d1",
+        "rating": 5,
+        "comment": "Great service! Order 1 delivered on time.",
+        "created_at": "2025-10-15T14:06:24.891Z",
+        "courier_name": "Demo Courier Service",
+        "store_name": "Demo Store"
+      },
+      {
+        "review_id": "05cc6787-220b-43a4-90af-8a3f1415cfea",
+        "rating": 4,
+        "comment": "Great service! Order 2 delivered on time.",
+        "created_at": "2025-10-14T14:06:24.891Z",
+        "courier_name": "Demo Courier Service",
+        "store_name": "Demo Store"
+      },
+      {
+        "review_id": "aefdad38-42f3-4e53-8607-2ddf84f38369",
+        "rating": 5,
+        "comment": "Great service! Order 3 delivered on time.",
+        "created_at": "2025-10-13T14:06:24.891Z",
+        "courier_name": "Demo Courier Service",
+        "store_name": "Demo Store"
+      },
+      {
+        "review_id": "84e7bd55-68f6-4330-815d-31dfd597fa09",
+        "rating": 4,
+        "comment": "Great service! Order 4 delivered on time.",
+        "created_at": "2025-10-12T14:06:24.891Z",
+        "courier_name": "Demo Courier Service",
+        "store_name": "Demo Store"
+      },
+      {
+        "review_id": "272d2ebd-3e62-4c8b-8c4a-ba4058d32742",
+        "rating": 5,
+        "comment": "Great service! Order 5 delivered on time.",
+        "created_at": "2025-10-11T14:06:24.891Z",
+        "courier_name": "Demo Courier Service",
+        "store_name": "Demo Store"
+      }
+    ]
+  }
+}
+```
+
+### 4. GET /api/dashboard/trends
+- Status: 200
+- Duration: 293ms
+- Timestamp: 2025-10-21T07:46:07.444Z
+- Response Body: ```json
+{
+  "success": true,
+  "data": [
+    {
+      "date": "2025-10-14",
+      "orders": "1",
+      "reviews": "1",
+      "trust_score": "0"
+    },
+    {
+      "date": "2025-10-15",
+      "orders": "0",
+      "reviews": "1",
+      "trust_score": "6.1"
+    },
+    {
+      "date": "2025-10-16",
+      "orders": "0",
+      "reviews": "0",
+      "trust_score": "0"
+    },
+    {
+      "date": "2025-10-17",
+      "orders": "0",
+      "reviews": "0",
+      "trust_score": "0"
+    },
+    {
+      "date": "2025-10-18",
+      "orders": "0",
+      "reviews": "0",
+      "trust_score": "0"
+    },
+    {
+      "date": "2025-10-19",
+      "orders": "0",
+      "reviews": "0",
+      "trust_score": "0"
+    },
+    {
+      "date": "2025-10-20",
+      "orders": "0",
+      "reviews": "0",
+      "trust_score": "0"
+    },
+    {
+      "date": "2025-10-21",
+      "orders": "0",
+      "reviews": "0",
+      "trust_score": "0"
+    }
+  ],
+  "period": "7d"
+}
+```
+
+### 5. GET /api/dashboard/recent-activity
+- Status: 200
+- Duration: 296ms
+- Timestamp: 2025-10-21T07:46:07.446Z
+- Response Body: ```json
+{
+  "success": true,
+  "data": [
+    {
+      "type": "review",
+      "id": "0455d237-1f12-46d3-994d-fa7c631ec5d1",
+      "title": "New Review",
+      "description": "5 stars",
+      "timestamp": "2025-10-15T14:06:24.891Z"
+    },
+    {
+      "type": "review",
+      "id": "05cc6787-220b-43a4-90af-8a3f1415cfea",
+      "title": "New Review",
+      "description": "4 stars",
+      "timestamp": "2025-10-14T14:06:24.891Z"
+    },
+    {
+      "type": "order",
+      "id": "c067d8ba-319b-46cb-9194-7ff4a4cd23ba",
+      "title": "New Order",
+      "description": "Order #ORD-2025-00001",
+      "timestamp": "2025-10-14T14:06:24.891Z"
+    },
+    {
+      "type": "order",
+      "id": "bd58abdd-1ea3-4877-894e-561d0b9d8959",
+      "title": "New Order",
+      "description": "Order #ORD-2025-00002",
+      "timestamp": "2025-10-13T14:06:24.891Z"
+    },
+    {
+      "type": "review",
+      "id": "aefdad38-42f3-4e53-8607-2ddf84f38369",
+      "title": "New Review",
+      "description": "5 stars",
+      "timestamp": "2025-10-13T14:06:24.891Z"
+    },
+    {
+      "type": "review",
+      "id": "84e7bd55-68f6-4330-815d-31dfd597fa09",
+      "title": "New Review",
+      "description": "4 stars",
+      "timestamp": "2025-10-12T14:06:24.891Z"
+    },
+    {
+      "type": "order",
+      "id": "55f3962e-e474-41b7-a990-33b73d82369f",
+      "title": "New Order",
+      "description": "Order #ORD-2025-00003",
+      "timestamp": "2025-10-12T14:06:24.891Z"
+    },
+    {
+      "type": "order",
+      "id": "5740f2cc-5fc3-4e5a-af60-68cbf4bc0468",
+      "title": "New Order",
+      "description": "Order #ORD-2025-00004",
+      "timestamp": "2025-10-11T14:06:24.891Z"
+    },
+    {
+      "type": "review",
+      "id": "272d2ebd-3e62-4c8b-8c4a-ba4058d32742",
+      "title": "New Review",
+      "description": "5 stars",
+      "timestamp": "2025-10-11T14:06:24.891Z"
+    },
+    {
+      "type": "order",
+      "id": "c533847f-8b90-4f50-98bc-b80320e6ea29",
+      "title": "New Order",
+      "description": "Order #ORD-2025-00005",
+      "timestamp": "2025-10-10T14:06:24.891Z"
+    }
+  ]
+}
+```
+
+### 6. GET /api/analytics/order-trends
+- Status: 500
+- Duration: 315ms
+- Timestamp: 2025-10-21T07:46:07.436Z
+- Response Body: ```json
+{
+  "error": {
+    "code": "500",
+    "message": "A server error has occurred"
+  }
+}
+```
+
+### 7. GET /api/analytics/claims-trends
+- Status: 500
+- Duration: 316ms
+- Timestamp: 2025-10-21T07:46:07.438Z
+- Response Body: ```json
+{
+  "error": {
+    "code": "500",
+    "message": "A server error has occurred"
+  }
+}
+```
+
+### 8. GET /api/tracking/summary
+- Status: 200
+- Duration: 553ms
+- Timestamp: 2025-10-21T07:46:07.448Z
+- Response Body: ```json
+{
+  "success": true,
+  "data": {
+    "total": 5,
+    "outForDelivery": 0,
+    "inTransit": 5,
+    "delivered": 0,
+    "exceptions": 0,
+    "recentUpdates": [
+      {
+        "order_id": "c067d8ba-319b-46cb-9194-7ff4a4cd23ba",
+        "tracking_number": "TRK-0000000001",
+        "status": "delivered",
+        "timestamp": "2025-10-15T14:06:24.891Z"
+      },
+      {
+        "order_id": "bd58abdd-1ea3-4877-894e-561d0b9d8959",
+        "tracking_number": "TRK-0000000002",
+        "status": "delivered",
+        "timestamp": "2025-10-14T14:06:24.891Z"
+      },
+      {
+        "order_id": "55f3962e-e474-41b7-a990-33b73d82369f",
+        "tracking_number": "TRK-0000000003",
+        "status": "delivered",
+        "timestamp": "2025-10-13T14:06:24.891Z"
+      },
+      {
+        "order_id": "5740f2cc-5fc3-4e5a-af60-68cbf4bc0468",
+        "tracking_number": "TRK-0000000004",
+        "status": "delivered",
+        "timestamp": "2025-10-12T14:06:24.891Z"
+      },
+      {
+        "order_id": "c533847f-8b90-4f50-98bc-b80320e6ea29",
+        "tracking_number": "TRK-0000000005",
+        "status": "delivered",
+        "timestamp": "2025-10-11T14:06:24.891Z"
+      },
+      {
+        "order_id": "604c701d-6a31-4f60-863a-b982d498671b",
+        "tracking_number": "TRK-0000000006",
+        "status": "in_transit",
+        "timestamp": "2025-10-10T14:06:24.891Z"
+      },
+      {
+        "order_id": "4aacc7d0-b690-44d6-b6d2-0b169a00f4e3",
+        "tracking_number": "TRK-0000000007",
+        "status": "in_transit",
+        "timestamp": "2025-10-09T14:06:24.891Z"
+      },
+      {
+        "order_id": "64e58605-ecfe-4398-b473-bf9f23a0c3c0",
+        "tracking_number": "TRK-0000000008",
+        "status": "in_transit",
+        "timestamp": "2025-10-08T14:06:24.891Z"
+      },
+      {
+        "order_id": "57039833-22f9-47b4-909d-83205b0d62f9",
+        "tracking_number": "TRK-0000000009",
+        "status": "in_transit",
+        "timestamp": "2025-10-07T14:06:24.891Z"
+      },
+      {
+        "order_id": "bd34665a-de5d-4b93-a113-2ed2fcbe208f",
+        "tracking_number": "TRK-0000000010",
+        "status": "in_transit",
+        "timestamp": "2025-10-06T14:06:24.891Z"
+      }
+    ]
+  }
+}
+```
+
+### 9. GET /api/claims
+- Status: 500
+- Duration: 888ms
+- Timestamp: 2025-10-21T07:46:07.442Z
+- Response Body: ```json
+{
+  "error": "syntax error at or near \"WHERE\""
+}
+```

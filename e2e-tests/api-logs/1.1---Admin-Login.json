@@ -3,7 +3,7 @@
     "totalCalls": 1,
     "failedCalls": 0,
     "slowCalls": 1,
-    "averageResponseTime": 1442
+    "averageResponseTime": 1376
   },
   "calls": [
     {
@@ -26,19 +26,19 @@
         "email": "admin@performile.com",
         "password": "Test1234!"
       },
-      "timestamp": "2025-10-17T09:10:17.120Z",
+      "timestamp": "2025-10-21T07:42:47.018Z",
       "responseStatus": 200,
       "responseHeaders": {
         "cache-control": "public, max-age=0, must-revalidate",
         "content-length": "938",
         "content-type": "application/json; charset=utf-8",
-        "date": "Fri, 17 Oct 2025 09:10:18 GMT",
-        "etag": "W/\"3aa-8DjgvDtXHZVoTCOKFulX12VujRw\"",
+        "date": "Tue, 21 Oct 2025 07:42:49 GMT",
+        "etag": "W/\"3aa-yGEL8BvJujNAXDEca8yFpgD2RbE\"",
         "server": "Vercel",
-        "set-cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiZW1haWwiOiJhZG1pbkBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYwNjkyMjE4LCJleHAiOjE3NjA2OTU4MTh9.RZtNwvcpBX6l0NIJMuiegJsF7p6KHK81VuLMHtL2LZ8; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600\nrefreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiaWF0IjoxNzYwNjkyMjE4LCJleHAiOjE3NjEyOTcwMTh9.mJQZH6FGxd54NKoloB6eqX22PwtoXLtT5UbFrPN6c8A; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800",
+        "set-cookie": "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiZW1haWwiOiJhZG1pbkBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYxMDMyNTY5LCJleHAiOjE3NjEwMzYxNjl9.abx5Syajg7Q1HGu7O97uk8h94O-8QPCumAE67sBa6G4; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600\nrefreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiaWF0IjoxNzYxMDMyNTY5LCJleHAiOjE3NjE2MzczNjl9.Pmjh_yOSuIJcC_v8lkOV39hOPN-BkzboZybsrc6Ptu8; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800",
         "strict-transport-security": "max-age=63072000; includeSubDomains; preload",
         "x-vercel-cache": "MISS",
-        "x-vercel-id": "arn1::iad1::czx45-1760692217836-82a277d06a51"
+        "x-vercel-id": "arn1::iad1::z5xfb-1761032568159-5f19a29344ea"
       },
       "responseBody": {
         "success": true,
@@ -52,15 +52,15 @@
             "is_verified": true,
             "is_active": true,
             "created_at": "2025-10-15T11:19:06.523Z",
-            "updated_at": "2025-10-17T08:58:46.977Z"
+            "updated_at": "2025-10-20T20:59:47.302Z"
           },
           "tokens": {
-            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiZW1haWwiOiJhZG1pbkBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYwNjkyMjE4LCJleHAiOjE3NjA2OTU4MTh9.RZtNwvcpBX6l0NIJMuiegJsF7p6KHK81VuLMHtL2LZ8",
-            "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiaWF0IjoxNzYwNjkyMjE4LCJleHAiOjE3NjEyOTcwMTh9.mJQZH6FGxd54NKoloB6eqX22PwtoXLtT5UbFrPN6c8A"
+            "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiZW1haWwiOiJhZG1pbkBwZXJmb3JtaWxlLmNvbSIsInVzZXJfcm9sZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzYxMDMyNTY5LCJleHAiOjE3NjEwMzYxNjl9.abx5Syajg7Q1HGu7O97uk8h94O-8QPCumAE67sBa6G4",
+            "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwidXNlcklkIjoiNzM4YjJhMjMtZjdhOS00YzE0LWE0ZDAtY2RjMDVhNTU5MmZhIiwiaWF0IjoxNzYxMDMyNTY5LCJleHAiOjE3NjE2MzczNjl9.Pmjh_yOSuIJcC_v8lkOV39hOPN-BkzboZybsrc6Ptu8"
           }
         }
       },
-      "duration": 1442
+      "duration": 1376
     }
   ]
 }

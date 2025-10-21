@@ -1,0 +1,157 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - img "Performile Logo" [ref=e8]
+      - heading "Performile" [level=6] [ref=e9]
+    - generic [ref=e10]:
+      - button "Pricing" [ref=e11] [cursor=pointer]: Pricing
+      - button "About" [ref=e12] [cursor=pointer]: About
+      - button "Contact" [ref=e13] [cursor=pointer]: Contact
+      - button "Dashboard" [ref=e14] [cursor=pointer]: Dashboard
+  - generic [ref=e17]:
+    - generic [ref=e19]:
+      - heading "Performile" [level=2] [ref=e20]
+      - heading "The Last Mile Performance Index" [level=5] [ref=e21]
+      - paragraph [ref=e22]: Transparent delivery performance ratings that help customers choose the best courier services and empower merchants to optimize their last-mile delivery.
+      - button "Go to Dashboard" [ref=e24] [cursor=pointer]:
+        - text: Go to Dashboard
+        - img [ref=e26]
+    - img "Performile Logo" [ref=e30]
+  - generic [ref=e31]:
+    - generic [ref=e32]:
+      - heading "Powerful Features" [level=3] [ref=e33]
+      - paragraph [ref=e34]: Everything you need to manage and optimize last-mile delivery performance
+    - generic [ref=e35]:
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - img [ref=e39]
+          - heading "Analytics Dashboard" [level=4] [ref=e41]
+        - paragraph [ref=e42]: Get real-time insights into your delivery performance with comprehensive analytics, charts, and reports.
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - img [ref=e45]
+            - paragraph [ref=e47]: Real-time performance metrics
+          - generic [ref=e48]:
+            - img [ref=e49]
+            - paragraph [ref=e51]: Customizable reports
+          - generic [ref=e52]:
+            - img [ref=e53]
+            - paragraph [ref=e55]: Export to CSV/PDF
+      - heading "📊 Dashboard Screenshot" [level=6] [ref=e58]
+    - generic [ref=e59]:
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - img [ref=e63]
+          - heading "Parcel Points Map" [level=4] [ref=e65]
+        - paragraph [ref=e66]: Find nearby parcel points, check coverage areas, and optimize your delivery routes with our interactive map.
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - img [ref=e69]
+            - paragraph [ref=e71]: Interactive map interface
+          - generic [ref=e72]:
+            - img [ref=e73]
+            - paragraph [ref=e75]: Coverage checker
+          - generic [ref=e76]:
+            - img [ref=e77]
+            - paragraph [ref=e79]: Route optimization
+      - heading "🗺️ Map View Screenshot" [level=6] [ref=e82]
+    - generic [ref=e83]:
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - img [ref=e87]
+          - heading "Service Performance" [level=4] [ref=e89]
+        - paragraph [ref=e90]: Track and compare courier performance with detailed metrics, ratings, and reviews from real customers.
+        - generic [ref=e91]:
+          - generic [ref=e92]:
+            - img [ref=e93]
+            - paragraph [ref=e95]: TrustScore ratings
+          - generic [ref=e96]:
+            - img [ref=e97]
+            - paragraph [ref=e99]: Performance comparisons
+          - generic [ref=e100]:
+            - img [ref=e101]
+            - paragraph [ref=e103]: Customer reviews
+      - heading "⭐ Performance Charts Screenshot" [level=6] [ref=e106]
+  - generic [ref=e107]:
+    - generic [ref=e108]:
+      - heading "Why Choose Performile?" [level=3] [ref=e109]
+      - paragraph [ref=e110]: Comprehensive tools for merchants and couriers
+    - generic [ref=e111]:
+      - generic [ref=e114]:
+        - img [ref=e116]
+        - heading "TrustScore System" [level=6] [ref=e118]
+        - paragraph [ref=e119]: Transparent performance ratings for all delivery services based on real customer experiences.
+      - generic [ref=e122]:
+        - img [ref=e124]
+        - heading "Real-Time Tracking" [level=6] [ref=e126]
+        - paragraph [ref=e127]: Track your parcels in real-time with accurate ETAs and delivery updates.
+      - generic [ref=e130]:
+        - img [ref=e132]
+        - heading "Analytics Dashboard" [level=6] [ref=e134]
+        - paragraph [ref=e135]: Comprehensive analytics for merchants and couriers to optimize delivery performance.
+      - generic [ref=e138]:
+        - img [ref=e140]
+        - heading "Secure Platform" [level=6] [ref=e142]
+        - paragraph [ref=e143]: Enterprise-grade security with encrypted data and secure payment processing.
+      - generic [ref=e146]:
+        - img [ref=e148]
+        - heading "Courier Network" [level=6] [ref=e150]
+        - paragraph [ref=e151]: Connect with verified couriers and compare services based on performance metrics.
+      - generic [ref=e154]:
+        - img [ref=e156]
+        - heading "Merchant Tools" [level=6] [ref=e158]
+        - paragraph [ref=e159]: Powerful tools for e-commerce stores to manage deliveries and customer satisfaction.
+  - generic [ref=e161]:
+    - generic [ref=e162]:
+      - heading "Trusted by Thousands" [level=3] [ref=e163]
+      - paragraph [ref=e164]: Join the growing community of merchants and couriers
+    - generic [ref=e165]:
+      - generic [ref=e167]:
+        - heading "10K+" [level=3] [ref=e168]
+        - paragraph [ref=e169]: Deliveries Tracked
+      - generic [ref=e171]:
+        - heading "1,000+" [level=3] [ref=e172]
+        - paragraph [ref=e173]: Active Merchants
+      - generic [ref=e175]:
+        - heading "5,000+" [level=3] [ref=e176]
+        - paragraph [ref=e177]: Registered Couriers
+      - generic [ref=e179]:
+        - heading "50K+" [level=3] [ref=e180]
+        - paragraph [ref=e181]: Customer Reviews
+    - generic [ref=e183]:
+      - generic [ref=e184]:
+        - img [ref=e185]
+        - img [ref=e187]
+        - img [ref=e189]
+        - img [ref=e191]
+        - img [ref=e193]
+      - heading "\"Best delivery tracking platform we've used\"" [level=6] [ref=e195]
+      - paragraph [ref=e196]: Performile has transformed how we manage our deliveries. The analytics are incredible and the TrustScore system helps us choose the best couriers.
+      - paragraph [ref=e197]: — Sarah Johnson, E-commerce Manager
+  - generic [ref=e199]:
+    - heading "Ready to Get Started?" [level=4] [ref=e200]
+    - paragraph [ref=e201]: Join thousands of merchants and couriers optimizing their delivery performance
+    - generic [ref=e202]:
+      - button "View Pricing" [ref=e203] [cursor=pointer]: View Pricing
+      - button "Contact Us" [ref=e204] [cursor=pointer]: Contact Us
+  - generic [ref=e206]:
+    - generic [ref=e207]:
+      - generic [ref=e208]:
+        - heading "Performile" [level=6] [ref=e209]
+        - paragraph [ref=e210]: The Last Mile Performance Index
+      - generic [ref=e211]:
+        - heading "Quick Links" [level=6] [ref=e212]
+        - generic [ref=e213]:
+          - button "About Us" [ref=e214] [cursor=pointer]: About Us
+          - button "Pricing" [ref=e215] [cursor=pointer]: Pricing
+          - button "Contact" [ref=e216] [cursor=pointer]: Contact
+      - generic [ref=e217]:
+        - heading "Legal" [level=6] [ref=e218]
+        - generic [ref=e219]:
+          - button "Privacy Policy" [ref=e220] [cursor=pointer]: Privacy Policy
+          - button "Terms of Service" [ref=e221] [cursor=pointer]: Terms of Service
+    - paragraph [ref=e223]: © 2025 Performile. All rights reserved.
+```

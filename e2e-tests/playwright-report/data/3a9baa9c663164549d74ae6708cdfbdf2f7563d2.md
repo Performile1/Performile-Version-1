@@ -1,0 +1,362 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: Dashboard
+        - generic [ref=e10]:
+          - img [ref=e12]
+          - textbox "Search orders, couriers, stores..." [ref=e14]
+          - group
+        - generic [ref=e15]:
+          - button [ref=e16] [cursor=pointer]:
+            - img [ref=e17]
+          - button "0" [ref=e19] [cursor=pointer]:
+            - generic [ref=e20]:
+              - img [ref=e21]
+              - generic: "0"
+          - paragraph [ref=e23]: Admin User
+          - button "account of current user" [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: A
+    - navigation "navigation menu" [ref=e26]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - img "Performile Logo" [ref=e30]
+          - generic [ref=e31]: Performile
+        - separator [ref=e32]
+        - list [ref=e34]:
+          - listitem [ref=e35]:
+            - button "Dashboard" [ref=e36] [cursor=pointer]:
+              - img [ref=e38]
+              - generic [ref=e41]: Dashboard
+          - listitem [ref=e42]:
+            - button "Trust Scores" [ref=e43] [cursor=pointer]:
+              - img [ref=e45]
+              - generic [ref=e48]: Trust Scores
+          - listitem [ref=e49]:
+            - button "Orders" [ref=e50] [cursor=pointer]:
+              - img [ref=e52]
+              - generic [ref=e55]: Orders
+          - listitem [ref=e56]:
+            - button "Track Shipment" [ref=e57] [cursor=pointer]:
+              - img [ref=e59]
+              - generic [ref=e62]: Track Shipment
+          - listitem [ref=e63]:
+            - button "Claims" [ref=e64] [cursor=pointer]:
+              - img [ref=e66]
+              - generic [ref=e69]: Claims
+          - listitem [ref=e70]:
+            - button "Users" [ref=e71] [cursor=pointer]:
+              - img [ref=e73]
+              - generic [ref=e76]: Users
+          - listitem [ref=e77]:
+            - button "Team" [ref=e78] [cursor=pointer]:
+              - img [ref=e80]
+              - generic [ref=e83]: Team
+          - listitem [ref=e84]:
+            - button "Analytics" [ref=e85] [cursor=pointer]:
+              - img [ref=e87]
+              - generic [ref=e90]: Analytics
+          - listitem [ref=e91]:
+            - button "Service Performance" [ref=e92] [cursor=pointer]:
+              - img [ref=e94]
+              - generic [ref=e97]: Service Performance
+          - listitem [ref=e98]:
+            - button "Checkout Analytics" [ref=e99] [cursor=pointer]:
+              - img [ref=e101]
+              - generic [ref=e104]: Checkout Analytics
+          - listitem [ref=e105]:
+            - button "Settings" [ref=e106] [cursor=pointer]:
+              - img [ref=e108]
+              - generic [ref=e111]: Settings
+              - img [ref=e112]
+    - main [ref=e114]:
+      - generic [ref=e116]:
+        - heading "Good morning, Admin!" [level=4] [ref=e117]
+        - paragraph [ref=e118]: Here's what's happening with your logistics performance today.
+        - generic [ref=e119]:
+          - generic [ref=e123]:
+            - img [ref=e125]
+            - generic [ref=e127]:
+              - generic [ref=e128]: "11"
+              - paragraph [ref=e129]: Total Couriers
+          - generic [ref=e133]:
+            - img [ref=e135]
+            - generic [ref=e137]:
+              - generic [ref=e138]: "85.7"
+              - paragraph [ref=e139]: Avg Trust Score
+              - text: Out of 100
+          - generic [ref=e143]:
+            - img [ref=e145]
+            - generic [ref=e147]:
+              - generic [ref=e148]: "105"
+              - paragraph [ref=e149]: Total Orders
+          - generic [ref=e153]:
+            - img [ref=e155]
+            - generic [ref=e157]:
+              - generic [ref=e158]: "106"
+              - paragraph [ref=e159]: Total Reviews
+          - generic [ref=e162]:
+            - generic [ref=e163]:
+              - heading "Performance Trends" [level=6] [ref=e164]
+              - group [ref=e165]:
+                - button "7 Days" [pressed] [ref=e166] [cursor=pointer]: 7 Days
+                - button "30 Days" [ref=e167] [cursor=pointer]: 30 Days
+            - generic [ref=e169]:
+              - img [ref=e170]:
+                - generic [ref=e175]:
+                  - generic [ref=e177]: Oct 14
+                  - generic [ref=e179]: Oct 15
+                  - generic [ref=e181]: Oct 16
+                  - generic [ref=e183]: Oct 17
+                  - generic [ref=e185]: Oct 18
+                  - generic [ref=e187]: Oct 19
+                  - generic [ref=e189]: Oct 20
+                  - generic [ref=e191]: Oct 21
+                - generic [ref=e193]:
+                  - generic [ref=e195]: "0"
+                  - generic [ref=e197]: "0.25"
+                  - generic [ref=e199]: "0.5"
+                  - generic [ref=e201]: "0.75"
+                  - generic [ref=e203]: "1"
+                - generic [ref=e205]:
+                  - generic [ref=e207]: "0"
+                  - generic [ref=e209]: "2"
+                  - generic [ref=e211]: "4"
+                  - generic [ref=e213]: "6"
+                  - generic [ref=e215]: "8"
+              - list [ref=e250]:
+                - listitem [ref=e251]:
+                  - img [ref=e252]
+                  - text: Orders
+                - listitem [ref=e254]:
+                  - img [ref=e255]
+                  - text: Reviews
+                - listitem [ref=e257]:
+                  - img [ref=e258]
+                  - text: Avg TrustScore
+          - generic [ref=e262]:
+            - generic [ref=e263]:
+              - heading "Recent Activity" [level=6] [ref=e264]
+              - img [ref=e265]
+            - list [ref=e267]:
+              - listitem [ref=e268]:
+                - img [ref=e271]
+                - generic [ref=e273]:
+                  - generic [ref=e275]:
+                    - paragraph [ref=e276]: New Review
+                    - generic [ref=e278]: review
+                  - paragraph [ref=e279]:
+                    - generic [ref=e280]:
+                      - paragraph [ref=e281]: 5 stars
+                      - text: 5d ago
+              - listitem [ref=e282]:
+                - img [ref=e285]
+                - generic [ref=e287]:
+                  - generic [ref=e289]:
+                    - paragraph [ref=e290]: New Review
+                    - generic [ref=e292]: review
+                  - paragraph [ref=e293]:
+                    - generic [ref=e294]:
+                      - paragraph [ref=e295]: 4 stars
+                      - text: 6d ago
+              - listitem [ref=e296]:
+                - img [ref=e299]
+                - generic [ref=e301]:
+                  - generic [ref=e303]:
+                    - paragraph [ref=e304]: New Order
+                    - generic [ref=e306]: order
+                  - paragraph [ref=e307]:
+                    - generic [ref=e308]:
+                      - paragraph [ref=e309]: "Order #ORD-2025-00001"
+                      - text: 6d ago
+              - listitem [ref=e310]:
+                - img [ref=e313]
+                - generic [ref=e315]:
+                  - generic [ref=e317]:
+                    - paragraph [ref=e318]: New Order
+                    - generic [ref=e320]: order
+                  - paragraph [ref=e321]:
+                    - generic [ref=e322]:
+                      - paragraph [ref=e323]: "Order #ORD-2025-00002"
+                      - text: 10/13/2025
+              - listitem [ref=e324]:
+                - img [ref=e327]
+                - generic [ref=e329]:
+                  - generic [ref=e331]:
+                    - paragraph [ref=e332]: New Review
+                    - generic [ref=e334]: review
+                  - paragraph [ref=e335]:
+                    - generic [ref=e336]:
+                      - paragraph [ref=e337]: 5 stars
+                      - text: 10/13/2025
+              - listitem [ref=e338]:
+                - img [ref=e341]
+                - generic [ref=e343]:
+                  - generic [ref=e345]:
+                    - paragraph [ref=e346]: New Review
+                    - generic [ref=e348]: review
+                  - paragraph [ref=e349]:
+                    - generic [ref=e350]:
+                      - paragraph [ref=e351]: 4 stars
+                      - text: 10/12/2025
+              - listitem [ref=e352]:
+                - img [ref=e355]
+                - generic [ref=e357]:
+                  - generic [ref=e359]:
+                    - paragraph [ref=e360]: New Order
+                    - generic [ref=e362]: order
+                  - paragraph [ref=e363]:
+                    - generic [ref=e364]:
+                      - paragraph [ref=e365]: "Order #ORD-2025-00003"
+                      - text: 10/12/2025
+              - listitem [ref=e366]:
+                - img [ref=e369]
+                - generic [ref=e371]:
+                  - generic [ref=e373]:
+                    - paragraph [ref=e374]: New Order
+                    - generic [ref=e376]: order
+                  - paragraph [ref=e377]:
+                    - generic [ref=e378]:
+                      - paragraph [ref=e379]: "Order #ORD-2025-00004"
+                      - text: 10/11/2025
+              - listitem [ref=e380]:
+                - img [ref=e383]
+                - generic [ref=e385]:
+                  - generic [ref=e387]:
+                    - paragraph [ref=e388]: New Review
+                    - generic [ref=e390]: review
+                  - paragraph [ref=e391]:
+                    - generic [ref=e392]:
+                      - paragraph [ref=e393]: 5 stars
+                      - text: 10/11/2025
+              - listitem [ref=e394]:
+                - img [ref=e397]
+                - generic [ref=e399]:
+                  - generic [ref=e401]:
+                    - paragraph [ref=e402]: New Order
+                    - generic [ref=e404]: order
+                  - paragraph [ref=e405]:
+                    - generic [ref=e406]:
+                      - paragraph [ref=e407]: "Order #ORD-2025-00005"
+                      - text: 10/10/2025
+          - generic [ref=e410]:
+            - heading "Quick Actions" [level=6] [ref=e411]
+            - generic [ref=e412]:
+              - button "View Analytics" [ref=e414] [cursor=pointer]:
+                - img [ref=e416]
+                - generic [ref=e418]: View Analytics
+              - button "Manage Couriers" [ref=e420] [cursor=pointer]:
+                - img [ref=e422]
+                - generic [ref=e424]: Manage Couriers
+              - button "View Stores" [ref=e426] [cursor=pointer]:
+                - img [ref=e428]
+                - generic [ref=e430]: View Stores
+              - button "TrustScores" [ref=e432] [cursor=pointer]:
+                - img [ref=e434]
+                - generic [ref=e436]: TrustScores
+              - button "Team" [ref=e438] [cursor=pointer]:
+                - img [ref=e440]
+                - generic [ref=e442]: Team
+              - button "Settings" [ref=e444] [cursor=pointer]:
+                - img [ref=e446]
+                - generic [ref=e448]: Settings
+          - generic [ref=e451]:
+            - generic [ref=e452]:
+              - heading "📦 Active Shipments" [level=6] [ref=e453]
+              - generic [ref=e455]: "0"
+            - generic [ref=e456]:
+              - generic [ref=e457]:
+                - img [ref=e458]
+                - generic [ref=e460]: "Out for Delivery: 0"
+              - generic [ref=e461]:
+                - img [ref=e462]
+                - generic [ref=e464]: "In Transit: 0"
+              - generic [ref=e465]:
+                - img [ref=e466]
+                - generic [ref=e468]: "Delivered: 0"
+            - heading "Recent Updates" [level=6] [ref=e469]
+            - paragraph [ref=e471]: No recent updates available
+            - button "View All Shipments" [ref=e472] [cursor=pointer]: View All Shipments
+        - generic [ref=e473]:
+          - heading "Top Performing Couriers" [level=5] [ref=e474]
+          - generic [ref=e475]:
+            - generic [ref=e478]:
+              - generic [ref=e479]:
+                - generic [ref=e480]:
+                  - generic "Demo Courier Service" [ref=e481] [cursor=pointer]:
+                    - generic [ref=e482]: D
+                  - generic [ref=e483]: "1"
+                - generic [ref=e484]:
+                  - heading "Demo Courier Service" [level=6] [ref=e485]
+                  - paragraph [ref=e486]: "Trust Score: 66.8"
+                - generic [ref=e488]: N/A
+              - generic [ref=e489]:
+                - generic [ref=e490]: On-Time Rate
+                - generic [ref=e491]: 0.0%
+              - progressbar [ref=e492]
+              - generic [ref=e494]: 5 orders • 5 reviews
+            - generic [ref=e497]:
+              - generic [ref=e498]:
+                - generic [ref=e499]:
+                  - generic "Instabox" [ref=e500] [cursor=pointer]:
+                    - img "Instabox logo" [ref=e502]
+                  - generic [ref=e503]: "2"
+                - generic [ref=e504]:
+                  - heading "Instabox" [level=6] [ref=e505]
+                  - paragraph [ref=e506]: "Trust Score: 0.0"
+                - generic [ref=e508]: N/A
+              - generic [ref=e509]:
+                - generic [ref=e510]: On-Time Rate
+                - generic [ref=e511]: 0.0%
+              - progressbar [ref=e512]
+              - generic [ref=e514]: 0 orders • 0 reviews
+            - generic [ref=e517]:
+              - generic [ref=e518]:
+                - generic [ref=e519]:
+                  - generic "DHL Express" [ref=e520] [cursor=pointer]:
+                    - img "DHL Express logo" [ref=e522]
+                  - generic [ref=e523]: "3"
+                - generic [ref=e524]:
+                  - heading "DHL Express" [level=6] [ref=e525]
+                  - paragraph [ref=e526]: "Trust Score: 0.0"
+                - generic [ref=e528]: N/A
+              - generic [ref=e529]:
+                - generic [ref=e530]: On-Time Rate
+                - generic [ref=e531]: 0.0%
+              - progressbar [ref=e532]
+              - generic [ref=e534]: 0 orders • 0 reviews
+            - generic [ref=e537]:
+              - generic [ref=e538]:
+                - generic [ref=e539]:
+                  - generic "Schenker" [ref=e540] [cursor=pointer]:
+                    - img "Schenker logo" [ref=e542]
+                  - generic [ref=e543]: "4"
+                - generic [ref=e544]:
+                  - heading "Schenker" [level=6] [ref=e545]
+                  - paragraph [ref=e546]: "Trust Score: 0.0"
+                - generic [ref=e548]: N/A
+              - generic [ref=e549]:
+                - generic [ref=e550]: On-Time Rate
+                - generic [ref=e551]: 0.0%
+              - progressbar [ref=e552]
+              - generic [ref=e554]: 0 orders • 0 reviews
+            - generic [ref=e557]:
+              - generic [ref=e558]:
+                - generic [ref=e559]:
+                  - generic "Earlybird" [ref=e560] [cursor=pointer]:
+                    - img "Earlybird logo" [ref=e562]
+                  - generic [ref=e563]: "5"
+                - generic [ref=e564]:
+                  - heading "Earlybird" [level=6] [ref=e565]
+                  - paragraph [ref=e566]: "Trust Score: 0.0"
+                - generic [ref=e568]: N/A
+              - generic [ref=e569]:
+                - generic [ref=e570]: On-Time Rate
+                - generic [ref=e571]: 0.0%
+              - progressbar [ref=e572]
+              - generic [ref=e574]: 0 orders • 0 reviews
+  - generic [ref=e575]: "2"
+```
