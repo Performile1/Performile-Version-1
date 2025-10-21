@@ -21,30 +21,74 @@ npx playwright install
 mkdir screenshots
 ```
 
-### 3. Run the Merchant Audit
+### 3. Run Tests
 
 ```powershell
-# Run with browser visible (recommended)
-npm run test:merchant
-
-# Or run all tests
+# Run all tests
 npm test
 
-# Or run in debug mode (step through)
+# Run specific test suites
+npm run test:homepage          # Homepage tests
+npm run test:subscription      # My Subscription tests
+npm run test:admin-subs        # Admin subscription management
+npm run test:navigation        # Navigation menu tests
+npm run test:all               # Comprehensive all-users test
+
+# Run with browser visible
+npm run test:headed
+
+# Run in debug mode (step through)
 npm run test:debug
 ```
 
-## 📋 What the Test Does
+## 📋 What the Tests Do
 
-The merchant audit test will:
-1. ✅ Log in as merchant
-2. ✅ Screenshot the dashboard
-3. ✅ List all navigation menu items
-4. ✅ Visit every page and screenshot it
-5. ✅ Check for errors on each page
-6. ✅ Record console errors
-7. ✅ Record network errors (failed API calls)
-8. ✅ Document all buttons and forms
+### Homepage Tests (`homepage.spec.js`)
+- ✅ Top navigation bar with Login/Register buttons
+- ✅ Hero section with CTA buttons
+- ✅ Feature showcase with 3 major features
+- ✅ Feature grid with 6 cards
+- ✅ Enhanced stats section (4 statistics)
+- ✅ Customer testimonial with 5 stars
+- ✅ CTA section and footer
+- ✅ Responsive design (mobile/tablet)
+- ✅ Performance checks
+
+### My Subscription Tests (`subscription/my-subscription.spec.js`)
+- ✅ Subscription page display
+- ✅ Current plan details
+- ✅ Usage statistics with progress bars
+- ✅ Plan limits (merchant/courier specific)
+- ✅ Quick actions (Upgrade, Manage Billing)
+- ✅ Next renewal date
+- ✅ Plan features display
+- ✅ Error handling
+- ✅ Access control
+- ✅ Responsive design
+
+### Admin Subscription Management (`admin/subscription-management.spec.js`)
+- ✅ Subscription management page
+- ✅ Merchant/Courier plan tabs
+- ✅ Plan table display
+- ✅ Edit dialog functionality
+- ✅ Save plan changes
+- ✅ Field validation
+- ✅ Active status toggle
+- ✅ Error handling
+- ✅ Access control (admin only)
+- ✅ Data validation
+
+### Navigation Menu Tests (`navigation/menu-items.spec.js`)
+- ✅ New menu items display
+- ✅ My Subscription navigation
+- ✅ Parcel Points navigation
+- ✅ Service Performance navigation
+- ✅ Coverage Checker navigation
+- ✅ Active item highlighting
+- ✅ Mobile drawer functionality
+- ✅ Role-based access
+- ✅ Sidebar behavior
+- ✅ Performance checks
 
 ## 📁 Output
 
@@ -55,9 +99,20 @@ After running, you'll find:
 
 ## 🎯 Test Files
 
-- `merchant-audit.spec.js` - Main merchant role test
+### Core Tests
+- `all-users-comprehensive.spec.js` - Comprehensive test for all user roles
+- `homepage.spec.js` - **NEW** Homepage with navigation and features
 - `playwright.config.js` - Playwright configuration
 - `package.json` - Dependencies and scripts
+
+### Feature Tests (October 21, 2025)
+- `subscription/my-subscription.spec.js` - **NEW** My Subscription page tests
+- `admin/subscription-management.spec.js` - **NEW** Admin subscription editing
+- `navigation/menu-items.spec.js` - **NEW** Navigation menu items
+
+### Role-Specific Tests
+- `auth/login.spec.js` - Authentication tests
+- `merchant/dashboard.spec.js` - Merchant dashboard tests
 
 ## 📊 View Results
 

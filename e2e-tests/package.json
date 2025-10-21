@@ -8,6 +8,11 @@
     "test:all-headed": "playwright test tests/all-users-comprehensive.spec.js --headed",
     "test:auth": "playwright test tests/auth/login.spec.js",
     "test:merchant": "playwright test tests/merchant/dashboard.spec.js",
+    "test:homepage": "playwright test tests/homepage.spec.js",
+    "test:subscription": "playwright test tests/subscription/my-subscription.spec.js",
+    "test:admin-subs": "playwright test tests/admin/subscription-management.spec.js",
+    "test:navigation": "playwright test tests/navigation/menu-items.spec.js",
+    "test:new-features": "playwright test tests/homepage.spec.js tests/subscription/ tests/navigation/",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "report": "playwright show-report"
