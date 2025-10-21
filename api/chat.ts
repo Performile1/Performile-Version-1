@@ -106,7 +106,7 @@ async function callOpenAI(messages: ChatMessage[]): Promise<string> {
     const response = await axios.post(
       OPENAI_API_URL,
       {
-        model: 'gpt-4',
+        model: 'gpt-3.5-turbo',
         messages,
         max_tokens: 500,
         temperature: 0.7,
