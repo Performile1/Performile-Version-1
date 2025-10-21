@@ -11,6 +11,7 @@
  */
 
 import { VercelRequest, VercelResponse } from '@vercel/node';
+import axios from 'axios';
 
 // OpenAI configuration
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -97,34 +98,49 @@ function validateRequest(body: any): ChatRequest | null {
  */
 async function callOpenAI(messages: ChatMessage[]): Promise<string> {
   if (!OPENAI_API_KEY) {
+    console.error('OpenAI API key not configured');
     throw new Error('OpenAI API key not configured');
   }
 
-  const response = await fetch(OPENAI_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-4',
-      messages,
-      max_tokens: 500,
-      temperature: 0.7,
-      top_p: 1,
-      frequency_penalty: 0.5,
-      presence_penalty: 0.5,
-    }),
-  });
+  try {
+    const response = await axios.post(
+      OPENAI_API_URL,
+      {
+        model: 'gpt-4',
+        messages,
+        max_tokens: 500,
+        temperature: 0.7,
+        top_p: 1,
+        frequency_penalty: 0.5,
+        presence_penalty: 0.5,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        },
+        timeout: 30000, // 30 second timeout
+      }
+    );
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    console.error('OpenAI API error:', error);
+    return response.data.choices[0]?.message?.content || 'I apologize, but I could not generate a response.';
+  } catch (error: any) {
+    console.error('OpenAI API error:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+    });
+    
+    if (error.response?.status === 401) {
+      throw new Error('Invalid OpenAI API key');
+    }
+    
+    if (error.response?.status === 429) {
+      throw new Error('OpenAI rate limit exceeded');
+    }
+    
     throw new Error('Failed to get AI response');
   }
-
-  const data = await response.json();
-  return data.choices[0]?.message?.content || 'I apologize, but I could not generate a response.';
 }
 
 /**
@@ -177,11 +193,15 @@ export default async function handler(
     });
 
   } catch (error: any) {
-    console.error('Chat API error:', error);
+    console.error('Chat API error:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    });
 
-    // Don't expose internal errors
+    // Return user-friendly error
     return res.status(500).json({
-      error: 'An error occurred while processing your request. Please try again.',
+      error: error.message || 'An error occurred while processing your request. Please try again.',
     });
   }
 }
