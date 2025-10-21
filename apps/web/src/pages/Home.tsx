@@ -23,6 +23,12 @@ import {
   LocalShipping,
   Store,
   ArrowForward,
+  Login,
+  PersonAdd,
+  Star,
+  CheckCircle,
+  Map,
+  BarChart,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -66,6 +72,87 @@ export const Home: React.FC = () => {
 
   return (
     <Box>
+      {/* Top Navigation Bar */}
+      <Box
+        sx={{
+          bgcolor: 'white',
+          borderBottom: '1px solid',
+          borderColor: 'grey.200',
+          py: 2,
+          position: 'sticky',
+          top: 0,
+          zIndex: 1000,
+          boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <img
+                src="/logo.png"
+                alt="Performile Logo"
+                style={{ height: 40, width: 40, objectFit: 'contain' }}
+              />
+              <Typography variant="h6" fontWeight="bold" color="primary">
+                Performile
+              </Typography>
+            </Box>
+            <Stack direction="row" spacing={3} alignItems="center">
+              <Button
+                color="inherit"
+                sx={{ textTransform: 'none', display: { xs: 'none', md: 'inline-flex' } }}
+                onClick={() => navigate('/subscription/plans')}
+              >
+                Pricing
+              </Button>
+              <Button
+                color="inherit"
+                sx={{ textTransform: 'none', display: { xs: 'none', md: 'inline-flex' } }}
+                onClick={() => navigate('/info')}
+              >
+                About
+              </Button>
+              <Button
+                color="inherit"
+                sx={{ textTransform: 'none', display: { xs: 'none', md: 'inline-flex' } }}
+                onClick={() => navigate('/contact')}
+              >
+                Contact
+              </Button>
+              {!isAuthenticated && (
+                <>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Login />}
+                    onClick={() => navigate('/login')}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Login
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<PersonAdd />}
+                    onClick={() => navigate('/register')}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Get Started
+                  </Button>
+                </>
+              )}
+              {isAuthenticated && (
+                <Button
+                  variant="contained"
+                  onClick={() => navigate('/dashboard')}
+                  sx={{ textTransform: 'none' }}
+                >
+                  Dashboard
+                </Button>
+              )}
+            </Stack>
+          </Box>
+        </Container>
+      </Box>
+
       {/* Hero Section */}
       <Box
         sx={{
@@ -160,14 +247,176 @@ export const Home: React.FC = () => {
         </Container>
       </Box>
 
-      {/* Features Section */}
+      {/* Feature Showcase with Screenshots */}
+      <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Box textAlign="center" mb={6}>
+          <Typography variant="h3" fontWeight="bold" gutterBottom>
+            Powerful Features
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem' }}>
+            Everything you need to manage and optimize last-mile delivery performance
+          </Typography>
+        </Box>
+
+        {/* Feature 1: Analytics Dashboard */}
+        <Grid container spacing={4} alignItems="center" sx={{ mb: 8 }}>
+          <Grid item xs={12} md={6}>
+            <Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <BarChart sx={{ color: '#667eea', fontSize: 32 }} />
+                <Typography variant="h4" fontWeight="bold">
+                  Analytics Dashboard
+                </Typography>
+              </Box>
+              <Typography variant="body1" color="text.secondary" paragraph>
+                Get real-time insights into your delivery performance with comprehensive analytics,
+                charts, and reports.
+              </Typography>
+              <Stack spacing={1}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle sx={{ color: 'success.main', fontSize: 20 }} />
+                  <Typography variant="body2">Real-time performance metrics</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle sx={{ color: 'success.main', fontSize: 20 }} />
+                  <Typography variant="body2">Customizable reports</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle sx={{ color: 'success.main', fontSize: 20 }} />
+                  <Typography variant="body2">Export to CSV/PDF</Typography>
+                </Box>
+              </Stack>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 2,
+                bgcolor: 'grey.50',
+                borderRadius: 2,
+                minHeight: 300,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography variant="h6" color="text.secondary">
+                📊 Dashboard Screenshot
+              </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
+
+        {/* Feature 2: Parcel Points Map */}
+        <Grid container spacing={4} alignItems="center" sx={{ mb: 8 }} direction={{ xs: 'column', md: 'row-reverse' }}>
+          <Grid item xs={12} md={6}>
+            <Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <Map sx={{ color: '#667eea', fontSize: 32 }} />
+                <Typography variant="h4" fontWeight="bold">
+                  Parcel Points Map
+                </Typography>
+              </Box>
+              <Typography variant="body1" color="text.secondary" paragraph>
+                Find nearby parcel points, check coverage areas, and optimize your delivery routes
+                with our interactive map.
+              </Typography>
+              <Stack spacing={1}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle sx={{ color: 'success.main', fontSize: 20 }} />
+                  <Typography variant="body2">Interactive map interface</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle sx={{ color: 'success.main', fontSize: 20 }} />
+                  <Typography variant="body2">Coverage checker</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle sx={{ color: 'success.main', fontSize: 20 }} />
+                  <Typography variant="body2">Route optimization</Typography>
+                </Box>
+              </Stack>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 2,
+                bgcolor: 'grey.50',
+                borderRadius: 2,
+                minHeight: 300,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography variant="h6" color="text.secondary">
+                🗺️ Map View Screenshot
+              </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
+
+        {/* Feature 3: Service Performance */}
+        <Grid container spacing={4} alignItems="center" sx={{ mb: 8 }}>
+          <Grid item xs={12} md={6}>
+            <Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <Speed sx={{ color: '#667eea', fontSize: 32 }} />
+                <Typography variant="h4" fontWeight="bold">
+                  Service Performance
+                </Typography>
+              </Box>
+              <Typography variant="body1" color="text.secondary" paragraph>
+                Track and compare courier performance with detailed metrics, ratings, and reviews
+                from real customers.
+              </Typography>
+              <Stack spacing={1}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle sx={{ color: 'success.main', fontSize: 20 }} />
+                  <Typography variant="body2">TrustScore ratings</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle sx={{ color: 'success.main', fontSize: 20 }} />
+                  <Typography variant="body2">Performance comparisons</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircle sx={{ color: 'success.main', fontSize: 20 }} />
+                  <Typography variant="body2">Customer reviews</Typography>
+                </Box>
+              </Stack>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Paper
+              elevation={3}
+              sx={{
+                p: 2,
+                bgcolor: 'grey.50',
+                borderRadius: 2,
+                minHeight: 300,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography variant="h6" color="text.secondary">
+                ⭐ Performance Charts Screenshot
+              </Typography>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+
+      {/* Original Features Grid */}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Box textAlign="center" mb={6}>
           <Typography variant="h3" fontWeight="bold" gutterBottom>
             Why Choose Performile?
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem' }}>
-            Everything you need to manage and optimize last-mile delivery performance
+            Comprehensive tools for merchants and couriers
           </Typography>
         </Box>
 
@@ -199,11 +448,19 @@ export const Home: React.FC = () => {
         </Grid>
       </Container>
 
-      {/* Stats Section */}
+      {/* Enhanced Stats & Social Proof Section */}
       <Box sx={{ bgcolor: 'grey.100', py: 8 }}>
         <Container maxWidth="lg">
+          <Box textAlign="center" mb={6}>
+            <Typography variant="h3" fontWeight="bold" gutterBottom>
+              Trusted by Thousands
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Join the growing community of merchants and couriers
+            </Typography>
+          </Box>
           <Grid container spacing={4} textAlign="center">
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <Paper elevation={0} sx={{ p: 4, bgcolor: 'transparent' }}>
                 <Typography variant="h3" fontWeight="bold" color="primary">
                   10K+
@@ -213,27 +470,58 @@ export const Home: React.FC = () => {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <Paper elevation={0} sx={{ p: 4, bgcolor: 'transparent' }}>
                 <Typography variant="h3" fontWeight="bold" color="primary">
-                  500+
+                  1,000+
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
                   Active Merchants
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <Paper elevation={0} sx={{ p: 4, bgcolor: 'transparent' }}>
                 <Typography variant="h3" fontWeight="bold" color="primary">
-                  98%
+                  5,000+
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  Customer Satisfaction
+                  Registered Couriers
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Paper elevation={0} sx={{ p: 4, bgcolor: 'transparent' }}>
+                <Typography variant="h3" fontWeight="bold" color="primary">
+                  50K+
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  Customer Reviews
                 </Typography>
               </Paper>
             </Grid>
           </Grid>
+
+          {/* Testimonial */}
+          <Box sx={{ mt: 6 }}>
+            <Paper elevation={2} sx={{ p: 4, maxWidth: 800, mx: 'auto' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} sx={{ color: '#FFD700', fontSize: 28 }} />
+                ))}
+              </Box>
+              <Typography variant="h6" textAlign="center" gutterBottom>
+                "Best delivery tracking platform we've used"
+              </Typography>
+              <Typography variant="body1" color="text.secondary" textAlign="center" paragraph>
+                Performile has transformed how we manage our deliveries. The analytics are
+                incredible and the TrustScore system helps us choose the best couriers.
+              </Typography>
+              <Typography variant="body2" color="text.secondary" textAlign="center" fontWeight="bold">
+                — Sarah Johnson, E-commerce Manager
+              </Typography>
+            </Paper>
+          </Box>
         </Container>
       </Box>
 
