@@ -114,15 +114,27 @@ export const AIChatWidget: React.FC<AIChatWidgetProps> = ({
     } catch (error: any) {
       console.error('Chat error:', error);
       
+      // Determine error message based on error type
+      let errorContent = 'I apologize, but I encountered an error. Please try again or contact support if the issue persists.';
+      let toastMessage = 'Failed to send message';
+      
+      if (error.message?.includes('rate limit') || error.message?.includes('Rate limit')) {
+        errorContent = 'I apologize, but our AI service is currently experiencing high demand. Please wait a moment and try again.';
+        toastMessage = 'Rate limit reached. Please wait a moment.';
+      } else if (error.message?.includes('Too many requests')) {
+        errorContent = 'You\'re sending messages too quickly. Please wait a moment before trying again.';
+        toastMessage = 'Please slow down';
+      }
+      
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'I apologize, but I encountered an error. Please try again or contact support if the issue persists.',
+        content: errorContent,
         timestamp: new Date(),
       };
       
       setMessages(prev => [...prev, errorMessage]);
-      toast.error('Failed to send message');
+      toast.error(toastMessage);
     } finally {
       setIsLoading(false);
     }
