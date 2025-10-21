@@ -26,8 +26,8 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { Edit, Save, Cancel, Add } from '@mui/icons-material';
-import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { apiClient } from '@/services/apiClient';
 
 interface SubscriptionPlan {
   plan_id: number;
@@ -68,10 +68,7 @@ export const AdminSubscriptionsSettings: React.FC<AdminSubscriptionsSettingsProp
 
   const fetchPlans = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('/api/admin/subscription-plans', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await apiClient.get('/admin/subscription-plans');
       setPlans(response.data.plans);
     } catch (error: any) {
       toast.error('Failed to load subscription plans');
@@ -90,10 +87,7 @@ export const AdminSubscriptionsSettings: React.FC<AdminSubscriptionsSettingsProp
     if (!editingPlan) return;
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.put('/api/admin/subscription-plans', editingPlan, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiClient.put('/admin/subscription-plans', editingPlan);
       toast.success('Plan updated successfully');
       setDialogOpen(false);
       setEditingPlan(null);
