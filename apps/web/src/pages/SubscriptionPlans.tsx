@@ -30,10 +30,12 @@ import { toast } from 'react-hot-toast';
 
 interface SubscriptionPlan {
   subscription_plan_id: number;
+  plan_id: number;
   plan_name: string;
   description: string;
-  price_per_month: number;
-  price_per_year: number;
+  plan_description: string;
+  monthly_price: number;
+  annual_price: number;
   user_type: 'merchant' | 'courier';
   features: string[];
   is_popular?: boolean;
@@ -80,7 +82,7 @@ export const SubscriptionPlans: React.FC = () => {
           selectedPlan: {
             id: plan.subscription_plan_id,
             name: plan.plan_name,
-            price: billingCycle === 'monthly' ? plan.price_per_month : plan.price_per_year,
+            price: billingCycle === 'monthly' ? plan.monthly_price : plan.annual_price,
             cycle: billingCycle,
             user_type: plan.user_type
           }
@@ -125,12 +127,12 @@ export const SubscriptionPlans: React.FC = () => {
   };
 
   const getPrice = (plan: SubscriptionPlan) => {
-    return billingCycle === 'monthly' ? plan.price_per_month : plan.price_per_year;
+    return billingCycle === 'monthly' ? plan.monthly_price : plan.annual_price;
   };
 
   const getSavings = (plan: SubscriptionPlan) => {
-    const monthlyCost = plan.price_per_month * 12;
-    const yearlyCost = plan.price_per_year;
+    const monthlyCost = plan.monthly_price * 12;
+    const yearlyCost = plan.annual_price;
     const savings = monthlyCost - yearlyCost;
     const percentage = Math.round((savings / monthlyCost) * 100);
     return { amount: savings, percentage };

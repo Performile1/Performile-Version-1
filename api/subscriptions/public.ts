@@ -38,12 +38,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const { user_type } = req.query;
 
-    // Build query
+    // Build query - select specific columns with aliases
     let query = supabase
       .from('subscription_plans')
-      .select('*')
+      .select(`
+        subscription_plan_id,
+        plan_name,
+        plan_slug,
+        plan_description,
+        user_type,
+        tier,
+        monthly_price,
+        annual_price,
+        features,
+        max_orders_per_month,
+        max_emails_per_month,
+        max_sms_per_month,
+        max_push_notifications_per_month,
+        max_couriers,
+        max_team_members,
+        max_shops,
+        is_popular,
+        is_active,
+        display_order,
+        created_at,
+        updated_at
+      `)
       .eq('is_active', true)
-      .order('monthly_price', { ascending: true });
+      .order('user_type', { ascending: true })
+      .order('tier', { ascending: true });
 
     // Filter by user type if provided
     if (user_type && (user_type === 'merchant' || user_type === 'courier')) {
@@ -57,11 +80,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw error;
     }
 
+    // Transform plans to match frontend expectations (alias columns)
+    const transformedPlans = (plans || []).map(plan => ({
+      ...plan,
+      plan_id: plan.subscription_plan_id,
+      description: plan.plan_description
+    }));
+
     // Return plans
     return res.status(200).json({
       success: true,
-      plans: plans || [],
-      count: plans?.length || 0,
+      plans: transformedPlans,
+      count: transformedPlans.length,
     });
 
   } catch (error: any) {
