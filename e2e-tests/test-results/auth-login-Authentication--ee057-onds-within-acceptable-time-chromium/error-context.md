@@ -1,0 +1,78 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: Dashboard
+        - generic [ref=e10]:
+          - img [ref=e12]
+          - textbox "Search orders, couriers, stores..." [ref=e14]
+          - group
+        - generic [ref=e15]:
+          - button [ref=e16] [cursor=pointer]:
+            - img [ref=e17]
+          - button [ref=e19] [cursor=pointer]:
+            - img [ref=e21]
+          - paragraph [ref=e23]: Admin User
+          - button "account of current user" [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: A
+    - navigation "navigation menu" [ref=e26]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - img "Performile Logo" [ref=e30]
+          - generic [ref=e31]: Performile
+        - separator [ref=e32]
+        - list [ref=e34]:
+          - listitem [ref=e35]:
+            - button "Dashboard" [ref=e36] [cursor=pointer]:
+              - img [ref=e38]
+              - generic [ref=e41]: Dashboard
+          - listitem [ref=e42]:
+            - button "Trust Scores" [ref=e43] [cursor=pointer]:
+              - img [ref=e45]
+              - generic [ref=e48]: Trust Scores
+          - listitem [ref=e49]:
+            - button "Orders" [ref=e50] [cursor=pointer]:
+              - img [ref=e52]
+              - generic [ref=e55]: Orders
+          - listitem [ref=e56]:
+            - button "Track Shipment" [ref=e57] [cursor=pointer]:
+              - img [ref=e59]
+              - generic [ref=e62]: Track Shipment
+          - listitem [ref=e63]:
+            - button "Claims" [ref=e64] [cursor=pointer]:
+              - img [ref=e66]
+              - generic [ref=e69]: Claims
+          - listitem [ref=e70]:
+            - button "Users" [ref=e71] [cursor=pointer]:
+              - img [ref=e73]
+              - generic [ref=e76]: Users
+          - listitem [ref=e77]:
+            - button "Team" [ref=e78] [cursor=pointer]:
+              - img [ref=e80]
+              - generic [ref=e83]: Team
+          - listitem [ref=e84]:
+            - button "Analytics" [ref=e85] [cursor=pointer]:
+              - img [ref=e87]
+              - generic [ref=e90]: Analytics
+          - listitem [ref=e91]:
+            - button "Service Performance" [ref=e92] [cursor=pointer]:
+              - img [ref=e94]
+              - generic [ref=e97]: Service Performance
+          - listitem [ref=e98]:
+            - button "Checkout Analytics" [ref=e99] [cursor=pointer]:
+              - img [ref=e101]
+              - generic [ref=e104]: Checkout Analytics
+          - listitem [ref=e105]:
+            - button "Settings" [ref=e106] [cursor=pointer]:
+              - img [ref=e108]
+              - generic [ref=e111]: Settings
+              - img [ref=e112]
+    - main [ref=e114]:
+      - generic [ref=e116]:
+        - heading "Good morning, Admin!" [level=4] [ref=e117]
+        - progressbar [ref=e118]
+  - status [ref=e125]: Login successful!
+```
