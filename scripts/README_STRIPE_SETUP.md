@@ -1,10 +1,21 @@
 # 🚀 Stripe Product Setup Guide
 
-This guide explains how to automatically create all subscription products in Stripe.
+**Database-Driven Sync** - Your database is the source of truth!
+
+This script reads your `subscription_plans` table and syncs to Stripe automatically.
 
 ---
 
-## 📋 OPTION 1: Automated Script (Recommended)
+## 📋 HOW IT WORKS
+
+✅ **Reads from YOUR database** - No hardcoded plans  
+✅ **Syncs automatically** - Creates/updates products  
+✅ **Handles price changes** - Archives old, creates new  
+✅ **Two-way sync** - Database ↔ Stripe
+
+---
+
+## 🚀 QUICK START (Recommended)
 
 ### **Prerequisites**
 
@@ -31,20 +42,30 @@ echo "STRIPE_SECRET_KEY=sk_test_your_key_here" > .env
 echo "DATABASE_URL=postgresql://user:pass@host:5432/database" >> .env
 ```
 
-### **Step 3: Run the Script**
+### **Step 3: Run the Sync Script**
 
 ```bash
-node scripts/create-stripe-products.js
+node scripts/sync-stripe-products.js
 ```
+
+**This will:**
+- Read your subscription plans from database
+- Create products in Stripe
+- Create monthly & yearly prices
+- Update database with Stripe IDs
 
 ### **What It Does**
 
 The script will:
-1. ✅ Create 7 products in Stripe (3 Merchant + 4 Courier)
-2. ✅ Create monthly prices for each product
-3. ✅ Create yearly prices for each product
-4. ✅ Update your database with Stripe IDs
-5. ✅ Display a summary of all created products
+1. ✅ Query your `subscription_plans` table
+2. ✅ Create products in Stripe for each plan
+3. ✅ Create monthly & yearly prices
+4. ✅ Update database with Stripe IDs
+5. ✅ Display summary
+
+**Your Plans:**
+- Merchant: Starter ($29), Professional ($79), Enterprise ($199)
+- Courier: Basic ($19), Pro ($49), Premium ($99), Enterprise ($199)
 
 ### **Expected Output**
 
