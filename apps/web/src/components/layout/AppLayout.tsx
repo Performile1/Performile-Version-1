@@ -37,6 +37,9 @@ import {
   ShoppingBag,
   RateReview,
   Storefront,
+  Map,
+  Speed,
+  LocationOn,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -135,8 +138,26 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     },
     {
       label: 'My Subscription',
-      path: '/subscription',
+      path: '/my-subscription',
       icon: CreditCard,
+      roles: ['merchant', 'courier'],
+    },
+    {
+      label: 'Parcel Points',
+      path: '/parcel-points',
+      icon: Map,
+      roles: ['merchant', 'courier'],
+    },
+    {
+      label: 'Service Performance',
+      path: '/service-performance',
+      icon: Speed,
+      roles: ['merchant', 'courier', 'admin'],
+    },
+    {
+      label: 'Coverage Checker',
+      path: '/coverage-checker',
+      icon: LocationOn,
       roles: ['merchant', 'courier'],
     },
     {
