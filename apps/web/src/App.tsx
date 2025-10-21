@@ -51,6 +51,7 @@ import Pricing from './pages/Pricing';
 import SubscriptionPlans from './pages/SubscriptionPlans';
 import SubscriptionSuccess from './pages/SubscriptionSuccess';
 import SubscriptionCancel from './pages/SubscriptionCancel';
+import MySubscription from './pages/MySubscription';
 import ResetPassword from './pages/ResetPassword';
 import BillingPortal from './pages/BillingPortal';
 import Home from './pages/Home';
@@ -207,6 +208,15 @@ const App: React.FC = () => {
             <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Protected Routes */}
+            {/* My Subscription - for logged-in merchants and couriers */}
+            <Route
+              path="/my-subscription"
+              element={
+                <ProtectedRoute requiredRoles={['merchant', 'courier']}>
+                  <MySubscription />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/trustscores"
               element={
