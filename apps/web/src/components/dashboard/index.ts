@@ -9,3 +9,4 @@ export { QuickActionsPanel } from './QuickActionsPanel';
 export { OrderTrendsChart } from './OrderTrendsChart';
 export { ClaimsTrendsChart } from './ClaimsTrendsChart';
 export { ClaimsManagementWidget } from './ClaimsManagementWidget';
+export { CustomizableDashboard } from './CustomizableDashboard';
