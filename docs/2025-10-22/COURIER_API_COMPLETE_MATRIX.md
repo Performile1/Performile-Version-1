@@ -49,7 +49,7 @@
 | Courier | Tracking | Booking | Label | Claims | Rate | Pickup | Webhook | Points | TA Sync | Priority |
 |---------|----------|---------|-------|--------|------|--------|---------|--------|---------|----------|
 | **PostNord** | ✅ | ✅ | ✅ | ❓ | ✅ | ❓ | ❓ | ✅ | ✅ | 🔴 HIGH |
-| **Bring** | - | - | - | - | - | - | - | - | - | 🔴 HIGH |
+| **Bring** | ✅ | ✅ | ✅ | ❓ | ✅ | ✅ | ✅ | ✅ | ✅ | 🔴 HIGH |
 | **Budbee** | - | - | - | - | - | - | - | - | - | 🔴 HIGH |
 | **Instabox** | - | - | - | - | - | - | - | - | - | 🔴 HIGH |
 | **DHL Express** | - | - | - | - | - | - | - | - | - | 🟡 MEDIUM |
@@ -171,56 +171,213 @@ Headers:
 ## 🇳🇴 2. BRING (Norway - Posten Norge)
 
 ### **Company Info**
-- **Website:** https://www.bring.com/
+- **Full Name:** Posten Bring (formerly Posten Norge)
+- **Website:** https://www.bring.com/ | https://www.postenbring.no/
 - **Developer Portal:** https://developer.bring.com/
-- **Market:** Norway (primary), Nordic region
-- **Type:** National postal service
-- **Contact:** TBD
+- **Founded:** 1647 (one of the world's oldest postal services)
+- **Ownership:** 100% Norwegian government (Ministry of Trade, Industry and Fisheries)
+- **Employees:** 20,000+
+- **Type:** National postal service + Nordic logistics group
+
+### **Market Coverage**
+**Primary Markets:**
+- 🇳🇴 **Norway** - National postal monopoly (letters <50g until 2016)
+- 🇸🇪 **Sweden** - Full logistics services
+- 🇩🇰 **Denmark** - Full logistics services
+- 🇫🇮 **Finland** - Full logistics services
+
+**Service Points:**
+- 6 main post offices in Norway
+- 1,400+ sales outlets
+- 9,000+ service points across Nordic region
+- 39 locations (NO, SE, DK, FI)
+
+**International:**
+- Global delivery to 220+ countries (via partnerships)
+- Focus on Nordic-to-Europe routes
+- International logistics division
+
+### **Divisions**
+1. **Post** - Mail services
+2. **E-commerce and Logistics** - Parcel delivery
+3. **International Logistics** - Cross-border
+4. **Nordic Network** - Regional distribution
+5. **Next** - Innovation & new services
 
 ### **Account Setup**
-- [ ] Register at https://developer.bring.com/
-- [ ] Request API access
-- [ ] Wait for approval
-- [ ] Receive API credentials
-- [ ] Test with sandbox
+- [ ] Register at https://www.mybring.com/signup/register/user
+- [ ] Create Mybring user account
+- [ ] Generate API key at https://www.mybring.com/useradmin/account/settings/api
+- [ ] Get customer number (or use test customer number)
+- [ ] Test with sandbox environment
+- [ ] Contact support via country-specific Bring site if needed
 
-### **API 1: Tracking API**
-- **Status:** ❓ To be researched
-- **Endpoint:** TBD
-- **Method:** TBD
-- **Auth:** TBD
-- **Integration Time:** TBD
-- **Difficulty:** TBD
+### **API 1: Tracking API** ✅
+- **Status:** ✅ Available
+- **Base URL:** https://api.bring.com/tracking
+- **Endpoint:** `/api/v2/tracking.{extension}`
+- **Method:** GET
+- **API Docs:** https://api.bring.com/tracking/api-docs
+- **Auth:** Required (X-Mybring-API-Uid + X-Mybring-API-Key)
+- **Test Tracking Numbers:**
+  - TESTPACKAGEDELIVERED
+  - TESTPACKAGELOADEDFORDELIVERY
+  - TESTPACKAGEEDI
+  - TESTPACKAGEATPICKUPPOINT
+- **Request:**
+```bash
+GET https://api.bring.com/tracking/api/v2/tracking.json?q=TESTPACKAGEDELIVERED&lang=en
+Headers:
+  X-Mybring-API-Uid: your-email@company.com
+  X-Mybring-API-Key: 1234abc-abcd-1234-5678-abcd1234abcd
+  X-Bring-Client-URL: https://yourcompany.com/
+```
+- **Languages:** en, no, sv, da (English, Norwegian, Swedish, Danish)
+- **Features:**
+  - Real-time tracking
+  - Event history
+  - Estimated delivery
+  - Pickup point info
+- **Integration Time:** 1-2 days
+- **Difficulty:** Medium
+- **Important:** Authentication required since May 2024 (no more unauthenticated requests)
 
-### **API 2: Booking API**
-- **Status:** ❓ To be researched
-- **Endpoint:** TBD
-- **Integration Time:** TBD
+### **API 2: Booking API** ✅
+- **Status:** ✅ Available
+- **Endpoint:** https://developer.bring.com/api/booking/
+- **Method:** POST
+- **Auth:** X-Mybring-API-Uid + X-Mybring-API-Key + Customer Number
+- **Features:**
+  - Create shipments
+  - Generate shipment numbers
+  - Create tracking links
+  - EDI pre-notifications
+  - Generate labels
+  - Transport documents
+  - VOEC (VAT on E-commerce) support for imports to Norway
+- **Integration Time:** 2-3 days
+- **Difficulty:** Medium-Hard
+- **Note:** Supports new format with VOEC, old format deprecated
 
-### **API 3: Print/Label API**
-- **Status:** ❓ To be researched
-- **Format:** TBD
+### **API 3: Print/Label API** ✅
+- **Status:** ✅ Available (via Booking API)
+- **Endpoint:** Part of Booking API
+- **Format:** PDF, ZPL (likely)
+- **Features:**
+  - Shipping labels
+  - Transport documents
+  - EDI documents
+- **Integration Time:** 1 day (after Booking API)
+- **Difficulty:** Easy
 
-### **API 4: Claims API**
-- **Status:** ❓ To be researched
+### **API 4: Claims API** ❓
+- **Status:** ❓ Unknown (not listed in main APIs)
+- **Action:** Check with Bring support
+- **Alternative:** Manual claims process via Mybring portal
 
-### **API 5: Rate/Quote API** (Shipping Guide)
-- **Status:** ❓ To be researched
-- **Known:** Bring has "Shipping Guide API"
+### **API 5: Rate/Quote API** (Shipping Guide) ✅
+- **Status:** ✅ Available
+- **Name:** Shipping Guide API
+- **Endpoint:** https://developer.bring.com/api/shipping-guide_2/
+- **Method:** GET/POST
+- **Features:**
+  - Available services lookup
+  - Delivery time estimates
+  - Price calculations
+  - Environmental data (CO2 emissions)
+  - Service descriptions
+- **Integration Time:** 1-2 days
+- **Difficulty:** Medium
+- **Priority:** 🔴 HIGH (essential for checkout)
 
-### **API 6: Pickup API**
-- **Status:** ❓ To be researched
-- **Known:** Bring offers pickup scheduling
+### **API 6: Pickup API** ✅
+- **Status:** ✅ Available
+- **Endpoint:** https://developer.bring.com/api/pickup/
+- **Method:** POST
+- **Features:**
+  - Schedule courier pickups
+  - Modify pickup times
+  - Cancel pickups
+- **Integration Time:** 1 day
+- **Difficulty:** Easy
+- **Priority:** 🔴 HIGH
 
-### **API 7: Webhook API**
-- **Status:** ❓ To be researched
+### **API 7: Webhook API** (Event Cast) ✅
+- **Status:** ✅ Available
+- **Name:** Event Cast API
+- **Endpoint:** https://developer.bring.com/api/event-cast/
+- **Features:**
+  - Subscribe to shipment events
+  - Real-time webhooks
+  - Proactive customer updates
+- **Integration Time:** 1-2 days
+- **Difficulty:** Medium
+- **Priority:** 🔴 HIGH (real-time updates critical)
 
-### **API 8: Service Points API**
-- **Status:** ❓ To be researched
-- **Known:** Bring has extensive parcel shop network
+### **API 8: Service Points API** (Pickup Point API) ✅
+- **Status:** ✅ Available
+- **Name:** Pickup Point API
+- **Endpoint:** https://developer.bring.com/api/pickup-point/
+- **Method:** GET
+- **Features:**
+  - Find nearest pickup points
+  - Search by postal code/address
+  - Get opening hours
+  - Filter by service type
+  - 9,000+ locations across Nordic region
+- **Integration Time:** 1 day
+- **Difficulty:** Easy
+- **Priority:** 🔴 HIGH (essential for checkout)
 
-### **API 9: TA Sync API**
-- **Status:** ❓ To be researched
+### **API 9: TA Sync API** (EDI Integration) ✅
+- **Status:** ✅ Available
+- **Documentation:** https://developer.bring.com/ (EDI section)
+- **Features:**
+  - EDI pre-notifications
+  - Order level information exchange
+  - Supplier integration
+  - Order Management API
+- **Endpoint:** https://developer.bring.com/api/order-management/
+- **Integration Time:** 3-4 days
+- **Difficulty:** Hard
+- **Priority:** 🟡 MEDIUM (B2B integration)
+
+### **Additional Bring APIs**
+
+**Address Validation API:**
+- **Endpoint:** https://developer.bring.com/api/address/
+- **Features:** Verify and validate addresses
+- **Priority:** 🟡 MEDIUM
+
+**Postal Code API:**
+- **Endpoint:** https://developer.bring.com/api/postal-code/
+- **Features:** Lookup postal code information
+- **Priority:** 🟡 MEDIUM
+
+**Modify Delivery API:**
+- **Endpoint:** https://developer.bring.com/api/modify-delivery/
+- **Features:** Modify or stop shipments in transit
+- **Priority:** 🟡 MEDIUM
+
+**Shipment API:**
+- **Endpoint:** https://developer.bring.com/api/shipment/
+- **Features:** Advanced shipment management
+- **Priority:** 🟡 MEDIUM
+
+**Reports API:**
+- **Endpoint:** https://developer.bring.com/api/reports/
+- **Features:** Status, quality, deviation, economy, environment reports
+- **Priority:** 🟢 LOW
+
+**Invoice API:**
+- **Endpoint:** https://developer.bring.com/api/invoice/
+- **Features:** List and retrieve invoices in PDF
+- **Priority:** 🟢 LOW
+
+**Warehousing APIs:**
+- **Endpoints:** Multiple warehousing APIs for e-commerce
+- **Market:** Norway and Sweden
+- **Priority:** 🟢 LOW (specialized use case)
 
 ### **Bring Integration Roadmap**
 **Week 2:**
