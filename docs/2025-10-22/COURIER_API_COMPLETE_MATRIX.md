@@ -58,11 +58,11 @@
 | **Bring** | ✅ | ✅ | ✅ | ❓ | ✅ | ✅ | ✅ | ✅ | ✅ | 🔴 HIGH |
 | **Budbee** | ✅ | ✅ | ✅ | ❓ | ✅ | ❓ | ✅ | ✅ | ❓ | 🔴 HIGH |
 | **Instabox** | ✅ | ✅ | ✅ | ❓ | ✅ | ❓ | ❓ | ✅ | ❓ | 🔴 HIGH |
-| **DHL Express** | - | - | - | - | - | - | - | - | - | 🟡 MEDIUM |
-| **DB Schenker** | - | - | - | - | - | - | - | - | - | 🟡 MEDIUM |
+| **DHL Express** | ✅ | ✅ | ✅ | ❓ | ✅ | ✅ | ✅ | ✅ | ✅ | 🟡 MEDIUM |
+| **DB Schenker** | ✅ | ✅ | ❓ | ❓ | ✅ | ✅ | ❓ | ❓ | ✅ | 🟡 MEDIUM |
 | **Cirro** | ✅ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | 🟡 MEDIUM |
-| **Earlybird** | - | - | - | - | - | - | - | - | - | 🟢 LOW |
-| **Airmee** | - | - | - | - | - | - | - | - | - | 🟢 LOW |
+| **Earlybird** | ✅ | ✅ | ✅ | ❓ | ✅ | ❓ | ❓ | ❓ | ❓ | 🟢 LOW |
+| **Airmee** | ✅ | ✅ | ✅ | ❓ | ✅ | ❓ | ✅ | ❓ | ❓ | 🟢 LOW |
 | **Gofo Express** | ✅ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | 🟢 LOW |
 
 ---
@@ -510,46 +510,151 @@ Headers:
 ## 🌍 5. DHL EXPRESS (International)
 
 ### **Company Info**
+- **Full Name:** DHL Express (Deutsche Post DHL Group)
 - **Website:** https://www.dhl.com/
 - **Developer Portal:** https://developer.dhl.com/
 - **Market:** Global (220+ countries)
-- **Type:** International express courier
-- **Contact:** TBD
+- **Type:** International express courier & logistics
+- **Services:** Express, eCommerce, Freight, Parcel
+
+### **Market Coverage**
+- 🌍 **Global:** 220+ countries and territories
+- 🇪🇺 **Europe:** Full coverage
+- 🇸🇪 **Nordics:** Sweden, Norway, Denmark, Finland
+- 🇺🇸 **Americas:** North & South America
+- 🇨🇳 **Asia Pacific:** Full coverage
 
 ### **Account Setup**
 - [ ] Register at https://developer.dhl.com/
-- [ ] Request API access
-- [ ] Receive credentials
-- [ ] Test environment setup
+- [ ] Choose API: MyDHL API (REST/JSON) or XML API
+- [ ] Request API credentials (API Key + Secret)
+- [ ] Select services: Rating, Shipment, Tracking
+- [ ] Test in sandbox environment
+- [ ] Production approval
 
-### **API 1: Tracking API**
-- **Status:** ❓ To be researched
+### **API 1: Tracking API** (Shipment Tracking - Unified) ✅
+- **Status:** ✅ Available
+- **Name:** Shipment Tracking - Unified
+- **Endpoint:** https://developer.dhl.com/api-reference/shipment-tracking
+- **Method:** GET
+- **Format:** RESTful JSON
+- **Auth:** API Key
+- **Features:**
+  - Track multiple shipment types (eCommerce, Express, Freight, Letter, Parcel)
+  - Unified tracking across DHL divisions
+  - Real-time status updates
+  - Event history
+  - Estimated delivery
+- **Integration Time:** 1-2 days
+- **Difficulty:** Medium
 - **Priority:** 🔴 HIGH
 
-### **API 2: Booking API** (Shipping API)
-- **Status:** ❓ To be researched
+### **API 2: Booking API** (MyDHL API) ✅
+- **Status:** ✅ Available
+- **Name:** DHL Express - MyDHL API
+- **Endpoint:** https://developer.dhl.com/api-reference/dhl-express-mydhl-api
+- **Method:** POST
+- **Formats:** REST/JSON (recommended) or SOAP/XML (legacy)
+- **Auth:** API Key + Secret
+- **Features:**
+  - Create shipments
+  - Generate waybills
+  - Get shipping labels
+  - Service availability check
+  - Transit time calculation
+  - Rate quotes
+  - Pickup scheduling
+  - Track shipments
+- **Special Features:**
+  - Link labels by pieces
+  - Multiple tracking views
+  - Customs documentation
+  - Dangerous goods support
+- **Integration Time:** 3-4 days
+- **Difficulty:** Medium-Hard
 
-### **API 3: Print/Label API**
-- **Status:** ❓ To be researched
+### **API 3: Print/Label API** ✅
+- **Status:** ✅ Available (via MyDHL API)
+- **Endpoint:** Part of MyDHL Shipment API
+- **Format:** PDF, ZPL, EPL
+- **Features:**
+  - Shipping labels
+  - Waybill documents
+  - Commercial invoices
+  - Customs documents
+  - Archive documents
+- **Integration Time:** 1 day (after Booking API)
+- **Difficulty:** Easy
 
-### **API 4: Claims API**
-- **Status:** ❓ To be researched
+### **API 4: Claims API** ❓
+- **Status:** ❓ Unknown (not in public API docs)
+- **Action:** Contact DHL support
+- **Alternative:** Manual claims via MyDHL portal
 
-### **API 5: Rate/Quote API** (Rating API)
-- **Status:** ❓ To be researched
+### **API 5: Rate/Quote API** (Rating API) ✅
+- **Status:** ✅ Available (part of MyDHL API)
+- **Endpoint:** MyDHL API - Rating service
+- **Method:** POST
+- **Features:**
+  - Get shipping rates
+  - Service availability
+  - Transit times
+  - Delivery dates
+  - Product codes
+  - Surcharges
+- **Integration Time:** 1-2 days
+- **Difficulty:** Medium
 - **Priority:** 🔴 HIGH (international rates important)
 
-### **API 6: Pickup API**
-- **Status:** ❓ To be researched
+### **API 6: Pickup API** ✅
+- **Status:** ✅ Available (part of MyDHL API)
+- **Endpoint:** MyDHL API - Pickup service
+- **Method:** POST
+- **Features:**
+  - Schedule pickups
+  - Modify pickup times
+  - Cancel pickups
+  - Pickup confirmation
+- **Integration Time:** 1 day
+- **Difficulty:** Easy
+- **Priority:** 🔴 HIGH
 
-### **API 7: Webhook API**
-- **Status:** ❓ To be researched
+### **API 7: Webhook API** ✅
+- **Status:** ✅ Available
+- **Name:** Shipment Tracking Webhooks
+- **Features:**
+  - Real-time tracking updates
+  - Event notifications
+  - Status changes
+  - Delivery confirmations
+- **Integration Time:** 1-2 days
+- **Difficulty:** Medium
+- **Priority:** 🔴 HIGH
 
-### **API 8: Service Points API**
-- **Status:** ❓ To be researched
+### **API 8: Service Points API** ✅
+- **Status:** ✅ Available
+- **Name:** Location Finder API
+- **Features:**
+  - Find DHL service points
+  - Locker locations
+  - Drop-off points
+  - Opening hours
+  - Distance calculation
+- **Integration Time:** 1 day
+- **Difficulty:** Easy
+- **Priority:** 🟡 MEDIUM
 
-### **API 9: TA Sync API**
-- **Status:** ❓ To be researched
+### **API 9: TA Sync API** (EDI Integration) ✅
+- **Status:** ✅ Available
+- **Format:** EDI, XML, API
+- **Features:**
+  - Electronic data interchange
+  - Automated booking
+  - Shipment notifications
+  - Invoice integration
+- **Integration Time:** 3-4 days
+- **Difficulty:** Hard
+- **Priority:** 🟡 MEDIUM
 
 ### **DHL Integration Roadmap**
 **Week 4:**
