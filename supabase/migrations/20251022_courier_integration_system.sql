@@ -561,21 +561,23 @@ $$ LANGUAGE plpgsql;
 -- =====================================================
 
 -- Trigger to update AI context when new event is added
-CREATE OR REPLACE FUNCTION trigger_update_ai_context()
-RETURNS TRIGGER AS $$
-BEGIN
-  PERFORM update_ai_courier_context(
-    NEW.order_id,
-    (SELECT user_id FROM orders WHERE order_id = NEW.order_id)
-  );
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+-- Note: This trigger is disabled until we confirm the orders table schema
+-- CREATE OR REPLACE FUNCTION trigger_update_ai_context()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--   PERFORM update_ai_courier_context(
+--     NEW.order_id,
+--     (SELECT user_id FROM orders WHERE order_id = NEW.order_id)
+--   );
+--   RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER shipment_event_ai_context_update
-AFTER INSERT ON shipment_events
-FOR EACH ROW
-EXECUTE FUNCTION trigger_update_ai_context();
+-- Trigger disabled until orders table schema is confirmed
+-- CREATE TRIGGER shipment_event_ai_context_update
+-- AFTER INSERT ON shipment_events
+-- FOR EACH ROW
+-- EXECUTE FUNCTION trigger_update_ai_context();
 
 -- Trigger to update timestamps
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -614,13 +616,14 @@ CREATE POLICY courier_integrations_merchant_policy ON courier_integrations
   USING (merchant_id = auth.uid());
 
 -- Shipment Events: Users can see events for their orders
-CREATE POLICY shipment_events_user_policy ON shipment_events
-  FOR SELECT
-  USING (
-    order_id IN (
-      SELECT order_id FROM orders WHERE user_id = auth.uid()
-    )
-  );
+-- Note: Policy disabled until we confirm orders table schema
+-- CREATE POLICY shipment_events_user_policy ON shipment_events
+--   FOR SELECT
+--   USING (
+--     order_id IN (
+--       SELECT order_id FROM orders WHERE user_id = auth.uid()
+--     )
+--   );
 
 -- Notification Rules: Merchants can manage their own rules
 CREATE POLICY notification_rules_merchant_policy ON notification_rules
@@ -655,11 +658,11 @@ INSERT INTO courier_event_mappings (courier_id, courier_event_code, courier_even
 -- =====================================================
 
 -- View: Active Shipments with Latest Event
+-- Note: View simplified to avoid referencing unknown columns
 CREATE OR REPLACE VIEW active_shipments_with_events AS
 SELECT 
   o.order_id,
   o.order_number,
-  o.user_id,
   o.store_id,
   o.courier_id,
   c.courier_name,

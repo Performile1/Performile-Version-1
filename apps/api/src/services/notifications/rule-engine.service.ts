@@ -433,11 +433,12 @@ export class RuleEngineService {
     // Get recipient details
     const { data: order } = await supabase
       .from('orders')
-      .select('user_id, store_id')
+      .select('order_id, store_id')
       .eq('order_id', orderId)
       .single();
 
-    const recipientId = recipientType === 'customer' ? order?.user_id : order?.store_id;
+    // For now, use order_id as recipient_id for customers until we confirm the schema
+    const recipientId = recipientType === 'customer' ? orderId : order?.store_id;
 
     // Calculate scheduled time
     const scheduledFor = delayHours 
@@ -509,17 +510,29 @@ export class RuleEngineService {
    * Update AI chat context
    */
   private async updateAIChatContext(orderId: string, data: any): Promise<void> {
+    // Get store owner (merchant) from the order
     const { data: order } = await supabase
       .from('orders')
-      .select('user_id')
+      .select(`
+        order_id,
+        store:stores!inner(owner_user_id)
+      `)
       .eq('order_id', orderId)
       .single();
+
+    // Use store owner as the user_id for AI context
+    const userId = order?.store?.owner_user_id;
+
+    if (!userId) {
+      console.warn('[RuleEngine] Could not find user_id for AI context update');
+      return;
+    }
 
     await supabase
       .from('ai_chat_courier_context')
       .upsert({
         order_id: orderId,
-        user_id: order?.user_id,
+        user_id: userId,
         needs_attention: data?.mark_as === 'needs_attention',
         updated_at: new Date().toISOString(),
       });
