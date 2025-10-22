@@ -5,7 +5,13 @@
  * Supports complex conditions with AND/OR/NOT operators
  */
 
-import { supabase } from '../supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+);
 
 // =====================================================
 // TYPES & INTERFACES
@@ -427,11 +433,11 @@ export class RuleEngineService {
     // Get recipient details
     const { data: order } = await supabase
       .from('orders')
-      .select('customer_id, store_id')
+      .select('user_id, store_id')
       .eq('order_id', orderId)
       .single();
 
-    const recipientId = recipientType === 'customer' ? order?.customer_id : order?.store_id;
+    const recipientId = recipientType === 'customer' ? order?.user_id : order?.store_id;
 
     // Calculate scheduled time
     const scheduledFor = delayHours 
@@ -505,7 +511,7 @@ export class RuleEngineService {
   private async updateAIChatContext(orderId: string, data: any): Promise<void> {
     const { data: order } = await supabase
       .from('orders')
-      .select('customer_id')
+      .select('user_id')
       .eq('order_id', orderId)
       .single();
 
@@ -513,7 +519,7 @@ export class RuleEngineService {
       .from('ai_chat_courier_context')
       .upsert({
         order_id: orderId,
-        user_id: order?.customer_id,
+        user_id: order?.user_id,
         needs_attention: data?.mark_as === 'needs_attention',
         updated_at: new Date().toISOString(),
       });

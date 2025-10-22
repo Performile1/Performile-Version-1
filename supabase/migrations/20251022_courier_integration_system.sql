@@ -566,7 +566,7 @@ RETURNS TRIGGER AS $$
 BEGIN
   PERFORM update_ai_courier_context(
     NEW.order_id,
-    (SELECT customer_id FROM orders WHERE order_id = NEW.order_id)
+    (SELECT user_id FROM orders WHERE order_id = NEW.order_id)
   );
   RETURN NEW;
 END;
@@ -618,7 +618,7 @@ CREATE POLICY shipment_events_user_policy ON shipment_events
   FOR SELECT
   USING (
     order_id IN (
-      SELECT order_id FROM orders WHERE customer_id = auth.uid()
+      SELECT order_id FROM orders WHERE user_id = auth.uid()
     )
   );
 
@@ -659,7 +659,7 @@ CREATE OR REPLACE VIEW active_shipments_with_events AS
 SELECT 
   o.order_id,
   o.order_number,
-  o.customer_id,
+  o.user_id,
   o.store_id,
   o.courier_id,
   c.courier_name,
