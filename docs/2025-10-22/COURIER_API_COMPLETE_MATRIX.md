@@ -17,8 +17,14 @@
 ### **Tier 2: SHOULD HAVE** (Week 4-5)
 5. 🌍 **DHL Express** - International leader
 6. 🇸🇪 **DB Schenker** - Logistics & freight
-7. 🇸🇪 **Earlybird** - Same-day delivery
-8. 🇸🇪 **Airmee** - Urban last-mile
+7. 🇸🇪 **Cirro** - E-commerce & fulfillment
+8. 🇸🇪 **Earlybird** - Same-day delivery
+9. 🇸🇪 **Airmee** - Urban last-mile
+
+### **Tier 3: NICE TO HAVE** (Week 6+)
+10. 🇺🇸 **Gofo Express** - Last-mile delivery
+11. 🇸🇪 **Best Transport** - Nordic logistics
+12. 🇸🇪 **Porterbuddy** - Same-day delivery
 
 ---
 
@@ -50,12 +56,14 @@
 |---------|----------|---------|-------|--------|------|--------|---------|--------|---------|----------|
 | **PostNord** | ✅ | ✅ | ✅ | ❓ | ✅ | ❓ | ❓ | ✅ | ✅ | 🔴 HIGH |
 | **Bring** | ✅ | ✅ | ✅ | ❓ | ✅ | ✅ | ✅ | ✅ | ✅ | 🔴 HIGH |
-| **Budbee** | - | - | - | - | - | - | - | - | - | 🔴 HIGH |
-| **Instabox** | - | - | - | - | - | - | - | - | - | 🔴 HIGH |
+| **Budbee** | ✅ | ✅ | ✅ | ❓ | ✅ | ❓ | ✅ | ✅ | ❓ | 🔴 HIGH |
+| **Instabox** | ✅ | ✅ | ✅ | ❓ | ✅ | ❓ | ❓ | ✅ | ❓ | 🔴 HIGH |
 | **DHL Express** | - | - | - | - | - | - | - | - | - | 🟡 MEDIUM |
 | **DB Schenker** | - | - | - | - | - | - | - | - | - | 🟡 MEDIUM |
+| **Cirro** | ✅ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | 🟡 MEDIUM |
 | **Earlybird** | - | - | - | - | - | - | - | - | - | 🟢 LOW |
 | **Airmee** | - | - | - | - | - | - | - | - | - | 🟢 LOW |
+| **Gofo Express** | ✅ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | ❓ | 🟢 LOW |
 
 ---
 
