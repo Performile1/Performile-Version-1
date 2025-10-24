@@ -81,18 +81,27 @@ export default async function handler(
     let userTier = 'tier1';
     
     if (authHeader?.startsWith('Bearer ')) {
-      const token = authHeader.substring(7);
-      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-      
-      if (!authError && user) {
-        // Get user's subscription tier
-        const { data: userData } = await supabase
-          .from('users')
-          .select('subscription_tier')
-          .eq('user_id', user.id)
-          .single();
+      try {
+        const token = authHeader.substring(7);
+        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
         
-        userTier = userData?.subscription_tier || 'tier1';
+        if (!authError && user) {
+          // Get user's subscription tier
+          const { data: userData, error: userError } = await supabase
+            .from('users')
+            .select('subscription_tier')
+            .eq('user_id', user.id)
+            .single();
+          
+          if (userError) {
+            console.log('Could not fetch subscription tier:', userError.message);
+          }
+          
+          userTier = userData?.subscription_tier || 'tier1';
+        }
+      } catch (authErr) {
+        console.log('Auth error (non-fatal):', authErr);
+        // Continue with default tier
       }
     }
 
