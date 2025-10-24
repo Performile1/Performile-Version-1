@@ -95,9 +95,6 @@ async function getClaims(req: VercelRequest, res: VercelResponse, user: any) {
   const params: any[] = [];
   let paramCount = 1;
 
-  // RLS will handle role-based filtering automatically
-  query += ` WHERE 1=1`;
-
   if (status) {
     query += ` AND c.claim_status = $${paramCount}`;
     params.push(status);

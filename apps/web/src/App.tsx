@@ -385,6 +385,22 @@ const App: React.FC = () => {
               }
             />
             <Route
+              path="/service-performance"
+              element={
+                <ProtectedRoute requiredRoles={['admin']}>
+                  <Navigate to="/settings#analytics" replace />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/service-analytics"
+              element={
+                <ProtectedRoute requiredRoles={['admin']}>
+                  <Navigate to="/settings#analytics" replace />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/messages"
               element={
                 <ProtectedRoute>

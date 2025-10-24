@@ -9,7 +9,7 @@ import {
   Button,
   Stack,
 } from '@mui/material';
-import { SearchOff, Home, ArrowBack, Close } from '@mui/icons-material';
+import { SearchOff, Home, ArrowBack } from '@mui/icons-material';
 
 export const NotFound: React.FC = () => {
   const navigate = useNavigate();
@@ -56,10 +56,9 @@ export const NotFound: React.FC = () => {
                 />
               </Box>
 
-              {/* 404 Icon - Magnifying Glass with X */}
+              {/* 404 Icon - Magnifying Glass */}
               <Box
                 sx={{
-                  position: 'relative',
                   width: 120,
                   height: 120,
                   borderRadius: 3,
@@ -70,23 +69,6 @@ export const NotFound: React.FC = () => {
                 }}
               >
                 <SearchOff sx={{ fontSize: 60, color: 'white' }} />
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: 8,
-                    right: 8,
-                    width: 28,
-                    height: 28,
-                    borderRadius: '50%',
-                    bgcolor: '#ef4444',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                  }}
-                >
-                  <Close sx={{ fontSize: 18, color: 'white' }} />
-                </Box>
               </Box>
 
               {/* 404 Text */}
