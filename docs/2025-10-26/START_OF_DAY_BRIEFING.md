@@ -45,9 +45,41 @@
 
 ---
 
-## 🚨 CRITICAL: FIX FIRST (5 minutes)
+## 🚨 CRITICAL: FIX FIRST (3 hours)
 
-### **Environment Variables Missing in Vercel** 🔴
+### **1. RLS NOT ENABLED - SECURITY VULNERABILITY** 🔴🔴🔴
+
+**Problem:** 33 tables have NO Row Level Security enabled!
+
+**Risk:**
+- ❌ Any user can read/write ANY data in these tables
+- ❌ Merchants can see other merchants' data
+- ❌ Payment data exposed (`paymenthistory`)
+- ❌ API credentials exposed (`courier_api_credentials`)
+- ❌ GDPR violation
+- ❌ PCI-DSS violation
+
+**Critical Tables:**
+- `paymenthistory` - **PAYMENT DATA EXPOSED**
+- `courier_api_credentials` - **API KEYS EXPOSED**
+- `ecommerce_integrations` - **CREDENTIALS EXPOSED**
+- `user_subscriptions` - User data exposed
+- `tracking_data` - Tracking info exposed
+- ... and 28 more tables!
+
+**Fix:**
+1. Enable RLS on all 33 tables (30 min)
+2. Create RLS policies for each table (2.5 hours)
+3. Test data isolation (30 min)
+
+**Time:** 3 hours  
+**Priority:** P0 - **CRITICAL SECURITY** (do this FIRST!)
+
+**See:** `docs/2025-10-26/CRITICAL_SECURITY_RLS_ISSUES.md`
+
+---
+
+### **2. Environment Variables Missing in Vercel** 🔴
 
 **Problem:** Multiple APIs failing with `supabaseUrl is required` error
 
@@ -64,15 +96,69 @@
 4. Redeploy
 
 **Time:** 5 minutes  
-**Priority:** P0 - CRITICAL (do this FIRST!)
+**Priority:** P0 - CRITICAL (do this SECOND!)
 
 **See:** `docs/2025-10-26/CRITICAL_ENV_VARIABLES_ISSUE.md`
 
 ---
 
-## 📅 TODAY'S SCHEDULE (2-3 hours)
+## 📅 TODAY'S SCHEDULE (5-6 hours)
 
-### 🌅 MORNING SESSION (1.5 hours)
+### 🌅 MORNING SESSION (3.5 hours) - SECURITY FIXES
+
+#### **Block 0: RLS Security Fix** ⏱️ 3 hours 🔴🔴🔴
+
+**CRITICAL: Do this BEFORE anything else!**
+
+**Task 0.1: Enable RLS on All Tables** ⏱️ 30 min
+```sql
+-- Create: database/migrations/2025-10-26_enable_rls_all_tables.sql
+ALTER TABLE paymenthistory ENABLE ROW LEVEL SECURITY;
+ALTER TABLE courier_api_credentials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ecommerce_integrations ENABLE ROW LEVEL SECURITY;
+-- ... 30 more tables
+```
+
+**Task 0.2: Create RLS Policies - Critical Tables** ⏱️ 1 hour
+```sql
+-- Create: database/migrations/2025-10-26_create_rls_policies_critical.sql
+-- Policies for: paymenthistory, courier_api_credentials, ecommerce_integrations,
+-- subscription_plans, user_subscriptions, delivery_requests, etc.
+```
+
+**Task 0.3: Create RLS Policies - Tracking Tables** ⏱️ 30 min
+```sql
+-- Create: database/migrations/2025-10-26_create_rls_policies_tracking.sql
+-- Policies for: tracking_data, tracking_events, courier_analytics, etc.
+```
+
+**Task 0.4: Create RLS Policies - Communication Tables** ⏱️ 30 min
+```sql
+-- Create: database/migrations/2025-10-26_create_rls_policies_communication.sql
+-- Policies for: conversations, messages, reviews, etc.
+```
+
+**Task 0.5: Test Data Isolation** ⏱️ 30 min
+- Test as admin (should see all data)
+- Test as merchant (should see only own data)
+- Test as courier (should see only own data)
+- Verify no cross-user data leakage
+
+**Priority:** P0 - CRITICAL SECURITY  
+**Blocking:** YES - Cannot go to production without this!
+
+---
+
+#### **Block 1: Environment Variables** ⏱️ 5 min
+
+**Task 1.1: Add Vercel Env Vars**
+- Add `VITE_SUPABASE_URL`
+- Add `VITE_SUPABASE_ANON_KEY`
+- Redeploy
+
+---
+
+### 🌤️ AFTERNOON SESSION (2 hours)
 
 #### **Block 1: Role-Based Menu Filtering (45 min)**
 
@@ -194,16 +280,21 @@ Quick review of morning progress.
 ## 🎯 SUCCESS CRITERIA
 
 ### End of Day Checklist:
+- [ ] **P0:** 🔴 RLS enabled on all 33 tables
+- [ ] **P0:** 🔴 RLS policies created for critical tables (13)
+- [ ] **P0:** 🔴 RLS policies created for tracking tables (7)
+- [ ] **P0:** 🔴 RLS policies created for communication tables (11)
+- [ ] **P0:** 🔴 Data isolation tested (admin/merchant/courier)
 - [ ] **P0:** Environment variables fixed in Vercel
 - [ ] **P0:** Subscription APIs working (my-subscription, public)
 - [ ] **P0:** Analytics APIs working (claims-trends, order-trends)
 - [ ] **P1:** Role-based menu filtering implemented
 - [ ] **P1:** Menu only shows available features
 - [ ] **P1:** Test data removed (Competitor A/B)
-- [ ] **P2:** Shopify plugin tested end-to-end
-- [ ] **P2:** Checkout flow documented
-- [ ] **P3:** System Settings accessible
-- [ ] **P3:** Subscription plans verified
+- [ ] **P2:** Shopify plugin tested end-to-end (if time allows)
+- [ ] **P2:** Checkout flow documented (if time allows)
+- [ ] **P3:** System Settings accessible (future)
+- [ ] **P3:** Subscription plans verified (future)
 - [ ] **P3:** Documentation updated
 
 ### Verification Steps:
@@ -514,39 +605,71 @@ apps/web/src/utils/menuConfig.ts
 
 ---
 
-## 🎯 FINAL PRIORITIES
+## 🎯 FINAL PRIORITIES (UPDATED WITH SECURITY)
 
-### **P0 - CRITICAL (Must Do Today):**
-1. Fix environment variables in Vercel (5 min)
-2. Verify all APIs working (10 min)
+### **P0 - CRITICAL SECURITY (Must Do Today):**
+1. 🔴 Enable RLS on all 33 tables (30 min)
+2. 🔴 Create RLS policies for critical tables (1 hour)
+3. 🔴 Create RLS policies for tracking tables (30 min)
+4. 🔴 Create RLS policies for communication tables (30 min)
+5. 🔴 Test data isolation (30 min)
+6. Fix environment variables in Vercel (5 min)
+7. Verify all APIs working (10 min)
+
+**Subtotal:** 3.5 hours
 
 ### **P1 - HIGH (Should Do Today):**
 1. Role-based menu filtering (45 min)
 2. Remove test data (15 min)
-3. Test Shopify plugin (45 min)
 
-### **P2 - MEDIUM (Nice to Have):**
-1. System Settings fix (5 min)
-2. Subscription Plans fix (5 min)
-3. Document missing features (15 min)
+**Subtotal:** 1 hour
+
+### **P2 - MEDIUM (If Time Allows):**
+1. Test Shopify plugin (45 min)
+2. System Settings fix (5 min)
+3. Subscription Plans fix (5 min)
+
+**Subtotal:** 1 hour
 
 ### **P3 - LOW (Future):**
 1. Performance optimization
 2. Build missing features (15-20 weeks)
 
-**Total Time Today:** 2-3 hours  
-**Realistic Goal:** Fix critical issues + test Shopify  
+**Total Time Today:** 5-6 hours  
+**Realistic Goal:** Fix security + critical bugs  
+**Stretch Goal:** + Shopify testing  
 **Unrealistic Goal:** Build all missing features
 
 ---
 
+## ⚠️ IMPORTANT: SECURITY FIRST!
+
+**Why RLS is P0:**
+- Payment data exposed (`paymenthistory`)
+- API credentials exposed (`courier_api_credentials`)
+- GDPR violation (user data not protected)
+- PCI-DSS violation (payment data not secured)
+- Legal liability
+- Customer trust at risk
+
+**Cannot go to production without RLS!**
+
+This is MORE important than:
+- Menu filtering
+- Shopify testing
+- Any other feature
+
+**Do RLS first, everything else second!**
+
+---
+
 **Document Type:** Start of Day Briefing  
-**Version:** 2.0 (Updated with Vercel logs + Shopify testing)  
+**Version:** 3.0 (Updated with CRITICAL RLS Security Issues)  
 **Date:** October 26, 2025  
 **Framework:** SPEC_DRIVEN_FRAMEWORK v1.21  
 **Status:** ✅ READY TO EXECUTE
 
-**Let's be realistic and fix what matters!** 💪
+**Security first, then features!** 🔐💪
 
 ---
 
