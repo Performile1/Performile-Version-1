@@ -96,7 +96,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { data: plan, error: planError } = await supabase
       .from('subscription_plans')
       .select('*')
-      .eq('plan_id', userSubscription.subscription_plan_id)
+      .eq('subscription_plan_id', userSubscription.subscription_plan_id)
       .single();
 
     if (planError || !plan) {

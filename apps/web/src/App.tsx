@@ -58,6 +58,7 @@ import BillingPortal from './pages/BillingPortal';
 import Home from './pages/Home';
 import Contact from './pages/Contact';
 import Info from './pages/Info';
+import { ComingSoon } from './components/ComingSoon';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -487,6 +488,43 @@ const App: React.FC = () => {
             <Route
               path="/invite/:token"
               element={<AcceptInvitation />}
+            />
+            {/* Coming Soon Features */}
+            <Route
+              path="/parcel-points"
+              element={
+                <ProtectedRoute requiredRoles={['merchant', 'courier']}>
+                  <ComingSoon 
+                    featureName="Parcel Points"
+                    description="Find and manage parcel pickup and drop-off locations. Search by postal code, view coverage maps, and get detailed information about each location."
+                    estimatedDate="Q1 2026"
+                  />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/coverage-checker"
+              element={
+                <ProtectedRoute requiredRoles={['merchant', 'courier']}>
+                  <ComingSoon 
+                    featureName="Coverage Checker"
+                    description="Check delivery coverage for any postal code or address. View service availability, delivery times, and pricing for different courier services."
+                    estimatedDate="Q1 2026"
+                  />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/marketplace"
+              element={
+                <ProtectedRoute requiredRoles={['courier']}>
+                  <ComingSoon 
+                    featureName="Marketplace"
+                    description="Browse and bid on delivery jobs from merchants. Expand your business by finding new opportunities in your service area."
+                    estimatedDate="Q2 2026"
+                  />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/integrations"
