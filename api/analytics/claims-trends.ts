@@ -105,23 +105,55 @@ export default async function handler(
     startDate.setDate(startDate.getDate() - allowedDays);
     const startDateStr = startDate.toISOString().split('T')[0];
 
-    // Skip materialized view - claims table doesn't have courier_id/merchant_id
-    // Would need complex join with orders table, so return empty for now
-    console.log('Claims trends: returning empty data (no direct courier/merchant link)');
-      
-      return res.status(200).json({
-        success: true,
-        data: [],
-        meta: {
-          entity_type,
-          entity_id,
-          period,
-          tier: userTier,
-          days_returned: 0,
-          source: 'no_data',
-          message: 'No claims data available for this period'
-        }
+    // Query claims with JOIN to orders and stores tables
+    // This gets courier_id and merchant_id through the order relationship
+    console.log('Querying claims trends for:', entity_type, entity_id, 'from', startDateStr);
+
+    // Use database function for optimized query
+    const { data, error } = await supabase.rpc('get_claims_trends', {
+      p_entity_type: entity_type,
+      p_entity_id: entity_id,
+      p_start_date: startDateStr
+    });
+
+    if (error) {
+      console.error('Claims trends query error:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to fetch claims trends',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
+    }
+
+    // Transform data to match expected format
+    const transformedData = (data || []).map(row => ({
+      date: row.trend_date,
+      total_claims: parseInt(row.total_claims) || 0,
+      draft_claims: parseInt(row.draft_claims) || 0,
+      submitted_claims: parseInt(row.submitted_claims) || 0,
+      under_review_claims: parseInt(row.under_review_claims) || 0,
+      approved_claims: parseInt(row.approved_claims) || 0,
+      rejected_claims: parseInt(row.rejected_claims) || 0,
+      paid_claims: parseInt(row.paid_claims) || 0,
+      closed_claims: parseInt(row.closed_claims) || 0,
+      total_claimed_amount: parseFloat(row.total_claimed_amount) || 0,
+      total_approved_amount: parseFloat(row.total_approved_amount) || 0,
+      avg_resolution_days: parseFloat(row.avg_resolution_days) || 0
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data: transformedData,
+      meta: {
+        entity_type,
+        entity_id,
+        period,
+        tier: userTier,
+        days_returned: transformedData.length,
+        source: 'join_query',
+        start_date: startDateStr
+      }
+    });
 
   } catch (error: any) {
     console.error('Unexpected error:', error);
