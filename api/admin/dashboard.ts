@@ -97,8 +97,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           FROM couriers
         `);
         
-        // Get analytics from platform_analytics
-        result = await client.query(`
+        // Try to get analytics from platform_analytics cache
+        let cacheResult = await client.query(`
           SELECT 
             pa.avg_trust_score,
             pa.total_reviews,
@@ -112,7 +112,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           LIMIT 1
         `);
         
-        // Merge real-time courier counts with cached analytics
+        // If cache is empty or outdated, calculate real-time from source tables
+        if (!cacheResult.rows || cacheResult.rows.length === 0) {
+          console.log('[Admin Dashboard API] Cache empty, calculating real-time...');
+          
+          const realTimeStats = await client.query(`
+            SELECT 
+              -- Courier metrics
+              COALESCE(AVG(ca.trust_score), 0)::numeric as avg_trust_score,
+              COALESCE(SUM(ca.total_reviews), 0)::bigint as total_reviews,
+              COALESCE(AVG(ca.avg_rating), 0)::numeric as avg_rating,
+              
+              -- Order metrics
+              COUNT(DISTINCT o.order_id)::bigint as total_orders_processed,
+              COUNT(DISTINCT o.order_id) FILTER (WHERE o.order_status = 'delivered')::bigint as delivered_orders,
+              
+              -- Performance metrics
+              COALESCE(AVG(ca.completion_rate), 0)::numeric as avg_completion_rate,
+              COALESCE(AVG(ca.on_time_rate), 0)::numeric as avg_on_time_rate
+            FROM courier_analytics ca
+            LEFT JOIN orders o ON TRUE
+          `);
+          
+          result = realTimeStats;
+        } else {
+          result = cacheResult;
+        }
+        
+        // Merge real-time courier counts
         if (result.rows && result.rows.length > 0) {
           result.rows[0].total_couriers = courierStats.rows[0].total_couriers;
           result.rows[0].active_couriers = courierStats.rows[0].active_couriers;
@@ -120,12 +147,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         
         console.log('[Admin Dashboard API] Query result:', result.rows);
         
-        // If no cache exists, return zeros
+        // Final fallback: if still no data, return zeros
         if (!result.rows || result.rows.length === 0) {
-          console.log('[Admin Dashboard API] No rows found, returning zeros');
+          console.log('[Admin Dashboard API] No data available, returning zeros');
           result = { rows: [{
-            total_couriers: 0,
-            active_couriers: 0,
+            total_couriers: courierStats.rows[0].total_couriers,
+            active_couriers: courierStats.rows[0].active_couriers,
             avg_trust_score: 0,
             total_reviews: 0,
             avg_rating: 0,
