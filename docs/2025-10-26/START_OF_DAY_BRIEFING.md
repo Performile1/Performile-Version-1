@@ -104,7 +104,7 @@
 
 ## 📅 TODAY'S SCHEDULE (5-6 hours)
 
-### 🌅 MORNING SESSION (3.5 hours) - SECURITY FIXES
+### 🌅 MORNING SESSION (3.5 hours) - SECURITY FIXES & DATA CLEANUP
 
 #### **Block 0: RLS Security Fix** ⏱️ 2.5 hours 🔴🔴🔴
 
@@ -202,39 +202,110 @@ export const getMenuForUser = (role: string, tier: string = 'tier1'): MenuItem[]
 
 ---
 
-#### **Block 2: Data Cleanup (15 min)**
+#### **Block 2: Data Cleanup - Remove ALL Test Data** ⏱️ 20 min
 
-**Task 2.1: Remove Test Data** ⏱️ 10 min
+**CRITICAL: Ensure ONLY real production data remains!**
+
+**Task 2.1: Remove Test Couriers** ⏱️ 5 min
 ```sql
--- Remove Competitor A and B (test entries)
-DELETE FROM couriers WHERE courier_name IN ('Competitor A', 'Competitor B');
+-- Remove test courier entries (Competitor A & B)
+DELETE FROM couriers 
+WHERE courier_name IN ('Competitor A', 'Competitor B');
 
--- Verify removal and check actual courier names
+-- Verify only real couriers remain
 SELECT courier_name FROM couriers ORDER BY courier_name;
 
 -- Expected 10 real couriers:
--- 1. PostNord
--- 2. DHL Express
--- 3. Bring
--- 4. Budbee
--- 5. UPS
--- 6. FedEx
--- 7. GLS
--- 8. Schenker
--- 9. Instabox
--- 10. Helthjem (or similar)
-
--- Current: 12 (includes Competitor A & B test entries)
--- After cleanup: 10 real couriers
+-- PostNord, DHL Express, Bring, Budbee, UPS, FedEx, GLS, Schenker, Instabox, Helthjem
 ```
 
-**Task 2.2: Verify Subscription Plans** ⏱️ 5 min
+**Task 2.2: Remove Test Users** ⏱️ 5 min
 ```sql
--- Check subscription plans exist
-SELECT subscription_plan_id, plan_name, user_type, tier 
+-- Remove test users (keep only real users)
+DELETE FROM users 
+WHERE email LIKE '%test%' 
+   OR email LIKE '%demo%'
+   OR email LIKE '%example%'
+   OR first_name = 'Test'
+   OR last_name = 'User';
+
+-- Verify real users remain
+SELECT email, first_name, last_name, user_role 
+FROM users 
+ORDER BY created_at DESC;
+
+-- Keep only:
+-- - Real merchant accounts
+-- - Real courier accounts
+-- - Admin accounts
+-- - Playwright test users (test-merchant@performile.com, test-courier@performile.com)
+```
+
+**Task 2.3: Remove Test Orders** ⏱️ 3 min
+```sql
+-- Remove test orders
+DELETE FROM orders 
+WHERE tracking_number LIKE 'TEST%'
+   OR tracking_number LIKE 'DEMO%'
+   OR order_number LIKE 'TEST%'
+   OR customer_email LIKE '%test%';
+
+-- Verify real orders remain
+SELECT COUNT(*) as total_orders, 
+       MIN(created_at) as oldest_order,
+       MAX(created_at) as newest_order
+FROM orders;
+```
+
+**Task 2.4: Remove Test Reviews** ⏱️ 2 min
+```sql
+-- Remove test reviews
+DELETE FROM reviews 
+WHERE review_text LIKE '%test%'
+   OR review_text LIKE '%Test%'
+   OR review_text LIKE '%demo%';
+
+-- Verify real reviews remain
+SELECT COUNT(*) as total_reviews FROM reviews;
+```
+
+**Task 2.5: Remove Test Stores** ⏱️ 2 min
+```sql
+-- Remove test stores
+DELETE FROM stores 
+WHERE store_name LIKE '%Test%'
+   OR store_name LIKE '%Demo%'
+   OR store_name LIKE '%Example%';
+
+-- Verify real stores remain
+SELECT store_name, owner_user_id, is_active 
+FROM stores 
+ORDER BY created_at DESC;
+```
+
+**Task 2.6: Verify Subscription Plans** ⏱️ 3 min
+```sql
+-- Check subscription plans exist (these are real, not test data)
+SELECT subscription_plan_id, plan_name, user_type, tier, monthly_price
 FROM subscription_plans 
 ORDER BY user_type, tier;
+
 -- Expected: 6 plans (3 merchant + 3 courier)
+-- Merchant: Tier 1, Tier 2, Tier 3
+-- Courier: Tier 1, Tier 2, Tier 3
+```
+
+**Task 2.7: Final Verification** ⏱️ 2 min
+```sql
+-- Verify all test data removed
+SELECT 
+  (SELECT COUNT(*) FROM users WHERE email LIKE '%test%' OR email LIKE '%demo%') as test_users,
+  (SELECT COUNT(*) FROM orders WHERE tracking_number LIKE 'TEST%') as test_orders,
+  (SELECT COUNT(*) FROM reviews WHERE review_text LIKE '%test%') as test_reviews,
+  (SELECT COUNT(*) FROM stores WHERE store_name LIKE '%Test%') as test_stores,
+  (SELECT COUNT(*) FROM couriers WHERE courier_name LIKE 'Competitor%') as test_couriers;
+
+-- Expected: All zeros (except Playwright test users are OK to keep)
 ```
 
 ---
@@ -291,7 +362,7 @@ Quick review of morning progress.
 ## 🎯 SUCCESS CRITERIA
 
 ### End of Day Checklist:
-- [ ] **P0:** 🔴 RLS enabled on all 33 tables
+- [x] **P0:** 🔴 RLS enabled on all 33 tables ✅ **DONE!**
 - [ ] **P0:** 🔴 RLS policies created for critical tables (13)
 - [ ] **P0:** 🔴 RLS policies created for tracking tables (7)
 - [ ] **P0:** 🔴 RLS policies created for communication tables (11)
@@ -301,7 +372,9 @@ Quick review of morning progress.
 - [ ] **P0:** Analytics APIs working (claims-trends, order-trends)
 - [ ] **P1:** Role-based menu filtering implemented
 - [ ] **P1:** Menu only shows available features
-- [ ] **P1:** Test data removed (Competitor A/B)
+- [ ] **P1:** 🔴 ALL test data removed (couriers, users, orders, reviews, stores)
+- [ ] **P1:** 🔴 Only real production data remains
+- [ ] **P1:** 🔴 Verify no test entries in any table
 - [ ] **P2:** Shopify plugin tested end-to-end (if time allows)
 - [ ] **P2:** Checkout flow documented (if time allows)
 - [ ] **P3:** System Settings accessible (future)
@@ -631,9 +704,15 @@ apps/web/src/utils/menuConfig.ts
 
 ### **P1 - HIGH (Should Do Today):**
 1. Role-based menu filtering (45 min)
-2. Remove test data (15 min)
+2. 🔴 Remove ALL test data - comprehensive cleanup (20 min)
+   - Test couriers (Competitor A/B)
+   - Test users (test@, demo@, example@)
+   - Test orders (TEST*, DEMO*)
+   - Test reviews (test content)
+   - Test stores (Test Store, Demo Store)
+   - Final verification (no test data remains)
 
-**Subtotal:** 1 hour
+**Subtotal:** 1 hour 5 min
 
 ### **P2 - MEDIUM (If Time Allows):**
 1. Test Shopify plugin (45 min)
