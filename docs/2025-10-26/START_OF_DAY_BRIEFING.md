@@ -45,9 +45,34 @@
 
 ---
 
-## 📅 TODAY'S SCHEDULE (1-2 hours)
+## 🚨 CRITICAL: FIX FIRST (5 minutes)
 
-### 🌅 MORNING SESSION (1 hour)
+### **Environment Variables Missing in Vercel** 🔴
+
+**Problem:** Multiple APIs failing with `supabaseUrl is required` error
+
+**Affected APIs:**
+- `/api/subscriptions/my-subscription` - 500 error
+- `/api/subscriptions/public` - 500 error  
+- `/api/analytics/claims-trends` - 500 error
+- `/api/analytics/order-trends` - 500 error
+
+**Fix:**
+1. Go to Vercel → Project Settings → Environment Variables
+2. Add: `VITE_SUPABASE_URL=https://your-project.supabase.co`
+3. Add: `VITE_SUPABASE_ANON_KEY=your-anon-key-here`
+4. Redeploy
+
+**Time:** 5 minutes  
+**Priority:** P0 - CRITICAL (do this FIRST!)
+
+**See:** `docs/2025-10-26/CRITICAL_ENV_VARIABLES_ISSUE.md`
+
+---
+
+## 📅 TODAY'S SCHEDULE (2-3 hours)
+
+### 🌅 MORNING SESSION (1.5 hours)
 
 #### **Block 1: Role-Based Menu Filtering (45 min)**
 
@@ -123,39 +148,63 @@ Quick review of morning progress.
 
 ---
 
-### 🌤️ AFTERNOON SESSION (30 min)
+### 🌤️ AFTERNOON SESSION (1 hour)
 
-#### **Block 3: Remaining Fixes (30 min)**
+#### **Block 3: Shopify Plugin Testing** ⏱️ 45 min 🎯
 
-**Task 3.1: Investigate System Settings 404** ⏱️ 10 min
-- Route exists in App.tsx (line 364-369)
-- Check: SystemSettings component
-- Check: Menu link path
-- Fix: If component or link issue
+**Goal:** Install Shopify plugin and test end-to-end checkout flow
 
-**Task 3.2: Investigate Subscription Plans Empty** ⏱️ 10 min
-- API exists: `/api/admin/subscription-plans`
-- Check: Database has 6 plans
-- Check: API query works
-- Check: Frontend component loads data
+**Task 3.1: Shopify Plugin Setup** ⏱️ 20 min
+1. Check if Shopify plugin exists in codebase
+2. If not, create basic Shopify plugin structure
+3. Install in Shopify test store
+4. Configure webhook endpoints
+5. Test connection
 
-**Task 3.3: Test Performance Issues** ⏱️ 10 min
-- Merchant: Checkout Analytics loading time
-- Courier: Orders loading time
-- Document: If optimization needed for future
+**Task 3.2: Test Checkout Flow** ⏱️ 15 min
+1. Create test order in Shopify
+2. Verify order appears in Performile
+3. Assign courier to order
+4. Test tracking updates
+5. Test delivery confirmation
+6. Verify TrustScore update
+
+**Task 3.3: Document Issues** ⏱️ 10 min
+- Document what works
+- Document what's missing
+- Create list of required features
+- Estimate time to complete
+
+**Files to Check:**
+- `apps/web/src/pages/integrations/PluginSetup.tsx`
+- `api/integrations/shopify/*`
+- `database/ecommerce_integrations` table
+
+---
+
+#### **Block 4: Remaining Fixes** ⏱️ 15 min
+
+**Task 4.1: Quick Fixes**
+- System Settings 404 (5 min)
+- Subscription Plans empty (5 min)
+- Performance issues documentation (5 min)
 
 ---
 
 ## 🎯 SUCCESS CRITERIA
 
 ### End of Day Checklist:
-- [ ] Role-based menu filtering implemented
-- [ ] Menu only shows available features
-- [ ] Test data removed (Competitor A/B)
-- [ ] Subscription plans verified (6 plans exist)
-- [ ] System Settings accessible
-- [ ] All critical issues resolved
-- [ ] Documentation updated
+- [ ] **P0:** Environment variables fixed in Vercel
+- [ ] **P0:** Subscription APIs working (my-subscription, public)
+- [ ] **P0:** Analytics APIs working (claims-trends, order-trends)
+- [ ] **P1:** Role-based menu filtering implemented
+- [ ] **P1:** Menu only shows available features
+- [ ] **P1:** Test data removed (Competitor A/B)
+- [ ] **P2:** Shopify plugin tested end-to-end
+- [ ] **P2:** Checkout flow documented
+- [ ] **P3:** System Settings accessible
+- [ ] **P3:** Subscription plans verified
+- [ ] **P3:** Documentation updated
 
 ### Verification Steps:
 ```bash
@@ -401,13 +450,103 @@ apps/web/src/utils/menuConfig.ts
 
 ---
 
+---
+
+## 📋 MISSING FEATURES PLAN (If Time Allows)
+
+**User Request:** "If we could add all missing features tomorrow would be great"
+
+### **Reality Check:**
+- **Missing Features:** 8 major features (from PERFORMILE_MASTER_V2.3)
+- **Estimated Time:** 15-20 weeks total
+- **Today's Time:** 2-3 hours available
+
+### **What We CAN Do Today:**
+1. ✅ Fix all critical bugs (P0, P1)
+2. ✅ Test Shopify plugin end-to-end
+3. ✅ Document what's missing
+4. ✅ Create roadmap for next 2 weeks
+
+### **What We CANNOT Do Today:**
+- ❌ Build all 8 missing features (15-20 weeks of work)
+- ❌ Complete TMS system (2-3 weeks)
+- ❌ Build all e-commerce plugins (4-6 weeks)
+- ❌ Complete full courier API (3-4 weeks)
+
+### **Realistic Plan:**
+
+**Today (Oct 26):**
+- Fix critical bugs
+- Test Shopify plugin
+- Document missing features
+
+**Next Week (Oct 27-Nov 2):**
+- Complete Subscription UI Visibility (1 week)
+- Build iFrame widgets (2-3 weeks start)
+- Plan Returns Management (RMA)
+
+**Following Weeks:**
+- Returns Management (2-3 weeks)
+- Complete Courier API (3-4 weeks)
+- E-commerce plugins (4-6 weeks)
+
+### **Priority Order (From PERFORMILE_MASTER_V2.3):**
+
+| # | Feature | Time | Priority | Start Date |
+|---|---------|------|----------|------------|
+| 1 | Subscription UI Visibility | 1 week | **HIGH** | Oct 27 |
+| 2 | iFrame Widgets | 2-3 weeks | **HIGH** | Oct 27 |
+| 3 | Returns Management (RMA) | 2-3 weeks | **HIGH** | Nov 3 |
+| 4 | Courier API (Full) | 3-4 weeks | **HIGH** | Nov 17 |
+| 5 | Playwright Testing | 1-2 weeks | **HIGH** | Nov 10 |
+| 6 | Open API for Claims | 1 week | MEDIUM | Dec 1 |
+| 7 | E-commerce Plugins | 4-6 weeks | MEDIUM | Dec 8 |
+| 8 | TMS (Transport Management) | 2-3 weeks | MEDIUM | Jan 5 |
+
+**Total:** 15-20 weeks (3-5 months)
+
+### **Today's Focus:**
+✅ Fix what's broken  
+✅ Test what exists  
+✅ Plan what's next
+
+**Not:** Try to build everything in one day (impossible!)
+
+---
+
+## 🎯 FINAL PRIORITIES
+
+### **P0 - CRITICAL (Must Do Today):**
+1. Fix environment variables in Vercel (5 min)
+2. Verify all APIs working (10 min)
+
+### **P1 - HIGH (Should Do Today):**
+1. Role-based menu filtering (45 min)
+2. Remove test data (15 min)
+3. Test Shopify plugin (45 min)
+
+### **P2 - MEDIUM (Nice to Have):**
+1. System Settings fix (5 min)
+2. Subscription Plans fix (5 min)
+3. Document missing features (15 min)
+
+### **P3 - LOW (Future):**
+1. Performance optimization
+2. Build missing features (15-20 weeks)
+
+**Total Time Today:** 2-3 hours  
+**Realistic Goal:** Fix critical issues + test Shopify  
+**Unrealistic Goal:** Build all missing features
+
+---
+
 **Document Type:** Start of Day Briefing  
-**Version:** 1.0  
+**Version:** 2.0 (Updated with Vercel logs + Shopify testing)  
 **Date:** October 26, 2025  
 **Framework:** SPEC_DRIVEN_FRAMEWORK v1.21  
 **Status:** ✅ READY TO EXECUTE
 
-**Let's finish this properly!** 💪
+**Let's be realistic and fix what matters!** 💪
 
 ---
 
