@@ -84,14 +84,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         });
       }
 
-      // Get platform-wide dashboard summary statistics from cache (fast!)
+      // Get platform-wide dashboard summary statistics
       let result;
       try {
-        console.log('[Admin Dashboard API] Querying platform_analytics...');
+        console.log('[Admin Dashboard API] Querying real-time stats...');
+        
+        // Get real-time courier counts from couriers table
+        const courierStats = await client.query(`
+          SELECT 
+            COUNT(*)::int as total_couriers,
+            COUNT(*) FILTER (WHERE is_active = TRUE)::int as active_couriers
+          FROM couriers
+        `);
+        
+        // Get analytics from platform_analytics
         result = await client.query(`
           SELECT 
-            pa.total_couriers,
-            pa.active_couriers,
             pa.avg_trust_score,
             pa.total_reviews,
             pa.avg_rating,
@@ -103,6 +111,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           ORDER BY pa.metric_date DESC
           LIMIT 1
         `);
+        
+        // Merge real-time courier counts with cached analytics
+        if (result.rows && result.rows.length > 0) {
+          result.rows[0].total_couriers = courierStats.rows[0].total_couriers;
+          result.rows[0].active_couriers = courierStats.rows[0].active_couriers;
+        }
         
         console.log('[Admin Dashboard API] Query result:', result.rows);
         
