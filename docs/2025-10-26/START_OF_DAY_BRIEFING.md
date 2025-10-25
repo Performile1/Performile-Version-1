@@ -106,17 +106,14 @@
 
 ### 🌅 MORNING SESSION (3.5 hours) - SECURITY FIXES
 
-#### **Block 0: RLS Security Fix** ⏱️ 3 hours 🔴🔴🔴
+#### **Block 0: RLS Security Fix** ⏱️ 2.5 hours 🔴🔴🔴
 
 **CRITICAL: Do this BEFORE anything else!**
 
-**Task 0.1: Enable RLS on All Tables** ⏱️ 30 min
+**Task 0.1: Enable RLS on All Tables** ⏱️ 30 min ✅ **DONE!**
 ```sql
--- Create: database/migrations/2025-10-26_enable_rls_all_tables.sql
-ALTER TABLE paymenthistory ENABLE ROW LEVEL SECURITY;
-ALTER TABLE courier_api_credentials ENABLE ROW LEVEL SECURITY;
-ALTER TABLE ecommerce_integrations ENABLE ROW LEVEL SECURITY;
--- ... 30 more tables
+-- ✅ COMPLETED: RLS enabled on all 33 tables
+-- User already completed this task!
 ```
 
 **Task 0.2: Create RLS Policies - Critical Tables** ⏱️ 1 hour
@@ -209,12 +206,26 @@ export const getMenuForUser = (role: string, tier: string = 'tier1'): MenuItem[]
 
 **Task 2.1: Remove Test Data** ⏱️ 10 min
 ```sql
--- Remove Competitor A and B
+-- Remove Competitor A and B (test entries)
 DELETE FROM couriers WHERE courier_name IN ('Competitor A', 'Competitor B');
 
--- Verify removal
+-- Verify removal and check actual courier names
 SELECT courier_name FROM couriers ORDER BY courier_name;
--- Expected: 10 couriers (not 12)
+
+-- Expected 10 real couriers:
+-- 1. PostNord
+-- 2. DHL Express
+-- 3. Bring
+-- 4. Budbee
+-- 5. UPS
+-- 6. FedEx
+-- 7. GLS
+-- 8. Schenker
+-- 9. Instabox
+-- 10. Helthjem (or similar)
+
+-- Current: 12 (includes Competitor A & B test entries)
+-- After cleanup: 10 real couriers
 ```
 
 **Task 2.2: Verify Subscription Plans** ⏱️ 5 min

@@ -16,10 +16,11 @@
    - Actual: 404 (not ErrorBoundary)
    - Severity: HIGH
 
-2. **Competitor A/B Showing Again** ❌
-   - Issue: Test data reappearing
-   - Expected: Real data only
-   - Actual: Competitor A, Competitor B visible
+2. **Competitor A/B Showing (Test Data)** ❌
+   - Issue: Test courier entries visible in admin
+   - Expected: Only real couriers (PostNord, DHL, Bring, Budbee, UPS, FedEx, GLS, Schenker, Instabox, Helthjem)
+   - Actual: Competitor A, Competitor B visible (test entries)
+   - Count: 12 couriers (should be 10)
    - Severity: MEDIUM
 
 3. **Subscription Plans Empty** ❌
