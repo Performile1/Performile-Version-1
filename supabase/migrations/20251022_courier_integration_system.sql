@@ -469,10 +469,9 @@ BEGIN
   FROM orders
   WHERE order_id = p_order_id;
   
-  -- Consider delayed if in transit > 7 days or out for delivery > 2 days
+  -- Consider delayed if in transit > 7 days
+  -- Note: order_status enum doesn't have 'out_for_delivery', only: pending, in_transit, delivered, cancelled
   IF v_status = 'in_transit' AND v_days_since_created > 7 THEN
-    RETURN true;
-  ELSIF v_status = 'out_for_delivery' AND v_days_since_created > 2 THEN
     RETURN true;
   END IF;
   
@@ -641,15 +640,17 @@ CREATE POLICY ai_chat_context_user_policy ON ai_chat_courier_context
 
 -- Note: This will be populated after couriers are added
 -- Example for DHL Express (to be added after courier_id is known):
+-- IMPORTANT: performile_event_type can be 'out_for_delivery' (VARCHAR), 
+--            but performile_status must match order_status enum: pending, in_transit, delivered, cancelled
 /*
 INSERT INTO courier_event_mappings (courier_id, courier_event_code, courier_event_name, performile_event_type, performile_status, is_final_status) VALUES
   ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'PU', 'Shipment picked up', 'picked_up', 'in_transit', false),
   ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'PL', 'Processed at location', 'processed', 'in_transit', false),
   ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'DF', 'Departed facility', 'departed', 'in_transit', false),
   ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'AF', 'Arrived at facility', 'arrived', 'in_transit', false),
-  ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'WC', 'With delivery courier', 'out_for_delivery', 'out_for_delivery', false),
+  ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'WC', 'With delivery courier', 'out_for_delivery', 'in_transit', false),
   ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'OK', 'Delivered', 'delivered', 'delivered', true),
-  ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'UD', 'Undeliverable', 'failed', 'failed', true),
+  ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'UD', 'Undeliverable', 'failed', 'cancelled', true),
   ((SELECT courier_id FROM couriers WHERE courier_name = 'DHL Express'), 'UTL', 'Unloaded', 'unloaded', 'in_transit', false);
 */
 
@@ -685,7 +686,7 @@ LEFT JOIN LATERAL (
   ORDER BY event_timestamp DESC
   LIMIT 1
 ) se ON true
-WHERE o.order_status IN ('pending', 'in_transit', 'out_for_delivery');
+WHERE o.order_status IN ('pending', 'in_transit');
 
 COMMENT ON VIEW active_shipments_with_events IS 'All active shipments with their latest tracking event';
 

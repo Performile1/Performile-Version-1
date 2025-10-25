@@ -1469,8 +1469,345 @@ Document using this format:
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.18
-**LAST UPDATED:** October 17, 2025, 10:13 PM (Week 3 Day 1)
-**RULES:** 22 (16 Hard, 4 Medium, 2 Soft)
-**NEXT REVIEW:** After Week 3
-**NEXT VERSION:** v1.19
+---
+
+### **RULE #23: CHECK FOR DUPLICATES BEFORE BUILDING (HARD)**
+
+**CRITICAL: ALWAYS SEARCH FIRST**
+
+Before creating ANY new code, database table, or API endpoint:
+
+**Step 1: Search for similar database tables**
+```bash
+# Search in database folder
+grep -r "CREATE TABLE.*keyword" database/
+grep -r "keyword" supabase/migrations/
+
+# Check existing tables
+psql -c "SELECT table_name FROM information_schema.tables WHERE table_name LIKE '%keyword%'"
+```
+
+**Step 2: Search for similar APIs**
+```bash
+# Find API files
+find api/ -name "*.ts" | xargs grep -l "keyword"
+
+# Search for exports
+grep -r "export default" api/ | grep -i "keyword"
+
+# Check existing endpoints
+ls -la api/*/
+```
+
+**Step 3: Search for similar components**
+```bash
+# Find components
+find apps/web/src/components/ -name "*.tsx" | xargs grep -l "keyword"
+
+# Check component exports
+grep -r "export.*ComponentName" apps/web/src/components/
+```
+
+**Step 4: Search for similar services**
+```bash
+# List services
+ls apps/web/src/services/*.ts
+
+# Search service content
+grep -r "keyword" apps/web/src/services/
+```
+
+**MANDATORY PRE-IMPLEMENTATION CHECKLIST:**
+- [ ] Ran grep/find commands to search for duplicates
+- [ ] Checked `database/` folder for existing tables
+- [ ] Reviewed `api/` folder for existing endpoints
+- [ ] Searched `apps/web/src/components/` for similar UI
+- [ ] Checked `apps/web/src/services/` for existing services
+- [ ] Reviewed existing documentation in `docs/`
+- [ ] Asked: "Does this already exist in a different form?"
+- [ ] Asked: "Can I extend existing code instead of creating new?"
+- [ ] Documented findings (what exists vs. what's needed)
+- [ ] Confirmed minimal implementation plan
+
+**WHY:** Prevents duplicate code, saves time, maintains consistency, reduces bugs
+
+**CASE STUDY - October 22, 2025:**
+```
+❌ MISTAKE: Created courier integration system without checking first
+
+WHAT ALREADY EXISTED:
+- tracking_data table (18 columns)
+- tracking_events table (event history)
+- courier_api_credentials table (18 columns)
+- /api/tracking/ endpoints (6 files)
+- Tracking components and services
+
+WHAT WAS UNNECESSARILY CREATED:
+- courier_integrations table (duplicate)
+- shipment_events table (duplicate)
+- /api/courier-integrations.ts (duplicate)
+- /api/shipment-tracking.ts (duplicate)
+
+IMPACT:
+- Time wasted: ~2.5 hours
+- Code duplication: ~60%
+- Maintenance burden: 2x
+- Potential bugs: Inconsistent data
+
+LESSON: ALWAYS check existing code first!
+```
+
+**DELIVERABLE:** Search results documented before starting implementation
+
+---
+
+### **RULE #24: REUSE EXISTING CODE (HARD)**
+
+**ALWAYS PREFER:**
+- ✅ Extending existing tables over creating new ones
+- ✅ Adding actions to existing APIs over new endpoints
+- ✅ Enhancing existing components over duplicating
+- ✅ Reusing existing services over creating new ones
+
+**DATABASE REUSE STRATEGIES:**
+
+**Strategy 1: Use existing table as-is**
+```sql
+-- If table has what you need
+SELECT * FROM existing_table WHERE condition;
+```
+
+**Strategy 2: Add columns to existing table**
+```sql
+-- If table is close but missing fields
+ALTER TABLE existing_table 
+ADD COLUMN IF NOT EXISTS new_field VARCHAR(255);
+```
+
+**Strategy 3: Use JSONB for flexibility**
+```sql
+-- If table has metadata/data JSONB column
+UPDATE existing_table 
+SET metadata = metadata || '{"new_field": "value"}'::jsonb;
+```
+
+**Strategy 4: Create view**
+```sql
+-- If need different perspective of existing data
+CREATE VIEW new_view AS
+SELECT col1, col2, col3 FROM existing_table WHERE condition;
+```
+
+**API REUSE STRATEGIES:**
+
+**Strategy 1: Add action to existing endpoint**
+```typescript
+// Extend existing api/tracking/summary.ts
+export default async function handler(req, res) {
+  const action = req.query.action;
+  
+  switch (action) {
+    case 'summary':
+      return getSummary(req, res);
+    case 'shipment': // NEW ACTION
+      return getShipment(req, res);
+    default:
+      return res.status(400).json({ error: 'Invalid action' });
+  }
+}
+```
+
+**Strategy 2: Add query parameters**
+```typescript
+// Instead of: POST /api/orders/merchant
+// Use: POST /api/orders?role=merchant
+```
+
+**COMPONENT REUSE STRATEGIES:**
+
+**Strategy 1: Add props to existing component**
+```tsx
+// Extend existing OrdersList.tsx
+export const OrdersList = ({ 
+  showShipmentDetails = false, // NEW PROP
+  showTrackingTimeline = false // NEW PROP
+}) => {
+  // Reuse existing component with new features
+}
+```
+
+**Strategy 2: Compose existing components**
+```tsx
+// Instead of creating new component
+// Compose existing ones
+<TrackingContainer>
+  <OrdersList />
+  <ShipmentTimeline />
+</TrackingContainer>
+```
+
+**WHEN TO CREATE NEW (ONLY IF):**
+- ✅ No similar code exists
+- ✅ Existing code can't be extended
+- ✅ Modification would break existing usage
+- ✅ Different authentication/authorization needed
+- ✅ Completely different purpose
+
+**EXAMPLES:**
+
+```typescript
+// ❌ BAD - Creating duplicate
+CREATE TABLE courier_integrations (...);
+// Already have: courier_api_credentials
+
+// ✅ GOOD - Reusing existing
+ALTER TABLE courier_api_credentials ADD COLUMN ...;
+
+// ❌ BAD - Creating duplicate API
+POST /api/shipment-tracking
+// Already have: /api/tracking/
+
+// ✅ GOOD - Extending existing
+POST /api/tracking?action=shipment
+
+// ❌ BAD - Creating duplicate component
+export const ShipmentList = () => { ... }
+// Already have: OrdersList
+
+// ✅ GOOD - Extending existing
+<OrdersList showShipmentDetails={true} />
+```
+
+**CORRECT WORKFLOW:**
+
+1. **Receive Requirement** - Understand what needs to be built
+2. **SEARCH FIRST** - Check for existing similar code (MANDATORY)
+3. **Document Findings** - List what exists vs. what's needed
+4. **Identify Gaps** - What's truly missing?
+5. **Plan Minimal Addition** - Only build what doesn't exist
+6. **Extend, Don't Duplicate** - Enhance existing code when possible
+7. **Implement** - Build only the genuinely new features
+8. **Document** - Note what was reused vs. created
+
+**IMPACT METRICS:**
+
+Time saved by checking first:
+- Database: ~30 minutes (avoid duplicate tables)
+- APIs: ~45 minutes (reuse existing endpoints)
+- Frontend: ~30 minutes (reuse components)
+- Testing: ~20 minutes (existing tests work)
+- Documentation: ~15 minutes (update vs. create)
+- **TOTAL: ~2.5 hours saved per feature**
+
+Code quality improvements:
+- Less duplication = easier maintenance
+- Consistent patterns = fewer bugs
+- Reused code = already tested
+- Smaller PRs = faster reviews
+- Single source of truth = no conflicts
+
+**WHY:** Saves time, reduces bugs, maintains consistency, improves maintainability
+
+**DELIVERABLE:** Documentation of what was reused and why new code was necessary
+
+---
+
+---
+
+## 🎯 RULE #25: MASTER DOCUMENT VERSIONING (HARD)
+
+**MANDATORY:** Every significant update to the master document MUST follow this versioning system.
+
+**VERSIONING FORMAT:**
+```
+PERFORMILE_MASTER_V[MAJOR].[MINOR].md
+```
+
+**VERSION NUMBERS:**
+- **MAJOR** - Increments when:
+  - Database structure changes significantly (10+ new tables)
+  - Major features added (new modules, systems)
+  - Architecture changes
+  - Breaking changes
+  
+- **MINOR** - Increments when:
+  - Minor features added
+  - Documentation updates
+  - Bug fixes documented
+  - Metrics updated
+  - Small improvements
+
+**STORAGE LOCATION:**
+```
+docs/[YYYY-MM-DD]/PERFORMILE_MASTER_V[MAJOR].[MINOR].md
+```
+
+**EXAMPLES:**
+- `docs/2025-10-07/PERFORMILE_MASTER_V2.0.md` - Original master (39 tables)
+- `docs/2025-10-22/PERFORMILE_MASTER_V2.1.md` - Updated master (78 tables, +Week 4)
+- `docs/2025-11-01/PERFORMILE_MASTER_V3.0.md` - Major update (new TMS system)
+
+**REQUIRED METADATA IN DOCUMENT:**
+```markdown
+**Platform Version:** [X.Y.Z]
+**Document Version:** V[MAJOR].[MINOR]
+**Last Updated:** [Date and Time]
+**Previous Version:** V[MAJOR].[MINOR] (if applicable)
+**Status:** [Production-Ready / In Development / etc.]
+```
+
+**CHANGE LOG SECTION:**
+Every new version MUST include a "What Changed Since V[X.Y]" section:
+```markdown
+## 📋 WHAT CHANGED SINCE V2.0
+
+### Added:
+- Feature 1
+- Feature 2
+
+### Updated:
+- Metric 1
+- Metric 2
+
+### Removed:
+- Deprecated feature 1
+```
+
+**FOLDER ORGANIZATION:**
+```
+docs/
+├── 2025-10-07/
+│   ├── PERFORMILE_MASTER_V2.0.md
+│   └── [other docs from that date]
+├── 2025-10-22/
+│   ├── PERFORMILE_MASTER_V2.1.md
+│   ├── COMPREHENSIVE_PROJECT_AUDIT.md
+│   ├── SQL_CLEANUP_PLAN.md
+│   └── [other docs from that date]
+└── [future dates]/
+    └── PERFORMILE_MASTER_V[X.Y].md
+```
+
+**WHY THIS RULE:**
+- ✅ Clear version history
+- ✅ Easy to track changes over time
+- ✅ Organized by date
+- ✅ No confusion about which is current
+- ✅ Audit trail for compliance
+- ✅ Easy rollback if needed
+
+**ENFORCEMENT:**
+- Every master document update creates a new version
+- Old versions are kept in their dated folders
+- Current version is always the highest number
+- No overwriting existing versions
+
+**DELIVERABLE:** Properly versioned master document in dated folder with change log
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.21
+**LAST UPDATED:** October 22, 2025, 8:17 PM (Week 3 Day 6)
+**RULES:** 25 (19 Hard, 4 Medium, 2 Soft)
+**NEXT REVIEW:** After Week 4
+**NEXT VERSION:** v1.22
