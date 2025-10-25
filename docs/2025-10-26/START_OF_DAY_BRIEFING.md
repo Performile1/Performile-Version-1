@@ -627,6 +627,268 @@ apps/web/src/utils/menuConfig.ts
 
 ---
 
+## 🔧 NEW FEATURE REQUEST: RULE ENGINE SYSTEM
+
+**User Request:** "make a rule engine making it possible to change order, setting notifications not only making rules for notifications etc."
+
+### **What Is Needed:**
+
+A **flexible Rule Engine** that allows:
+1. ✅ Creating rules for notifications (already exists partially)
+2. ✅ Creating rules for order management (NEW)
+3. ✅ Creating rules for settings (NEW)
+4. ✅ Creating rules for any business logic (NEW)
+5. ✅ Dynamic rule execution without code changes
+
+### **Current State:**
+
+**Existing (Partial):**
+- `notification_rules` table (4 tables for notification rules)
+- `execute_notification_rule()` function
+- `evaluate_rule_conditions()` function
+
+**Missing:**
+- Generic rule engine for all use cases
+- Rule builder UI
+- Order management rules
+- Settings rules
+- Custom action execution
+
+### **Proposed Implementation:**
+
+#### **Phase 1: Database Schema (30 min)**
+
+```sql
+-- Generic rule engine tables
+CREATE TABLE rule_engine_rules (
+  rule_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  rule_name VARCHAR(255) NOT NULL,
+  rule_type VARCHAR(50) NOT NULL, -- 'notification', 'order', 'setting', 'custom'
+  entity_type VARCHAR(50), -- 'order', 'user', 'courier', 'merchant', etc.
+  conditions JSONB NOT NULL, -- Flexible condition structure
+  actions JSONB NOT NULL, -- Flexible action structure
+  priority INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_by UUID REFERENCES users(user_id),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE rule_engine_executions (
+  execution_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  rule_id UUID REFERENCES rule_engine_rules(rule_id),
+  entity_id UUID, -- ID of the entity the rule was executed on
+  entity_type VARCHAR(50),
+  conditions_met BOOLEAN,
+  actions_executed JSONB,
+  execution_result TEXT,
+  executed_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE rule_engine_actions (
+  action_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  action_name VARCHAR(255) NOT NULL,
+  action_type VARCHAR(50) NOT NULL, -- 'notification', 'email', 'update_status', 'custom'
+  action_config JSONB,
+  is_active BOOLEAN DEFAULT true
+);
+```
+
+#### **Phase 2: Rule Engine Functions (1 hour)**
+
+```sql
+-- Generic rule evaluation function
+CREATE OR REPLACE FUNCTION evaluate_rule(
+  p_rule_id UUID,
+  p_entity_id UUID,
+  p_entity_data JSONB
+) RETURNS BOOLEAN AS $$
+DECLARE
+  v_rule RECORD;
+  v_conditions JSONB;
+  v_condition JSONB;
+  v_result BOOLEAN := TRUE;
+BEGIN
+  -- Get rule
+  SELECT * INTO v_rule FROM rule_engine_rules WHERE rule_id = p_rule_id;
+  
+  -- Evaluate each condition
+  FOR v_condition IN SELECT * FROM jsonb_array_elements(v_rule.conditions)
+  LOOP
+    -- Evaluate condition based on type
+    -- (field comparison, value check, date range, etc.)
+    -- Set v_result = FALSE if any condition fails
+  END LOOP;
+  
+  RETURN v_result;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Generic rule execution function
+CREATE OR REPLACE FUNCTION execute_rule(
+  p_rule_id UUID,
+  p_entity_id UUID,
+  p_entity_data JSONB
+) RETURNS JSONB AS $$
+DECLARE
+  v_rule RECORD;
+  v_actions JSONB;
+  v_action JSONB;
+  v_results JSONB := '[]'::JSONB;
+BEGIN
+  -- Get rule
+  SELECT * INTO v_rule FROM rule_engine_rules WHERE rule_id = p_rule_id;
+  
+  -- Check if conditions are met
+  IF NOT evaluate_rule(p_rule_id, p_entity_id, p_entity_data) THEN
+    RETURN jsonb_build_object('success', false, 'reason', 'conditions_not_met');
+  END IF;
+  
+  -- Execute each action
+  FOR v_action IN SELECT * FROM jsonb_array_elements(v_rule.actions)
+  LOOP
+    -- Execute action based on type
+    -- (send notification, update order, change setting, etc.)
+  END LOOP;
+  
+  -- Log execution
+  INSERT INTO rule_engine_executions (rule_id, entity_id, entity_type, conditions_met, actions_executed)
+  VALUES (p_rule_id, p_entity_id, v_rule.entity_type, TRUE, v_results);
+  
+  RETURN jsonb_build_object('success', true, 'actions', v_results);
+END;
+$$ LANGUAGE plpgsql;
+```
+
+#### **Phase 3: Example Rules (30 min)**
+
+```sql
+-- Example 1: Auto-assign courier based on postal code
+INSERT INTO rule_engine_rules (rule_name, rule_type, entity_type, conditions, actions)
+VALUES (
+  'Auto-assign courier for Stockholm',
+  'order',
+  'order',
+  '[
+    {"field": "postal_code", "operator": "starts_with", "value": "11"},
+    {"field": "order_status", "operator": "equals", "value": "pending"}
+  ]'::JSONB,
+  '[
+    {"type": "update_field", "field": "courier_id", "value": "postnord_id"},
+    {"type": "notification", "template": "order_assigned", "recipient": "merchant"}
+  ]'::JSONB
+);
+
+-- Example 2: Send notification when order is delayed
+INSERT INTO rule_engine_rules (rule_name, rule_type, entity_type, conditions, actions)
+VALUES (
+  'Notify on delayed delivery',
+  'notification',
+  'order',
+  '[
+    {"field": "estimated_delivery", "operator": "less_than", "value": "NOW()"},
+    {"field": "order_status", "operator": "equals", "value": "in_transit"}
+  ]'::JSONB,
+  '[
+    {"type": "notification", "template": "delivery_delayed", "recipient": "customer"},
+    {"type": "notification", "template": "delivery_delayed", "recipient": "merchant"}
+  ]'::JSONB
+);
+
+-- Example 3: Auto-update settings based on usage
+INSERT INTO rule_engine_rules (rule_name, rule_type, entity_type, conditions, actions)
+VALUES (
+  'Upgrade to Tier 2 when limit reached',
+  'setting',
+  'user',
+  '[
+    {"field": "orders_this_month", "operator": "greater_than", "value": 100},
+    {"field": "subscription_tier", "operator": "equals", "value": "tier1"}
+  ]'::JSONB,
+  '[
+    {"type": "notification", "template": "upgrade_suggested", "recipient": "user"},
+    {"type": "email", "template": "tier_upgrade_offer"}
+  ]'::JSONB
+);
+```
+
+#### **Phase 4: Frontend Rule Builder (2-3 hours)**
+
+**Component:** `apps/web/src/pages/admin/RuleBuilder.tsx`
+
+**Features:**
+- Visual rule builder (drag & drop)
+- Condition builder (field, operator, value)
+- Action builder (type, config)
+- Rule testing (simulate execution)
+- Rule management (enable/disable, edit, delete)
+
+#### **Phase 5: API Endpoints (1 hour)**
+
+```typescript
+// api/rules/index.ts
+GET /api/rules - List all rules
+POST /api/rules - Create new rule
+PUT /api/rules/:id - Update rule
+DELETE /api/rules/:id - Delete rule
+POST /api/rules/:id/test - Test rule execution
+POST /api/rules/:id/execute - Execute rule manually
+```
+
+### **Time Estimate:**
+
+| Phase | Task | Time |
+|-------|------|------|
+| 1 | Database schema | 30 min |
+| 2 | Rule engine functions | 1 hour |
+| 3 | Example rules | 30 min |
+| 4 | Frontend rule builder | 2-3 hours |
+| 5 | API endpoints | 1 hour |
+| **Total** | | **5-6 hours** |
+
+### **Priority:**
+
+**Recommended:** Week of Oct 27-Nov 2 (after critical fixes)
+
+**Why not today:**
+- Need to fix security (RLS) first
+- Need to clean up test data first
+- Need to fix menu filtering first
+- This is a new feature, not a bug fix
+
+### **Benefits:**
+
+1. ✅ **Flexibility:** Create rules without code changes
+2. ✅ **Scalability:** Add new rule types easily
+3. ✅ **Maintainability:** Business logic in database, not code
+4. ✅ **User Control:** Merchants/admins can create own rules
+5. ✅ **Auditability:** Track all rule executions
+
+### **Use Cases:**
+
+**Order Management:**
+- Auto-assign courier based on postal code
+- Auto-update status based on tracking
+- Auto-cancel after X days
+- Auto-refund on certain conditions
+
+**Notifications:**
+- Send notification on order status change
+- Send reminder after X days
+- Send alert on threshold reached
+- Send report on schedule
+
+**Settings:**
+- Auto-adjust based on usage
+- Auto-upgrade tier suggestions
+- Auto-enable features
+- Auto-disable inactive features
+
+**Custom:**
+- Any business logic you can imagine!
+
+---
+
 ## 📋 MISSING FEATURES PLAN (If Time Allows)
 
 **User Request:** "If we could add all missing features tomorrow would be great"
@@ -665,20 +927,23 @@ apps/web/src/utils/menuConfig.ts
 - Complete Courier API (3-4 weeks)
 - E-commerce plugins (4-6 weeks)
 
-### **Priority Order (From PERFORMILE_MASTER_V2.3):**
+### **Priority Order (Updated with Rule Engine):**
 
 | # | Feature | Time | Priority | Start Date |
 |---|---------|------|----------|------------|
 | 1 | Subscription UI Visibility | 1 week | **HIGH** | Oct 27 |
-| 2 | iFrame Widgets | 2-3 weeks | **HIGH** | Oct 27 |
-| 3 | Returns Management (RMA) | 2-3 weeks | **HIGH** | Nov 3 |
-| 4 | Courier API (Full) | 3-4 weeks | **HIGH** | Nov 17 |
-| 5 | Playwright Testing | 1-2 weeks | **HIGH** | Nov 10 |
-| 6 | Open API for Claims | 1 week | MEDIUM | Dec 1 |
-| 7 | E-commerce Plugins | 4-6 weeks | MEDIUM | Dec 8 |
-| 8 | TMS (Transport Management) | 2-3 weeks | MEDIUM | Jan 5 |
+| 2 | **Rule Engine System** 🆕 | **5-6 hours** | **HIGH** | **Oct 27** |
+| 3 | iFrame Widgets | 2-3 weeks | **HIGH** | Oct 28 |
+| 4 | Returns Management (RMA) | 2-3 weeks | **HIGH** | Nov 3 |
+| 5 | Courier API (Full) | 3-4 weeks | **HIGH** | Nov 17 |
+| 6 | Playwright Testing | 1-2 weeks | **HIGH** | Nov 10 |
+| 7 | Open API for Claims | 1 week | MEDIUM | Dec 1 |
+| 8 | E-commerce Plugins | 4-6 weeks | MEDIUM | Dec 8 |
+| 9 | TMS (Transport Management) | 2-3 weeks | MEDIUM | Jan 5 |
 
-**Total:** 15-20 weeks (3-5 months)
+**Total:** 16-21 weeks (4-5 months)
+
+**NEW:** Rule Engine System (5-6 hours) - Generic rule engine for orders, notifications, settings, and custom business logic!
 
 ### **Today's Focus:**
 ✅ Fix what's broken  
