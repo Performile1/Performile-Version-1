@@ -115,34 +115,9 @@ export default async function handler(
     startDate.setDate(startDate.getDate() - allowedDays);
     const startDateStr = startDate.toISOString().split('T')[0];
 
-    // Query order_trends materialized view
-    let query = supabase
-      .from('order_trends')
-      .select('*')
-      .gte('trend_date', startDateStr)
-      .order('trend_date', { ascending: true });
-
-    // Filter by entity type
-    if (entity_type === 'courier') {
-      query = query.eq('courier_id', entity_id);
-    } else {
-      query = query.eq('merchant_id', entity_id);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      console.error('Database error:', error);
-      return res.status(500).json({
-        success: false,
-        error: 'Failed to fetch order trends',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
-      });
-    }
-
-    // If no data from materialized view, query orders table directly
-    if (!data || data.length === 0) {
-      console.log('No data in materialized view, querying orders table directly');
+    // Skip materialized view and query orders table directly
+    // (materialized view has RLS issues)
+    console.log('Querying orders table directly for entity:', entity_type, entity_id);
       
       // Build direct query
       let ordersQuery = supabase
@@ -244,29 +219,6 @@ export default async function handler(
           source: 'direct_query'
         }
       });
-    }
-
-    // Return data from materialized view
-    return res.status(200).json({
-      success: true,
-      data: data.map(row => ({
-        date: row.trend_date,
-        total_orders: row.total_orders || 0,
-        delivered_orders: row.delivered_orders || 0,
-        in_transit_orders: row.in_transit_orders || 0,
-        pending_orders: row.pending_orders || 0,
-        cancelled_orders: row.cancelled_orders || 0,
-        avg_order_value: parseFloat(row.avg_order_value || 0)
-      })),
-      meta: {
-        entity_type,
-        entity_id,
-        period,
-        tier: userTier,
-        days_returned: data.length,
-        source: 'materialized_view'
-      }
-    });
 
   } catch (error: any) {
     console.error('Unexpected error:', error);

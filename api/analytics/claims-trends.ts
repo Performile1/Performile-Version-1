@@ -105,36 +105,9 @@ export default async function handler(
     startDate.setDate(startDate.getDate() - allowedDays);
     const startDateStr = startDate.toISOString().split('T')[0];
 
-    // Query claim_trends materialized view
-    let query = supabase
-      .from('claim_trends')
-      .select('*')
-      .gte('trend_date', startDateStr)
-      .order('trend_date', { ascending: true });
-
-    // Filter by entity type
-    if (entity_type === 'courier') {
-      query = query.eq('courier_id', entity_id);
-    } else {
-      query = query.eq('merchant_id', entity_id);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      console.error('Database error:', error);
-      return res.status(500).json({
-        success: false,
-        error: 'Failed to fetch claim trends',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
-      });
-    }
-
-    // If no data from materialized view, return empty data
-    // Note: Claims table doesn't have courier_id/merchant_id columns directly
-    // Would need to join with orders table, but for now return empty to avoid 500 error
-    if (!data || data.length === 0) {
-      console.log('No data in materialized view, returning empty data');
+    // Skip materialized view - claims table doesn't have courier_id/merchant_id
+    // Would need complex join with orders table, so return empty for now
+    console.log('Claims trends: returning empty data (no direct courier/merchant link)');
       
       return res.status(200).json({
         success: true,
@@ -149,41 +122,6 @@ export default async function handler(
           message: 'No claims data available for this period'
         }
       });
-    }
-
-    // Fallback code (kept for reference but won't execute)
-    if (false) {
-      const { data: claimsData, error: claimsError } = await supabase
-        .from('claims')
-        .select('created_at')
-        .gte('created_at', startDateStr)
-        .limit(1);
-
-      // This code is disabled - see above
-    }
-
-    // Return data from materialized view
-    return res.status(200).json({
-      success: true,
-      data: data.map(row => ({
-        date: row.trend_date,
-        total_claims: row.total_claims || 0,
-        open_claims: row.open_claims || 0,
-        in_review_claims: row.in_review_claims || 0,
-        approved_claims: row.approved_claims || 0,
-        declined_claims: row.declined_claims || 0,
-        closed_claims: row.closed_claims || 0,
-        avg_resolution_days: parseFloat(row.avg_resolution_days || 0)
-      })),
-      meta: {
-        entity_type,
-        entity_id,
-        period,
-        tier: userTier,
-        days_returned: data.length,
-        source: 'materialized_view'
-      }
-    });
 
   } catch (error: any) {
     console.error('Unexpected error:', error);
