@@ -120,13 +120,14 @@ ORDER BY
 SELECT '📊 EMPTY TABLES (No Data to Clean)' as section;
 
 SELECT 
-  schemaname,
-  tablename,
-  n_live_tup as row_count
-FROM pg_stat_user_tables
-WHERE schemaname = 'public'
-AND n_live_tup = 0
-ORDER BY tablename;
+  t.table_name,
+  0 as row_count
+FROM information_schema.tables t
+LEFT JOIN pg_stat_user_tables s ON s.tablename = t.table_name AND s.schemaname = 'public'
+WHERE t.table_schema = 'public'
+AND t.table_type = 'BASE TABLE'
+AND (s.n_live_tup = 0 OR s.n_live_tup IS NULL)
+ORDER BY t.table_name;
 
 -- =====================================================
 -- 6. DATA SUMMARY
