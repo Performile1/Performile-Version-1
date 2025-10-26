@@ -64,7 +64,7 @@ BEGIN
   RAISE NOTICE 'Total tables in database: %', v_total_tables;
   RAISE NOTICE 'Tables with RLS enabled: %', v_rls_enabled;
   RAISE NOTICE 'Total RLS policies: %', v_total_policies;
-  RAISE NOTICE 'RLS Coverage: %% ', ROUND((v_rls_enabled::DECIMAL / v_total_tables * 100), 1);
+  RAISE NOTICE 'RLS Coverage: %%', ROUND((v_rls_enabled::DECIMAL / v_total_tables * 100), 1);
   RAISE NOTICE '==============================================';
   RAISE NOTICE '';
 END $$;
