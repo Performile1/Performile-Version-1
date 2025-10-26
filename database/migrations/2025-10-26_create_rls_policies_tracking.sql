@@ -281,7 +281,7 @@ BEGIN
     DROP POLICY IF EXISTS shop_analytics_select_own ON shopanalyticssnapshots;
     DROP POLICY IF EXISTS shop_analytics_insert_own ON shopanalyticssnapshots;
     
-    -- Note: shop_id could be INTEGER or UUID, handle both
+    -- Note: shop_id could be INTEGER or UUID, cast to TEXT for comparison
     -- Merchants can see their own shop analytics
     CREATE POLICY shop_analytics_select_own ON shopanalyticssnapshots
       FOR SELECT USING (
@@ -289,11 +289,6 @@ BEGIN
           SELECT 1 FROM stores 
           WHERE stores.store_id::TEXT = shopanalyticssnapshots.shop_id::TEXT
           AND stores.owner_user_id = auth.uid()
-        )
-        OR EXISTS (
-          SELECT 1 FROM shops 
-          WHERE shops.shop_id::TEXT = shopanalyticssnapshots.shop_id::TEXT
-          AND shops.owner_user_id = auth.uid()
         )
       );
 
@@ -303,10 +298,6 @@ BEGIN
         EXISTS (
           SELECT 1 FROM stores 
           WHERE stores.store_id::TEXT = shopanalyticssnapshots.shop_id::TEXT
-        )
-        OR EXISTS (
-          SELECT 1 FROM shops 
-          WHERE shops.shop_id::TEXT = shopanalyticssnapshots.shop_id::TEXT
         )
       );
       
@@ -332,17 +323,10 @@ BEGIN
       FOR SELECT USING (
         user_id = auth.uid()
         OR
-        (shop_id IS NOT NULL AND (
-          EXISTS (
-            SELECT 1 FROM stores 
-            WHERE stores.store_id::TEXT = integration_events.shop_id::TEXT
-            AND stores.owner_user_id = auth.uid()
-          )
-          OR EXISTS (
-            SELECT 1 FROM shops 
-            WHERE shops.shop_id::TEXT = integration_events.shop_id::TEXT
-            AND shops.owner_user_id = auth.uid()
-          )
+        (shop_id IS NOT NULL AND EXISTS (
+          SELECT 1 FROM stores 
+          WHERE stores.store_id::TEXT = integration_events.shop_id::TEXT
+          AND stores.owner_user_id = auth.uid()
         ))
       );
 
