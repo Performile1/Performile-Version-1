@@ -148,11 +148,14 @@ BEGIN
     DROP POLICY IF EXISTS delivery_requests_update_courier ON delivery_requests;
     
     -- Merchants can see requests for their stores
-    -- Note: delivery_requests uses shop_id, which maps to stores.store_id
+    -- Note: delivery_requests.shop_id is INTEGER, stores.store_id is UUID
+    -- We need to cast or use a different approach
     CREATE POLICY delivery_requests_select_merchant ON delivery_requests
       FOR SELECT USING (
-        shop_id IN (
-          SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+        EXISTS (
+          SELECT 1 FROM stores 
+          WHERE stores.store_id::TEXT = delivery_requests.shop_id::TEXT
+          AND stores.owner_user_id = auth.uid()
         )
       );
 
@@ -167,16 +170,20 @@ BEGIN
     -- Merchants can create delivery requests
     CREATE POLICY delivery_requests_insert_merchant ON delivery_requests
       FOR INSERT WITH CHECK (
-        shop_id IN (
-          SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+        EXISTS (
+          SELECT 1 FROM stores 
+          WHERE stores.store_id::TEXT = delivery_requests.shop_id::TEXT
+          AND stores.owner_user_id = auth.uid()
         )
       );
 
     -- Merchants can update their requests
     CREATE POLICY delivery_requests_update_merchant ON delivery_requests
       FOR UPDATE USING (
-        shop_id IN (
-          SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+        EXISTS (
+          SELECT 1 FROM stores 
+          WHERE stores.store_id::TEXT = delivery_requests.shop_id::TEXT
+          AND stores.owner_user_id = auth.uid()
         )
       );
 
