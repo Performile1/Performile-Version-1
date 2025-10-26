@@ -760,10 +760,11 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-#### **Phase 3: Example Rules (30 min)**
+#### **Phase 3: Example Rules by Type (30 min)**
 
+**ORDER RULES:**
 ```sql
--- Example 1: Auto-assign courier based on postal code
+-- Order Rule 1: Auto-assign courier based on postal code
 INSERT INTO rule_engine_rules (rule_name, rule_type, entity_type, conditions, actions)
 VALUES (
   'Auto-assign courier for Stockholm',
@@ -779,7 +780,63 @@ VALUES (
   ]'::JSONB
 );
 
--- Example 2: Send notification when order is delayed
+-- Order Rule 2: Auto-cancel abandoned orders
+INSERT INTO rule_engine_rules (rule_name, rule_type, entity_type, conditions, actions)
+VALUES (
+  'Cancel orders after 7 days pending',
+  'order',
+  'order',
+  '[
+    {"field": "order_status", "operator": "equals", "value": "pending"},
+    {"field": "days_since_created", "operator": "greater_than", "value": 7}
+  ]'::JSONB,
+  '[
+    {"type": "update_field", "field": "order_status", "value": "cancelled"},
+    {"type": "notification", "template": "order_auto_cancelled", "recipient": "merchant"}
+  ]'::JSONB
+);
+```
+
+**CLAIM RULES:**
+```sql
+-- Claim Rule 1: Auto-approve small claims
+INSERT INTO rule_engine_rules (rule_name, rule_type, entity_type, conditions, actions)
+VALUES (
+  'Auto-approve claims under 100 SEK',
+  'claim',
+  'claim',
+  '[
+    {"field": "claim_amount", "operator": "less_than", "value": 100},
+    {"field": "claim_status", "operator": "equals", "value": "pending"}
+  ]'::JSONB,
+  '[
+    {"type": "update_field", "field": "claim_status", "value": "approved"},
+    {"type": "notification", "template": "claim_approved", "recipient": "customer"},
+    {"type": "create_refund", "amount": "claim_amount"}
+  ]'::JSONB
+);
+
+-- Claim Rule 2: Escalate high-value claims
+INSERT INTO rule_engine_rules (rule_name, rule_type, entity_type, conditions, actions)
+VALUES (
+  'Escalate claims over 1000 SEK',
+  'claim',
+  'claim',
+  '[
+    {"field": "claim_amount", "operator": "greater_than", "value": 1000},
+    {"field": "claim_status", "operator": "equals", "value": "pending"}
+  ]'::JSONB,
+  '[
+    {"type": "update_field", "field": "priority", "value": "high"},
+    {"type": "notification", "template": "claim_escalated", "recipient": "admin"},
+    {"type": "create_task", "assignee": "claims_manager"}
+  ]'::JSONB
+);
+```
+
+**NOTIFICATION RULES:**
+```sql
+-- Notification Rule 1: Send notification when order is delayed
 INSERT INTO rule_engine_rules (rule_name, rule_type, entity_type, conditions, actions)
 VALUES (
   'Notify on delayed delivery',
@@ -795,19 +852,19 @@ VALUES (
   ]'::JSONB
 );
 
--- Example 3: Auto-update settings based on usage
+-- Notification Rule 2: Send review request after delivery
 INSERT INTO rule_engine_rules (rule_name, rule_type, entity_type, conditions, actions)
 VALUES (
-  'Upgrade to Tier 2 when limit reached',
-  'setting',
-  'user',
+  'Send review request 2 days after delivery',
+  'notification',
+  'order',
   '[
-    {"field": "orders_this_month", "operator": "greater_than", "value": 100},
-    {"field": "subscription_tier", "operator": "equals", "value": "tier1"}
+    {"field": "order_status", "operator": "equals", "value": "delivered"},
+    {"field": "days_since_delivery", "operator": "equals", "value": 2}
   ]'::JSONB,
   '[
-    {"type": "notification", "template": "upgrade_suggested", "recipient": "user"},
-    {"type": "email", "template": "tier_upgrade_offer"}
+    {"type": "notification", "template": "review_request", "recipient": "customer"},
+    {"type": "email", "template": "review_request_email"}
   ]'::JSONB
 );
 ```
@@ -818,15 +875,37 @@ VALUES (
 
 **Components to Create:**
 
-**1. RuleEngineList.tsx** - Main rule management page
+**1. RuleEngineList.tsx** - Main rule management page with tabs
 ```typescript
 // apps/web/src/pages/RuleEngine/RuleEngineList.tsx
-- List all user's rules
-- Filter by type (notification, order, setting, custom)
-- Enable/disable toggle
-- Edit/Delete actions
-- "Create New Rule" button
-- Rule execution history
+
+// Three separate tabs/sections:
+// 1. ORDER RULES TAB
+//    - List all order rules
+//    - Show: "3/10 order rules used" (based on subscription)
+//    - "Create Order Rule" button (disabled if limit reached)
+//    - Enable/disable toggle
+//    - Edit/Delete actions
+//    - Execution history
+
+// 2. CLAIM RULES TAB
+//    - List all claim rules
+//    - Show: "2/10 claim rules used"
+//    - "Create Claim Rule" button (disabled if limit reached)
+//    - Enable/disable toggle
+//    - Edit/Delete actions
+//    - Execution history
+
+// 3. NOTIFICATION RULES TAB
+//    - List all notification rules
+//    - Show: "5/20 notification rules used"
+//    - "Create Notification Rule" button (disabled if limit reached)
+//    - Enable/disable toggle
+//    - Edit/Delete actions
+//    - Execution history
+
+// Upgrade prompt when limit reached:
+// "You've reached your limit of X rules. Upgrade to Tier Y for Z more rules!"
 ```
 
 **2. RuleBuilder.tsx** - Visual rule builder
@@ -884,18 +963,55 @@ VALUES (
 - Error messages
 ```
 
-**User Role Limits:**
+**Subscription-Based Rule Limits:**
 
 ```sql
--- Add to subscription_plans table
+-- Add to subscription_plans table (separate limits per rule type)
 ALTER TABLE subscription_plans 
-ADD COLUMN max_rules_per_user INTEGER DEFAULT 5;
+ADD COLUMN max_order_rules INTEGER DEFAULT 0,
+ADD COLUMN max_claim_rules INTEGER DEFAULT 0,
+ADD COLUMN max_notification_rules INTEGER DEFAULT 0;
 
--- Update plans
-UPDATE subscription_plans SET max_rules_per_user = 5 WHERE tier = 'tier1';
-UPDATE subscription_plans SET max_rules_per_user = 20 WHERE tier = 'tier2';
-UPDATE subscription_plans SET max_rules_per_user = 100 WHERE tier = 'tier3';
-UPDATE subscription_plans SET max_rules_per_user = 999 WHERE user_type = 'admin';
+-- Tier 1 Plans (Basic)
+UPDATE subscription_plans SET 
+  max_order_rules = 3,
+  max_claim_rules = 2,
+  max_notification_rules = 5
+WHERE tier = 'tier1';
+
+-- Tier 2 Plans (Professional)
+UPDATE subscription_plans SET 
+  max_order_rules = 10,
+  max_claim_rules = 10,
+  max_notification_rules = 20
+WHERE tier = 'tier2';
+
+-- Tier 3 Plans (Enterprise)
+UPDATE subscription_plans SET 
+  max_order_rules = 50,
+  max_claim_rules = 50,
+  max_notification_rules = 100
+WHERE tier = 'tier3';
+
+-- Admin (Unlimited)
+UPDATE subscription_plans SET 
+  max_order_rules = 999,
+  max_claim_rules = 999,
+  max_notification_rules = 999
+WHERE user_type = 'admin';
+```
+
+**Rule Type Categories:**
+
+```sql
+-- Update rule_engine_rules table to enforce categories
+ALTER TABLE rule_engine_rules
+ADD CONSTRAINT rule_type_check 
+CHECK (rule_type IN ('order', 'claim', 'notification'));
+
+-- Add index for faster counting
+CREATE INDEX idx_rules_by_type_and_user 
+ON rule_engine_rules(created_by, rule_type, is_active);
 ```
 
 **Menu Structure:**
@@ -930,23 +1046,43 @@ export async function GET(req: VercelRequest, res: VercelResponse) {
   return res.json({ rules });
 }
 
-// POST /api/rules - Create new rule (with limit check)
+// POST /api/rules - Create new rule (with type-specific limit check)
 export async function POST(req: VercelRequest, res: VercelResponse) {
   const user = verifyToken(req.headers.authorization);
+  const { rule_type } = req.body; // 'order', 'claim', or 'notification'
   
-  // Check user's rule limit
+  // Validate rule type
+  if (!['order', 'claim', 'notification'].includes(rule_type)) {
+    return res.status(400).json({ 
+      error: 'Invalid rule type',
+      message: 'Rule type must be: order, claim, or notification'
+    });
+  }
+  
+  // Get subscription limits
+  const subscription = await getUserSubscription(user.userId);
+  const limits = {
+    order: subscription.max_order_rules,
+    claim: subscription.max_claim_rules,
+    notification: subscription.max_notification_rules
+  };
+  
+  // Count existing rules of this type
   const { count } = await supabase
     .from('rule_engine_rules')
     .select('*', { count: 'exact', head: true })
-    .eq('created_by', user.userId);
-    
-  const subscription = await getUserSubscription(user.userId);
-  const maxRules = subscription.max_rules_per_user;
+    .eq('created_by', user.userId)
+    .eq('rule_type', rule_type);
   
-  if (count >= maxRules) {
+  // Check limit for this specific rule type
+  if (count >= limits[rule_type]) {
     return res.status(403).json({ 
       error: 'Rule limit reached',
-      message: `You can create up to ${maxRules} rules. Upgrade to create more.`
+      message: `You can create up to ${limits[rule_type]} ${rule_type} rules. Upgrade to create more.`,
+      current: count,
+      limit: limits[rule_type],
+      rule_type: rule_type,
+      upgrade_url: '/subscription/upgrade'
     });
   }
   
@@ -960,6 +1096,49 @@ export async function POST(req: VercelRequest, res: VercelResponse) {
   return res.json({ rule });
 }
 
+// GET /api/rules/limits - Get user's rule limits and usage
+export async function GET_LIMITS(req: VercelRequest, res: VercelResponse) {
+  const user = verifyToken(req.headers.authorization);
+  const subscription = await getUserSubscription(user.userId);
+  
+  // Count rules by type
+  const orderCount = await supabase
+    .from('rule_engine_rules')
+    .select('*', { count: 'exact', head: true })
+    .eq('created_by', user.userId)
+    .eq('rule_type', 'order');
+    
+  const claimCount = await supabase
+    .from('rule_engine_rules')
+    .select('*', { count: 'exact', head: true })
+    .eq('created_by', user.userId)
+    .eq('rule_type', 'claim');
+    
+  const notificationCount = await supabase
+    .from('rule_engine_rules')
+    .select('*', { count: 'exact', head: true })
+    .eq('created_by', user.userId)
+    .eq('rule_type', 'notification');
+  
+  return res.json({
+    order: {
+      used: orderCount.count,
+      limit: subscription.max_order_rules,
+      available: subscription.max_order_rules - orderCount.count
+    },
+    claim: {
+      used: claimCount.count,
+      limit: subscription.max_claim_rules,
+      available: subscription.max_claim_rules - claimCount.count
+    },
+    notification: {
+      used: notificationCount.count,
+      limit: subscription.max_notification_rules,
+      available: subscription.max_notification_rules - notificationCount.count
+    }
+  });
+}
+
 // PUT /api/rules/:id - Update rule (owner only)
 // DELETE /api/rules/:id - Delete rule (owner only)
 // POST /api/rules/:id/test - Test rule execution
@@ -967,15 +1146,28 @@ export async function POST(req: VercelRequest, res: VercelResponse) {
 // GET /api/rules/:id/history - Get execution history
 ```
 
+### **Subscription-Based Rule Limits Summary:**
+
+| Tier | Order Rules | Claim Rules | Notification Rules | Total | Price |
+|------|-------------|-------------|-------------------|-------|-------|
+| **Tier 1** (Basic) | 3 | 2 | 5 | 10 | $29/mo |
+| **Tier 2** (Professional) | 10 | 10 | 20 | 40 | $79/mo |
+| **Tier 3** (Enterprise) | 50 | 50 | 100 | 200 | $199/mo |
+| **Admin** (Unlimited) | 999 | 999 | 999 | 2997 | N/A |
+
+**Upgrade Incentive:**
+- Tier 1 → Tier 2: +7 order, +8 claim, +15 notification rules
+- Tier 2 → Tier 3: +40 order, +40 claim, +80 notification rules
+
 ### **Time Estimate:**
 
 | Phase | Task | Time |
 |-------|------|------|
-| 1 | Database schema | 30 min |
+| 1 | Database schema + subscription limits | 30 min |
 | 2 | Rule engine functions | 1 hour |
-| 3 | Example rules | 30 min |
-| 4 | Frontend rule builder | 2-3 hours |
-| 5 | API endpoints | 1 hour |
+| 3 | Example rules (order/claim/notification) | 30 min |
+| 4 | Frontend rule builder (3 tabs) | 2-3 hours |
+| 5 | API endpoints + limit checking | 1 hour |
 | **Total** | | **5-6 hours** |
 
 ### **Priority:**
