@@ -30,7 +30,7 @@ SELECT
   schemaname,
   tablename,
   n_live_tup as row_count,
-  pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
+  pg_size_pretty(pg_total_relation_size(quote_ident(schemaname)||'.'||quote_ident(tablename))) as size
 FROM pg_stat_user_tables
 WHERE schemaname = 'public'
 ORDER BY n_live_tup DESC;
