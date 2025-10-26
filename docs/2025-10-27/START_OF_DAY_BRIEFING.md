@@ -88,7 +88,76 @@
 
 ---
 
-### **Issue 2: Order Location Data - Normalize Address Fields**
+### **Issue 2: TypeScript Errors - Express Request Type Extensions**
+
+**Problem:** 7 TypeScript errors in `api/week3-integrations/api-keys.ts`
+
+**Error Message:**
+```
+Property 'user' does not exist on type 'Request<...>'
+Property 'apiKey' does not exist on type 'Request<...>'
+```
+
+**Affected Lines:**
+- Line 35: `req.user?.id`
+- Line 111: `req.user?.id`
+- Line 153: `req.user?.id`
+- Line 213: `req.user?.id`
+- Line 254: `req.user?.id`
+- Line 368: `req.apiKey = matchedKey`
+- Line 369: `req.user = { id: matchedKey.user_id }`
+
+**Root Cause:**
+- Code is extending Express `Request` object with custom properties
+- TypeScript doesn't know about these custom properties
+- Need to declare type extensions
+
+**Solution: Create Type Declaration File**
+
+Create `api/types/express.d.ts`:
+```typescript
+import { Request } from 'express';
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        email?: string;
+        role?: string;
+      };
+      apiKey?: {
+        api_key_id: string;
+        user_id: string;
+        store_id?: string;
+        permissions: Record<string, any>;
+        rate_limit_per_hour: number;
+        total_requests: number;
+        is_active: boolean;
+      };
+    }
+  }
+}
+```
+
+**Alternative: Update tsconfig.json**
+```json
+{
+  "compilerOptions": {
+    "typeRoots": ["./node_modules/@types", "./api/types"]
+  }
+}
+```
+
+**Priority:** 🟡 MEDIUM - Type safety issue, not runtime bug
+
+**Time Estimate:** 10-15 min to create type definitions
+
+**Note:** Code works correctly at runtime; this is only a TypeScript compilation issue
+
+---
+
+### **Issue 3: Order Location Data - Normalize Address Fields**
 
 **Problem:** Location in orders shows combined postal_code and city
 
@@ -339,24 +408,31 @@ Focus on smaller improvements and fixes.
 - Test admin menu
 - Commit fix
 
-#### **Block 2: Environment Variables Check** ⏱️ 5 min
+#### **Block 2: Fix TypeScript Errors - Express Request Types** ⏱️ 10-15 min
+- Create `api/types/express.d.ts` with type declarations
+- Add `user` and `apiKey` properties to Express.Request interface
+- Update `tsconfig.json` if needed
+- Verify all 7 errors are resolved
+- Commit fix
+
+#### **Block 3: Environment Variables Check** ⏱️ 5 min
 - Verify Vercel env vars
 - Add if missing
 - Redeploy if needed
 
-#### **Block 3: System Settings Fix** ⏱️ 10 min
+#### **Block 4: System Settings Fix** ⏱️ 10 min
 - Add route if missing
 - Test as admin
 
-#### **Block 4: Subscription Plans Fix** ⏱️ 10 min
+#### **Block 5: Subscription Plans Fix** ⏱️ 10 min
 - Verify database has plans
 - Fix API if needed
 
-#### **Block 5: Shopify Plugin Testing** ⏱️ 45 min
+#### **Block 6: Shopify Plugin Testing** ⏱️ 45 min
 - Test integration
 - Document findings
 
-#### **Block 6: Performance Documentation** ⏱️ 30 min
+#### **Block 7: Performance Documentation** ⏱️ 30 min
 - Document slow pages
 - Create optimization plan
 - Prioritize improvements
@@ -395,6 +471,7 @@ Focus on smaller improvements and fixes.
 
 ### **If Choosing Option D (Quick Fixes):**
 - [ ] Admin menu Settings placement fixed
+- [ ] TypeScript errors resolved (7 errors in api-keys.ts)
 - [ ] Environment variables verified
 - [ ] System Settings accessible
 - [ ] Subscription Plans showing data
