@@ -1806,8 +1806,115 @@ docs/
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.21
-**LAST UPDATED:** October 22, 2025, 8:17 PM (Week 3 Day 6)
-**RULES:** 25 (19 Hard, 4 Medium, 2 Soft)
-**NEXT REVIEW:** After Week 4
-**NEXT VERSION:** v1.22
+## 🎯 RULE #26: VERIFY TABLE SCHEMA BEFORE UPDATES (HARD)
+
+**CRITICAL: ALWAYS CHECK DATA TYPES BEFORE WRITING SQL**
+
+**THE PROBLEM:**
+Writing SQL updates with wrong data types causes runtime errors:
+```sql
+-- ❌ WRONG: Assuming tier is VARCHAR
+WHERE tier = 'tier1'  -- ERROR: invalid input syntax for type integer
+
+-- ✅ CORRECT: Verified tier is INTEGER
+WHERE tier = 1  -- Works!
+```
+
+**MANDATORY BEFORE ANY UPDATE/INSERT:**
+
+**Step 1: Check Table Schema**
+```sql
+-- Get column names and data types
+SELECT column_name, data_type, is_nullable, column_default
+FROM information_schema.columns
+WHERE table_name = 'table_name'
+ORDER BY ordinal_position;
+```
+
+**Step 2: Verify Data Types**
+```sql
+-- Check specific column
+SELECT data_type 
+FROM information_schema.columns
+WHERE table_name = 'subscription_plans' 
+AND column_name = 'tier';
+-- Result: integer (NOT varchar!)
+```
+
+**Step 3: Check Constraints**
+```sql
+-- Check constraints on table
+SELECT constraint_name, constraint_type
+FROM information_schema.table_constraints
+WHERE table_name = 'table_name';
+
+-- Check column constraints
+SELECT column_name, constraint_name
+FROM information_schema.constraint_column_usage
+WHERE table_name = 'table_name';
+```
+
+**COMMON DATA TYPE MISTAKES:**
+
+| Assumed | Actual | Fix |
+|---------|--------|-----|
+| `tier = 'tier1'` | `tier INTEGER` | `tier = 1` |
+| `status = 1` | `status VARCHAR` | `status = 'active'` |
+| `price = '29.99'` | `price DECIMAL` | `price = 29.99` |
+| `is_active = 'true'` | `is_active BOOLEAN` | `is_active = true` |
+| `user_id = 123` | `user_id UUID` | `user_id = '...'::UUID` |
+
+**BEFORE WRITING SQL:**
+1. ✅ Run schema query for target table
+2. ✅ Verify data types for ALL columns you're using
+3. ✅ Check constraints (CHECK, UNIQUE, NOT NULL)
+4. ✅ Verify foreign key relationships
+5. ✅ Test query on sample data first
+
+**SEARCH EXISTING MIGRATIONS:**
+```bash
+# Find how table was created
+grep -r "CREATE TABLE table_name" database/
+
+# Find existing updates to same table
+grep -r "UPDATE table_name" database/
+
+# Check existing WHERE clauses for patterns
+grep -r "WHERE tier" database/
+```
+
+**CASE STUDY (Oct 26, 2025):**
+```sql
+-- ❌ WRONG: Assumed tier was VARCHAR
+UPDATE subscription_plans SET max_order_rules = 3
+WHERE tier = 'tier1';
+-- ERROR: invalid input syntax for type integer: "tier1"
+
+-- ✅ CORRECT: Checked schema, tier is INTEGER
+UPDATE subscription_plans SET max_order_rules = 3
+WHERE tier = 1;
+-- SUCCESS!
+```
+
+**WHY THIS RULE:**
+- ✅ Prevents runtime SQL errors
+- ✅ Catches type mismatches early
+- ✅ Ensures data integrity
+- ✅ Saves debugging time
+- ✅ Avoids production failures
+
+**ENFORCEMENT:**
+- MANDATORY schema check before ANY SQL write operation
+- Document data types in migration comments
+- Test on sample data before production
+- No assumptions about column types
+
+**DELIVERABLE:** Schema verification query results + correct SQL with proper data types
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.22
+**LAST UPDATED:** October 26, 2025, 9:45 AM
+**RULES:** 26 (20 Hard, 4 Medium, 2 Soft)
+**NEXT REVIEW:** After Rule Engine Implementation
+**NEXT VERSION:** v1.23

@@ -73,21 +73,21 @@ UPDATE subscription_plans SET
   max_order_rules = 3,
   max_claim_rules = 2,
   max_notification_rules = 5
-WHERE tier = 'tier1';
+WHERE tier = 1;
 
 -- Update Tier 2 Plans (Professional)
 UPDATE subscription_plans SET 
   max_order_rules = 10,
   max_claim_rules = 10,
   max_notification_rules = 20
-WHERE tier = 'tier2';
+WHERE tier = 2;
 
 -- Update Tier 3 Plans (Enterprise)
 UPDATE subscription_plans SET 
   max_order_rules = 50,
   max_claim_rules = 50,
   max_notification_rules = 100
-WHERE tier = 'tier3';
+WHERE tier = 3;
 
 -- =====================================================
 -- 3. CREATE INDEXES
