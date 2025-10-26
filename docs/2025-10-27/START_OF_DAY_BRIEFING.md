@@ -2,8 +2,8 @@
 
 **Time:** TBD  
 **Day:** Post-RLS Implementation - Feature Development  
-**Goal:** Build Rule Engine Frontend & Optional Improvements  
-**Framework:** SPEC_DRIVEN_FRAMEWORK v1.24 (28 rules)  
+**Goal:** TMS/WMS Development with Strict Framework Adherence  
+**Framework:** SPEC_DRIVEN_FRAMEWORK v1.25 (28 rules) - **ENFORCEMENT ACTIVE**  
 **Status:** ✅ Database Secured, Schema Documented, Production Ready!
 
 ---
@@ -18,6 +18,7 @@
 - ✅ Role-based menu verification (already working!)
 - ✅ Data inventory (documented test vs production)
 - ✅ Framework updated (Rule #28 with 10 errors)
+- ✅ **Framework v1.25** - Strengthened enforcement (duplicate detection, mandatory approval)
 - ✅ **Comprehensive audit** (895 lines - TMS/WMS/Courier API roadmap)
 - ✅ **Document cleanup plan** (297 lines - archive 15 old files)
 - ✅ **Strategic planning** (10-13 week development roadmap)
@@ -63,8 +64,77 @@
 **Choose Development Path & Start Implementation**
 
 **Priority:** HIGH - Ready to start TMS/WMS/Courier API development  
-**Focus:** Execute on strategic roadmap  
+**Focus:** Execute on strategic roadmap with STRICT framework adherence  
 **Time Estimate:** Full development session
+
+---
+
+## 🚨 FRAMEWORK v1.25 - ENFORCEMENT ACTIVE
+
+**CRITICAL: Framework has been strengthened for all future development**
+
+### **What Changed:**
+
+**RULE #1: Database Validation**
+- ✅ Added duplicate detection (Steps 3 & 4)
+- ✅ Must check for similar tables/columns BEFORE creating new ones
+- ✅ Must document justification for new tables/columns
+- ⚠️ **STOP if duplicates found** - reuse existing structures
+
+**RULE #2: Never Change Database**
+- ✅ Strengthened with explicit approval process
+- ✅ Must document WHY change is needed
+- ✅ Must explain why existing structure cannot be used
+- ✅ Must describe impact on data and code
+- ⚠️ **STOP! Requires explicit user approval**
+
+**RULE #5: Vercel Architecture**
+- ✅ Updated with current production template
+- ✅ Shows actual code used in all APIs
+- ✅ Do not deviate without approval
+
+**RULE #6: Spec-Driven Implementation**
+- ✅ Now **MANDATORY** and **NON-NEGOTIABLE**
+- ✅ NO coding without spec
+- ✅ NO database changes without validation
+- ✅ NO implementation without approval
+
+### **Framework Adherence Checklist**
+
+**Before Starting ANY Feature:**
+- [ ] RULE #1: Run database validation SQL (7 steps)
+- [ ] RULE #1: Check for duplicate tables/columns
+- [ ] RULE #1: Document actual schema
+- [ ] RULE #6: Create feature spec
+- [ ] RULE #6: Get user approval
+- [ ] RULE #6: Only then start coding
+
+**During Implementation:**
+- [ ] RULE #2: Never ALTER/DROP/RENAME without approval
+- [ ] RULE #3: Use EXACT column names from validation
+- [ ] RULE #5: Follow current API template
+- [ ] RULE #6: Follow approved spec exactly
+
+**After Implementation:**
+- [ ] RULE #7: Run verification queries
+- [ ] RULE #9: Create rollback scripts
+- [ ] RULE #10: Update documentation
+
+### **Why This Matters:**
+
+**Recent Issues (Oct 26):**
+- ⏱️ 90 minutes wasted fixing column name assumptions
+- ❌ Found `stores` vs `shops` table confusion
+- ❌ Found `store_id` vs `shop_id` inconsistencies
+
+**Framework Prevents:**
+- ✅ Duplicate tables/columns
+- ✅ Schema assumption errors
+- ✅ Wasted debugging time
+- ✅ Breaking changes
+- ✅ Rework and refactoring
+
+**See:** `SPEC_DRIVEN_FRAMEWORK.md` v1.25 for full details
 
 ---
 
