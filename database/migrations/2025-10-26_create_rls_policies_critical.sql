@@ -62,13 +62,18 @@ CREATE POLICY courier_credentials_delete_own ON courier_api_credentials
 -- =====================================================
 
 -- Only shop owners can see their integrations
--- Note: ecommerce_integrations.shop_id should match stores.store_id
+-- Note: Checks both stores.store_id and shops.shop_id tables
 CREATE POLICY ecommerce_integrations_select_own ON ecommerce_integrations
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM stores 
       WHERE stores.store_id = ecommerce_integrations.shop_id 
       AND stores.owner_user_id = auth.uid()
+    )
+    OR EXISTS (
+      SELECT 1 FROM shops 
+      WHERE shops.shop_id = ecommerce_integrations.shop_id 
+      AND shops.owner_user_id = auth.uid()
     )
   );
 
@@ -80,6 +85,11 @@ CREATE POLICY ecommerce_integrations_insert_own ON ecommerce_integrations
       WHERE stores.store_id = ecommerce_integrations.shop_id 
       AND stores.owner_user_id = auth.uid()
     )
+    OR EXISTS (
+      SELECT 1 FROM shops 
+      WHERE shops.shop_id = ecommerce_integrations.shop_id 
+      AND shops.owner_user_id = auth.uid()
+    )
   );
 
 -- Only shop owners can update their integrations
@@ -90,6 +100,11 @@ CREATE POLICY ecommerce_integrations_update_own ON ecommerce_integrations
       WHERE stores.store_id = ecommerce_integrations.shop_id 
       AND stores.owner_user_id = auth.uid()
     )
+    OR EXISTS (
+      SELECT 1 FROM shops 
+      WHERE shops.shop_id = ecommerce_integrations.shop_id 
+      AND shops.owner_user_id = auth.uid()
+    )
   );
 
 -- Only shop owners can delete their integrations
@@ -99,6 +114,11 @@ CREATE POLICY ecommerce_integrations_delete_own ON ecommerce_integrations
       SELECT 1 FROM stores 
       WHERE stores.store_id = ecommerce_integrations.shop_id 
       AND stores.owner_user_id = auth.uid()
+    )
+    OR EXISTS (
+      SELECT 1 FROM shops 
+      WHERE shops.shop_id = ecommerce_integrations.shop_id 
+      AND shops.owner_user_id = auth.uid()
     )
   );
 
@@ -181,13 +201,18 @@ CREATE POLICY delivery_requests_update_courier ON delivery_requests
 -- =====================================================
 
 -- Only shop owners can see their integrations
--- Note: shopintegrations.shop_id should match stores.store_id
+-- Note: Checks both stores.store_id and shops.shop_id tables
 CREATE POLICY shopintegrations_select_own ON shopintegrations
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM stores 
       WHERE stores.store_id = shopintegrations.shop_id 
       AND stores.owner_user_id = auth.uid()
+    )
+    OR EXISTS (
+      SELECT 1 FROM shops 
+      WHERE shops.shop_id = shopintegrations.shop_id 
+      AND shops.owner_user_id = auth.uid()
     )
   );
 
@@ -199,6 +224,11 @@ CREATE POLICY shopintegrations_insert_own ON shopintegrations
       WHERE stores.store_id = shopintegrations.shop_id 
       AND stores.owner_user_id = auth.uid()
     )
+    OR EXISTS (
+      SELECT 1 FROM shops 
+      WHERE shops.shop_id = shopintegrations.shop_id 
+      AND shops.owner_user_id = auth.uid()
+    )
   );
 
 -- Only shop owners can update their integrations
@@ -209,6 +239,11 @@ CREATE POLICY shopintegrations_update_own ON shopintegrations
       WHERE stores.store_id = shopintegrations.shop_id 
       AND stores.owner_user_id = auth.uid()
     )
+    OR EXISTS (
+      SELECT 1 FROM shops 
+      WHERE shops.shop_id = shopintegrations.shop_id 
+      AND shops.owner_user_id = auth.uid()
+    )
   );
 
 -- Only shop owners can delete their integrations
@@ -218,6 +253,11 @@ CREATE POLICY shopintegrations_delete_own ON shopintegrations
       SELECT 1 FROM stores 
       WHERE stores.store_id = shopintegrations.shop_id 
       AND stores.owner_user_id = auth.uid()
+    )
+    OR EXISTS (
+      SELECT 1 FROM shops 
+      WHERE shops.shop_id = shopintegrations.shop_id 
+      AND shops.owner_user_id = auth.uid()
     )
   );
 
@@ -237,15 +277,22 @@ CREATE POLICY usage_logs_select_own ON usage_logs
 -- =====================================================
 
 -- Merchants can see webhooks for their stores
--- Note: webhooks may use shop_id column or entity_id
+-- Note: Checks both stores and shops tables
 CREATE POLICY webhooks_select_merchant ON webhooks
   FOR SELECT USING (
     user_id = auth.uid()
     OR
-    (shop_id IS NOT NULL AND EXISTS (
-      SELECT 1 FROM stores 
-      WHERE stores.store_id = webhooks.shop_id 
-      AND stores.owner_user_id = auth.uid()
+    (shop_id IS NOT NULL AND (
+      EXISTS (
+        SELECT 1 FROM stores 
+        WHERE stores.store_id = webhooks.shop_id 
+        AND stores.owner_user_id = auth.uid()
+      )
+      OR EXISTS (
+        SELECT 1 FROM shops 
+        WHERE shops.shop_id = webhooks.shop_id 
+        AND shops.owner_user_id = auth.uid()
+      )
     ))
   );
 
@@ -254,10 +301,17 @@ CREATE POLICY webhooks_insert_merchant ON webhooks
   FOR INSERT WITH CHECK (
     user_id = auth.uid()
     OR
-    (shop_id IS NOT NULL AND EXISTS (
-      SELECT 1 FROM stores 
-      WHERE stores.store_id = webhooks.shop_id 
-      AND stores.owner_user_id = auth.uid()
+    (shop_id IS NOT NULL AND (
+      EXISTS (
+        SELECT 1 FROM stores 
+        WHERE stores.store_id = webhooks.shop_id 
+        AND stores.owner_user_id = auth.uid()
+      )
+      OR EXISTS (
+        SELECT 1 FROM shops 
+        WHERE shops.shop_id = webhooks.shop_id 
+        AND shops.owner_user_id = auth.uid()
+      )
     ))
   );
 
@@ -266,10 +320,17 @@ CREATE POLICY webhooks_update_own ON webhooks
   FOR UPDATE USING (
     user_id = auth.uid()
     OR
-    (shop_id IS NOT NULL AND EXISTS (
-      SELECT 1 FROM stores 
-      WHERE stores.store_id = webhooks.shop_id 
-      AND stores.owner_user_id = auth.uid()
+    (shop_id IS NOT NULL AND (
+      EXISTS (
+        SELECT 1 FROM stores 
+        WHERE stores.store_id = webhooks.shop_id 
+        AND stores.owner_user_id = auth.uid()
+      )
+      OR EXISTS (
+        SELECT 1 FROM shops 
+        WHERE shops.shop_id = webhooks.shop_id 
+        AND shops.owner_user_id = auth.uid()
+      )
     ))
   );
 
@@ -278,10 +339,17 @@ CREATE POLICY webhooks_delete_own ON webhooks
   FOR DELETE USING (
     user_id = auth.uid()
     OR
-    (shop_id IS NOT NULL AND EXISTS (
-      SELECT 1 FROM stores 
-      WHERE stores.store_id = webhooks.shop_id 
-      AND stores.owner_user_id = auth.uid()
+    (shop_id IS NOT NULL AND (
+      EXISTS (
+        SELECT 1 FROM stores 
+        WHERE stores.store_id = webhooks.shop_id 
+        AND stores.owner_user_id = auth.uid()
+      )
+      OR EXISTS (
+        SELECT 1 FROM shops 
+        WHERE shops.shop_id = webhooks.shop_id 
+        AND shops.owner_user_id = auth.uid()
+      )
     ))
   );
 
@@ -290,15 +358,22 @@ CREATE POLICY webhooks_delete_own ON webhooks
 -- =====================================================
 
 -- Users can see their own API keys
--- Note: api_keys may have shop_id column
+-- Note: Checks both stores and shops tables
 CREATE POLICY api_keys_select_own ON api_keys
   FOR SELECT USING (
     user_id = auth.uid()
     OR
-    (shop_id IS NOT NULL AND EXISTS (
-      SELECT 1 FROM stores 
-      WHERE stores.store_id = api_keys.shop_id 
-      AND stores.owner_user_id = auth.uid()
+    (shop_id IS NOT NULL AND (
+      EXISTS (
+        SELECT 1 FROM stores 
+        WHERE stores.store_id = api_keys.shop_id 
+        AND stores.owner_user_id = auth.uid()
+      )
+      OR EXISTS (
+        SELECT 1 FROM shops 
+        WHERE shops.shop_id = api_keys.shop_id 
+        AND shops.owner_user_id = auth.uid()
+      )
     ))
   );
 
@@ -307,10 +382,17 @@ CREATE POLICY api_keys_insert_own ON api_keys
   FOR INSERT WITH CHECK (
     user_id = auth.uid()
     OR
-    (shop_id IS NOT NULL AND EXISTS (
-      SELECT 1 FROM stores 
-      WHERE stores.store_id = api_keys.shop_id 
-      AND stores.owner_user_id = auth.uid()
+    (shop_id IS NOT NULL AND (
+      EXISTS (
+        SELECT 1 FROM stores 
+        WHERE stores.store_id = api_keys.shop_id 
+        AND stores.owner_user_id = auth.uid()
+      )
+      OR EXISTS (
+        SELECT 1 FROM shops 
+        WHERE shops.shop_id = api_keys.shop_id 
+        AND shops.owner_user_id = auth.uid()
+      )
     ))
   );
 
@@ -319,10 +401,17 @@ CREATE POLICY api_keys_update_own ON api_keys
   FOR UPDATE USING (
     user_id = auth.uid()
     OR
-    (shop_id IS NOT NULL AND EXISTS (
-      SELECT 1 FROM stores 
-      WHERE stores.store_id = api_keys.shop_id 
-      AND stores.owner_user_id = auth.uid()
+    (shop_id IS NOT NULL AND (
+      EXISTS (
+        SELECT 1 FROM stores 
+        WHERE stores.store_id = api_keys.shop_id 
+        AND stores.owner_user_id = auth.uid()
+      )
+      OR EXISTS (
+        SELECT 1 FROM shops 
+        WHERE shops.shop_id = api_keys.shop_id 
+        AND shops.owner_user_id = auth.uid()
+      )
     ))
   );
 
@@ -331,10 +420,17 @@ CREATE POLICY api_keys_delete_own ON api_keys
   FOR DELETE USING (
     user_id = auth.uid()
     OR
-    (shop_id IS NOT NULL AND EXISTS (
-      SELECT 1 FROM stores 
-      WHERE stores.store_id = api_keys.shop_id 
-      AND stores.owner_user_id = auth.uid()
+    (shop_id IS NOT NULL AND (
+      EXISTS (
+        SELECT 1 FROM stores 
+        WHERE stores.store_id = api_keys.shop_id 
+        AND stores.owner_user_id = auth.uid()
+      )
+      OR EXISTS (
+        SELECT 1 FROM shops 
+        WHERE shops.shop_id = api_keys.shop_id 
+        AND shops.owner_user_id = auth.uid()
+      )
     ))
   );
 
