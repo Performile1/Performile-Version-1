@@ -80,12 +80,16 @@ BEGIN
     DROP POLICY IF EXISTS tracking_events_insert_courier ON tracking_events;
     
     -- Merchants can see events for their orders
+    -- Note: tracking_events links via tracking_id -> tracking_data -> order_id
     CREATE POLICY tracking_events_select_merchant ON tracking_events
       FOR SELECT USING (
-        order_id IN (
-          SELECT order_id FROM orders 
-          WHERE store_id IN (
-            SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+        tracking_id IN (
+          SELECT tracking_id FROM tracking_data 
+          WHERE order_id IN (
+            SELECT order_id FROM orders 
+            WHERE store_id IN (
+              SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+            )
           )
         )
       );
@@ -93,9 +97,12 @@ BEGIN
     -- Couriers can see events for their orders
     CREATE POLICY tracking_events_select_courier ON tracking_events
       FOR SELECT USING (
-        order_id IN (
-          SELECT order_id FROM orders WHERE courier_id IN (
-            SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+        tracking_id IN (
+          SELECT tracking_id FROM tracking_data 
+          WHERE order_id IN (
+            SELECT order_id FROM orders WHERE courier_id IN (
+              SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+            )
           )
         )
       );
@@ -103,9 +110,12 @@ BEGIN
     -- Couriers can insert events
     CREATE POLICY tracking_events_insert_courier ON tracking_events
       FOR INSERT WITH CHECK (
-        order_id IN (
-          SELECT order_id FROM orders WHERE courier_id IN (
-            SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+        tracking_id IN (
+          SELECT tracking_id FROM tracking_data 
+          WHERE order_id IN (
+            SELECT order_id FROM orders WHERE courier_id IN (
+              SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+            )
           )
         )
       );
@@ -117,47 +127,93 @@ BEGIN
 END $$;
 
 -- =====================================================
--- 3. SHIPMENT EVENTS (ALTERNATIVE NAME)
+-- 3. SHIPMENT EVENTS (ALTERNATIVE NAME - if exists)
 -- =====================================================
 
 DO $$
+DECLARE
+  v_has_order_id BOOLEAN;
 BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'shipment_events') THEN
+    -- Check if table has order_id column
+    SELECT EXISTS (
+      SELECT 1 FROM information_schema.columns 
+      WHERE table_name = 'shipment_events' AND column_name = 'order_id'
+    ) INTO v_has_order_id;
+    
     -- Drop existing policies
     DROP POLICY IF EXISTS shipment_events_select_merchant ON shipment_events;
     DROP POLICY IF EXISTS shipment_events_select_courier ON shipment_events;
     DROP POLICY IF EXISTS shipment_events_insert_courier ON shipment_events;
     
-    -- Merchants can see events for their orders
-    CREATE POLICY shipment_events_select_merchant ON shipment_events
-      FOR SELECT USING (
-        order_id IN (
-          SELECT order_id FROM orders 
-          WHERE store_id IN (
-            SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+    IF v_has_order_id THEN
+      -- Table has order_id column directly
+      CREATE POLICY shipment_events_select_merchant ON shipment_events
+        FOR SELECT USING (
+          order_id IN (
+            SELECT order_id FROM orders 
+            WHERE store_id IN (
+              SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+            )
           )
-        )
-      );
+        );
 
-    -- Couriers can see events for their orders
-    CREATE POLICY shipment_events_select_courier ON shipment_events
-      FOR SELECT USING (
-        order_id IN (
-          SELECT order_id FROM orders WHERE courier_id IN (
-            SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+      CREATE POLICY shipment_events_select_courier ON shipment_events
+        FOR SELECT USING (
+          order_id IN (
+            SELECT order_id FROM orders WHERE courier_id IN (
+              SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+            )
           )
-        )
-      );
+        );
 
-    -- Couriers can insert events
-    CREATE POLICY shipment_events_insert_courier ON shipment_events
-      FOR INSERT WITH CHECK (
-        order_id IN (
-          SELECT order_id FROM orders WHERE courier_id IN (
-            SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+      CREATE POLICY shipment_events_insert_courier ON shipment_events
+        FOR INSERT WITH CHECK (
+          order_id IN (
+            SELECT order_id FROM orders WHERE courier_id IN (
+              SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+            )
           )
-        )
-      );
+        );
+    ELSE
+      -- Assume it uses tracking_id like tracking_events
+      CREATE POLICY shipment_events_select_merchant ON shipment_events
+        FOR SELECT USING (
+          tracking_id IN (
+            SELECT tracking_id FROM tracking_data 
+            WHERE order_id IN (
+              SELECT order_id FROM orders 
+              WHERE store_id IN (
+                SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+              )
+            )
+          )
+        );
+
+      CREATE POLICY shipment_events_select_courier ON shipment_events
+        FOR SELECT USING (
+          tracking_id IN (
+            SELECT tracking_id FROM tracking_data 
+            WHERE order_id IN (
+              SELECT order_id FROM orders WHERE courier_id IN (
+                SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+              )
+            )
+          )
+        );
+
+      CREATE POLICY shipment_events_insert_courier ON shipment_events
+        FOR INSERT WITH CHECK (
+          tracking_id IN (
+            SELECT tracking_id FROM tracking_data 
+            WHERE order_id IN (
+              SELECT order_id FROM orders WHERE courier_id IN (
+                SELECT courier_id FROM couriers WHERE user_id = auth.uid()
+              )
+            )
+          )
+        );
+    END IF;
       
     RAISE NOTICE 'RLS policies created for shipment_events';
   ELSE
