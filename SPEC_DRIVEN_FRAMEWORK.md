@@ -2076,8 +2076,9 @@ During RLS policy implementation (Oct 26, 2025), encountered **multiple column n
 | `operator does not exist: integer = uuid` | `delivery_requests` | UUID | INTEGER | Cast to TEXT |
 | `column "order_id" does not exist` | `tracking_events` | `order_id` | `tracking_id` | Use `tracking_id` |
 | `relation "shops" does not exist` | N/A | `shops` | `stores` | Remove `shops` |
-| `column "customer_id" does not exist` | `orders` | `customer_id` | `user_id` | Use `user_id` |
-| `column "store_id" does not exist` | `orders` | `store_id` | `merchant_id` | Use `merchant_id` |
+| `column "customer_id" does not exist` | `orders` | `customer_id` | `consumer_id` | Use `consumer_id` |
+| `column "user_id" does not exist` | `orders` | `user_id` | `consumer_id` | Use `consumer_id` |
+| `column "merchant_id" does not exist` | `orders` | `merchant_id` | `store_id` | Use `store_id` |
 | `relation "merchants" does not exist` | N/A | `merchants` | `stores` | Use `stores` table |
 | `column "merchant_id" does not exist` | `stores` | `merchant_id` | `owner_user_id` | Use `owner_user_id` |
 
@@ -2248,9 +2249,10 @@ WHERE EXISTS (
 - ✅ Documents schema for future developers
 
 **TIME WASTED WITHOUT THIS RULE:**
-- Oct 26, 2025: **75 minutes** fixing 9 column/table errors
+- Oct 26, 2025: **90 minutes** fixing 10 column/table errors
 - Each error: 5-10 minutes to fix, commit, push, re-run
-- **Total iterations:** 11 versions (V1 → V2 → V3 → fixes)
+- **Total iterations:** 12+ versions (V1 → V2 → V3 → fixes)
+- **SOLUTION:** Created PRODUCTION_SCHEMA_DOCUMENTED.md with actual schema
 
 **TIME SAVED WITH THIS RULE:**
 - **5 minutes** upfront verification
