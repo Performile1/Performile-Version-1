@@ -2058,8 +2058,215 @@ CREATE POLICY delivery_requests_select_merchant ON delivery_requests
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.23
-**LAST UPDATED:** October 26, 2025, 10:30 AM
-**RULES:** 27 (21 Hard, 4 Medium, 2 Soft)
-**NEXT REVIEW:** After RLS Security Implementation
-**NEXT VERSION:** v1.24
+---
+
+## 🎯 RULE #28: VERIFY ALL COLUMN NAMES BEFORE RLS POLICIES (HARD)
+
+**CRITICAL: NEVER ASSUME COLUMN NAMES - ALWAYS VERIFY FIRST**
+
+**THE PROBLEM:**
+During RLS policy implementation (Oct 26, 2025), encountered **multiple column name errors** that caused repeated failures and wasted time. Each error required fixing the SQL, committing, and re-running.
+
+**ERRORS ENCOUNTERED:**
+
+| Error | Table | Expected Column | Actual Column | Fix |
+|-------|-------|----------------|---------------|-----|
+| `column "shop_id" does not exist` | `stores` | `shop_id` | `store_id` | Use `store_id` |
+| `column "store_id" does not exist` | `delivery_requests` | `store_id` | `shop_id` | Use `shop_id` |
+| `operator does not exist: integer = uuid` | `delivery_requests` | UUID | INTEGER | Cast to TEXT |
+| `column "order_id" does not exist` | `tracking_events` | `order_id` | `tracking_id` | Use `tracking_id` |
+| `relation "shops" does not exist` | N/A | `shops` | `stores` | Remove `shops` |
+| `column "customer_id" does not exist` | `orders` | `customer_id` | `customer_id` OR `consumer_id` | Check both |
+
+**MANDATORY VERIFICATION BEFORE RLS POLICIES:**
+
+**Step 1: List ALL Columns in Target Table**
+```sql
+SELECT column_name, data_type, is_nullable
+FROM information_schema.columns
+WHERE table_name = 'your_table_name'
+ORDER BY ordinal_position;
+```
+
+**Step 2: Check Foreign Key Columns**
+```sql
+-- Find what columns reference other tables
+SELECT 
+  kcu.column_name,
+  ccu.table_name AS foreign_table_name,
+  ccu.column_name AS foreign_column_name
+FROM information_schema.key_column_usage AS kcu
+JOIN information_schema.constraint_column_usage AS ccu
+  ON ccu.constraint_name = kcu.constraint_name
+WHERE kcu.table_name = 'your_table_name'
+AND kcu.constraint_name LIKE '%fkey%';
+```
+
+**Step 3: Check Data Types for Comparisons**
+```sql
+-- Verify data types match for JOIN/WHERE conditions
+SELECT 
+  t1.table_name,
+  t1.column_name,
+  t1.data_type AS t1_type,
+  t2.table_name AS ref_table,
+  t2.column_name AS ref_column,
+  t2.data_type AS t2_type
+FROM information_schema.columns t1
+CROSS JOIN information_schema.columns t2
+WHERE t1.table_name = 'table1'
+AND t1.column_name = 'column1'
+AND t2.table_name = 'table2'
+AND t2.column_name = 'column2';
+```
+
+**Step 4: Document Findings in Migration Comments**
+```sql
+-- =====================================================
+-- TABLE: tracking_events
+-- =====================================================
+-- VERIFIED COLUMNS (Oct 26, 2025):
+--   - tracking_id UUID (FK to tracking_data.tracking_id)
+--   - event_time TIMESTAMP
+--   - status VARCHAR(50)
+-- NOTE: Does NOT have order_id directly
+-- NOTE: Links via tracking_id -> tracking_data -> order_id
+-- =====================================================
+```
+
+**COMMON COLUMN NAME VARIATIONS TO CHECK:**
+
+| Concept | Possible Column Names |
+|---------|----------------------|
+| **Store/Shop** | `store_id`, `shop_id`, `merchant_id`, `owner_id` |
+| **Customer** | `customer_id`, `consumer_id`, `user_id`, `buyer_id` |
+| **Order** | `order_id`, `tracking_number`, `shipment_id` |
+| **User** | `user_id`, `owner_user_id`, `created_by`, `updated_by` |
+| **Courier** | `courier_id`, `carrier_id`, `delivery_service_id` |
+| **Tracking** | `tracking_id`, `tracking_number`, `shipment_id` |
+
+**SAFE RLS POLICY PATTERN:**
+```sql
+DO $$
+DECLARE
+  v_has_customer_id BOOLEAN;
+  v_has_consumer_id BOOLEAN;
+BEGIN
+  -- Check which columns exist
+  SELECT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'orders' AND column_name = 'customer_id'
+  ) INTO v_has_customer_id;
+  
+  SELECT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'orders' AND column_name = 'consumer_id'
+  ) INTO v_has_consumer_id;
+  
+  -- Create policy based on what exists
+  IF v_has_customer_id AND v_has_consumer_id THEN
+    -- Handle both columns
+    CREATE POLICY orders_select_own ON orders
+      FOR SELECT USING (
+        customer_id = auth.uid() OR consumer_id = auth.uid()
+      );
+  ELSIF v_has_customer_id THEN
+    -- Only customer_id
+    CREATE POLICY orders_select_own ON orders
+      FOR SELECT USING (customer_id = auth.uid());
+  ELSIF v_has_consumer_id THEN
+    -- Only consumer_id
+    CREATE POLICY orders_select_own ON orders
+      FOR SELECT USING (consumer_id = auth.uid());
+  END IF;
+END $$;
+```
+
+**CASE STUDIES (Oct 26, 2025):**
+
+**1. tracking_events Error**
+```sql
+-- ❌ WRONG: Assumed order_id exists
+CREATE POLICY tracking_events_select_merchant ON tracking_events
+  FOR SELECT USING (
+    order_id IN (SELECT order_id FROM orders WHERE ...)
+  );
+-- ERROR: column "order_id" does not exist
+
+-- ✅ CORRECT: Verified schema first
+-- tracking_events has tracking_id (FK to tracking_data)
+-- tracking_data has order_id (FK to orders)
+CREATE POLICY tracking_events_select_merchant ON tracking_events
+  FOR SELECT USING (
+    tracking_id IN (
+      SELECT tracking_id FROM tracking_data 
+      WHERE order_id IN (SELECT order_id FROM orders WHERE ...)
+    )
+  );
+```
+
+**2. shops Table Error**
+```sql
+-- ❌ WRONG: Assumed shops table exists
+CREATE POLICY shop_analytics_select_own ON shopanalyticssnapshots
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM shops WHERE ...)
+  );
+-- ERROR: relation "shops" does not exist
+
+-- ✅ CORRECT: Verified only stores table exists
+CREATE POLICY shop_analytics_select_own ON shopanalyticssnapshots
+  FOR SELECT USING (
+    EXISTS (SELECT 1 FROM stores WHERE ...)
+  );
+```
+
+**3. Type Mismatch Error**
+```sql
+-- ❌ WRONG: Assumed same data types
+WHERE shop_id IN (SELECT store_id FROM stores ...)
+-- ERROR: operator does not exist: integer = uuid
+
+-- ✅ CORRECT: Cast to compatible type
+WHERE shop_id::TEXT IN (SELECT store_id::TEXT FROM stores ...)
+-- Or use EXISTS with explicit cast
+WHERE EXISTS (
+  SELECT 1 FROM stores 
+  WHERE stores.store_id::TEXT = table.shop_id::TEXT
+)
+```
+
+**WHY THIS RULE:**
+- ✅ Prevents "column does not exist" errors
+- ✅ Prevents type mismatch errors
+- ✅ Prevents "relation does not exist" errors
+- ✅ Saves hours of debugging time
+- ✅ Ensures RLS policies work on first try
+- ✅ Documents schema for future developers
+
+**TIME WASTED WITHOUT THIS RULE:**
+- Oct 26, 2025: **58 minutes** fixing 6 column/table errors
+- Each error: 5-10 minutes to fix, commit, push, re-run
+- **Total iterations:** 8 versions (V1 → V2 → V3 → fixes)
+
+**TIME SAVED WITH THIS RULE:**
+- **5 minutes** upfront verification
+- **0 errors** during implementation
+- **1 version** instead of 8
+
+**ENFORCEMENT:**
+- MANDATORY schema verification before ANY RLS policy
+- Document all column names in migration header
+- Check data types for all JOIN/WHERE conditions
+- Test with both NULL and non-NULL values
+- Never assume column names match table names
+
+**DELIVERABLE:** Schema verification results + RLS policies that work on first deployment
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.24
+**LAST UPDATED:** October 26, 2025, 10:50 AM
+**RULES:** 28 (22 Hard, 4 Medium, 2 Soft)
+**NEXT REVIEW:** After RLS Security Implementation Complete
+**NEXT VERSION:** v1.25
