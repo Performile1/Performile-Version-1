@@ -58,7 +58,7 @@ export async function createApiKey(req: Request, res: Response) {
 
     // Insert API key
     const { data, error } = await supabase
-      .from('week3_api_keys')
+      .from('api_keys')
       .insert({
         user_id: userId,
         store_id,
@@ -80,7 +80,7 @@ export async function createApiKey(req: Request, res: Response) {
     }
 
     // Log event
-    await supabase.from('week3_integration_events').insert({
+    await supabase.from('integration_events').insert({
       event_type: 'api_key.created',
       entity_type: 'api_key',
       entity_id: data.api_key_id,
@@ -116,7 +116,7 @@ export async function getApiKeys(req: Request, res: Response) {
     const { store_id } = req.query;
 
     let query = supabase
-      .from('week3_api_keys')
+      .from('api_keys')
       .select('*')
       .eq('user_id', userId);
 
@@ -173,7 +173,7 @@ export async function updateApiKey(req: Request, res: Response) {
     if (expires_at) updates.expires_at = expires_at;
 
     const { data, error } = await supabase
-      .from('week3_api_keys')
+      .from('api_keys')
       .update(updates)
       .eq('api_key_id', id)
       .eq('user_id', userId)
@@ -186,7 +186,7 @@ export async function updateApiKey(req: Request, res: Response) {
     }
 
     // Log event
-    await supabase.from('week3_integration_events').insert({
+    await supabase.from('integration_events').insert({
       event_type: 'api_key.updated',
       entity_type: 'api_key',
       entity_id: id,
@@ -218,7 +218,7 @@ export async function deleteApiKey(req: Request, res: Response) {
     const { id } = req.params;
 
     const { error } = await supabase
-      .from('week3_api_keys')
+      .from('api_keys')
       .delete()
       .eq('api_key_id', id)
       .eq('user_id', userId);
@@ -229,7 +229,7 @@ export async function deleteApiKey(req: Request, res: Response) {
     }
 
     // Log event
-    await supabase.from('week3_integration_events').insert({
+    await supabase.from('integration_events').insert({
       event_type: 'api_key.revoked',
       entity_type: 'api_key',
       entity_id: id,
@@ -260,7 +260,7 @@ export async function regenerateApiKey(req: Request, res: Response) {
 
     // Get existing key info
     const { data: existingKey, error: fetchError } = await supabase
-      .from('week3_api_keys')
+      .from('api_keys')
       .select('*')
       .eq('api_key_id', id)
       .eq('user_id', userId)
@@ -276,7 +276,7 @@ export async function regenerateApiKey(req: Request, res: Response) {
 
     // Update with new key
     const { data, error } = await supabase
-      .from('week3_api_keys')
+      .from('api_keys')
       .update({
         api_key: hashedKey,
         api_key_prefix: prefix,
@@ -293,7 +293,7 @@ export async function regenerateApiKey(req: Request, res: Response) {
     }
 
     // Log event
-    await supabase.from('week3_integration_events').insert({
+    await supabase.from('integration_events').insert({
       event_type: 'api_key.regenerated',
       entity_type: 'api_key',
       entity_id: id,
@@ -328,7 +328,7 @@ export async function authenticateApiKey(req: Request, res: Response, next: any)
 
     // Get all active API keys
     const { data: keys, error } = await supabase
-      .from('week3_api_keys')
+      .from('api_keys')
       .select('*')
       .eq('is_active', true);
 
@@ -357,7 +357,7 @@ export async function authenticateApiKey(req: Request, res: Response, next: any)
 
     // Update usage stats
     await supabase
-      .from('week3_api_keys')
+      .from('api_keys')
       .update({
         last_used_at: new Date().toISOString(),
         total_requests: matchedKey.total_requests + 1
