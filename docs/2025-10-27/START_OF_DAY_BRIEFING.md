@@ -68,6 +68,96 @@
 
 ---
 
+## 🐛 ISSUES TO INVESTIGATE
+
+### **Issue 1: Admin Menu - Settings in Service Performance**
+
+**Problem:** Settings option appears in Service Performance menu (admin role)
+
+**Investigation Needed:**
+- Check `AppLayout.tsx` navigation items for Service Performance
+- Verify if Settings is incorrectly nested under Service Performance
+- Check role-based menu filtering logic
+- Verify menu structure matches intended design
+
+**Expected:** Settings should be a top-level menu item, not under Service Performance
+
+**Priority:** 🟡 MEDIUM - UI/UX issue, not critical
+
+**Time Estimate:** 15-20 min to investigate and fix
+
+---
+
+### **Issue 2: Order Location Data - Normalize Address Fields**
+
+**Problem:** Location in orders shows combined postal_code and city
+
+**Current Schema:**
+```sql
+-- orders table (current)
+postal_code VARCHAR(20)
+city VARCHAR(100)
+country VARCHAR(100)
+```
+
+**Proposed Improvement:** Create normalized location tables
+
+**Option A: Full Normalization (Recommended)**
+```sql
+-- New tables
+CREATE TABLE countries (
+  country_id UUID PRIMARY KEY,
+  country_code VARCHAR(2) UNIQUE, -- ISO 3166-1 alpha-2 (SE, NO, DK)
+  country_name VARCHAR(100),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE cities (
+  city_id UUID PRIMARY KEY,
+  country_id UUID REFERENCES countries(country_id),
+  city_name VARCHAR(100),
+  region VARCHAR(100), -- State/Province/Region
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE postal_codes (
+  postal_code_id UUID PRIMARY KEY,
+  city_id UUID REFERENCES cities(city_id),
+  postal_code VARCHAR(20),
+  latitude DECIMAL(10,8),
+  longitude DECIMAL(11,8),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Update orders table
+ALTER TABLE orders
+  ADD COLUMN postal_code_id UUID REFERENCES postal_codes(postal_code_id),
+  ADD COLUMN city_id UUID REFERENCES cities(city_id),
+  ADD COLUMN country_id UUID REFERENCES countries(country_id);
+```
+
+**Benefits:**
+- ✅ Data consistency (no typos in city names)
+- ✅ Easier filtering and grouping
+- ✅ Support for geolocation (lat/lng)
+- ✅ Better analytics by region/country
+- ✅ Autocomplete for address entry
+- ✅ Validation of postal codes
+
+**Option B: Keep Current + Add Lookup Tables**
+```sql
+-- Keep current columns, add lookup tables for validation
+-- Less disruptive, easier migration
+```
+
+**Priority:** 🟡 MEDIUM - Data quality improvement
+
+**Time Estimate:** 2-3 hours (schema + migration + API updates)
+
+**Recommendation:** Implement after TMS core, as part of address management improvements
+
+---
+
 ## 📋 REMAINING FROM YESTERDAY
 
 ### **🔧 RULE ENGINE FRONTEND (2-3 hours) - OPTIONAL**
@@ -239,28 +329,34 @@ Build complete Rule Engine UI for users to create custom rules.
 
 ---
 
-### **Option B: Quick Fixes & Improvements (1-2 hours)**
+### **Option D: Quick Fixes & Improvements (1-2 hours)**
 
 Focus on smaller improvements and fixes.
 
-#### **Block 1: Environment Variables Check** ⏱️ 5 min
+#### **Block 1: Fix Admin Menu - Settings in Service Performance** ⏱️ 15-20 min
+- Investigate `AppLayout.tsx` navigation structure
+- Fix Settings menu placement (should be top-level, not nested)
+- Test admin menu
+- Commit fix
+
+#### **Block 2: Environment Variables Check** ⏱️ 5 min
 - Verify Vercel env vars
 - Add if missing
 - Redeploy if needed
 
-#### **Block 2: System Settings Fix** ⏱️ 10 min
+#### **Block 3: System Settings Fix** ⏱️ 10 min
 - Add route if missing
 - Test as admin
 
-#### **Block 3: Subscription Plans Fix** ⏱️ 10 min
+#### **Block 4: Subscription Plans Fix** ⏱️ 10 min
 - Verify database has plans
 - Fix API if needed
 
-#### **Block 4: Shopify Plugin Testing** ⏱️ 45 min
+#### **Block 5: Shopify Plugin Testing** ⏱️ 45 min
 - Test integration
 - Document findings
 
-#### **Block 5: Performance Documentation** ⏱️ 30 min
+#### **Block 6: Performance Documentation** ⏱️ 30 min
 - Document slow pages
 - Create optimization plan
 - Prioritize improvements
@@ -297,7 +393,8 @@ Focus on smaller improvements and fixes.
 - [ ] End-to-end test passed
 - [ ] Documentation updated
 
-### **If Choosing Option B (Quick Fixes):**
+### **If Choosing Option D (Quick Fixes):**
+- [ ] Admin menu Settings placement fixed
 - [ ] Environment variables verified
 - [ ] System Settings accessible
 - [ ] Subscription Plans showing data
