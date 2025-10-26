@@ -1913,8 +1913,153 @@ WHERE tier = 1;
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.22
-**LAST UPDATED:** October 26, 2025, 9:45 AM
-**RULES:** 26 (20 Hard, 4 Medium, 2 Soft)
-**NEXT REVIEW:** After Rule Engine Implementation
-**NEXT VERSION:** v1.23
+---
+
+## 🎯 RULE #27: BEWARE OF DUPLICATE TABLE NAMES (HARD)
+
+**CRITICAL: DATABASE HAS BOTH `stores` AND `shops` TABLES**
+
+**THE PROBLEM:**
+The Performile database has TWO separate merchant store tables:
+- `stores` table with `store_id` (UUID) column
+- `shops` table with `shop_id` (INTEGER) column
+
+**CONFUSION CAUSED:**
+```sql
+-- ❌ WRONG: Assuming only one table exists
+SELECT * FROM stores WHERE shop_id = 123;
+-- ERROR: column "shop_id" does not exist
+
+-- ❌ WRONG: Assuming shop_id is UUID
+WHERE shop_id IN (SELECT store_id FROM stores ...)
+-- ERROR: operator does not exist: integer = uuid
+
+-- ✅ CORRECT: Check which table and column exist first
+SELECT column_name, data_type 
+FROM information_schema.columns
+WHERE table_name IN ('stores', 'shops')
+AND column_name LIKE '%id%';
+```
+
+**MANDATORY BEFORE USING STORE/SHOP REFERENCES:**
+
+**Step 1: Identify Which Table Exists**
+```sql
+SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_name IN ('stores', 'shops')
+AND column_name IN ('store_id', 'shop_id', 'id')
+ORDER BY table_name, column_name;
+```
+
+**Step 2: Check Foreign Key References**
+```sql
+-- Check what other tables reference
+SELECT 
+  tc.table_name,
+  kcu.column_name,
+  ccu.table_name AS foreign_table_name,
+  ccu.column_name AS foreign_column_name
+FROM information_schema.table_constraints AS tc
+JOIN information_schema.key_column_usage AS kcu
+  ON tc.constraint_name = kcu.constraint_name
+JOIN information_schema.constraint_column_usage AS ccu
+  ON ccu.constraint_name = tc.constraint_name
+WHERE tc.constraint_type = 'FOREIGN KEY'
+AND (ccu.table_name = 'stores' OR ccu.table_name = 'shops');
+```
+
+**Step 3: Handle Type Mismatches**
+```sql
+-- If shop_id (INTEGER) needs to match store_id (UUID)
+-- Cast both to TEXT for comparison
+WHERE stores.store_id::TEXT = other_table.shop_id::TEXT
+
+-- Or check if shops table should be used instead
+WHERE shop_id IN (SELECT shop_id FROM shops WHERE ...)
+```
+
+**COMMON SCENARIOS:**
+
+| Table | Primary Key | Data Type | Used By |
+|-------|-------------|-----------|---------|
+| `stores` | `store_id` | UUID | Core system, RLS policies |
+| `shops` | `shop_id` | INTEGER | Legacy APIs, some integrations |
+
+**Integration Tables (use shop_id):**
+- `ecommerce_integrations.shop_id` → Could reference either table
+- `shopintegrations.shop_id` → Could reference either table
+- `webhooks.shop_id` → Could reference either table
+- `api_keys.shop_id` → Could reference either table
+- `delivery_requests.shop_id` → Could reference either table
+
+**SAFE RLS POLICY PATTERN:**
+```sql
+-- Check BOTH tables with OR logic
+CREATE POLICY table_select_own ON some_table
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id::TEXT = some_table.shop_id::TEXT
+      AND stores.owner_user_id = auth.uid()
+    )
+    OR EXISTS (
+      SELECT 1 FROM shops 
+      WHERE shops.shop_id = some_table.shop_id
+      AND shops.owner_user_id = auth.uid()
+    )
+  );
+```
+
+**CASE STUDY (Oct 26, 2025):**
+```sql
+-- ❌ WRONG: Assumed delivery_requests.store_id exists
+CREATE POLICY delivery_requests_select_merchant ON delivery_requests
+  FOR SELECT USING (
+    store_id IN (SELECT store_id FROM stores WHERE owner_user_id = auth.uid())
+  );
+-- ERROR: column "store_id" does not exist
+-- HINT: Perhaps you meant to reference the column "delivery_requests.shop_id"
+
+-- ❌ WRONG: Fixed column name but wrong type
+CREATE POLICY delivery_requests_select_merchant ON delivery_requests
+  FOR SELECT USING (
+    shop_id IN (SELECT store_id FROM stores WHERE owner_user_id = auth.uid())
+  );
+-- ERROR: operator does not exist: integer = uuid
+
+-- ✅ CORRECT: Cast both to TEXT
+CREATE POLICY delivery_requests_select_merchant ON delivery_requests
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id::TEXT = delivery_requests.shop_id::TEXT
+      AND stores.owner_user_id = auth.uid()
+    )
+  );
+-- SUCCESS!
+```
+
+**WHY THIS RULE:**
+- ✅ Prevents column not found errors
+- ✅ Prevents type mismatch errors
+- ✅ Handles legacy schema issues
+- ✅ Works with both table structures
+- ✅ Saves hours of debugging
+
+**ENFORCEMENT:**
+- ALWAYS check if both `stores` and `shops` tables exist
+- ALWAYS verify column names and data types
+- ALWAYS use type casting when comparing different types
+- ALWAYS test RLS policies with both table scenarios
+- Document which table is being used in comments
+
+**DELIVERABLE:** Schema check results + RLS policies that work with both tables
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.23
+**LAST UPDATED:** October 26, 2025, 10:30 AM
+**RULES:** 27 (21 Hard, 4 Medium, 2 Soft)
+**NEXT REVIEW:** After RLS Security Implementation
+**NEXT VERSION:** v1.24
