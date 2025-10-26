@@ -2078,6 +2078,8 @@ During RLS policy implementation (Oct 26, 2025), encountered **multiple column n
 | `relation "shops" does not exist` | N/A | `shops` | `stores` | Remove `shops` |
 | `column "customer_id" does not exist` | `orders` | `customer_id` | `user_id` | Use `user_id` |
 | `column "store_id" does not exist` | `orders` | `store_id` | `merchant_id` | Use `merchant_id` |
+| `relation "merchants" does not exist` | N/A | `merchants` | `stores` | Use `stores` table |
+| `column "merchant_id" does not exist` | `stores` | `merchant_id` | `owner_user_id` | Use `owner_user_id` |
 
 **MANDATORY VERIFICATION BEFORE RLS POLICIES:**
 
@@ -2246,9 +2248,9 @@ WHERE EXISTS (
 - ✅ Documents schema for future developers
 
 **TIME WASTED WITHOUT THIS RULE:**
-- Oct 26, 2025: **65 minutes** fixing 7 column/table errors
+- Oct 26, 2025: **75 minutes** fixing 9 column/table errors
 - Each error: 5-10 minutes to fix, commit, push, re-run
-- **Total iterations:** 9 versions (V1 → V2 → V3 → fixes)
+- **Total iterations:** 11 versions (V1 → V2 → V3 → fixes)
 
 **TIME SAVED WITH THIS RULE:**
 - **5 minutes** upfront verification
