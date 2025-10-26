@@ -217,17 +217,17 @@ BEGIN
       FOR SELECT USING (true);
 
     -- Users can create reviews for their orders
-    -- Note: Check if orders table has customer_id, consumer_id, or user_id
+    -- Note: orders table has user_id (customer), merchant_id (store), courier_id
     CREATE POLICY reviews_insert_own ON reviews
       FOR INSERT WITH CHECK (
         order_id IN (
           SELECT order_id FROM orders 
-          WHERE (customer_id = auth.uid() OR consumer_id = auth.uid())
+          WHERE user_id = auth.uid()
           OR courier_id IN (
             SELECT courier_id FROM couriers WHERE user_id = auth.uid()
           )
-          OR store_id IN (
-            SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+          OR merchant_id IN (
+            SELECT merchant_id FROM merchants WHERE user_id = auth.uid()
           )
         )
       );
@@ -236,8 +236,7 @@ BEGIN
     CREATE POLICY reviews_update_own ON reviews
       FOR UPDATE USING (
         order_id IN (
-          SELECT order_id FROM orders 
-          WHERE (customer_id = auth.uid() OR consumer_id = auth.uid())
+          SELECT order_id FROM orders WHERE user_id = auth.uid()
         )
       );
       

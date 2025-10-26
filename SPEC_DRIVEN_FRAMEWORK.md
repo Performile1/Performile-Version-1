@@ -2076,7 +2076,8 @@ During RLS policy implementation (Oct 26, 2025), encountered **multiple column n
 | `operator does not exist: integer = uuid` | `delivery_requests` | UUID | INTEGER | Cast to TEXT |
 | `column "order_id" does not exist` | `tracking_events` | `order_id` | `tracking_id` | Use `tracking_id` |
 | `relation "shops" does not exist` | N/A | `shops` | `stores` | Remove `shops` |
-| `column "customer_id" does not exist` | `orders` | `customer_id` | `customer_id` OR `consumer_id` | Check both |
+| `column "customer_id" does not exist` | `orders` | `customer_id` | `user_id` | Use `user_id` |
+| `column "store_id" does not exist` | `orders` | `store_id` | `merchant_id` | Use `merchant_id` |
 
 **MANDATORY VERIFICATION BEFORE RLS POLICIES:**
 
@@ -2245,9 +2246,9 @@ WHERE EXISTS (
 - ✅ Documents schema for future developers
 
 **TIME WASTED WITHOUT THIS RULE:**
-- Oct 26, 2025: **58 minutes** fixing 6 column/table errors
+- Oct 26, 2025: **65 minutes** fixing 7 column/table errors
 - Each error: 5-10 minutes to fix, commit, push, re-run
-- **Total iterations:** 8 versions (V1 → V2 → V3 → fixes)
+- **Total iterations:** 9 versions (V1 → V2 → V3 → fixes)
 
 **TIME SAVED WITH THIS RULE:**
 - **5 minutes** upfront verification
