@@ -21,6 +21,9 @@
 
 ### **RULE #1: DATABASE VALIDATION BEFORE EVERY SPRINT**
 
+**CORE PRINCIPLE:**
+> **"Database is the source of truth. Do not change it. Do not create duplicates. Validate before every change."**
+
 **MANDATORY STEPS:**
 ```sql
 -- Step 1: List all tables
@@ -34,19 +37,41 @@ FROM information_schema.columns
 WHERE table_name IN ('table1', 'table2', 'table3')
 ORDER BY table_name, ordinal_position;
 
--- Step 3: Check indexes
+-- Step 3: Check for duplicate/similar tables
+SELECT table_name FROM information_schema.tables 
+WHERE table_schema = 'public' 
+  AND table_name LIKE '%similar_name%'
+ORDER BY table_name;
+
+-- Step 4: Check for duplicate/similar columns
+SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE column_name LIKE '%similar_column%'
+ORDER BY table_name, column_name;
+
+-- Step 5: Check indexes
 SELECT tablename, indexname FROM pg_indexes
 WHERE tablename IN ('table1', 'table2', 'table3');
 
--- Step 4: Check RLS policies
+-- Step 6: Check RLS policies
 SELECT tablename, policyname, cmd FROM pg_policies
 WHERE tablename IN ('table1', 'table2', 'table3');
 
--- Step 5: Sample data check
+-- Step 7: Sample data check
 SELECT COUNT(*) FROM table1;
 ```
 
-**DELIVERABLE:** Validation report documenting actual schema
+**CRITICAL: DUPLICATE DETECTION**
+- ❌ **NEVER** create a new table if similar data exists elsewhere
+- ❌ **NEVER** create a new column if similar data exists in another column
+- ✅ **ALWAYS** search for existing tables/columns with similar purpose
+- ✅ **ALWAYS** reuse existing structures
+- ✅ **ALWAYS** document why new table/column is needed if creating
+
+**DELIVERABLE:** Validation report documenting:
+1. Actual schema (tables, columns, types)
+2. Duplicate check results (no similar tables/columns found)
+3. Justification for any new tables/columns
 
 ### **RULE #2: NEVER CHANGE EXISTING DATABASE**
 
@@ -65,12 +90,28 @@ SELECT COUNT(*) FROM table1;
 - ❌ MODIFY constraints
 - ❌ DELETE existing data
 
-**IF DATABASE NEEDS CHANGE:**
-1. Document why it's needed
-2. Get explicit user approval
-3. Create rollback script first
-4. Test on copy database
-5. Only then apply to production
+**IF DATABASE NEEDS CHANGE (ALTER/DROP/RENAME):**
+
+**⚠️ STOP! This requires explicit approval.**
+
+**YOU MUST:**
+1. **Document WHY** the change is absolutely necessary
+2. **Explain** why existing structure cannot be used
+3. **Describe** the impact on existing data and code
+4. **Provide** rollback script
+5. **Test** on copy database first
+6. **Get explicit user approval** before proceeding
+7. **Only then** apply to production
+
+**EXAMPLE JUSTIFICATION:**
+```
+❌ BAD: "Need to change column type"
+✅ GOOD: "Column 'postal_code' is VARCHAR(20) but needs to store 
+         Norwegian postal codes which are 4 digits. Current data 
+         has 150 rows with 5-digit codes that need migration. 
+         Alternative: Add new column 'postal_code_normalized' 
+         and keep old column for backwards compatibility."
+```
 
 ### **RULE #3: CONFORM TO EXISTING SCHEMA**
 
@@ -119,6 +160,8 @@ auth.role() -- Current user role
 
 **Platform:** Vercel (Serverless Functions)
 
+**STATUS:** ✅ **CURRENTLY USED** - All API endpoints follow this structure
+
 **STRUCTURE:**
 ```
 api/
@@ -131,32 +174,52 @@ api/
 ```
 
 **REQUIREMENTS:**
-- ✅ Use connection pooling (getPool())
-- ✅ Always release connections
-- ✅ Use try/finally blocks
-- ✅ JWT authentication inline
-- ✅ Environment variables for secrets
+- ✅ Use Supabase client (NOT connection pooling)
+- ✅ Use environment variables for secrets
 - ✅ TypeScript for type safety
+- ✅ Express-style handlers with Request/Response
+- ✅ JWT authentication via middleware
+- ✅ Proper error handling
 
-**TEMPLATE:**
+**CURRENT TEMPLATE (AS USED IN PRODUCTION):**
 ```typescript
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getPool } from '../lib/db';
-import jwt from 'jsonwebtoken';
+import { createClient } from '@supabase/supabase-js';
+import { Request, Response } from 'express';
 
-const pool = getPool();
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const client = await pool.connect();
+export default async function handler(req: Request, res: Response) {
   try {
+    // Validate request
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
     // Your code here
-  } finally {
-    client.release();
+    const { data, error } = await supabase
+      .from('table_name')
+      .select('*');
+
+    if (error) throw error;
+
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }
 ```
 
+**NOTE:** This structure is actively used in all current API endpoints. Do not deviate without explicit approval.
+
 ### **RULE #6: SPEC-DRIVEN IMPLEMENTATION**
+
+**STATUS:** ✅ **MANDATORY** - This is the core development process
+
+**⚠️ CRITICAL: This rule is NON-NEGOTIABLE and must be followed for EVERY feature.**
 
 **BEFORE STARTING ANY FEATURE:**
 
@@ -167,25 +230,43 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
    - Frontend components
    - Success criteria
 
-2. **Validate Database**
-   - Run validation SQL
+2. **Validate Database** ⚠️ **MANDATORY**
+   - Run validation SQL (RULE #1)
+   - Check for duplicate tables/columns
    - Document actual schema
    - Update spec with findings
+   - **STOP if duplicates found** - reuse existing structures
 
-3. **Get Approval**
+3. **Get Approval** ⚠️ **MANDATORY**
    - Review spec with user
    - Confirm approach
-   - Get go-ahead
+   - Get explicit go-ahead
+   - **DO NOT proceed without approval**
 
 4. **Implement**
    - Follow spec exactly
    - Use validated schema
    - Test incrementally
+   - **Never deviate from approved spec**
 
 5. **Verify**
    - Run verification SQL
    - Test all endpoints
    - Update documentation
+   - Confirm with user
+
+**ENFORCEMENT:**
+- ❌ **NO coding without spec**
+- ❌ **NO database changes without validation**
+- ❌ **NO implementation without approval**
+- ✅ **ALWAYS follow this process**
+
+**WHY THIS MATTERS:**
+- Prevents duplicate tables/columns
+- Prevents schema assumption errors
+- Ensures alignment with user needs
+- Reduces rework and debugging time
+- Maintains code quality and consistency
 
 ### **RULE #7: INCREMENTAL VALIDATION**
 
@@ -2270,8 +2351,85 @@ WHERE EXISTS (
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.24
-**LAST UPDATED:** October 26, 2025, 10:50 AM
+---
+
+## 🚨 FRAMEWORK ENFORCEMENT
+
+### **RECENT VIOLATIONS & LESSONS LEARNED**
+
+**October 26, 2025 - RLS Implementation:**
+- ❌ **Violation:** Assumed column names without verification
+- ⏱️ **Time Wasted:** 90 minutes fixing 10 errors
+- ✅ **Fix:** Created RULE #28 + PRODUCTION_SCHEMA_DOCUMENTED.md
+- 📚 **Lesson:** ALWAYS verify schema before writing SQL
+
+**October 26, 2025 - Database Duplicates:**
+- ❌ **Issue:** Found `stores` vs `shops` table confusion
+- ❌ **Issue:** Found `store_id` vs `shop_id` column inconsistencies
+- ⏱️ **Impact:** Unclear which tables are actually used
+- ✅ **Fix:** Enhanced RULE #1 with duplicate detection
+- 📚 **Lesson:** Check for duplicates BEFORE creating new tables
+
+### **ARE WE FOLLOWING THE FRAMEWORK?**
+
+**✅ YES - Recent Successes:**
+- RLS implementation followed validation-first approach
+- Created PRODUCTION_SCHEMA_DOCUMENTED.md before policies
+- All 21 tables secured with proper validation
+- Schema discovery prevented future errors
+
+**⚠️ NEEDS IMPROVEMENT:**
+- Need to check for duplicates before creating tables
+- Need to validate database BEFORE every sprint (not during)
+- Need to enforce spec-driven approach for ALL features
+- Need to document WHY when altering existing structures
+
+### **FRAMEWORK ADHERENCE CHECKLIST**
+
+**Before Starting ANY Feature:**
+- [ ] RULE #1: Run database validation SQL
+- [ ] RULE #1: Check for duplicate tables/columns
+- [ ] RULE #1: Document actual schema
+- [ ] RULE #6: Create feature spec
+- [ ] RULE #6: Get user approval
+- [ ] RULE #6: Only then start coding
+
+**During Implementation:**
+- [ ] RULE #2: Never ALTER/DROP/RENAME without approval
+- [ ] RULE #3: Use EXACT column names from validation
+- [ ] RULE #5: Follow current API template
+- [ ] RULE #6: Follow approved spec exactly
+
+**After Implementation:**
+- [ ] RULE #7: Run verification queries
+- [ ] RULE #9: Create rollback scripts
+- [ ] RULE #10: Update documentation
+
+### **ENFORCEMENT GOING FORWARD**
+
+**MANDATORY FOR ALL FUTURE WORK:**
+1. ✅ Database validation BEFORE every sprint
+2. ✅ Duplicate detection BEFORE creating tables
+3. ✅ Spec creation and approval BEFORE coding
+4. ✅ Explicit justification for ANY database changes
+5. ✅ Follow RULE #5 and RULE #6 without exception
+
+**IF FRAMEWORK IS NOT FOLLOWED:**
+- ⚠️ Stop and validate database immediately
+- ⚠️ Create spec if missing
+- ⚠️ Get approval before proceeding
+- ⚠️ Document why framework was bypassed
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.25
+**LAST UPDATED:** October 26, 2025, 11:15 PM
 **RULES:** 28 (22 Hard, 4 Medium, 2 Soft)
-**NEXT REVIEW:** After RLS Security Implementation Complete
-**NEXT VERSION:** v1.25
+**MAJOR UPDATES:** 
+- Enhanced RULE #1 with duplicate detection
+- Strengthened RULE #2 with explicit approval process
+- Clarified RULE #5 with current production template
+- Reinforced RULE #6 as mandatory process
+- Added enforcement section
+**NEXT REVIEW:** After TMS/WMS Implementation
+**NEXT VERSION:** v1.26
