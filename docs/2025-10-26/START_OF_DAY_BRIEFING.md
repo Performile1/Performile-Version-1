@@ -812,27 +812,159 @@ VALUES (
 );
 ```
 
-#### **Phase 4: Frontend Rule Builder (2-3 hours)**
+#### **Phase 4: Frontend Rule Builder UI (2-3 hours)**
 
-**Component:** `apps/web/src/pages/admin/RuleBuilder.tsx`
+**NEW MENU ITEM:** "Rule Engine" (visible to all user roles)
 
-**Features:**
-- Visual rule builder (drag & drop)
-- Condition builder (field, operator, value)
-- Action builder (type, config)
-- Rule testing (simulate execution)
-- Rule management (enable/disable, edit, delete)
+**Components to Create:**
 
-#### **Phase 5: API Endpoints (1 hour)**
+**1. RuleEngineList.tsx** - Main rule management page
+```typescript
+// apps/web/src/pages/RuleEngine/RuleEngineList.tsx
+- List all user's rules
+- Filter by type (notification, order, setting, custom)
+- Enable/disable toggle
+- Edit/Delete actions
+- "Create New Rule" button
+- Rule execution history
+```
+
+**2. RuleBuilder.tsx** - Visual rule builder
+```typescript
+// apps/web/src/pages/RuleEngine/RuleBuilder.tsx
+- IF/THEN/ELSE visual builder
+- Drag & drop conditions
+- Condition builder:
+  - Field selector (order_status, postal_code, etc.)
+  - Operator selector (equals, contains, greater_than, etc.)
+  - Value input
+  - AND/OR logic
+- Action builder:
+  - Action type (notification, email, update_field, etc.)
+  - Action config (template, recipient, value)
+- Rule testing (simulate with sample data)
+- Save/Cancel buttons
+```
+
+**3. RuleConditionBuilder.tsx** - Condition editor
+```typescript
+// apps/web/src/pages/RuleEngine/RuleConditionBuilder.tsx
+- Add condition button
+- Condition group (AND/OR)
+- Field dropdown (based on entity type)
+- Operator dropdown (equals, not_equals, contains, starts_with, etc.)
+- Value input (text, number, date, dropdown)
+- Remove condition button
+- Nested conditions support
+```
+
+**4. RuleActionBuilder.tsx** - Action editor
+```typescript
+// apps/web/src/pages/RuleEngine/RuleActionBuilder.tsx
+- Add action button
+- Action type dropdown:
+  - Send notification
+  - Send email
+  - Update field
+  - Create task
+  - Custom webhook
+- Action config form (dynamic based on type)
+- Remove action button
+- Action order (priority)
+```
+
+**5. RuleTestPanel.tsx** - Test rule execution
+```typescript
+// apps/web/src/pages/RuleEngine/RuleTestPanel.tsx
+- Sample data input (JSON)
+- "Test Rule" button
+- Execution result display
+- Conditions met/not met
+- Actions that would execute
+- Error messages
+```
+
+**User Role Limits:**
+
+```sql
+-- Add to subscription_plans table
+ALTER TABLE subscription_plans 
+ADD COLUMN max_rules_per_user INTEGER DEFAULT 5;
+
+-- Update plans
+UPDATE subscription_plans SET max_rules_per_user = 5 WHERE tier = 'tier1';
+UPDATE subscription_plans SET max_rules_per_user = 20 WHERE tier = 'tier2';
+UPDATE subscription_plans SET max_rules_per_user = 100 WHERE tier = 'tier3';
+UPDATE subscription_plans SET max_rules_per_user = 999 WHERE user_type = 'admin';
+```
+
+**Menu Structure:**
+
+```typescript
+// Add to AppLayout.tsx menu
+{
+  path: '/rule-engine',
+  label: 'Rule Engine',
+  icon: <RuleIcon />,
+  roles: ['admin', 'merchant', 'courier'], // All roles!
+  available: true
+}
+```
+
+#### **Phase 5: API Endpoints with Role Limits (1 hour)**
 
 ```typescript
 // api/rules/index.ts
-GET /api/rules - List all rules
-POST /api/rules - Create new rule
-PUT /api/rules/:id - Update rule
-DELETE /api/rules/:id - Delete rule
-POST /api/rules/:id/test - Test rule execution
-POST /api/rules/:id/execute - Execute rule manually
+
+// GET /api/rules - List user's rules
+export async function GET(req: VercelRequest, res: VercelResponse) {
+  const user = verifyToken(req.headers.authorization);
+  
+  // Get user's rules only (RLS enforced)
+  const rules = await supabase
+    .from('rule_engine_rules')
+    .select('*')
+    .eq('created_by', user.userId)
+    .order('created_at', { ascending: false });
+    
+  return res.json({ rules });
+}
+
+// POST /api/rules - Create new rule (with limit check)
+export async function POST(req: VercelRequest, res: VercelResponse) {
+  const user = verifyToken(req.headers.authorization);
+  
+  // Check user's rule limit
+  const { count } = await supabase
+    .from('rule_engine_rules')
+    .select('*', { count: 'exact', head: true })
+    .eq('created_by', user.userId);
+    
+  const subscription = await getUserSubscription(user.userId);
+  const maxRules = subscription.max_rules_per_user;
+  
+  if (count >= maxRules) {
+    return res.status(403).json({ 
+      error: 'Rule limit reached',
+      message: `You can create up to ${maxRules} rules. Upgrade to create more.`
+    });
+  }
+  
+  // Create rule
+  const rule = await supabase
+    .from('rule_engine_rules')
+    .insert({ ...req.body, created_by: user.userId })
+    .select()
+    .single();
+    
+  return res.json({ rule });
+}
+
+// PUT /api/rules/:id - Update rule (owner only)
+// DELETE /api/rules/:id - Delete rule (owner only)
+// POST /api/rules/:id/test - Test rule execution
+// POST /api/rules/:id/execute - Execute rule manually
+// GET /api/rules/:id/history - Get execution history
 ```
 
 ### **Time Estimate:**
@@ -864,25 +996,79 @@ POST /api/rules/:id/execute - Execute rule manually
 4. ✅ **User Control:** Merchants/admins can create own rules
 5. ✅ **Auditability:** Track all rule executions
 
-### **Use Cases:**
+### **IF/THEN/ELSE Logic Examples:**
 
-**Order Management:**
-- Auto-assign courier based on postal code
-- Auto-update status based on tracking
-- Auto-cancel after X days
+**Example 1: Simple IF/THEN**
+```
+IF order.postal_code STARTS WITH "11"
+THEN assign_courier("PostNord")
+AND send_notification("Order assigned to PostNord")
+```
+
+**Example 2: IF/THEN/ELSE**
+```
+IF order.total_amount > 1000
+THEN apply_discount(10%)
+AND send_email("high_value_customer")
+ELSE apply_discount(5%)
+```
+
+**Example 3: Complex IF/THEN with AND/OR**
+```
+IF (order.postal_code STARTS WITH "11" OR order.postal_code STARTS WITH "12")
+AND order.weight < 5
+AND order.delivery_type = "express"
+THEN assign_courier("Budbee")
+AND set_priority("high")
+AND send_notification("Express delivery assigned")
+ELSE IF order.weight >= 5
+THEN assign_courier("Schenker")
+ELSE assign_courier("PostNord")
+```
+
+**Example 4: Nested IF/THEN/ELSE**
+```
+IF order.status = "delivered"
+THEN IF order.delivery_date <= order.estimated_delivery
+     THEN send_review_request()
+     AND add_loyalty_points(10)
+     ELSE send_apology_email()
+     AND add_loyalty_points(5)
+```
+
+**Example 5: Multiple Actions**
+```
+IF order.status = "delayed"
+AND days_since_order > 7
+THEN send_notification("customer", "delivery_delayed")
+AND send_notification("merchant", "order_delayed_alert")
+AND create_support_ticket("high_priority")
+AND offer_compensation(10%)
+```
+
+### **Use Cases by Role:**
+
+**Merchant Rules:**
+- Auto-assign courier based on postal code/weight
+- Send review request after delivery
+- Alert on delayed orders
 - Auto-refund on certain conditions
+- Loyalty points automation
+- Inventory alerts
 
-**Notifications:**
-- Send notification on order status change
-- Send reminder after X days
-- Send alert on threshold reached
-- Send report on schedule
+**Courier Rules:**
+- Auto-update status based on tracking
+- Alert on delivery delays
+- Route optimization triggers
+- Capacity management
+- Performance alerts
 
-**Settings:**
-- Auto-adjust based on usage
-- Auto-upgrade tier suggestions
-- Auto-enable features
-- Auto-disable inactive features
+**Admin Rules:**
+- System monitoring alerts
+- Usage threshold notifications
+- Auto-upgrade suggestions
+- Fraud detection triggers
+- Performance benchmarks
 
 **Custom:**
 - Any business logic you can imagine!
