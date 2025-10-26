@@ -62,34 +62,43 @@ CREATE POLICY courier_credentials_delete_own ON courier_api_credentials
 -- =====================================================
 
 -- Only shop owners can see their integrations
+-- Note: ecommerce_integrations.shop_id should match stores.store_id
 CREATE POLICY ecommerce_integrations_select_own ON ecommerce_integrations
   FOR SELECT USING (
-    shop_id IN (
-      SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = ecommerce_integrations.shop_id 
+      AND stores.owner_user_id = auth.uid()
     )
   );
 
 -- Only shop owners can create integrations
 CREATE POLICY ecommerce_integrations_insert_own ON ecommerce_integrations
   FOR INSERT WITH CHECK (
-    shop_id IN (
-      SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = ecommerce_integrations.shop_id 
+      AND stores.owner_user_id = auth.uid()
     )
   );
 
 -- Only shop owners can update their integrations
 CREATE POLICY ecommerce_integrations_update_own ON ecommerce_integrations
   FOR UPDATE USING (
-    shop_id IN (
-      SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = ecommerce_integrations.shop_id 
+      AND stores.owner_user_id = auth.uid()
     )
   );
 
 -- Only shop owners can delete their integrations
 CREATE POLICY ecommerce_integrations_delete_own ON ecommerce_integrations
   FOR DELETE USING (
-    shop_id IN (
-      SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = ecommerce_integrations.shop_id 
+      AND stores.owner_user_id = auth.uid()
     )
   );
 
@@ -172,34 +181,43 @@ CREATE POLICY delivery_requests_update_courier ON delivery_requests
 -- =====================================================
 
 -- Only shop owners can see their integrations
+-- Note: shopintegrations.shop_id should match stores.store_id
 CREATE POLICY shopintegrations_select_own ON shopintegrations
   FOR SELECT USING (
-    shop_id IN (
-      SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = shopintegrations.shop_id 
+      AND stores.owner_user_id = auth.uid()
     )
   );
 
 -- Only shop owners can create integrations
 CREATE POLICY shopintegrations_insert_own ON shopintegrations
   FOR INSERT WITH CHECK (
-    shop_id IN (
-      SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = shopintegrations.shop_id 
+      AND stores.owner_user_id = auth.uid()
     )
   );
 
 -- Only shop owners can update their integrations
 CREATE POLICY shopintegrations_update_own ON shopintegrations
   FOR UPDATE USING (
-    shop_id IN (
-      SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = shopintegrations.shop_id 
+      AND stores.owner_user_id = auth.uid()
     )
   );
 
 -- Only shop owners can delete their integrations
 CREATE POLICY shopintegrations_delete_own ON shopintegrations
   FOR DELETE USING (
-    shop_id IN (
-      SELECT store_id FROM stores WHERE owner_user_id = auth.uid()
+    EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = shopintegrations.shop_id 
+      AND stores.owner_user_id = auth.uid()
     )
   );
 
@@ -219,58 +237,51 @@ CREATE POLICY usage_logs_select_own ON usage_logs
 -- =====================================================
 
 -- Merchants can see webhooks for their stores
+-- Note: webhooks may use shop_id column or entity_id
 CREATE POLICY webhooks_select_merchant ON webhooks
   FOR SELECT USING (
-    entity_type = 'store' AND entity_id IN (
-      SELECT store_id::TEXT FROM stores WHERE owner_user_id = auth.uid()
-    )
-  );
-
--- Couriers can see their webhooks
-CREATE POLICY webhooks_select_courier ON webhooks
-  FOR SELECT USING (
-    entity_type = 'courier' AND entity_id IN (
-      SELECT courier_id::TEXT FROM couriers WHERE user_id = auth.uid()
-    )
+    user_id = auth.uid()
+    OR
+    (shop_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = webhooks.shop_id 
+      AND stores.owner_user_id = auth.uid()
+    ))
   );
 
 -- Merchants can create webhooks for their stores
 CREATE POLICY webhooks_insert_merchant ON webhooks
   FOR INSERT WITH CHECK (
-    entity_type = 'store' AND entity_id IN (
-      SELECT store_id::TEXT FROM stores WHERE owner_user_id = auth.uid()
-    )
-  );
-
--- Couriers can create their webhooks
-CREATE POLICY webhooks_insert_courier ON webhooks
-  FOR INSERT WITH CHECK (
-    entity_type = 'courier' AND entity_id IN (
-      SELECT courier_id::TEXT FROM couriers WHERE user_id = auth.uid()
-    )
+    user_id = auth.uid()
+    OR
+    (shop_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = webhooks.shop_id 
+      AND stores.owner_user_id = auth.uid()
+    ))
   );
 
 -- Users can update their own webhooks
 CREATE POLICY webhooks_update_own ON webhooks
   FOR UPDATE USING (
-    (entity_type = 'store' AND entity_id IN (
-      SELECT store_id::TEXT FROM stores WHERE owner_user_id = auth.uid()
-    ))
+    user_id = auth.uid()
     OR
-    (entity_type = 'courier' AND entity_id IN (
-      SELECT courier_id::TEXT FROM couriers WHERE user_id = auth.uid()
+    (shop_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = webhooks.shop_id 
+      AND stores.owner_user_id = auth.uid()
     ))
   );
 
 -- Users can delete their own webhooks
 CREATE POLICY webhooks_delete_own ON webhooks
   FOR DELETE USING (
-    (entity_type = 'store' AND entity_id IN (
-      SELECT store_id::TEXT FROM stores WHERE owner_user_id = auth.uid()
-    ))
+    user_id = auth.uid()
     OR
-    (entity_type = 'courier' AND entity_id IN (
-      SELECT courier_id::TEXT FROM couriers WHERE user_id = auth.uid()
+    (shop_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = webhooks.shop_id 
+      AND stores.owner_user_id = auth.uid()
     ))
   );
 
@@ -278,29 +289,54 @@ CREATE POLICY webhooks_delete_own ON webhooks
 -- 10. API KEYS (MERCHANT/COURIER ACCESS)
 -- =====================================================
 
--- Merchants can see their API keys
-CREATE POLICY api_keys_select_merchant ON api_keys
+-- Users can see their own API keys
+-- Note: api_keys may have shop_id column
+CREATE POLICY api_keys_select_own ON api_keys
   FOR SELECT USING (
-    user_type = 'merchant' AND user_id = auth.uid()
-  );
-
--- Couriers can see their API keys
-CREATE POLICY api_keys_select_courier ON api_keys
-  FOR SELECT USING (
-    user_type = 'courier' AND user_id = auth.uid()
+    user_id = auth.uid()
+    OR
+    (shop_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = api_keys.shop_id 
+      AND stores.owner_user_id = auth.uid()
+    ))
   );
 
 -- Users can create their own API keys
 CREATE POLICY api_keys_insert_own ON api_keys
-  FOR INSERT WITH CHECK (user_id = auth.uid());
+  FOR INSERT WITH CHECK (
+    user_id = auth.uid()
+    OR
+    (shop_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = api_keys.shop_id 
+      AND stores.owner_user_id = auth.uid()
+    ))
+  );
 
 -- Users can update their own API keys
 CREATE POLICY api_keys_update_own ON api_keys
-  FOR UPDATE USING (user_id = auth.uid());
+  FOR UPDATE USING (
+    user_id = auth.uid()
+    OR
+    (shop_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = api_keys.shop_id 
+      AND stores.owner_user_id = auth.uid()
+    ))
+  );
 
 -- Users can delete their own API keys
 CREATE POLICY api_keys_delete_own ON api_keys
-  FOR DELETE USING (user_id = auth.uid());
+  FOR DELETE USING (
+    user_id = auth.uid()
+    OR
+    (shop_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM stores 
+      WHERE stores.store_id = api_keys.shop_id 
+      AND stores.owner_user_id = auth.uid()
+    ))
+  );
 
 -- =====================================================
 -- VERIFICATION
