@@ -412,7 +412,44 @@ From START_OF_DAY briefing (not completed):
 
 ---
 
+---
+
+## ✅ ADDITIONAL FIX (1:00 PM)
+
+### **8. View Full Order Details Button** ⏱️ 5 min
+
+**Issue:** "View Full Order Details" button redirects to dashboard instead of order details
+
+**Root Cause:**
+- Button was trying to navigate to `/orders/:orderId`
+- Route doesn't exist in App.tsx
+- No OrderDetails page component exists
+- React Router redirects to default route (dashboard)
+
+**Investigation:**
+- ✅ Found button in `OrderDetailsDrawer.tsx` (line 280)
+- ✅ Used in `Orders.tsx` with `onViewFull` prop (line 906)
+- ✅ Tried to navigate: `window.location.href = /orders/${orderId}`
+- ❌ Route `/orders/:orderId` not defined in App.tsx
+- ❌ OrderDetails page component doesn't exist
+
+**Solution:**
+- Removed `onViewFull` prop from OrderDetailsDrawer usage
+- Button is conditionally rendered only if `onViewFull` exists
+- Now button won't appear, preventing incorrect navigation
+- All order information already shown in drawer
+
+**Files Modified:**
+- `apps/web/src/pages/Orders.tsx` (line 906-908)
+
+**Commit:** `7ce7149`  
+**Message:** "fix: Remove View Full Details button that was redirecting to non-existent route"
+
+**Status:** ✅ FIXED
+
+---
+
 **Completed By:** Cascade AI  
-**Date:** October 27, 2025, 12:58 PM  
+**Date:** October 27, 2025, 1:02 PM  
 **Framework Compliance:** ✅ 100%  
-**Status:** ✅ ALL QUICK FIXES COMPLETE
+**Status:** ✅ ALL QUICK FIXES COMPLETE + BONUS FIX
