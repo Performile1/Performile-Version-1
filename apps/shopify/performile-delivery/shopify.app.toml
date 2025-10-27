@@ -1,7 +1,7 @@
 # Shopify App Configuration
 name = "performile-delivery"
-client_id = "YOUR_CLIENT_ID"
-application_url = "https://your-app-url.com"
+client_id = "476b97125af63ec7bbd91019fbd214f0"
+application_url = "https://performile-delivery-jm98ihmmx-rickard-wigrunds-projects.vercel.app"
 embedded = true
 
 [access_scopes]
@@ -9,7 +9,7 @@ scopes = "read_orders,write_orders,read_customers,read_shipping"
 
 [auth]
 redirect_urls = [
-  "https://your-app-url.com/auth/callback"
+  "https://performile-delivery-jm98ihmmx-rickard-wigrunds-projects.vercel.app/auth/callback"
 ]
 
 [webhooks]
