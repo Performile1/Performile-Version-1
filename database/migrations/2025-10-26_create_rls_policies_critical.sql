@@ -61,9 +61,13 @@ CREATE POLICY courier_credentials_delete_own ON courier_api_credentials
 -- 3. ECOMMERCE INTEGRATIONS (CRITICAL - CREDENTIALS)
 -- =====================================================
 
--- Only shop owners can see their integrations
--- Note: Checks both stores.store_id and shops.shop_id tables
-CREATE POLICY ecommerce_integrations_select_own ON ecommerce_integrations
+-- Only create policies if table exists
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'ecommerce_integrations') THEN
+    -- Only shop owners can see their integrations
+    -- Note: Checks both stores.store_id and shops.shop_id tables
+    EXECUTE 'CREATE POLICY ecommerce_integrations_select_own ON ecommerce_integrations
   FOR SELECT USING (
     EXISTS (
       SELECT 1 FROM stores 
