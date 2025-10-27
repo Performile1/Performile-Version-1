@@ -903,10 +903,8 @@ const Orders: React.FC = () => {
           setDrawerOpen(false);
           setDrawerOrder(null);
         }}
-        onViewFull={(orderId) => {
-          // Navigate to full order details page if it exists
-          window.location.href = `/orders/${orderId}`;
-        }}
+        // Removed onViewFull - no separate order details page exists
+        // All order information is shown in the drawer
       />
     </Box>
   );
