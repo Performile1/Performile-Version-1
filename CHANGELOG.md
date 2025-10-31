@@ -7,7 +7,75 @@ All notable changes to the Performile Platform are documented in this file.
 
 ---
 
-## [1.4.2] - October 31, 2025
+## [1.4.3] - October 31, 2025 (Evening)
+
+### 🐛 Critical Bug Fixes
+
+#### Authentication & Token Management - RESOLVED ✅
+- ✅ **Fixed critical localStorage key mismatch causing authentication failures**
+  - Root cause: `CourierPreferences.tsx` looking for token in wrong localStorage key
+  - Impact: All merchant courier preference API calls returned 403/401 errors
+  - Solution: Updated all 6 functions to use correct auth store key
+  - Affected functions: `fetchMerchantCouriers`, `fetchAvailableCouriers`, `fetchApiKey`, `handleAddCourier`, `handleRemoveCourier`, `handleToggleActive`
+
+#### Environment Variable Fixes - RESOLVED ✅
+- ✅ **Fixed SUPABASE_SERVICE_ROLE_KEY naming across 4 API files**
+  - Changed from `SUPABASE_SERVICE_KEY` to `SUPABASE_SERVICE_ROLE_KEY`
+  - Files: `apps/api/couriers/merchant-preferences.ts`, `api/analytics/order-trends.ts`, `api/analytics/claims-trends.ts`, `api/claims/v2.ts`
+
+- ✅ **Fixed subscription API environment variables**
+  - Changed from frontend variables (`VITE_SUPABASE_URL`) to backend variables
+  - Files: `api/subscriptions/my-subscription.ts`, `api/subscriptions/public.ts`
+
+#### Missing Authorization Headers - RESOLVED ✅
+- ✅ **Added missing Authorization header to API key fetch**
+  - File: `apps/web/src/pages/settings/CourierPreferences.tsx`
+  - Function: `fetchApiKey()`
+
+#### SQL Query Fixes - RESOLVED ✅
+- ✅ **Removed non-existent company_name column from query**
+  - File: `api/couriers/merchant-preferences.ts`
+  - Function: `getSelectedCouriers()`
+
+### 🔍 Debugging Enhancements
+
+- Added comprehensive JWT verification logging
+- Added token extraction and format validation
+- Added auth header validation logging
+- Added user role verification logging
+
+### 📊 Error Resolution
+
+| Endpoint | Before | After |
+|----------|--------|-------|
+| `/api/couriers/merchant-preferences` | 403 Forbidden | 200 OK ✅ |
+| `/api/auth/api-key` | 401 Unauthorized | 200 OK ✅ |
+| `/api/subscriptions/my-subscription` | 500 Internal | 200 OK ✅ |
+| `/api/analytics/order-trends` | 500 Internal | 200 OK ✅ |
+| `/api/analytics/claims-trends` | 500 Internal | 200 OK ✅ |
+| `/api/claims/v2` | 500 Internal | 200 OK ✅ |
+
+### 📝 Commits
+
+- `437de24` - Fix: Update SUPABASE_SERVICE_ROLE_KEY across 4 files
+- `dd72990` - Fix: Remove company_name column from merchant preferences query
+- `91e6acb` - Fix: Update subscription endpoints to use correct env variables
+- `3925f12` - Fix: Add auth token to API key fetch request
+- `0f89a54` - Debug: Add logging to merchant preferences endpoint
+- `9592431` - Debug: Add detailed JWT verification logging
+- `051f482` - Fix: Use correct localStorage key for auth tokens in CourierPreferences
+
+**Total:** 7 commits, 11 files changed
+
+### 📚 Documentation
+
+- Created `docs/2025-10-31/PERFORMILE_MASTER_V3.2.md`
+- Updated `docs/2025-10-31/END_OF_DAY_SUMMARY.md`
+- Updated `CHANGELOG.md` (this file)
+
+---
+
+## [1.4.2] - October 31, 2025 (Morning)
 
 ### 🔧 Fixed
 
