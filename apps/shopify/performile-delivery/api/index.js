@@ -16,7 +16,7 @@ require('@shopify/shopify-api/adapters/node');
 // Initialize Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  process.env.SUPABASE_SERVICE_KEY || ''
 );
 
 const app = express();
@@ -201,10 +201,13 @@ app.get('/', (req, res) => {
   `);
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Performile Delivery app listening on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-});
-
+// Export for Vercel serverless
 module.exports = app;
+
+// Start server locally (not used in Vercel)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Performile Delivery app listening on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
+}

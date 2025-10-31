@@ -1,16 +1,19 @@
-api_version = "2024-01"
+api_version = "2025-01"
 
 [[extensions]]
+uid = "842dc77e-4822-c191-e8f4-51c6d182f5fdd3248e84"
 type = "ui_extension"
 name = "performile-courier-ratings"
 handle = "performile-courier-ratings"
 
 [[extensions.targeting]]
 target = "purchase.checkout.block.render"
+module = "./src/Checkout.jsx"
 
 [extensions.capabilities]
-network_access = true
-api_access = true
+# network_access = true  # Commented out for dev testing - will enable after approval
+# api_access = true
+shipping_address = true
 
 [extensions.settings]
 [[extensions.settings.fields]]
