@@ -43,7 +43,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const token = authHeader.substring(7);
   const user = verifyToken(token);
 
+  console.log('[Merchant Preferences] Token verification result:', { 
+    hasUser: !!user, 
+    role: user?.role,
+    userId: user?.userId 
+  });
+
   if (!user || user.role !== 'merchant') {
+    console.log('[Merchant Preferences] Access denied:', { hasUser: !!user, role: user?.role });
     return res.status(403).json({ error: 'Access denied. Merchants only.' });
   }
 
