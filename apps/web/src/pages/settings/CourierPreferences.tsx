@@ -97,7 +97,10 @@ export const CourierPreferences: React.FC = () => {
 
   const fetchApiKey = async () => {
     try {
-      const response = await axios.get('/api/auth/api-key');
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/auth/api-key', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setApiKey(response.data.api_key || '');
     } catch (error) {
       console.error('Error fetching API key:', error);
