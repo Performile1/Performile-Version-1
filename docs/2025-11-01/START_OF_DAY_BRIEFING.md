@@ -132,6 +132,13 @@
 - ✅ Checkout extension loads properly
 - ✅ Authentication working correctly
 
+**📄 Detailed Guide:** See `docs/2025-11-01/SHOPIFY_ERRORS_TO_FIX.md` for:
+- Complete error analysis
+- Step-by-step debugging guide
+- Investigation checklist
+- Solution steps with code examples
+- Testing procedures
+
 ---
 
 ### 2. **SQL FUNCTION AUDIT (60 minutes)** 🔍
@@ -338,6 +345,11 @@
 
 ## 📚 REFERENCE DOCUMENTS
 
+**Today's Work:**
+- `docs/2025-11-01/SHOPIFY_ERRORS_TO_FIX.md` ⭐ **START HERE**
+- `database/SQL_FUNCTION_AUDIT.sql`
+- `docs/2025-11-01/END_OF_DAY_SUMMARY.md` (Night Shift)
+
 **Yesterday's Work:**
 - `docs/2025-10-31/PERFORMILE_MASTER_V3.2.md`
 - `docs/2025-10-31/END_OF_DAY_SUMMARY.md`
@@ -430,14 +442,20 @@
 ## ✅ TODAY'S CHECKLIST
 
 **Morning (2 hours):**
-- [ ] Review yesterday's work
-- [ ] Verify all fixes in production
-- [ ] Test Courier Preferences page
-- [ ] Check Vercel logs
+- [ ] **PRIORITY:** Fix Shopify plugin errors (45-60 min)
+  - [ ] Read `SHOPIFY_ERRORS_TO_FIX.md`
+  - [ ] Check API scopes in shopify.app.toml
+  - [ ] Review session token handling
+  - [ ] Fix 401 authentication errors
+  - [ ] Fix CSP violation
+  - [ ] Test in Shopify checkout
+- [ ] Run SQL function audit (60 min)
+  - [ ] Execute queries in `SQL_FUNCTION_AUDIT.sql`
+  - [ ] Document findings
 
 **Afternoon (2 hours):**
 - [ ] Assess remaining blocking issues
-- [ ] Complete Shopify plugin to 100%
+- [ ] Verify Shopify plugin 100% complete
 - [ ] Create Week 1 detailed schedule
 - [ ] Document findings
 
