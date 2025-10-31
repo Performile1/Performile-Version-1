@@ -102,10 +102,17 @@ BEGIN
   
   -- If no subscription, use free tier defaults
   IF NOT FOUND THEN
-    v_plan_info := ROW(
-      'Free', 0, 2, 1, 50, 
-      FALSE, FALSE, FALSE, FALSE
-    );
+    SELECT 
+      'Free' AS plan_name,
+      0 AS tier,
+      2 AS max_couriers,
+      1 AS max_shops,
+      50 AS max_orders_per_month,
+      FALSE AS has_api_access,
+      FALSE AS has_advanced_analytics,
+      FALSE AS has_custom_templates,
+      FALSE AS has_white_label
+    INTO v_plan_info;
   END IF;
   
   -- Get current usage
