@@ -75,7 +75,14 @@ export const CourierPreferences: React.FC = () => {
         { action: 'get_selected_couriers' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setCouriers(response.data.couriers || []);
+      // Convert numeric strings to numbers
+      const couriers = (response.data.couriers || []).map((c: any) => ({
+        ...c,
+        trust_score: Number(c.trust_score) || 0,
+        display_order: Number(c.display_order) || 0,
+        priority_level: Number(c.priority_level) || 0
+      }));
+      setCouriers(couriers);
     } catch (error) {
       console.error('Error fetching couriers:', error);
       toast.error('Failed to load couriers');
@@ -94,7 +101,12 @@ export const CourierPreferences: React.FC = () => {
         { action: 'get_available_couriers' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setAvailableCouriers(response.data.couriers || []);
+      // Convert trust_score from string to number
+      const couriers = (response.data.couriers || []).map((c: any) => ({
+        ...c,
+        trust_score: Number(c.trust_score) || 0
+      }));
+      setAvailableCouriers(couriers);
     } catch (error) {
       console.error('Error fetching available couriers:', error);
     }
