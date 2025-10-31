@@ -490,6 +490,115 @@ Which email service do you prefer?
 
 ---
 
-**Last Updated:** October 25, 2025  
-**Version:** 1.0  
+---
+
+### **Rule #30: VERSION CONTROL - MAINTAIN DOCUMENT VERSIONS (HARD)**
+
+**🎯 PURPOSE:**
+Keep version history intact and track all changes systematically.
+
+**📋 REQUIRED PRACTICES:**
+
+**1. Version Numbering:**
+- Use semantic versioning: `MAJOR.MINOR`
+- MAJOR: Significant changes (e.g., V2.0 → V3.0)
+- MINOR: Daily updates, fixes, additions (e.g., V3.0 → V3.1)
+- Create new version file for each day's updates
+
+**2. Version History:**
+- Maintain complete version history in each document
+- Document what changed in each version
+- Include date and reason for update
+- Never delete previous versions
+
+**3. File Naming:**
+- Format: `DOCUMENT_NAME_V{MAJOR}.{MINOR}.md`
+- Examples:
+  - `PERFORMILE_MASTER_V3.0.md` (morning)
+  - `PERFORMILE_MASTER_V3.1.md` (end of day)
+  - `PERFORMILE_MASTER_V3.2.md` (next day)
+
+**4. When to Create New Version:**
+- ✅ End of each day (minor version bump)
+- ✅ Major strategic changes (major version bump)
+- ✅ Significant feature additions
+- ✅ Important fixes or updates
+- ❌ NOT for typo fixes or formatting
+
+**5. Version Control Block:**
+Every document must include:
+```markdown
+**Document Version:** V3.1
+**Last Updated:** October 30, 2025 (End of Day 4)
+**Previous Version:** V3.0 (October 30, 2025 - Morning)
+**Status:** [Current status]
+
+### Version History:
+- V1.0 (Date): Description
+- V2.0 (Date): Description
+- V3.0 (Date): Description
+- V3.1 (Date): Description ⭐ NEW
+```
+
+**✅ CORRECT APPROACH:**
+```bash
+# End of Day 4
+docs/2025-10-30/PERFORMILE_MASTER_V3.0.md (morning version)
+docs/2025-10-30/PERFORMILE_MASTER_V3.1.md (EOD version) ⭐ NEW
+
+# Day 5
+docs/2025-10-31/PERFORMILE_MASTER_V3.2.md (new day)
+```
+
+**❌ WRONG APPROACH:**
+```bash
+# Overwriting same file
+docs/2025-10-30/PERFORMILE_MASTER_V3.0.md (updated multiple times)
+# Lost version history!
+```
+
+**🎯 BENEFITS:**
+- ✅ Track all changes over time
+- ✅ Revert to previous versions if needed
+- ✅ Understand evolution of decisions
+- ✅ Maintain audit trail
+- ✅ Clear documentation history
+
+**📊 ENFORCEMENT:**
+- Required for all master documents
+- Required for all specification documents
+- Required for all strategy documents
+- Optional for temporary/working documents
+
+**🚨 VIOLATION CONSEQUENCES:**
+- Loss of version history
+- Confusion about what changed
+- Unable to track decisions
+- Difficulty debugging issues
+
+**💡 EXAMPLE:**
+
+**Day 4 Morning:**
+- Create `PERFORMILE_MASTER_V3.0.md`
+- Document strategic pivot to MVP
+
+**Day 4 End of Day:**
+- Create `PERFORMILE_MASTER_V3.1.md`
+- Document 2 blocking issues fixed
+- Update progress metrics
+- Keep V3.0 intact
+
+**Day 5:**
+- Create `PERFORMILE_MASTER_V3.2.md`
+- Document Day 5 progress
+- Keep V3.0 and V3.1 intact
+
+**REMEMBER:** Version control is not optional. It's a hard requirement for maintaining project integrity.
+
+---
+
+**Last Updated:** October 30, 2025 (End of Day 4)  
+**Version:** 1.26 (added RULE #30)  
+**Previous Version:** 1.25  
+**Total Rules:** 30 (18 Hard, 8 Medium, 4 Soft)  
 **Status:** Active

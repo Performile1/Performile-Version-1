@@ -11,9 +11,10 @@ target = "purchase.checkout.block.render"
 module = "./src/Checkout.jsx"
 
 [extensions.capabilities]
-# network_access = true  # Commented out for dev testing - will enable after approval
-# api_access = true
+network_access = true
+api_access = true
 shipping_address = true
+billing_address = false
 
 [extensions.settings]
 [[extensions.settings.fields]]

@@ -1,15 +1,15 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
-import OpenAI from 'openai';
+// OpenAI temporarily disabled - needs openai package installation
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
 
 /**
  * AI Chat with Courier Context API
@@ -104,15 +104,16 @@ Keep responses under 150 words unless more detail is specifically requested.`;
     // Add current message
     messages.push({ role: 'user', content: message });
 
-    // Call OpenAI
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages,
-      max_tokens: 300,
-      temperature: 0.7,
-    });
+    // Call OpenAI (temporarily disabled - needs openai package)
+    // const completion = await openai.chat.completions.create({
+    //   model: 'gpt-4',
+    //   messages,
+    //   max_tokens: 300,
+    //   temperature: 0.7,
+    // });
 
-    const reply = completion.choices[0].message.content;
+    // const reply = completion.choices[0].message.content;
+    const reply = 'AI chat temporarily unavailable. Please install openai package.';
 
     // Update AI context if order_id provided
     if (order_id) {
@@ -157,7 +158,7 @@ async function getCourierContext(orderId: string, userId: string): Promise<strin
     }
 
     // Check if user has access
-    if (order.store.owner_user_id !== userId) {
+    if (order.store && order.store[0]?.owner_user_id !== userId) {
       return '';
     }
 
@@ -179,7 +180,7 @@ async function getCourierContext(orderId: string, userId: string): Promise<strin
 
     // Build context string
     let context = `Order #${order.order_number}\n`;
-    context += `Courier: ${order.courier?.courier_name || 'Unknown'}\n`;
+    context += `Courier: ${order.courier && order.courier[0]?.courier_name || 'Unknown'}\n`;
     context += `Tracking: ${order.tracking_number}\n`;
     context += `Status: ${order.order_status}\n`;
     context += `Created: ${new Date(order.created_at).toLocaleDateString()}\n`;

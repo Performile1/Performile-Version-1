@@ -45,11 +45,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // Verify authentication
   const authHeader = req.headers.authorization;
+  console.log('[Merchant Preferences] Auth header received:', { 
+    hasHeader: !!authHeader,
+    headerLength: authHeader?.length,
+    startsWithBearer: authHeader?.startsWith('Bearer ')
+  });
+  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const token = authHeader.substring(7);
+  console.log('[Merchant Preferences] Token extracted:', {
+    tokenLength: token.length,
+    tokenStart: token.substring(0, 20) + '...',
+    tokenParts: token.split('.').length
+  });
+  
   const user = verifyToken(token);
 
   console.log('[Merchant Preferences] Token verification result:', { 

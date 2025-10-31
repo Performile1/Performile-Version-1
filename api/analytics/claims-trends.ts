@@ -126,7 +126,7 @@ export default async function handler(
     }
 
     // Transform data to match expected format
-    const transformedData = (data || []).map(row => ({
+    const transformedData = (data || []).map((row: any) => ({
       date: row.trend_date,
       total_claims: parseInt(row.total_claims) || 0,
       draft_claims: parseInt(row.draft_claims) || 0,

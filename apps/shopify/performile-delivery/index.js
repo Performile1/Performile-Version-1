@@ -26,7 +26,15 @@ const PORT = process.env.PORT || 3000;
 const shopify = shopifyApi({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET,
-  scopes: ['read_orders', 'write_orders', 'read_customers', 'read_shipping'],
+  scopes: [
+    'read_orders',
+    'write_orders', 
+    'read_customers',
+    'read_shipping',
+    'write_shipping',
+    'read_checkouts',
+    'write_checkouts'
+  ],
   hostName: process.env.HOST.replace(/https?:\/\//, ''),
   apiVersion: LATEST_API_VERSION,
   isEmbeddedApp: true,

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getPool } from '../lib/db';
 import jwt from 'jsonwebtoken';
-import { getJWTSecret } from '../../utils/env';
+import { getJwtConfig } from '../../utils/env';
 
 const pool = getPool();
 
@@ -13,7 +13,7 @@ const verifyToken = (req: VercelRequest): any => {
   }
 
   const token = authHeader.substring(7);
-  return jwt.verify(token, getJWTSecret());
+  return jwt.verify(token, getJwtConfig().secret);
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
