@@ -66,7 +66,10 @@ export const CourierPreferences: React.FC = () => {
 
   const fetchMerchantCouriers = async () => {
     try {
-      const token = localStorage.getItem('token');
+      // Get token from auth store
+      const authData = localStorage.getItem('performile-auth');
+      const token = authData ? JSON.parse(authData).state?.tokens?.accessToken : null;
+      
       const response = await axios.post(
         '/api/couriers/merchant-preferences',
         { action: 'get_selected_couriers' },
@@ -83,7 +86,9 @@ export const CourierPreferences: React.FC = () => {
 
   const fetchAvailableCouriers = async () => {
     try {
-      const token = localStorage.getItem('token');
+      // Get token from auth store
+      const authData = localStorage.getItem('performile-auth');
+      const token = authData ? JSON.parse(authData).state?.tokens?.accessToken : null;
       const response = await axios.post(
         '/api/couriers/merchant-preferences',
         { action: 'get_available_couriers' },
@@ -97,7 +102,9 @@ export const CourierPreferences: React.FC = () => {
 
   const fetchApiKey = async () => {
     try {
-      const token = localStorage.getItem('token');
+      // Get token from auth store
+      const authData = localStorage.getItem('performile-auth');
+      const token = authData ? JSON.parse(authData).state?.tokens?.accessToken : null;
       const response = await axios.get('/api/auth/api-key', {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -109,7 +116,9 @@ export const CourierPreferences: React.FC = () => {
 
   const handleAddCourier = async (courierId: string) => {
     try {
-      const token = localStorage.getItem('token');
+      // Get token from auth store
+      const authData = localStorage.getItem('performile-auth');
+      const token = authData ? JSON.parse(authData).state?.tokens?.accessToken : null;
       await axios.post(
         '/api/couriers/merchant-preferences',
         { action: 'add_courier', courier_id: courierId },
@@ -130,7 +139,9 @@ export const CourierPreferences: React.FC = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      // Get token from auth store
+      const authData = localStorage.getItem('performile-auth');
+      const token = authData ? JSON.parse(authData).state?.tokens?.accessToken : null;
       await axios.post(
         '/api/couriers/merchant-preferences',
         { action: 'remove_courier', courier_id: courierId },
@@ -146,7 +157,9 @@ export const CourierPreferences: React.FC = () => {
 
   const handleToggleActive = async (courierId: string, isActive: boolean) => {
     try {
-      const token = localStorage.getItem('token');
+      // Get token from auth store
+      const authData = localStorage.getItem('performile-auth');
+      const token = authData ? JSON.parse(authData).state?.tokens?.accessToken : null;
       await axios.post(
         '/api/couriers/merchant-preferences',
         { action: 'toggle_courier_active', courier_id: courierId, is_active: !isActive },
