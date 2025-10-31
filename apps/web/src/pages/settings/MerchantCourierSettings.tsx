@@ -28,7 +28,7 @@ import {
   Tooltip,
   Badge,
 } from '@mui/material';
-import { Star, DragIndicator, Edit, Check, Close, Add, Delete, Lock } from '@mui/icons-material';
+import { Star, DragIndicator, Edit, Check, Close, Add, Delete, Lock, Info, Upgrade } from '@mui/icons-material';
 import { CourierLogo } from '@/components/courier/CourierLogo';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -37,7 +37,6 @@ import { useNavigate } from 'react-router-dom';
 interface Courier {
   courier_id: string;
   courier_name: string;
-  company_name: string;
   logo_url: string | null;
   trust_score: number;
   is_active: boolean;
@@ -53,7 +52,6 @@ interface Courier {
 interface AvailableCourier {
   courier_id: string;
   courier_name: string;
-  company_name: string;
   logo_url: string | null;
   trust_score: number;
   total_deliveries: number;
