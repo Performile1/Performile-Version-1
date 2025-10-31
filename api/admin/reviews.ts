@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getPool } from '../lib/db';
 import jwt from 'jsonwebtoken';
-import { getJWTSecret } from '../../utils/env';
+import { getJwtConfig } from '../../utils/env';
 
 const pool = getPool();
 
@@ -13,7 +13,7 @@ const verifyAdmin = (req: VercelRequest): any => {
   }
 
   const token = authHeader.substring(7);
-  const decoded = jwt.verify(token, getJWTSecret()) as any;
+  const decoded = jwt.verify(token, getJwtConfig().secret) as any;
   
   if (decoded.role !== 'admin') {
     throw new Error('Admin access required');
