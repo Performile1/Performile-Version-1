@@ -16,9 +16,18 @@ interface JWTPayload {
 // Helper function to verify JWT token
 const verifyToken = (token: string): JWTPayload | null => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
+    if (!process.env.JWT_SECRET) {
+      console.error('[Merchant Preferences] JWT_SECRET is not set!');
+      return null;
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload;
+    console.log('[Merchant Preferences] Token decoded successfully:', { 
+      userId: decoded.userId, 
+      role: decoded.role 
+    });
     return decoded;
-  } catch (error) {
+  } catch (error: any) {
+    console.error('[Merchant Preferences] Token verification failed:', error.message);
     return null;
   }
 };
