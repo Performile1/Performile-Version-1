@@ -81,7 +81,60 @@
 
 ### **PRIMARY GOAL: Verify Fixes & Prepare Week 1**
 
-### 1. **SQL FUNCTION AUDIT (60 minutes)** 🔍
+### 1. **SHOPIFY PLUGIN ERRORS (45 minutes)** 🚨
+**Priority:** CRITICAL
+**Status:** Blocking checkout integration
+
+**Errors Found:**
+1. **401 Unauthorized Errors:**
+   - Multiple failed requests to Shopify checkout
+   - URL: `performile-teststore...&checkout_type=c1`
+   - Indicates authentication/session issues
+
+2. **Cross-Origin Autofocus Block:**
+   - `Blocked autofocusing on a <input> element in a cross-origin subframe`
+   - Browser security blocking input focus in iframe
+   - Affects user experience in checkout
+
+3. **Content Security Policy Violation:**
+   - `Refused to frame 'https://performile-teststore.myshopify.com/'`
+   - CSP directive: `frame-ancestors 'none'`
+   - Shopify blocking iframe embedding
+
+4. **404 Not Found:**
+   - Failed to load resource (index page)
+   - Possible routing or configuration issue
+
+**Root Causes to Investigate:**
+- [ ] Shopify session token not being passed correctly
+- [ ] Missing authentication headers in checkout extension
+- [ ] CSP headers preventing iframe embedding
+- [ ] Incorrect Shopify App Bridge configuration
+- [ ] Missing API scopes for checkout access
+
+**Tasks:**
+- [ ] Review Shopify App Bridge setup in checkout extension
+- [ ] Check session token generation and passing
+- [ ] Verify API scopes include checkout access
+- [ ] Update CSP headers if needed
+- [ ] Test authentication flow in Shopify admin
+- [ ] Review Shopify extension configuration
+- [ ] Check network tab for failed requests details
+
+**Files to Check:**
+- `apps/shopify/performile-delivery/extensions/checkout-ui/`
+- `apps/shopify/performile-delivery/index.js` (API scopes)
+- `apps/shopify/performile-delivery/shopify.app.toml`
+
+**Success Criteria:**
+- ✅ No 401 errors in checkout
+- ✅ No CSP violations
+- ✅ Checkout extension loads properly
+- ✅ Authentication working correctly
+
+---
+
+### 2. **SQL FUNCTION AUDIT (60 minutes)** 🔍
 **Priority:** HIGH
 **Status:** Prepared for execution
 
@@ -108,7 +161,7 @@
 
 ---
 
-### 2. **WEEK 1 BLOCKING ISSUES ASSESSMENT (45 minutes)** 📋
+### 3. **WEEK 1 BLOCKING ISSUES ASSESSMENT (45 minutes)** 📋
 
 **Remaining Blocking Issues:**
 
@@ -158,21 +211,6 @@
 - [ ] Create task list for each issue
 - [ ] Estimate time for each task
 - [ ] Plan daily schedule for Week 1
-
----
-
-### 3. **SHOPIFY PLUGIN FINAL 5% (30 minutes)** 🔌
-
-**Current Status:** 95% complete
-
-**Remaining Tasks:**
-- [ ] Set environment variables in Shopify
-- [ ] Test order webhook integration
-- [ ] Test tracking page integration
-- [ ] Document setup process
-- [ ] Create merchant onboarding guide
-
-**Goal:** Complete to 100% today
 
 ---
 
