@@ -116,7 +116,6 @@ async function getSelectedCouriers(req: VercelRequest, res: VercelResponse, merc
         selection_id,
         courier_id,
         courier_name,
-        company_name,
         logo_url,
         trust_score,
         reliability_score,
