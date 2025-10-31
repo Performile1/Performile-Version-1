@@ -1,5 +1,159 @@
 # Performile Platform - Changelog
 
+All notable changes to the Performile Platform are documented in this file.
+
+**Format:** Based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)  
+**Versioning:** Semantic Versioning (MAJOR.MINOR.PATCH)
+
+---
+
+## [1.4.2] - October 31, 2025
+
+### 🔧 Fixed
+
+#### Merchant Courier Selection System - Empty Modal Fix
+- ✅ **Fixed empty "Add Courier" modal in merchant settings**
+  - Root cause: Missing API endpoint `/api/couriers/merchant-preferences`
+  - Impact: Merchants couldn't add couriers to their checkout
+  - Solution: Created complete API endpoint with 7 actions
+
+**Database Changes:**
+- Created `merchant_courier_selections` table (8 columns)
+- Created `vw_merchant_courier_preferences` view
+- Created `get_merchant_subscription_info()` function
+- Created `get_available_couriers_for_merchant()` function
+- Added 3 indexes for performance
+- Added 5 RLS policies for security
+- Added trigger for `updated_at` column
+
+**API Endpoint Created:**
+- `POST /api/couriers/merchant-preferences`
+  - `get_subscription_info` - Get merchant's plan limits and usage
+  - `get_selected_couriers` - Get merchant's selected couriers
+  - `get_available_couriers` - Get all available couriers with selection status
+  - `add_courier` - Add courier to selection (with subscription limit check)
+  - `remove_courier` - Remove courier from selection
+  - `toggle_courier_active` - Enable/disable courier without removing
+  - `update_courier_settings` - Update custom name, priority, display order
+  - `reorder_couriers` - Update courier display order
+
+**Frontend Updates:**
+- Updated `CourierPreferences.tsx` to use new API endpoint
+- Removed references to non-existent `company_name` column
+- Added missing icon imports (`Info`, `Upgrade`)
+- Fixed TypeScript interfaces to match actual database schema
+- Added JWT authentication to all API calls
+
+**Files Modified:**
+- `apps/api/couriers/merchant-preferences.ts` (NEW - 185 lines)
+- `apps/web/src/pages/settings/CourierPreferences.tsx` (UPDATED - 8 functions)
+- `apps/web/src/pages/settings/MerchantCourierSettings.tsx` (FIXED - 2 lines)
+- `database/migrations/2025-10-31_merchant_courier_selections.sql` (NEW - 291 lines)
+- `database/migrations/2025-10-31_drop_existing_policies.sql` (NEW - 22 lines)
+
+**Documentation Created:**
+- `docs/2025-10-31/MERCHANT_COURIER_MODAL_FIX.md` (450 lines)
+- `docs/2025-10-31/DEPLOYMENT_SUMMARY.md` (Complete deployment guide)
+
+**Features:**
+- Subscription-based courier limits (Free: 2, Pro: 5, Enterprise: unlimited)
+- Visual usage indicators (e.g., "3 / 5 couriers selected")
+- Automatic upgrade prompts when limits reached
+- Custom courier names for merchant branding
+- Enable/disable couriers without removing
+- Drag-and-drop reordering (display_order)
+- TrustScore display for each courier
+- Total deliveries count per courier
+
+**Security:**
+- JWT authentication required
+- RLS policies enforce merchant_id = auth.uid()
+- Subscription limits validated server-side
+- Input sanitization on all endpoints
+
+**Testing:**
+- ✅ Database migration verified (4/4 objects created)
+- ✅ API endpoint deployed to Vercel
+- ✅ Frontend components updated
+- ✅ No breaking changes to other components
+
+**Impact:**
+- Before: Empty modal, 401 errors, merchants couldn't add couriers
+- After: Fully functional courier selection with subscription enforcement
+
+---
+
+### 📚 Framework Updates
+
+#### SPEC_DRIVEN_FRAMEWORK v1.27
+- ✅ **Added RULE #30: API Endpoint Impact Analysis (HARD)**
+  - Mandatory impact analysis before changing/removing API endpoints
+  - Search checklist for finding all dependencies
+  - Documentation requirements for breaking changes
+  - Case study from October 31, 2025 incident
+  - Enforcement guidelines and violation consequences
+
+**Rule #30 Requirements:**
+1. Search for ALL references to endpoint before changes
+2. Document ALL files that use the endpoint
+3. Check for indirect dependencies (imports, services)
+4. Update ALL affected files TOGETHER in same commit
+5. Create migration guide for public APIs
+6. Test each file after update
+7. Deploy all changes together
+
+**Search Commands Added:**
+```bash
+grep -r "/api/your-endpoint" apps/web/src/
+grep -r "your-endpoint" apps/web/src/
+find apps/web/src -name "*.tsx" -o -name "*.ts" | xargs grep -l "your-endpoint"
+```
+
+**Common Locations to Check:**
+- `apps/web/src/pages/` - Page components
+- `apps/web/src/components/` - Reusable components
+- `apps/web/src/services/` - API service wrappers
+- `apps/web/src/hooks/` - Custom hooks
+- `apps/api/` - API endpoints
+- `docs/` - API documentation
+
+**Files Modified:**
+- `SPEC_DRIVEN_FRAMEWORK.md` (v1.26 → v1.27, +197 lines)
+
+**Framework Status:**
+- Version: v1.27 (was v1.26)
+- Total Rules: 30 (was 29)
+- Hard Rules: 24 (was 23)
+- Medium Rules: 4
+- Soft Rules: 2
+
+---
+
+### 🚀 Deployment
+
+**Commit:** 06c4aa6  
+**Branch:** main  
+**Deployed:** October 31, 2025, 7:40 PM UTC+1
+
+**Changes Deployed:**
+- Database: Migration run in Supabase (4/4 objects created)
+- API: Auto-deployed to Vercel
+- Frontend: Auto-deployed to Vercel
+
+**Verification:**
+- ✅ Git commit successful
+- ✅ Pushed to GitHub
+- ✅ Vercel auto-deployment triggered
+- ✅ Database objects created
+- ✅ No breaking changes to existing features
+
+**Rollback Plan:**
+- Option 1: `git revert 06c4aa6`
+- Option 2: Run `2025-10-31_drop_existing_policies.sql`
+- Option 3: Redeploy previous commit in Vercel
+
+---
+
 ## [1.4.1] - October 12, 2025
 
 ### 🔐 Security & Access Updates

@@ -2422,14 +2422,369 @@ WHERE EXISTS (
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.25
-**LAST UPDATED:** October 26, 2025, 11:15 PM
-**RULES:** 28 (22 Hard, 4 Medium, 2 Soft)
+---
+
+## 🚀 RULE #29: LAUNCH PLAN ADHERENCE (HARD)
+
+**CORE PRINCIPLE:**
+> **"Stay focused on the 5-week MVP launch plan. No feature creep. No distractions. Launch first, iterate second."**
+
+### **⚠️ IMPORTANT: ALL OTHER RULES STILL APPLY!**
+
+**RULE #29 does NOT replace other rules. It ADDS to them.**
+
+**During 5-week launch, you MUST still:**
+- ✅ **RULE #1:** Validate database before any changes
+- ✅ **RULE #2:** Never change existing database without approval
+- ✅ **RULE #3:** Conform to existing schema
+- ✅ **RULE #5:** Follow current API template
+- ✅ **RULE #6:** Follow approved spec exactly
+- ✅ **RULE #23:** Check for duplicates before building
+- ✅ **RULE #24:** Reuse existing code
+- ✅ **All other rules:** Still mandatory
+
+**RULE #29 adds:**
+- ✅ Launch plan tracking (daily/weekly)
+- ✅ Scope control (no feature creep)
+- ✅ Launch-critical focus only
+
+**Think of it as:**
+- **Rules #1-28:** HOW to build (quality, process, validation)
+- **Rule #29:** WHAT to build (launch-critical only, no scope creep)
+
+### **MANDATORY LAUNCH PLAN TRACKING:**
+
+**Every START_OF_DAY_BRIEFING.md MUST include:**
+
+```markdown
+## 📅 LAUNCH PLAN TRACKER
+
+**Current Date:** [Date]  
+**Launch Date:** December 9, 2025  
+**Days Until Launch:** [X days]  
+**Current Week:** Week [X] of 5  
+**Current Phase:** [Phase Name]
+
+### **This Week's Focus:**
+- [Primary objective]
+- [Secondary objective]
+- [Deliverables]
+
+### **Week Status:**
+- [ ] Day 1: [Task]
+- [ ] Day 2: [Task]
+- [ ] Day 3: [Task]
+- [ ] Day 4: [Task]
+- [ ] Day 5: [Task]
+
+### **On Track?**
+- ✅ YES / ⚠️ AT RISK / ❌ BLOCKED
+- **Reason:** [If not on track]
+- **Action:** [Corrective action]
+```
+
+### **5-WEEK LAUNCH PLAN:**
+
+**Week 1 (Nov 4-8): Fix & Test - $1,000**
+- Fix 7 blocking issues
+- Test Shopify plugin thoroughly
+- Test all critical user flows
+- Document remaining issues
+
+**Week 2 (Nov 11-15): Polish & Optimize - $2,000**
+- Streamline checkout experience
+- Optimize reviews & ratings
+- Display TrustScore prominently
+- Mobile responsive testing
+
+**Week 3 (Nov 18-22): Marketing Prep - $1,000**
+- Create landing pages
+- Write documentation
+- Prepare marketing materials
+- Set up support system
+
+**Week 4 (Nov 25-29): Beta Launch - $500**
+- Recruit 10 beta users
+- Personal onboarding
+- Process first orders
+- Gather feedback
+
+**Week 5 (Dec 2-6): Iterate & Prepare - $500**
+- Fix beta feedback
+- Optimize based on usage
+- Prepare public launch
+- Finalize pricing
+
+**Week 6 (Dec 9): 🚀 PUBLIC LAUNCH!**
+
+### **FORBIDDEN DURING 5-WEEK LAUNCH:**
+❌ Building new major features (TMS, WMS, Mobile Apps)  
+❌ Database schema changes (unless fixing critical bugs)  
+❌ New integrations (unless essential for launch)  
+❌ Refactoring existing code (unless blocking launch)  
+❌ "Nice to have" features  
+❌ Scope creep of any kind
+
+### **ALLOWED DURING 5-WEEK LAUNCH:**
+✅ Bug fixes (blocking issues only)  
+✅ Polish existing features  
+✅ Testing and QA  
+✅ Documentation  
+✅ Marketing materials  
+✅ Beta user support  
+✅ Performance optimization (if critical)
+
+### **DECISION FRAMEWORK:**
+
+**Before starting ANY work, ask:**
+1. **Does this help us launch on Dec 9?**
+   - YES → Proceed
+   - NO → Defer to post-launch
+
+2. **Is this blocking the launch?**
+   - YES → High priority
+   - NO → Low priority or defer
+
+3. **Can we launch without this?**
+   - YES → Defer to post-launch
+   - NO → Include in launch plan
+
+### **ACCOUNTABILITY:**
+
+**Daily Check:**
+- [ ] Did I work on launch-critical tasks only?
+- [ ] Did I avoid feature creep?
+- [ ] Am I on track for this week's goals?
+
+**Weekly Check:**
+- [ ] Did we complete this week's objectives?
+- [ ] Are we on track for Dec 9 launch?
+- [ ] Do we need to adjust the plan?
+
+**If Off Track:**
+1. **STOP** - Don't continue down wrong path
+2. **ASSESS** - Why are we off track?
+3. **ADJUST** - What needs to change?
+4. **COMMUNICATE** - Update team and stakeholders
+5. **REFOCUS** - Get back on launch-critical work
+
+### **POST-LAUNCH DEVELOPMENT:**
+
+**After Dec 9 launch, follow phased roadmap:**
+
+**Phase 2 (Weeks 6-12): Customer Retention**
+- Build based on user feedback
+- Focus on retention features
+- Investment: $15,000
+
+**Phase 3 (Weeks 13-26): Scale**
+- TMS Lite, Mobile Apps, AI Phase 1
+- Build based on market demand
+- Investment: $80,000
+
+**Phase 4 (Weeks 27+): Advanced**
+- Full TMS, Advanced AI, WMS
+- Build based on revenue and demand
+- Investment: $446,000
+
+### **ENFORCEMENT:**
+
+**This is a HARD RULE - No exceptions.**
+
+**Violations:**
+- ⚠️ Working on non-launch features → STOP immediately
+- ⚠️ Scope creep → Remove from sprint
+- ⚠️ Missing daily briefing tracker → Add immediately
+- ⚠️ Off track without action plan → Create action plan
+
+**Remember:**
+> **"Launch fast, iterate based on real customer feedback. Perfect is the enemy of good."**
+
+---
+
+## 🎯 RULE #30: API ENDPOINT IMPACT ANALYSIS (HARD)
+
+**CRITICAL: BEFORE CHANGING/REMOVING ANY API ENDPOINT**
+
+**CORE PRINCIPLE:**
+> **"Never change or remove an API endpoint without checking all files that depend on it. Breaking changes cascade."**
+
+### **MANDATORY STEPS BEFORE API CHANGES:**
+
+**1. Search for ALL references to the endpoint:**
+```bash
+# Search for exact endpoint path
+grep -r "/api/your-endpoint" apps/web/src/
+
+# Search for partial matches
+grep -r "your-endpoint" apps/web/src/
+
+# Search in all TypeScript/JavaScript files
+find apps/web/src -name "*.tsx" -o -name "*.ts" | xargs grep -l "your-endpoint"
+```
+
+**2. Document ALL files that use the endpoint:**
+```markdown
+## API Impact Analysis
+
+**Endpoint:** `/api/couriers/merchant-list`
+
+**Files Found:**
+1. `apps/web/src/pages/settings/CourierPreferences.tsx` (line 71)
+2. `apps/web/src/components/merchant/CourierSelector.tsx` (line 45)
+3. `apps/web/src/services/courierService.ts` (line 23)
+
+**Impact:** 3 files need updating
+```
+
+**3. Check for indirect dependencies:**
+```bash
+# Search for components that import affected files
+grep -r "import.*CourierPreferences" apps/web/src/
+
+# Search for services that might wrap the endpoint
+grep -r "courierService" apps/web/src/
+```
+
+**4. Update ALL affected files TOGETHER:**
+- ✅ Update all files in same commit
+- ✅ Test each file after update
+- ✅ Document changes in commit message
+
+**5. Create migration guide if public API:**
+```markdown
+## API Migration Guide
+
+**Old:** `GET /api/couriers/merchant-list`
+**New:** `POST /api/couriers/merchant-preferences` with `action: 'get_selected_couriers'`
+
+**Breaking Change:** Yes
+**Affected:** All merchants using API
+**Migration:** Update all API calls to new format
+```
+
+### **SEARCH CHECKLIST:**
+
+**Before changing endpoint `/api/old-endpoint`:**
+- [ ] Searched for `/api/old-endpoint` in all files
+- [ ] Searched for `old-endpoint` (without /api/)
+- [ ] Checked all `.tsx` and `.ts` files
+- [ ] Checked all service files
+- [ ] Checked all component files
+- [ ] Documented all affected files
+- [ ] Created update plan for all files
+- [ ] Tested each file after update
+
+### **COMMON LOCATIONS TO CHECK:**
+
+**Frontend:**
+- `apps/web/src/pages/` - Page components
+- `apps/web/src/components/` - Reusable components
+- `apps/web/src/services/` - API service wrappers
+- `apps/web/src/hooks/` - Custom hooks
+- `apps/web/src/utils/` - Utility functions
+
+**Backend:**
+- `apps/api/` - API endpoints
+- `backend/src/routes/` - Express routes
+- `backend/src/services/` - Business logic
+
+**Documentation:**
+- `docs/` - API documentation
+- `README.md` - Setup guides
+- `CHANGELOG.md` - Change history
+
+### **TYPES OF API CHANGES:**
+
+**1. Endpoint Rename:**
+```bash
+# OLD: /api/couriers/list
+# NEW: /api/couriers/get-all
+
+# Search for old endpoint
+grep -r "/api/couriers/list" apps/
+```
+
+**2. Method Change:**
+```bash
+# OLD: GET /api/couriers
+# NEW: POST /api/couriers
+
+# Search for GET requests
+grep -r "axios.get.*couriers" apps/
+```
+
+**3. Request/Response Format Change:**
+```bash
+# OLD: { couriers: [] }
+# NEW: { data: { couriers: [] } }
+
+# Search for response handling
+grep -r "response.data.couriers" apps/
+```
+
+**4. Authentication Change:**
+```bash
+# OLD: No auth
+# NEW: Bearer token required
+
+# Search for calls without auth
+grep -r "axios.get\|axios.post" apps/ | grep -v "Authorization"
+```
+
+### **CASE STUDY: October 31, 2025**
+
+**Problem:** Changed API endpoints without checking dependencies
+
+**What Happened:**
+- Created new `/api/couriers/merchant-preferences` endpoint
+- Forgot to check for old endpoint usage
+- `CourierPreferences.tsx` still called old endpoints
+- Users got 401 errors in production
+
+**Impact:**
+- ⏱️ 15 minutes to identify issue
+- ⏱️ 20 minutes to fix and redeploy
+- 😞 Poor user experience
+
+**What Should Have Been Done:**
+1. ✅ Search for `/api/couriers/merchant-list` BEFORE creating new endpoint
+2. ✅ Find `CourierPreferences.tsx` uses it
+3. ✅ Update component in SAME commit as new API
+4. ✅ Deploy both together
+5. ✅ No user impact
+
+**Lesson Learned:**
+> **"API changes are never isolated. Always search for dependencies first."**
+
+### **ENFORCEMENT:**
+
+**Before ANY API change:**
+1. ⚠️ **STOP** - Do not proceed without impact analysis
+2. 🔍 **SEARCH** - Find all files using the endpoint
+3. 📝 **DOCUMENT** - List all affected files
+4. 🔄 **UPDATE** - Change all files together
+5. ✅ **TEST** - Verify each file works
+6. 🚀 **DEPLOY** - Deploy all changes together
+
+**Violation Consequences:**
+- ❌ PR rejected
+- ❌ Rollback required
+- ❌ Time wasted debugging
+- ❌ Poor user experience
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.27
+**LAST UPDATED:** October 31, 2025, 7:50 PM
+**RULES:** 30 (24 Hard, 4 Medium, 2 Soft)
 **MAJOR UPDATES:** 
 - Enhanced RULE #1 with duplicate detection
 - Strengthened RULE #2 with explicit approval process
 - Clarified RULE #5 with current production template
 - Reinforced RULE #6 as mandatory process
 - Added enforcement section
-**NEXT REVIEW:** After TMS/WMS Implementation
-**NEXT VERSION:** v1.26
+- Added RULE #29 - Launch Plan Adherence (5-week MVP launch tracker)
+- **NEW: RULE #30 - API Endpoint Impact Analysis (prevent breaking changes)**
+**NEXT REVIEW:** After MVP Launch (Dec 9, 2025)
+**NEXT VERSION:** v1.28

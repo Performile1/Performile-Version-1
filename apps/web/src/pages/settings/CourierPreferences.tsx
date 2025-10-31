@@ -36,7 +36,6 @@ import toast from 'react-hot-toast';
 interface Courier {
   courier_id: string;
   courier_name: string;
-  company_name: string;
   logo_url: string | null;
   trust_score: number;
   is_active: boolean;
@@ -48,7 +47,6 @@ interface Courier {
 interface AvailableCourier {
   courier_id: string;
   courier_name: string;
-  company_name: string;
   logo_url: string | null;
   trust_score: number;
 }
@@ -68,7 +66,12 @@ export const CourierPreferences: React.FC = () => {
 
   const fetchMerchantCouriers = async () => {
     try {
-      const response = await axios.get('/api/couriers/merchant-list');
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        '/api/couriers/merchant-preferences',
+        { action: 'get_selected_couriers' },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setCouriers(response.data.couriers || []);
     } catch (error) {
       console.error('Error fetching couriers:', error);
@@ -80,7 +83,12 @@ export const CourierPreferences: React.FC = () => {
 
   const fetchAvailableCouriers = async () => {
     try {
-      const response = await axios.get('/api/couriers/available');
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        '/api/couriers/merchant-preferences',
+        { action: 'get_available_couriers' },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setAvailableCouriers(response.data.couriers || []);
     } catch (error) {
       console.error('Error fetching available couriers:', error);
@@ -98,9 +106,12 @@ export const CourierPreferences: React.FC = () => {
 
   const handleAddCourier = async (courierId: string) => {
     try {
-      await axios.post('/api/couriers/add-to-merchant', {
-        courier_id: courierId,
-      });
+      const token = localStorage.getItem('token');
+      await axios.post(
+        '/api/couriers/merchant-preferences',
+        { action: 'add_courier', courier_id: courierId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       toast.success('Courier added successfully');
       fetchMerchantCouriers();
@@ -116,9 +127,12 @@ export const CourierPreferences: React.FC = () => {
     }
 
     try {
-      await axios.post('/api/couriers/remove-from-merchant', {
-        courier_id: courierId,
-      });
+      const token = localStorage.getItem('token');
+      await axios.post(
+        '/api/couriers/merchant-preferences',
+        { action: 'remove_courier', courier_id: courierId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       toast.success('Courier removed successfully');
       fetchMerchantCouriers();
@@ -129,10 +143,12 @@ export const CourierPreferences: React.FC = () => {
 
   const handleToggleActive = async (courierId: string, isActive: boolean) => {
     try {
-      await axios.post('/api/couriers/toggle-active', {
-        courier_id: courierId,
-        is_active: !isActive,
-      });
+      const token = localStorage.getItem('token');
+      await axios.post(
+        '/api/couriers/merchant-preferences',
+        { action: 'toggle_courier_active', courier_id: courierId, is_active: !isActive },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       toast.success(isActive ? 'Courier disabled' : 'Courier enabled');
       fetchMerchantCouriers();
