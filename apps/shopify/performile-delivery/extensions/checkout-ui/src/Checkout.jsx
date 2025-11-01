@@ -74,7 +74,7 @@ function CourierRatings() {
     const orderDetails = getOrderDetails();
 
     try {
-      await fetch(`${apiBaseUrl}/courier/checkout-analytics/track`, {
+      await fetch(`${apiBaseUrl}/public/checkout-analytics-track`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -109,7 +109,7 @@ function CourierRatings() {
     const orderDetails = getOrderDetails();
 
     try {
-      await fetch(`${apiBaseUrl}/courier/checkout-analytics/track`, {
+      await fetch(`${apiBaseUrl}/public/checkout-analytics-track`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -138,47 +138,47 @@ function CourierRatings() {
   };
 
   useEffect(() => {
-    // Use static demo data for now (network access not approved yet)
-    const demoData = [
-      {
-        courier_id: 'demo-1',
-        courier_name: 'PostNord',
-        trust_score: 4.5,
-        total_reviews: 1234,
-        avg_delivery_time: '1-2 days',
-        on_time_percentage: 95,
-        badge: 'excellent'
-      },
-      {
-        courier_id: 'demo-2',
-        courier_name: 'Bring',
-        trust_score: 4.3,
-        total_reviews: 987,
-        avg_delivery_time: '2-3 days',
-        on_time_percentage: 92,
-        badge: 'very_good'
-      },
-      {
-        courier_id: 'demo-3',
-        courier_name: 'Porterbuddy',
-        trust_score: 4.7,
-        total_reviews: 456,
-        avg_delivery_time: 'Same day',
-        on_time_percentage: 98,
-        badge: 'excellent'
+    // Fetch real courier data when shipping address is available
+    if (shippingAddress?.zip) {
+      fetchCourierRatings(shippingAddress.zip);
+    } else {
+      // Use demo data as fallback if no shipping address yet
+      const demoData = [
+        {
+          courier_id: 'demo-1',
+          courier_name: 'PostNord',
+          trust_score: 4.5,
+          total_reviews: 1234,
+          avg_delivery_time: '1-2 days',
+          on_time_percentage: 95,
+          badge: 'excellent'
+        },
+        {
+          courier_id: 'demo-2',
+          courier_name: 'Bring',
+          trust_score: 4.3,
+          total_reviews: 987,
+          avg_delivery_time: '2-3 days',
+          on_time_percentage: 92,
+          badge: 'very_good'
+        },
+        {
+          courier_id: 'demo-3',
+          courier_name: 'Porterbuddy',
+          trust_score: 4.7,
+          total_reviews: 456,
+          avg_delivery_time: 'Same day',
+          on_time_percentage: 98,
+          badge: 'excellent'
+        }
+      ];
+      
+      setCouriers(demoData);
+      if (demoData.length > 0) {
+        handleCourierSelect(demoData[0], 1);
       }
-    ];
-    
-    setCouriers(demoData);
-    if (demoData.length > 0) {
-      handleCourierSelect(demoData[0], 1);
     }
-    
-    // TODO: Enable when network access is approved
-    // if (shippingAddress?.zip) {
-    //   fetchCourierRatings(shippingAddress.zip);
-    // }
-  }, []);
+  }, [shippingAddress?.zip]);
 
   // Track courier displays when couriers are loaded
   useEffect(() => {

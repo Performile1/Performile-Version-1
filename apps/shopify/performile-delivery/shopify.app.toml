@@ -5,7 +5,7 @@ application_url = "https://performile-delivery-jm98ihmmx-rickard-wigrunds-projec
 embedded = true
 
 [access_scopes]
-scopes = "read_orders,write_orders,read_customers,read_shipping"
+scopes = "read_orders,write_orders,read_customers,read_shipping,write_shipping,read_checkouts,write_checkouts"
 
 [auth]
 redirect_urls = [

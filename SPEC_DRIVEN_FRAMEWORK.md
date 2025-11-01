@@ -2775,9 +2775,323 @@ grep -r "axios.get\|axios.post" apps/ | grep -v "Authorization"
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.27
-**LAST UPDATED:** October 31, 2025, 7:50 PM
-**RULES:** 30 (24 Hard, 4 Medium, 2 Soft)
+## 🚀 RULE #31: MULTI-PROJECT VERCEL ARCHITECTURE (HARD)
+
+**CORE PRINCIPLE:**
+> **"Performile uses TWO separate Vercel projects. Never confuse them. Always know which project hosts which code."**
+
+### **⚠️ CRITICAL: TWO VERCEL DEPLOYMENTS**
+
+**This is NOT a mistake. This is the CORRECT architecture.**
+
+### **PROJECT 1: MAIN PLATFORM** 🎯
+
+**URL:** `https://frontend-two-swart-31.vercel.app`
+
+**Contains:**
+- React frontend (apps/web/)
+- All API endpoints (api/)
+- Database operations
+- User authentication
+- Order management
+- Analytics
+- Reviews & ratings
+- All business logic
+
+**Deployment:**
+- Root `vercel.json` configuration
+- Builds from `apps/web/`
+- API functions in `api/`
+
+**Purpose:** Main application and all APIs
+
+---
+
+### **PROJECT 2: SHOPIFY APP** 🛍️
+
+**URL:** `https://performile-delivery-jm98ihmmx-rickard-wigrunds-projects.vercel.app`
+
+**Contains:**
+- Shopify OAuth authentication
+- Shopify webhook handling
+- Shopify App Bridge integration
+- Checkout UI extension hosting
+
+**Deployment:**
+- `apps/shopify/performile-delivery/vercel.json`
+- Minimal build (serverless functions only)
+- No frontend build needed
+
+**Purpose:** Shopify integration ONLY
+
+---
+
+### **HOW THEY WORK TOGETHER**
+
+**Architecture Flow:**
+```
+Shopify Store
+    ↓
+Shopify Checkout
+    ↓
+Checkout UI Extension (hosted on Project 2)
+    ↓
+    ├─→ Fetches courier data from: Project 1 API
+    │   https://frontend-two-swart-31.vercel.app/api/couriers/ratings-by-postal
+    │
+    └─→ Sends analytics to: Project 1 API
+        https://frontend-two-swart-31.vercel.app/api/public/checkout-analytics-track
+```
+
+**Key Points:**
+1. **Shopify App (Project 2)** handles OAuth and webhooks
+2. **Checkout Extension** runs in Shopify checkout (sandboxed)
+3. **Extension calls Main Platform API (Project 1)** for data
+4. **All business logic** lives in Project 1
+
+---
+
+### **MANDATORY RULES**
+
+#### **1. API Endpoints Always on Project 1** ✅
+
+**CORRECT:**
+```typescript
+// Shopify checkout extension calling main platform
+const apiBaseUrl = 'https://frontend-two-swart-31.vercel.app/api';
+await fetch(`${apiBaseUrl}/couriers/ratings-by-postal`);
+```
+
+**WRONG:**
+```typescript
+// ❌ Don't call Shopify app for business logic
+const apiBaseUrl = 'https://performile-delivery-jm98ihmmx...';
+await fetch(`${apiBaseUrl}/couriers/ratings-by-postal`); // Won't work!
+```
+
+#### **2. Public Endpoints for Shopify Extensions** ✅
+
+**Shopify checkout extensions:**
+- Run in sandboxed iframes
+- Cannot send JWT tokens
+- Cannot access localStorage
+- Cannot use authenticated endpoints
+
+**Solution:** Create public endpoints for Shopify
+
+**CORRECT:**
+```typescript
+// Public endpoint (no auth required)
+export default async function handler(req, res) {
+  const security = applySecurityMiddleware(req, res, {
+    requireAuth: false, // ✅ Public for Shopify
+    rateLimit: 'default'
+  });
+  // ... validation happens in code
+}
+```
+
+**WRONG:**
+```typescript
+// ❌ Requiring auth blocks Shopify extensions
+export default async function handler(req, res) {
+  const security = applySecurityMiddleware(req, res, {
+    requireAuth: true, // ❌ Shopify can't send JWT
+    rateLimit: 'default'
+  });
+}
+```
+
+#### **3. CORS Must Allow Shopify Domains** ✅
+
+**Main Platform API must allow:**
+- `https://*.myshopify.com`
+- `https://checkout.shopify.com`
+- `https://*.shopifycdn.com`
+
+**Already configured in:** `api/middleware/security.ts`
+
+#### **4. Extension Settings Configuration** ✅
+
+**Shopify extensions need configuration:**
+
+```jsx
+// In checkout extension
+const apiBaseUrl = settings.api_url || 'https://frontend-two-swart-31.vercel.app/api';
+const merchantId = settings.merchant_id;
+```
+
+**Must configure in Shopify Admin:**
+- `api_url`: Main platform URL
+- `merchant_id`: Merchant UUID from database
+
+---
+
+### **WHEN TO USE WHICH PROJECT**
+
+#### **Use Project 1 (Main Platform) for:**
+- ✅ All API endpoints
+- ✅ Database queries
+- ✅ Business logic
+- ✅ User authentication (main app)
+- ✅ Order processing
+- ✅ Analytics
+- ✅ Reviews & ratings
+- ✅ Any feature for main app
+
+#### **Use Project 2 (Shopify App) for:**
+- ✅ Shopify OAuth only
+- ✅ Shopify webhooks only
+- ✅ Checkout extension hosting only
+- ✅ Shopify App Bridge only
+
+**NEVER use Project 2 for:**
+- ❌ Business logic
+- ❌ Database operations
+- ❌ User authentication (main app)
+- ❌ General API endpoints
+
+---
+
+### **DEPLOYMENT CHECKLIST**
+
+**When deploying changes:**
+
+#### **Changes to Main Platform (Project 1):**
+```bash
+# Commit and push to main branch
+git add api/ apps/web/
+git commit -m "feat: Add new API endpoint"
+git push origin main
+
+# Vercel auto-deploys to:
+# https://frontend-two-swart-31.vercel.app
+```
+
+#### **Changes to Shopify App (Project 2):**
+```bash
+# Commit and push
+git add apps/shopify/
+git commit -m "fix: Update Shopify extension"
+git push origin main
+
+# Then redeploy Shopify app
+cd apps/shopify/performile-delivery
+npm run shopify app deploy
+
+# Vercel auto-deploys to:
+# https://performile-delivery-jm98ihmmx...
+```
+
+---
+
+### **COMMON MISTAKES TO AVOID**
+
+#### **❌ Mistake #1: Wrong API URL**
+```jsx
+// ❌ WRONG - Calling Shopify app for business logic
+const apiUrl = 'https://performile-delivery-jm98ihmmx...';
+await fetch(`${apiUrl}/api/couriers`); // Won't work!
+
+// ✅ CORRECT - Call main platform
+const apiUrl = 'https://frontend-two-swart-31.vercel.app/api';
+await fetch(`${apiUrl}/couriers/ratings-by-postal`); // Works!
+```
+
+#### **❌ Mistake #2: Requiring Auth for Shopify**
+```typescript
+// ❌ WRONG - Shopify extensions can't authenticate
+export default async function handler(req, res) {
+  const security = applySecurityMiddleware(req, res, {
+    requireAuth: true // ❌ Blocks Shopify
+  });
+}
+
+// ✅ CORRECT - Public endpoint with validation
+export default async function handler(req, res) {
+  const security = applySecurityMiddleware(req, res, {
+    requireAuth: false // ✅ Allows Shopify
+  });
+  
+  // Validate in code instead
+  if (!req.body.merchantId || !req.body.courierId) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+}
+```
+
+#### **❌ Mistake #3: Forgetting Extension Settings**
+```jsx
+// ❌ WRONG - Hardcoded URL
+const apiUrl = 'https://frontend-two-swart-31.vercel.app/api';
+
+// ✅ CORRECT - Configurable via Shopify Admin
+const apiUrl = settings.api_url || 'https://frontend-two-swart-31.vercel.app/api';
+const merchantId = settings.merchant_id; // From Shopify Admin
+```
+
+---
+
+### **CASE STUDY: November 1, 2025**
+
+**Problem:** Shopify checkout extension getting 401 errors
+
+**Investigation:**
+1. Extension was calling `/api/courier/checkout-analytics/track`
+2. Endpoint required JWT authentication
+3. Shopify checkout extensions run in sandboxed iframe
+4. Cannot send JWT tokens
+
+**Root Cause:**
+- Wrong endpoint (required auth)
+- Didn't understand two-project architecture
+- Didn't know Shopify extensions can't authenticate
+
+**Solution:**
+1. ✅ Created public endpoint: `/api/public/checkout-analytics-track`
+2. ✅ No auth required (validation in code)
+3. ✅ Updated extension to use public endpoint
+4. ✅ Documented two-project architecture
+
+**Time Saved by This Rule:**
+- Future developers won't make same mistake
+- Clear architecture documentation
+- Explicit guidelines for Shopify integration
+
+---
+
+### **DOCUMENTATION REFERENCES**
+
+**Architecture Docs:**
+- `docs/2025-11-01/SHOPIFY_TWO_VERCEL_PROJECTS.md` - Full architecture explanation
+- `docs/2025-11-01/SHOPIFY_COMPLETE_FIX_SUMMARY.md` - Deployment guide
+
+**Code Examples:**
+- `api/public/checkout-analytics-track.ts` - Public endpoint example
+- `apps/shopify/performile-delivery/extensions/checkout-ui/src/Checkout.jsx` - Extension calling main platform
+
+---
+
+### **ENFORCEMENT**
+
+**Before ANY Shopify integration work:**
+1. ⚠️ **STOP** - Review this rule
+2. 📖 **READ** - `SHOPIFY_TWO_VERCEL_PROJECTS.md`
+3. 🎯 **DECIDE** - Which project should host this code?
+4. ✅ **VERIFY** - Is API URL correct?
+5. 🔒 **CHECK** - Does Shopify need public endpoint?
+
+**Violation Consequences:**
+- ❌ 401/404 errors in production
+- ❌ Shopify integration broken
+- ❌ Time wasted debugging
+- ❌ Poor merchant experience
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.28
+**LAST UPDATED:** November 1, 2025, 8:05 PM
+**RULES:** 31 (25 Hard, 4 Medium, 2 Soft)
 **MAJOR UPDATES:** 
 - Enhanced RULE #1 with duplicate detection
 - Strengthened RULE #2 with explicit approval process
@@ -2785,6 +3099,7 @@ grep -r "axios.get\|axios.post" apps/ | grep -v "Authorization"
 - Reinforced RULE #6 as mandatory process
 - Added enforcement section
 - Added RULE #29 - Launch Plan Adherence (5-week MVP launch tracker)
-- **NEW: RULE #30 - API Endpoint Impact Analysis (prevent breaking changes)**
+- Added RULE #30 - API Endpoint Impact Analysis (prevent breaking changes)
+- **NEW: RULE #31 - Multi-Project Vercel Architecture (Shopify integration guidelines)**
 **NEXT REVIEW:** After MVP Launch (Dec 9, 2025)
-**NEXT VERSION:** v1.28
+**NEXT VERSION:** v1.29
