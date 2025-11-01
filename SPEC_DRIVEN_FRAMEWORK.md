@@ -3089,9 +3089,181 @@ const merchantId = settings.merchant_id; // From Shopify Admin
 
 ---
 
-**STATUS:** ✅ FRAMEWORK ACTIVE v1.28
-**LAST UPDATED:** November 1, 2025, 8:05 PM
-**RULES:** 31 (25 Hard, 4 Medium, 2 Soft)
+---
+
+## 🎯 RULE #32: INVESTOR DOCUMENT VERSIONING (HARD)
+
+**MANDATORY:** All investor documents must follow strict versioning and be stored in dedicated investor folder.
+
+### **INVESTOR FOLDER STRUCTURE**
+
+**Location:** `docs/investors/` (NOT date-named)
+
+**Required Files:**
+```
+docs/investors/
+├── INVESTOR_MASTER_V[MAJOR].[MINOR].md  # Master investor document
+├── EXECUTIVE_SUMMARY.md                 # 2-page overview
+├── CODE_AUDIT.md                        # Technical deep-dive
+├── FINANCIAL_MODEL.xlsx                 # Detailed projections
+├── PITCH_DECK.pdf                       # Investor presentation
+└── versions/                            # Historical versions
+    ├── INVESTOR_MASTER_V1.0.md
+    ├── INVESTOR_MASTER_V1.1.md
+    └── ...
+```
+
+### **VERSIONING RULES**
+
+**Format:** `INVESTOR_MASTER_V[MAJOR].[MINOR].md`
+
+**Version Increments:**
+- **MAJOR (X.0):** Significant business model changes, major pivots, new funding rounds
+- **MINOR (X.Y):** Platform updates, financial projection updates, metric updates
+
+**Examples:**
+- `INVESTOR_MASTER_V1.0.md` - Initial investor document
+- `INVESTOR_MASTER_V1.1.md` - Updated with Q1 metrics
+- `INVESTOR_MASTER_V2.0.md` - Series A fundraising round
+
+### **REQUIRED METADATA**
+
+Every investor master document MUST include:
+
+```markdown
+**Document Version:** V1.0
+**Platform Version:** 3.3
+**Last Updated:** November 1, 2025
+**Status:** Active
+**Previous Version:** N/A (or V1.0)
+```
+
+### **REQUIRED SECTIONS**
+
+1. **Executive Summary** - The opportunity, market, investment ask
+2. **Business Model** - Revenue streams, unit economics
+3. **Financial Projections** - 5-year projections, ROI
+4. **Technical Architecture** - Platform overview, tech stack
+5. **Competitive Advantages** - Unique value propositions
+6. **Launch Timeline** - Go-to-market plan
+7. **Success Metrics** - KPIs and milestones
+8. **Team** - Founders, advisors, future hires
+9. **Go-to-Market Strategy** - Customer acquisition plan
+10. **Use of Funds** - Investment breakdown
+11. **Growth Strategy** - Short, medium, long-term plans
+12. **Exit Strategy** - Potential exit options
+13. **Risks & Mitigation** - Key risks and how to address them
+14. **Contact Information** - How to reach team
+15. **Supporting Documents** - Links to other investor materials
+
+### **UPDATE PROCESS**
+
+**When to Create New Version:**
+
+**MAJOR Version (X.0):**
+- Changing business model
+- New funding round
+- Major pivot
+- Significant market shift
+- New product line
+
+**MINOR Version (X.Y):**
+- Updated financial projections
+- New platform metrics
+- Updated team information
+- Revised timeline
+- New success metrics
+
+**Process:**
+1. Copy current version to `versions/` folder
+2. Create new version with incremented number
+3. Update all metadata
+4. Document what changed in changelog section
+5. Update supporting documents if needed
+6. Commit with clear message
+
+### **CHANGELOG REQUIREMENT**
+
+Every new version MUST include a changelog:
+
+```markdown
+## 📝 CHANGELOG
+
+### What Changed Since V1.0
+- Updated financial projections with Q1 actuals
+- Added new success metrics
+- Updated team section with new hires
+- Revised timeline based on beta feedback
+```
+
+### **EXCEPTION TO DATE-NAMING RULE**
+
+**CRITICAL:** Investor documents are the ONLY exception to the date-naming rule.
+
+**Why:**
+- Investors need stable URLs
+- Version numbers are more meaningful than dates
+- Documents are living documents, not historical records
+- Easy to reference specific versions
+
+**All other documentation MUST still follow date-naming convention.**
+
+### **SUPPORTING DOCUMENTS**
+
+**Also in `docs/investors/`:**
+- `EXECUTIVE_SUMMARY.md` - Always keep current (no versioning)
+- `CODE_AUDIT.md` - Update with each platform release
+- `FINANCIAL_MODEL.xlsx` - Update monthly
+- `PITCH_DECK.pdf` - Update for each pitch
+
+**These files don't need versioning but should always reflect current state.**
+
+### **ENFORCEMENT**
+
+**Before ANY investor document update:**
+1. ✅ Determine if MAJOR or MINOR version change
+2. ✅ Copy current version to `versions/` folder
+3. ✅ Create new version file with incremented number
+4. ✅ Update all metadata
+5. ✅ Add changelog section
+6. ✅ Update supporting documents
+7. ✅ Commit with clear message
+
+**Commit Message Format:**
+```
+docs(investors): Update investor master to V1.1
+
+CHANGES:
+- Updated financial projections with Q1 actuals
+- Added new success metrics (50 merchants, $5k MRR)
+- Updated platform completion to 94%
+- Revised launch timeline
+
+VERSION: V1.0 → V1.1
+TYPE: Minor update
+```
+
+### **CASE STUDY**
+
+**November 1, 2025 - Initial Investor Package:**
+- Created `docs/investors/` folder
+- Created `INVESTOR_MASTER_V1.0.md`
+- Moved existing investor docs from `docs/current/investor-package/`
+- Established versioning system
+- Documented all requirements
+
+**Benefits:**
+- Clear version history for investors
+- Easy to track changes over time
+- Professional appearance
+- Stable URLs for sharing
+- Exception to date-naming rule documented
+
+---
+
+**STATUS:** ✅ FRAMEWORK ACTIVE v1.29
+**LAST UPDATED:** November 1, 2025, 11:50 PM
+**RULES:** 32 (26 Hard, 4 Medium, 2 Soft)
 **MAJOR UPDATES:** 
 - Enhanced RULE #1 with duplicate detection
 - Strengthened RULE #2 with explicit approval process
@@ -3100,6 +3272,7 @@ const merchantId = settings.merchant_id; // From Shopify Admin
 - Added enforcement section
 - Added RULE #29 - Launch Plan Adherence (5-week MVP launch tracker)
 - Added RULE #30 - API Endpoint Impact Analysis (prevent breaking changes)
-- **NEW: RULE #31 - Multi-Project Vercel Architecture (Shopify integration guidelines)**
+- Added RULE #31 - Multi-Project Vercel Architecture (Shopify integration guidelines)
+- **NEW: RULE #32 - Investor Document Versioning (dedicated folder, version control)**
 **NEXT REVIEW:** After MVP Launch (Dec 9, 2025)
-**NEXT VERSION:** v1.29
+**NEXT VERSION:** v1.30
