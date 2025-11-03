@@ -13,6 +13,15 @@
 Enable merchants to manage their own courier API credentials within Performile platform, allowing direct integration with courier services without Performile acting as a middleman.
 
 ### 1.2 Scope
+**Primary Focus:** Merchant courier credentials management
+
+**System Roles Affected:**
+- **Merchant:** Manage courier credentials, select couriers, test connections
+- **Courier:** View integration status, access booking requests (future)
+- **Admin:** Monitor credential usage, view system health, manage platform couriers
+- **Consumer:** No direct interaction (benefits from improved delivery options)
+
+**Core Features:**
 - Merchant courier selection and management
 - API credentials storage and encryption
 - Credentials testing and validation
@@ -29,12 +38,18 @@ Enable merchants to manage their own courier API credentials within Performile p
 
 ## 2. ARCHITECTURE
 
-### 2.1 System Components
+### 2.1 System Components - All Roles
 
+#### **2.1.1 MERCHANT Component**
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    MERCHANT UI                          │
 │  Settings → Couriers → Add/Edit Credentials            │
+│  - Select couriers for checkout                         │
+│  - Add API credentials (customer #, API key)            │
+│  - Test connection before save                          │
+│  - View credential status (✅ configured / ⚠️ missing)  │
+│  - Edit/remove credentials                              │
 └─────────────────┬───────────────────────────────────────┘
                   │
                   ▼
@@ -64,6 +79,124 @@ Enable merchants to manage their own courier API credentials within Performile p
 │  - Triggers (auto-update status)                       │
 └─────────────────────────────────────────────────────────┘
 ```
+
+#### **2.1.2 COURIER Component**
+```
+┌─────────────────────────────────────────────────────────┐
+│                    COURIER UI                           │
+│  Dashboard → Integration Status                         │
+│  - View merchants using their service                   │
+│  - See booking request volume                           │
+│  - Monitor API usage and errors                         │
+│  - View integration health                              │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│                 FRONTEND LAYER                          │
+│  CourierIntegrationDashboard.tsx (future)              │
+│  - Integration statistics                               │
+│  - Merchant list                                        │
+│  - API health monitoring                                │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│                   API LAYER                             │
+│  GET  /api/courier/integration-stats                   │
+│  GET  /api/courier/merchants                           │
+│  GET  /api/courier/api-health                          │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│                 DATABASE LAYER                          │
+│  - courier_api_credentials (read-only view)            │
+│  - booking_requests (volume metrics)                   │
+│  - api_logs (health monitoring)                        │
+└─────────────────────────────────────────────────────────┘
+```
+
+#### **2.1.3 ADMIN Component**
+```
+┌─────────────────────────────────────────────────────────┐
+│                     ADMIN UI                            │
+│  Admin Panel → Courier Management                       │
+│  - View all platform couriers                           │
+│  - Monitor credential usage across merchants            │
+│  - View system-wide integration health                  │
+│  - Manage platform courier accounts                     │
+│  - View credential test success rates                   │
+│  - Monitor API errors and failures                      │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│                 FRONTEND LAYER                          │
+│  AdminCourierManagement.tsx                            │
+│  - Platform courier list                                │
+│  - Credential usage statistics                          │
+│  - Integration health dashboard                         │
+│  - Error monitoring                                     │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│                   API LAYER                             │
+│  GET  /api/admin/couriers                              │
+│  GET  /api/admin/credential-stats                      │
+│  GET  /api/admin/integration-health                    │
+│  POST /api/admin/couriers (add platform courier)       │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│                 DATABASE LAYER                          │
+│  - couriers (all platform couriers)                    │
+│  - courier_api_credentials (all credentials)           │
+│  - merchant_courier_selections (all selections)        │
+│  - api_logs (system-wide monitoring)                   │
+└─────────────────────────────────────────────────────────┘
+```
+
+#### **2.1.4 CONSUMER Component**
+```
+┌─────────────────────────────────────────────────────────┐
+│                    CONSUMER UI                          │
+│  Checkout → Delivery Options                            │
+│  - View available couriers (merchant-configured)        │
+│  - See delivery times and prices                        │
+│  - Select preferred courier                             │
+│  - Track shipment after order                           │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│                 FRONTEND LAYER                          │
+│  CheckoutDeliveryOptions.tsx                           │
+│  - Courier selection widget                             │
+│  - Price comparison                                     │
+│  - Delivery time estimates                              │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│                   API LAYER                             │
+│  GET  /api/checkout/couriers (merchant's configured)   │
+│  POST /api/checkout/calculate-shipping                 │
+│  POST /api/orders/create (uses merchant credentials)   │
+└─────────────────┬───────────────────────────────────────┘
+                  │
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│                 DATABASE LAYER                          │
+│  - vw_merchant_courier_credentials (configured only)   │
+│  - orders (shipment records)                           │
+│  - tracking (shipment tracking)                        │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Note:** Consumer never sees or interacts with API credentials directly. They only benefit from the couriers that merchants have configured.
 
 ### 2.2 Data Flow
 
