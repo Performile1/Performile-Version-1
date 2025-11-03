@@ -50,6 +50,7 @@ import { OrderFilters, OrderFilterValues } from '@/components/orders/OrderFilter
 import { BulkActionsBar } from '@/components/orders/BulkActionsBar';
 import { CourierLogo } from '@/components/courier/CourierLogo';
 import { OrderDetailsDrawer } from '@/components/orders/OrderDetailsDrawer';
+import { PostalCodeInput } from '@/components/forms/PostalCodeInput';
 
 interface Order {
   order_id: string;
@@ -823,19 +824,22 @@ const Orders: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} md={4}>
-              <TextField
-                fullWidth
-                label="City"
-                value={formData.city}
-                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+              <PostalCodeInput
+                value={formData.postal_code}
+                onChange={(value) => setFormData({ ...formData, postal_code: value })}
+                onCityDetected={(city) => setFormData({ ...formData, city })}
+                country={formData.country || 'SE'}
+                label="Postal Code"
+                required
               />
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
                 fullWidth
-                label="Postal Code"
-                value={formData.postal_code}
-                onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
+                label="City"
+                value={formData.city}
+                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                helperText="Auto-filled from postal code"
               />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -844,7 +848,7 @@ const Orders: React.FC = () => {
                 label="Country"
                 value={formData.country}
                 onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                placeholder="3-letter code (e.g., USA)"
+                placeholder="SE, NO, DK, FI"
               />
             </Grid>
             <Grid item xs={12}>
