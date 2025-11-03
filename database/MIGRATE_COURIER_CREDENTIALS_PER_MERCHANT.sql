@@ -32,13 +32,32 @@ ADD COLUMN IF NOT EXISTS account_name VARCHAR(255);
 ALTER TABLE courier_api_credentials
 DROP CONSTRAINT IF EXISTS courier_api_credentials_courier_name_key;
 
--- STEP 3: Add new composite unique constraint
+-- STEP 3: Clean up existing data before adding constraint
+-- =====================================================
+-- Delete duplicate rows with all NULLs (keep only one)
+
+WITH duplicates AS (
+  SELECT credential_id,
+         ROW_NUMBER() OVER (
+           PARTITION BY courier_id, store_id, merchant_id 
+           ORDER BY created_at DESC
+         ) as rn
+  FROM courier_api_credentials
+  WHERE courier_id IS NULL AND store_id IS NULL AND merchant_id IS NULL
+)
+DELETE FROM courier_api_credentials
+WHERE credential_id IN (
+  SELECT credential_id FROM duplicates WHERE rn > 1
+);
+
+-- STEP 4: Add new composite unique constraint
 -- =====================================================
 -- One credential per courier per store (or per merchant if no store)
+-- Use partial unique index instead of constraint to handle NULLs better
 
-ALTER TABLE courier_api_credentials
-ADD CONSTRAINT courier_api_credentials_unique_per_store
-UNIQUE NULLS NOT DISTINCT (courier_id, store_id, merchant_id);
+CREATE UNIQUE INDEX IF NOT EXISTS courier_api_credentials_unique_per_store
+ON courier_api_credentials (courier_id, store_id, merchant_id)
+WHERE courier_id IS NOT NULL;
 
 -- STEP 4: Add indexes for performance
 -- =====================================================
