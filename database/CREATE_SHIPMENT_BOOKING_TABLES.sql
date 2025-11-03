@@ -108,12 +108,11 @@ CREATE POLICY merchant_view_own_bookings
 ON shipment_bookings
 FOR SELECT
 USING (
-  order_id IN (
-    SELECT order_id FROM orders 
-    WHERE store_id IN (
-      SELECT store_id FROM stores 
-      WHERE user_id = auth.uid()
-    )
+  created_by = auth.uid()
+  OR order_id IN (
+    SELECT o.order_id FROM orders o
+    INNER JOIN stores s ON o.store_id = s.store_id
+    WHERE s.user_id = auth.uid()
   )
 );
 
@@ -146,11 +145,9 @@ ON shipment_booking_errors
 FOR SELECT
 USING (
   order_id IN (
-    SELECT order_id FROM orders 
-    WHERE store_id IN (
-      SELECT store_id FROM stores 
-      WHERE user_id = auth.uid()
-    )
+    SELECT o.order_id FROM orders o
+    INNER JOIN stores s ON o.store_id = s.store_id
+    WHERE s.user_id = auth.uid()
   )
 );
 
