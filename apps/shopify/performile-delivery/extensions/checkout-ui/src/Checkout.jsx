@@ -18,6 +18,7 @@ import {
   useCartLines,
   useTotalAmount,
 } from '@shopify/ui-extensions-react/checkout';
+import { PostalCodeValidator } from './components/PostalCodeValidator';
 
 export default reactExtension(
   'purchase.checkout.block.render',
@@ -273,6 +274,21 @@ function CourierRatings() {
       <Text size="medium" emphasis="bold">
         {title}
       </Text>
+
+      {/* Postal Code Validation */}
+      {shippingAddress?.zip && (
+        <PostalCodeValidator
+          postalCode={shippingAddress.zip}
+          country={shippingAddress.countryCode || 'SE'}
+          apiBaseUrl={apiBaseUrl}
+          onValidation={(data) => {
+            // Store validation result for potential use
+            if (data.valid) {
+              console.log('Postal code validated:', data.city);
+            }
+          }}
+        />
+      )}
 
       <BlockStack spacing="tight">
         {couriers.map((courier, index) => (
