@@ -597,8 +597,320 @@ docs/2025-10-30/PERFORMILE_MASTER_V3.0.md (updated multiple times)
 
 ---
 
-**Last Updated:** October 30, 2025 (End of Day 4)  
-**Version:** 1.26 (added RULE #30)  
-**Previous Version:** 1.25  
-**Total Rules:** 30 (18 Hard, 8 Medium, 4 Soft)  
+---
+
+### **Rule #31: MANDATORY DOCUMENTATION - SPEC-DRIVEN FRAMEWORK (HARD)**
+
+**🎯 PURPOSE:**
+Every feature MUST have complete documentation before it's considered "done". No exceptions.
+
+**📋 REQUIRED DOCUMENTS FOR EVERY FEATURE:**
+
+#### **1. TECHNICAL_SPECIFICATION.md** (MANDATORY)
+**Location:** `docs/daily/YYYY-MM-DD/TECHNICAL_SPECIFICATION.md`
+
+**Required Sections:**
+```markdown
+1. OVERVIEW
+   - Purpose (what problem does this solve?)
+   - Scope with ALL 4 SYSTEM ROLES:
+     * MERCHANT: How merchants interact
+     * COURIER: How couriers interact  
+     * ADMIN: How admins monitor/manage
+     * CONSUMER: How consumers benefit
+   - Business Model (revenue impact, cost savings)
+
+2. ARCHITECTURE
+   - System Components (all 4 roles with diagrams)
+   - Data Flow (step-by-step)
+   - Integration Points
+
+3. DATABASE SCHEMA
+   - Tables (with all columns, types, constraints)
+   - Views (materialized and regular)
+   - Triggers (with logic explanation)
+   - Functions (with parameters and return types)
+   - Indexes (for performance)
+   - RLS Policies (for security)
+
+4. API SPECIFICATIONS
+   - All endpoints (GET, POST, PUT, DELETE)
+   - Request/Response formats
+   - Authentication requirements
+   - Error responses
+   - Rate limiting
+
+5. FRONTEND SPECIFICATIONS
+   - Component structure
+   - State management
+   - User flows (step-by-step)
+   - UI/UX mockups or descriptions
+
+6. SECURITY
+   - Encryption (what and how)
+   - RLS Policies (who can see what)
+   - Input Validation (what's checked)
+   - Authentication/Authorization
+
+7. ERROR HANDLING
+   - Frontend errors
+   - Backend errors
+   - Database errors
+   - Network errors
+
+8. PERFORMANCE
+   - Database indexes
+   - Caching strategy
+   - Optimization techniques
+   - Expected load times
+
+9. TESTING REQUIREMENTS
+   - Unit tests needed
+   - Integration tests needed
+   - E2E tests needed
+
+10. DEPLOYMENT PROCEDURES
+    - Migration steps
+    - Rollback plan
+    - Environment variables
+
+11. MONITORING & ALERTS
+    - Metrics to track
+    - Alerts to set up
+    - Health checks
+
+12. FUTURE ENHANCEMENTS
+    - Phase 2 features
+    - Phase 3 features
+    - Long-term roadmap
+```
+
+#### **2. TEST_PLAN.md** (MANDATORY)
+**Location:** `docs/daily/YYYY-MM-DD/TEST_PLAN.md`
+
+**Required Sections:**
+```markdown
+1. TEST OVERVIEW
+   - Scope
+   - Test Environment
+   - Test Types
+
+2. PRE-TEST CHECKLIST
+   - Environment setup
+   - Database verification
+   - API endpoint verification
+
+3. TEST CASES (minimum 15-20)
+   - Navigation tests
+   - CRUD operation tests
+   - Security tests
+   - Error handling tests
+   - UI/UX tests
+   - Performance tests
+   - Each test case must have:
+     * Test ID
+     * Priority (HIGH/MEDIUM/LOW)
+     * Steps
+     * Expected Results
+     * Status checkbox
+
+4. TEST DATA
+   - Test accounts
+   - Test credentials
+   - Sample data
+
+5. DATABASE VERIFICATION QUERIES
+   - SQL queries to verify data
+   - Expected results
+
+6. DEFECT TRACKING
+   - Template for bugs
+   - Known issues list
+
+7. TEST COMPLETION CRITERIA
+   - Exit criteria
+   - Success metrics
+
+8. TEST REPORT TEMPLATE
+```
+
+#### **3. INVESTOR_UPDATE.md** (MANDATORY)
+**Location:** `docs/daily/YYYY-MM-DD/INVESTOR_UPDATE.md`
+
+**Required Sections:**
+```markdown
+1. EXECUTIVE SUMMARY
+   - Status (On Track / At Risk / Behind)
+   - Week progress
+   - Timeline status
+
+2. STRATEGIC CONTEXT
+   - Business model clarification
+   - Why this feature matters
+   - Market impact
+
+3. BUSINESS VALUE DELIVERED
+   - Revenue impact
+   - Cost savings
+   - Competitive advantage
+   - Risk mitigation
+
+4. TECHNICAL ACHIEVEMENTS
+   - Database work (% complete)
+   - Frontend work (% complete)
+   - Backend work (% complete)
+   - Code quality metrics
+
+5. PROGRESS METRICS
+   - Week goals vs actual
+   - Launch timeline status
+   - Velocity metrics
+
+6. FINANCIAL IMPACT
+   - Cost savings realized
+   - ROI calculation
+   - Revenue projections
+
+7. RISK MANAGEMENT
+   - Risks eliminated
+   - Remaining risks
+   - Mitigation plans
+
+8. NEXT STEPS
+   - Immediate priorities (48 hours)
+   - Short-term (this week)
+   - Medium-term (next 2 weeks)
+
+9. LESSONS LEARNED
+   - What went well
+   - What could improve
+   - Process improvements
+
+10. SUCCESS CRITERIA
+    - How we measure success
+    - Completion checklist
+
+11. STAKEHOLDER ACTIONS NEEDED
+    - From investors
+    - From team
+```
+
+#### **4. END_OF_DAY_SUMMARY.md** (MANDATORY)
+**Location:** `docs/daily/YYYY-MM-DD/END_OF_DAY_SUMMARY.md`
+
+**Required Sections:**
+```markdown
+1. SESSION SUMMARY
+   - Time spent
+   - Main objective
+   - Status
+
+2. COMPLETED TASKS
+   - Database changes
+   - Frontend changes
+   - Backend changes
+   - Documentation created
+
+3. KNOWN ISSUES
+   - Critical (P0)
+   - High (P1)
+   - Medium (P2)
+   - With fix estimates
+
+4. NEXT SESSION PRIORITIES
+   - Immediate (first 30 min)
+   - Short-term (next 2 hours)
+   - Testing (next 4 hours)
+
+5. CURRENT STATUS
+   - Database: X% complete
+   - Frontend: X% complete
+   - Backend: X% complete
+   - Testing: X% complete
+   - Overall: X% complete
+
+6. FILES MODIFIED/CREATED
+   - List all files
+   - Line counts
+
+7. TECHNICAL NOTES
+   - Important decisions
+   - Database structure
+   - API endpoints
+```
+
+#### **5. IMPLEMENTATION_GUIDES** (AS NEEDED)
+**Location:** `docs/daily/YYYY-MM-DD/[FEATURE]_IMPLEMENTATION_GUIDE.md`
+
+**When to Create:**
+- Complex features
+- Multi-step processes
+- Configuration-heavy features
+
+---
+
+**🚨 ENFORCEMENT:**
+
+**❌ FEATURE IS NOT COMPLETE WITHOUT:**
+- [ ] TECHNICAL_SPECIFICATION.md
+- [ ] TEST_PLAN.md
+- [ ] INVESTOR_UPDATE.md
+- [ ] END_OF_DAY_SUMMARY.md
+
+**✅ WORKFLOW:**
+1. Create TECHNICAL_SPECIFICATION.md FIRST (before coding)
+2. Implement feature following spec
+3. Create TEST_PLAN.md
+4. Execute tests
+5. Create INVESTOR_UPDATE.md
+6. Create END_OF_DAY_SUMMARY.md
+7. Commit all documents together
+
+**🎯 QUALITY STANDARDS:**
+- **Completeness:** 100% coverage of feature
+- **Clarity:** Easy to understand for all stakeholders
+- **Actionability:** Clear next steps
+- **Investor-Ready:** Professional presentation
+- **All 4 System Roles:** Merchant, Courier, Admin, Consumer documented
+
+**📊 BENEFITS:**
+- ✅ Investors always informed
+- ✅ Team always aligned
+- ✅ Features fully specified
+- ✅ Testing comprehensive
+- ✅ Knowledge preserved
+- ✅ Onboarding easier
+- ✅ Debugging faster
+
+**🚨 VIOLATION CONSEQUENCES:**
+- Feature marked as incomplete
+- Cannot move to next feature
+- Cannot deploy to production
+- Technical debt accumulates
+
+**💡 EXAMPLE:**
+
+**November 3, 2025 - Courier Credentials Feature:**
+```
+docs/daily/2025-11-03/
+├── TECHNICAL_SPECIFICATION.md (17.5 KB) ✅
+├── TEST_PLAN.md (21.8 KB) ✅
+├── INVESTOR_UPDATE.md (15.2 KB) ✅
+├── END_OF_DAY_SUMMARY.md (8.5 KB) ✅
+├── COURIER_INTEGRATION_SUMMARY.md (8.3 KB) ✅
+├── COURIER_SETTINGS_ENHANCEMENT_COMPLETE.md (6.5 KB) ✅
+└── FINAL_SESSION_SUMMARY.md (13.2 KB) ✅
+
+Total: 90.9 KB of documentation
+Status: COMPLETE ✅
+```
+
+**REMEMBER:** Documentation is not optional. It's a hard requirement for feature completion.
+
+---
+
+**Last Updated:** November 3, 2025 (End of Day)  
+**Version:** 1.27 (added RULE #31 - Mandatory Documentation)  
+**Previous Version:** 1.26  
+**Total Rules:** 31 (19 Hard, 8 Medium, 4 Soft)  
 **Status:** Active
