@@ -15,9 +15,11 @@ Overall Week 2:     [░░░░░░░░░░]  0% Complete (Day 1 starts 
 Courier Feature:    [███████░░░] 70% Complete (from Week 1)
 Checkout Polish:    [░░░░░░░░░░]  0% Not Started
 Reviews Optimize:   [░░░░░░░░░░]  0% Not Started
-TrustScore Display: [░░░░░░░░░░]  0% Not Started
+TrustScore:         [████████░░] 80% Exists (needs prominence polish)
 Documentation:      [██████████] 100% Complete ✅
 ```
+
+**Note:** TrustScore page already exists and shows data. Week 2 focus is on making it MORE PROMINENT in checkout/selection flows.
 
 ### Week 1 Summary (Completed Last Week)
 ```
@@ -184,11 +186,11 @@ WHERE merchant_id = (SELECT user_id FROM users WHERE email = 'merchant@performil
 
 ### **Day 4 (Nov 7):**
 - [ ] Optimize reviews & ratings display
-- [ ] Improve TrustScore visibility
 - [ ] Add review filtering
 - [ ] Enhance rating breakdown
-- [ ] Display TrustScore prominently
-- [ ] Add TrustScore badges
+- [ ] Make TrustScore MORE PROMINENT in checkout
+- [ ] Add TrustScore badges to courier selection
+- [ ] Display TrustScore in courier cards
 
 ### **Day 5 (Nov 8):**
 - [ ] Final polish & bug fixes

@@ -48,7 +48,8 @@
 - ✅ Order management system
 - ✅ Store management
 - ✅ Courier management
-- ✅ TrustScore system
+- ✅ Courier API credentials management (Nov 3, 2025)
+- ✅ TrustScore system (page exists, showing data)
 - ✅ Reviews & ratings
 - ✅ Analytics dashboards
 - ✅ Service performance tracking
@@ -153,16 +154,18 @@
 - Optimize for mobile
 - Test payment flow
 
-#### **Day 4-5 (Nov 7-8): Reviews & TrustScore**
+#### **Day 4-5 (Nov 7-8): Reviews & TrustScore Prominence**
 **Reviews Optimization:**
 - Simplify review submission
 - Display reviews prominently
 - Email review requests
+- Add review filtering
 
-**TrustScore Display:**
-- Prominent TrustScore badges
-- TrustScore on courier selection
-- Store TrustScore display
+**TrustScore Prominence:** (TrustScore page already exists ✅)
+- Make TrustScore MORE PROMINENT in checkout flow
+- Add TrustScore badges to courier selection cards
+- Display TrustScore in courier comparison
+- Highlight TrustScore during courier selection
 
 **Deliverable:** Polished user experience ✅
 
