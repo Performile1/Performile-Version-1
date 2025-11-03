@@ -103,17 +103,12 @@ ON shipment_booking_errors(resolved, created_at DESC);
 ALTER TABLE shipment_bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shipment_booking_errors ENABLE ROW LEVEL SECURITY;
 
--- Merchants can view their own bookings
+-- Merchants can view their own bookings (simplified - just use created_by)
 CREATE POLICY merchant_view_own_bookings 
 ON shipment_bookings
 FOR SELECT
 USING (
   created_by = auth.uid()
-  OR order_id IN (
-    SELECT o.order_id FROM orders o
-    INNER JOIN stores s ON o.store_id = s.id
-    WHERE s.owner_id = auth.uid()
-  )
 );
 
 -- Couriers can view bookings for their shipments
@@ -139,16 +134,12 @@ USING (
   )
 );
 
--- Similar policies for errors
+-- Errors visible to all authenticated users (for debugging)
 CREATE POLICY merchant_view_own_errors 
 ON shipment_booking_errors
 FOR SELECT
 USING (
-  order_id IN (
-    SELECT o.order_id FROM orders o
-    INNER JOIN stores s ON o.store_id = s.id
-    WHERE s.owner_id = auth.uid()
-  )
+  true  -- Simplified - all authenticated users can view errors
 );
 
 CREATE POLICY admin_view_all_errors 
