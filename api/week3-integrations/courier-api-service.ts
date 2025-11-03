@@ -146,9 +146,15 @@ export class CourierApiService {
         timeout: 30000 // 30 seconds
       };
 
-      // Add authentication
+      // Add authentication based on courier
       if (credentials.api_key) {
-        config.headers!['Authorization'] = `Bearer ${credentials.api_key}`;
+        // PostNord uses 'apikey' header
+        if (courierName.toUpperCase() === 'POSTNORD') {
+          config.headers!['apikey'] = credentials.api_key;
+        } else {
+          // Most others use Bearer token
+          config.headers!['Authorization'] = `Bearer ${credentials.api_key}`;
+        }
       }
 
       // Add data for POST/PUT

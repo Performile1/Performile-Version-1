@@ -88,7 +88,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     switch (courier.courier_code?.toUpperCase()) {
       case 'POSTNORD':
         bookingData = buildPostNordBooking(order, pickup_address, delivery_address, package_details, service_type, parcel_shop_id);
-        bookingEndpoint = '/shipments/v1/book';
+        bookingEndpoint = '/rest/businesslocation/v5/booking';
         break;
 
       case 'BRING':
@@ -221,46 +221,86 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 // COURIER-SPECIFIC BOOKING BUILDERS
 // =====================================================
 
+/**
+ * Build PostNord booking request
+ * API: https://developer.postnord.com/api/docs/booking
+ * Format: PostNord Business Location API v5
+ */
 function buildPostNordBooking(order: any, pickup: any, delivery: any, pkg: any, serviceType: string, parcelShopId?: string) {
+  // PostNord requires weight in grams
+  const weightInGrams = Math.round((pkg.weight || 1) * 1000);
+  
   return {
-    shipment: {
-      sender: {
-        name: pickup.name,
+    order: {
+      senderParty: {
+        partyId: process.env.POSTNORD_CUSTOMER_NUMBER || 'PERFORMILE',
+        name: pickup.name || 'Performile Merchant',
         address: {
-          street: pickup.street,
+          streetName: pickup.street || pickup.address_line_1,
+          streetNumber: pickup.street_number || '',
           postalCode: pickup.postal_code,
           city: pickup.city,
-          country: pickup.country || 'SE'
+          countryCode: pickup.country || 'SE'
         },
-        phone: pickup.phone,
-        email: pickup.email
+        contact: {
+          name: pickup.contact_name || pickup.name,
+          email: pickup.email,
+          phone: pickup.phone
+        }
       },
-      recipient: {
+      recipientParty: {
         name: delivery.name,
         address: {
-          street: delivery.street,
+          streetName: delivery.street || delivery.address_line_1,
+          streetNumber: delivery.street_number || '',
           postalCode: delivery.postal_code,
           city: delivery.city,
-          country: delivery.country || 'SE'
+          countryCode: delivery.country || 'SE'
         },
-        phone: delivery.phone,
-        email: delivery.email
+        contact: {
+          name: delivery.contact_name || delivery.name,
+          email: delivery.email,
+          phone: delivery.phone
+        }
       },
-      parcel: {
-        weight: pkg.weight, // kg
-        length: pkg.length, // cm
-        width: pkg.width,
-        height: pkg.height,
-        value: pkg.value || 0
-      },
+      parcels: [{
+        weight: weightInGrams,
+        volume: {
+          length: pkg.length || 30,
+          width: pkg.width || 20,
+          height: pkg.height || 10
+        },
+        contents: pkg.description || 'Package',
+        valueAmount: pkg.value || 0,
+        valueCurrency: 'SEK'
+      }],
       service: {
-        id: serviceType === 'parcel_shop' ? '19' : '17', // 19 = MyPack, 17 = Home Delivery
-        addons: []
+        id: getPostNordServiceId(serviceType),
+        addOns: []
       },
-      ...(parcelShopId && { servicePointId: parcelShopId })
-    },
-    orderNumber: order.order_number || order.order_id
+      ...(parcelShopId && { 
+        servicePoint: {
+          id: parcelShopId
+        }
+      }),
+      orderReference: order.order_number || order.order_id
+    }
   };
+}
+
+/**
+ * Get PostNord service ID based on service type
+ * https://developer.postnord.com/api/docs/services
+ */
+function getPostNordServiceId(serviceType: string): string {
+  const serviceMap: Record<string, string> = {
+    'home_delivery': '17', // Varubrev 1:a-klass
+    'parcel_shop': '19',   // MyPack Collect
+    'parcel_locker': '19', // MyPack Collect (includes lockers)
+    'express': '14'        // Express Parcel
+  };
+  
+  return serviceMap[serviceType] || '17';
 }
 
 function buildBringBooking(order: any, pickup: any, delivery: any, pkg: any, serviceType: string, parcelShopId?: string) {
