@@ -3,7 +3,7 @@
  * Tests all postal code validation endpoints
  */
 
-const API_BASE = process.env.API_BASE || 'http://localhost:3000';
+const API_BASE = process.env.API_BASE || 'https://performile-platform-main.vercel.app';
 
 // Test cases
 const testCases = [
