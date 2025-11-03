@@ -265,10 +265,19 @@ ORDER BY table_name;
 
 **RESULTS:**
 ```
-| table_name                  | records |
-|-----------------------------|---------|
-|                             |         |
+| table_name              | records |
+|-------------------------|---------|
+| courier_ranking_scores  | 12      |
+| couriers                | 12      |
+| orders                  | 35      |
+| shipment_bookings       | 0       |
 ```
+
+**✅ VERIFIED:**
+- 12 couriers in database
+- 12 ranking scores calculated
+- 35 orders available for testing
+- 0 shipment bookings (expected - new table)
 
 ---
 
