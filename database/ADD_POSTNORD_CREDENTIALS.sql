@@ -15,22 +15,20 @@ FROM couriers
 WHERE courier_code = 'POSTNORD' OR courier_name ILIKE '%postnord%';
 
 -- If PostNord courier doesn't exist, create it
-INSERT INTO couriers (
-  courier_id,
-  courier_name,
-  courier_code,
-  company_name,
-  is_active,
-  created_at
-) VALUES (
-  gen_random_uuid(),
-  'PostNord',
-  'POSTNORD',
-  'PostNord AB',
-  true,
-  NOW()
-)
-ON CONFLICT (courier_code) DO NOTHING;
+-- Note: Need to provide a user_id (use a system/admin user)
+-- For now, we'll assume PostNord courier already exists
+-- If not, create it manually with proper user_id
+
+-- Check if PostNord exists
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM couriers WHERE courier_code = 'POSTNORD') THEN
+    RAISE NOTICE 'PostNord courier does not exist. Please create it first with:';
+    RAISE NOTICE 'INSERT INTO couriers (courier_id, user_id, courier_name, courier_code, is_active)';
+    RAISE NOTICE 'VALUES (gen_random_uuid(), ''YOUR_USER_ID'', ''PostNord'', ''POSTNORD'', true);';
+    RAISE EXCEPTION 'PostNord courier must be created first';
+  END IF;
+END $$;
 
 -- Get the courier_id for PostNord
 DO $$
