@@ -111,8 +111,8 @@ USING (
   created_by = auth.uid()
   OR order_id IN (
     SELECT o.order_id FROM orders o
-    INNER JOIN stores s ON o.store_id = s.store_id
-    WHERE s.user_id = auth.uid()
+    INNER JOIN stores s ON o.store_id = s.id
+    WHERE s.owner_id = auth.uid()
   )
 );
 
@@ -146,8 +146,8 @@ FOR SELECT
 USING (
   order_id IN (
     SELECT o.order_id FROM orders o
-    INNER JOIN stores s ON o.store_id = s.store_id
-    WHERE s.user_id = auth.uid()
+    INNER JOIN stores s ON o.store_id = s.id
+    WHERE s.owner_id = auth.uid()
   )
 );
 
