@@ -46,7 +46,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Extract first 3 digits for area matching (Swedish postal codes)
     const postalArea = normalizedPostal.substring(0, 3);
 
-    // Get top-rated couriers in this postal area
+    // Get top-rated couriers using DYNAMIC RANKING
     const query = `
       WITH courier_stats AS (
         SELECT 
@@ -91,7 +91,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         LEFT JOIN reviews r ON o.order_id = r.order_id
         
         WHERE 
-          -- Match postal area (first 3 digits)
+          -- Match postal area (first 3 digits) - use LIKE for orders
           (o.delivery_postal_code LIKE $1 OR o.pickup_postal_code LIKE $1)
           -- Only recent data (last 6 months)
           AND o.created_at > NOW() - INTERVAL '6 months'
@@ -99,6 +99,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           AND c.is_active = true
           
         GROUP BY c.courier_id, c.courier_name, c.company_name, c.logo_url
+      ),
+      
+      ranked_couriers AS (
+        SELECT 
+          cs.*,
+          -- Get dynamic ranking score if available
+          COALESCE(crs.final_ranking_score, 0) as ranking_score,
+          -- Calculate fallback score if no ranking data
+          (
+            (cs.trust_score / 5.0) * 0.50 +  -- 50% performance
+            (cs.on_time_percentage / 100.0) * 0.30 +  -- 30% on-time
+            (CASE WHEN cs.recent_reviews > 0 THEN 0.20 ELSE 0 END)  -- 20% activity
+          ) as fallback_score
+        FROM courier_stats cs
+        LEFT JOIN courier_ranking_scores crs 
+          ON cs.courier_id = crs.courier_id 
+          AND crs.postal_area = $3  -- Match exact 3-digit area
       )
       
       SELECT 
@@ -110,8 +127,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         total_reviews,
         recent_reviews,
         ROUND(avg_delivery_days::numeric, 1) as avg_delivery_days,
-        ROUND(on_time_percentage::numeric, 1) as on_time_percentage
-      FROM courier_stats
+        ROUND(on_time_percentage::numeric, 1) as on_time_percentage,
+        ROUND(COALESCE(ranking_score, fallback_score)::numeric, 4) as final_score
+      FROM ranked_couriers
       
       WHERE 
         -- Must have at least 5 reviews to be listed
@@ -120,19 +138,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         AND recent_reviews >= 1
         
       ORDER BY 
-        -- Primary: Trust score
+        -- PRIMARY: Dynamic ranking score (data-driven)
+        COALESCE(ranking_score, fallback_score) DESC,
+        -- SECONDARY: Trust score (fallback)
         trust_score DESC,
-        -- Secondary: Number of reviews (credibility)
-        total_reviews DESC,
-        -- Tertiary: On-time percentage
-        on_time_percentage DESC
+        -- TERTIARY: Number of reviews (credibility)
+        total_reviews DESC
         
       LIMIT $2;
     `;
 
     const result = await pool.query(query, [
-      `${postalArea}%`,
-      parseInt(limit as string, 10)
+      `${postalArea}%`,  // $1 - For LIKE matching in orders (e.g., "111%")
+      parseInt(limit as string, 10),  // $2 - Limit
+      postalArea  // $3 - Exact 3-digit area for ranking join (e.g., "111")
     ]);
 
     // If no couriers found in specific area, get top national couriers
