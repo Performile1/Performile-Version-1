@@ -20,14 +20,27 @@
 
 ---
 
-## 🎯 WEEK 2 PRIORITIES
+## 🎯 WEEK 2 PRIORITIES (UPDATED AFTER CORE FUNCTIONS AUDIT)
 
-### **Focus Areas:**
-1. **Postal Code Validation** (NEW - HIGH PRIORITY)
-2. **Checkout Experience** (Streamline & Polish)
-3. **Dynamic Courier Ranking** (NEW - HIGH VALUE)
-4. **Performance Optimization**
-5. **Mobile Experience**
+### **CRITICAL - Core Functions (MUST HAVE):**
+1. ✅ **Postal Code Validation** (DONE - 1.5h)
+2. ⏳ **Dynamic Courier Ranking** (2h) - Mon PM
+3. ⏳ **Shipment Booking API** (2-3h) - Mon PM
+4. ⏳ **Label Generation** (2-3h) - Tue AM
+5. ⏳ **Real-Time Tracking** (3-4h) - Tue PM
+
+### **HIGH - Should Have:**
+6. ⏳ **Courier Pricing** (4-6h) - Wed
+7. ⏳ **Merchant Rules Engine** (3-4h) - Thu AM
+8. ⏳ **Parcel Shops Integration** (3-4h) - Thu PM
+9. ⏳ **Customer Notifications** (2-3h) - Fri AM
+
+### **POLISH:**
+10. ⏳ **Checkout Experience** - Wed PM
+11. ⏳ **Performance Optimization** - Wed PM
+12. ⏳ **Mobile Experience** - Fri AM
+
+**Total:** 23-30.5 hours of core work + 10-15 hours buffer
 
 ---
 
@@ -80,49 +93,10 @@
 
 ---
 
-#### **Afternoon (4 hours): Performile Platform Integration**
+#### **Afternoon (4 hours): CORE FUNCTIONS - Ranking & Booking** 🔴
 
-**Tasks:**
-- [ ] **Add PostalCodeInput component** (2h)
-  - Create reusable component
-  - Debounced validation (500ms)
-  - Loading states
-  - Error handling
-  - Auto-fill city field
-  
-- [ ] **Integrate into order creation** (1h)
-  - Add to merchant order form
-  - Add to courier delivery form
-  - Validate before submission
-  - Show available couriers for postal code
-  
-- [ ] **Add to merchant settings** (30min)
-  - Store postal code preferences
-  - Default delivery areas
-  - Coverage checker
-  
-- [ ] **Test and document** (30min)
-  - Test all integration points
-  - Update user documentation
-  - Create help tooltips
-
-**Files:**
-- `apps/web/src/components/forms/PostalCodeInput.tsx`
-- `apps/web/src/pages/orders/CreateOrder.tsx`
-- `apps/web/src/pages/settings/DeliverySettings.tsx`
-
-**Success Criteria:**
-- ✅ Postal code input works in all forms
-- ✅ City auto-fills automatically
-- ✅ Validation prevents invalid submissions
-- ✅ Documentation updated
-
-**End of Day:** Postal Code Validation 100% integrated ✅
-
----
-
-### **TUESDAY, NOVEMBER 4** (8 hours)
-
+**1:00 PM - 3:00 PM: Dynamic Courier Ranking** (2h)
+**Priority:** CRITICAL  
 #### **Morning (4 hours): Dynamic Courier Ranking** 🆕
 **Priority:** HIGH  
 **Goal:** Implement self-optimizing courier ranking
