@@ -28,7 +28,7 @@ import {
   Tooltip,
   Badge,
 } from '@mui/material';
-import { Star, DragIndicator, Edit, Check, Close, Add, Delete, Lock, Info, Upgrade } from '@mui/icons-material';
+import { Star, DragIndicator, Edit, Check, Close, Add, Delete, Lock, Info, Upgrade, VpnKey, CheckCircle, Warning } from '@mui/icons-material';
 import { CourierLogo } from '@/components/courier/CourierLogo';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -47,6 +47,10 @@ interface Courier {
   total_deliveries: number;
   reliability_score: number;
   courier_code: string;
+  credentials_configured: boolean;
+  has_credentials: boolean;
+  customer_number?: string;
+  credential_id?: string;
 }
 
 interface AvailableCourier {
@@ -89,6 +93,18 @@ export const MerchantCourierSettings: React.FC = () => {
   const [editingCourier, setEditingCourier] = useState<string | null>(null);
   const [customName, setCustomName] = useState('');
   const [apiKey, setApiKey] = useState('');
+  
+  // Credentials management state
+  const [credentialsModalOpen, setCredentialsModalOpen] = useState(false);
+  const [selectedCourierForCredentials, setSelectedCourierForCredentials] = useState<Courier | null>(null);
+  const [credentialsForm, setCredentialsForm] = useState({
+    customer_number: '',
+    api_key: '',
+    account_name: '',
+    base_url: ''
+  });
+  const [testingConnection, setTestingConnection] = useState(false);
+  const [testResult, setTestResult] = useState<{success: boolean; message: string} | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -280,6 +296,92 @@ export const MerchantCourierSettings: React.FC = () => {
     if (percentage >= 100) return 'error';
     if (percentage >= 80) return 'warning';
     return 'success';
+  };
+
+  // Credentials management functions
+  const getCourierBaseUrl = (courierCode: string): string => {
+    const urls: Record<string, string> = {
+      'POSTNORD': 'https://api2.postnord.com',
+      'BRING': 'https://api.bring.com',
+      'DHL': 'https://api-eu.dhl.com',
+      'UPS': 'https://onlinetools.ups.com',
+      'FEDEX': 'https://apis.fedex.com',
+      'INSTABOX': 'https://api.instabox.io',
+      'BUDBEE': 'https://api.budbee.com',
+      'PORTERBUDDY': 'https://api.porterbuddy.com'
+    };
+    return urls[courierCode] || '';
+  };
+
+  const handleAddCredentials = (courier: Courier) => {
+    setSelectedCourierForCredentials(courier);
+    setCredentialsForm({
+      customer_number: courier.customer_number || '',
+      api_key: '',
+      account_name: '',
+      base_url: getCourierBaseUrl(courier.courier_code)
+    });
+    setTestResult(null);
+    setCredentialsModalOpen(true);
+  };
+
+  const handleTestConnection = async () => {
+    setTestingConnection(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        '/api/courier-credentials/test',
+        {
+          courier_id: selectedCourierForCredentials?.courier_id,
+          customer_number: credentialsForm.customer_number,
+          api_key: credentialsForm.api_key,
+          base_url: credentialsForm.base_url
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      setTestResult({
+        success: true,
+        message: response.data.message || 'Connection successful!'
+      });
+      toast.success('Connection test passed!');
+    } catch (error: any) {
+      setTestResult({
+        success: false,
+        message: error.response?.data?.message || 'Connection failed'
+      });
+      toast.error('Connection test failed');
+    } finally {
+      setTestingConnection(false);
+    }
+  };
+
+  const handleSaveCredentials = async () => {
+    if (!testResult?.success) {
+      toast.error('Please test the connection first');
+      return;
+    }
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        '/api/courier-credentials',
+        {
+          courier_id: selectedCourierForCredentials?.courier_id,
+          customer_number: credentialsForm.customer_number,
+          api_key: credentialsForm.api_key,
+          account_name: credentialsForm.account_name,
+          base_url: credentialsForm.base_url
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      toast.success('Credentials saved successfully');
+      setCredentialsModalOpen(false);
+      fetchSelectedCouriers(); // Refresh to show updated status
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to save credentials');
+    }
   };
 
   if (loading) {
@@ -524,8 +626,47 @@ export const MerchantCourierSettings: React.FC = () => {
                             color="primary" 
                           />
                         )}
+                        
+                        {/* Credentials Status */}
+                        {courier.credentials_configured ? (
+                          <Chip 
+                            icon={<CheckCircle />}
+                            label={`Credentials: ${courier.customer_number}`}
+                            size="small" 
+                            color="success" 
+                          />
+                        ) : (
+                          <Chip 
+                            icon={<Warning />}
+                            label="No Credentials"
+                            size="small" 
+                            color="warning" 
+                          />
+                        )}
                       </Box>
                     </Box>
+
+                    {/* Credentials Button */}
+                    {courier.credentials_configured ? (
+                      <Tooltip title="Edit credentials">
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleAddCredentials(courier)}
+                        >
+                          <VpnKey />
+                        </IconButton>
+                      </Tooltip>
+                    ) : (
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<VpnKey />}
+                        onClick={() => handleAddCredentials(courier)}
+                        sx={{ mr: 1 }}
+                      >
+                        Add Credentials
+                      </Button>
+                    )}
 
                     <Tooltip title={courier.is_active ? 'Disable' : 'Enable'}>
                       <Switch
@@ -637,6 +778,95 @@ export const MerchantCourierSettings: React.FC = () => {
         </DialogActions>
       </Dialog>
 
+      {/* Credentials Modal */}
+      <Dialog 
+        open={credentialsModalOpen} 
+        onClose={() => setCredentialsModalOpen(false)} 
+        maxWidth="sm" 
+        fullWidth
+      >
+        <DialogTitle>
+          {selectedCourierForCredentials?.credentials_configured ? 'Edit' : 'Add'} {selectedCourierForCredentials?.courier_name} Credentials
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <TextField
+              fullWidth
+              label="Customer Number"
+              value={credentialsForm.customer_number}
+              onChange={(e) => setCredentialsForm({...credentialsForm, customer_number: e.target.value})}
+              required
+              sx={{ mb: 2 }}
+              helperText={`Find this in your ${selectedCourierForCredentials?.courier_name} portal`}
+            />
+            
+            <TextField
+              fullWidth
+              label="API Key"
+              type="password"
+              value={credentialsForm.api_key}
+              onChange={(e) => setCredentialsForm({...credentialsForm, api_key: e.target.value})}
+              required
+              sx={{ mb: 2 }}
+              helperText={`Generate this in ${selectedCourierForCredentials?.courier_name} Developer Portal`}
+            />
+            
+            <TextField
+              fullWidth
+              label="Account Name (optional)"
+              value={credentialsForm.account_name}
+              onChange={(e) => setCredentialsForm({...credentialsForm, account_name: e.target.value})}
+              sx={{ mb: 2 }}
+              helperText="e.g., Main Account, Store 1"
+            />
+            
+            <TextField
+              fullWidth
+              label="API Base URL"
+              value={credentialsForm.base_url}
+              onChange={(e) => setCredentialsForm({...credentialsForm, base_url: e.target.value})}
+              sx={{ mb: 2 }}
+              helperText="API endpoint URL"
+            />
+            
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleTestConnection}
+              disabled={testingConnection || !credentialsForm.customer_number || !credentialsForm.api_key}
+              sx={{ mb: 2 }}
+            >
+              {testingConnection ? (
+                <>
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                  Testing Connection...
+                </>
+              ) : (
+                'Test Connection'
+              )}
+            </Button>
+            
+            {testResult && (
+              <Alert severity={testResult.success ? 'success' : 'error'} sx={{ mb: 2 }}>
+                {testResult.message}
+              </Alert>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCredentialsModalOpen(false)}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSaveCredentials}
+            variant="contained"
+            disabled={!testResult?.success}
+          >
+            Save Credentials
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* Instructions */}
       <Alert severity="info" icon={<Info />}>
         <Typography variant="subtitle2" gutterBottom fontWeight={600}>
@@ -647,6 +877,7 @@ export const MerchantCourierSettings: React.FC = () => {
           <li>Drag to reorder (top couriers are recommended first)</li>
           <li>Toggle switch to enable/disable without removing</li>
           <li>Customize courier names for your customers</li>
+          <li>Add API credentials to enable booking with each courier</li>
           <li>Your subscription plan determines how many couriers you can select</li>
         </ul>
       </Alert>

@@ -74,8 +74,12 @@ ON courier_api_credentials(courier_id, store_id);
 -- STEP 5: Update RLS policies
 -- =====================================================
 
--- Drop old policy if exists
+-- Drop all existing policies first
 DROP POLICY IF EXISTS courier_api_credentials_select ON courier_api_credentials;
+DROP POLICY IF EXISTS courier_api_credentials_merchant_select ON courier_api_credentials;
+DROP POLICY IF EXISTS courier_api_credentials_merchant_insert ON courier_api_credentials;
+DROP POLICY IF EXISTS courier_api_credentials_merchant_update ON courier_api_credentials;
+DROP POLICY IF EXISTS courier_api_credentials_merchant_delete ON courier_api_credentials;
 
 -- Merchants can only see their own credentials
 CREATE POLICY courier_api_credentials_merchant_select
