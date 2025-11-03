@@ -1,10 +1,25 @@
 # REVISED LAUNCH STRATEGY - MVP FIRST APPROACH
 
-**Date:** October 30, 2025  
-**Version:** 1.0  
+**Date:** November 3, 2025 (Updated)  
+**Version:** 1.1  
 **Strategy:** LAUNCH FAST → ITERATE → SCALE  
-**Framework:** SPEC_DRIVEN_FRAMEWORK v1.25  
-**Status:** 🚀 READY TO EXECUTE
+**Framework:** SPEC_DRIVEN_FRAMEWORK v1.27  
+**Status:** 🔄 IN PROGRESS - Week 2 Day 1 Complete
+
+## 📝 CHANGELOG
+
+### Version 1.1 (Nov 3, 2025)
+- ✅ Added Week 1 Day 5: Courier Credentials System (critical missing functionality)
+- ✅ Updated Week 2 with actual progress (Day 1 complete)
+- ✅ Clarified business model: Direct billing, Performile not middleman
+- ✅ Added comprehensive documentation requirements (205 KB)
+- ✅ Updated framework to v1.27 (Rule #31 - Mandatory Documentation)
+- ✅ Adjusted timeline: Week 1 80% complete, Week 2 10% complete
+
+### Version 1.0 (Oct 30, 2025)
+- Initial 5-week launch strategy
+- MVP-first approach defined
+- Week-by-week breakdown created
 
 ---
 
@@ -63,13 +78,35 @@
 
 ## 🚀 5-WEEK LAUNCH PLAN
 
-### **WEEK 1: FIX & TEST (Nov 4-8)**
+### **WEEK 1: FIX & TEST (Oct 28-Nov 1)** ✅ 80% COMPLETE
 
-#### **Day 1-2: Fix Blocking Issues**
-- Fix table naming (stores vs shops)
-- Fix ORDER-TRENDS API
-- Add missing routes
-- Test all critical paths
+#### **Day 1 (Oct 28): Initial Fixes**
+- Fixed table naming (stores vs shops)
+- Fixed ORDER-TRENDS API
+- Added missing routes
+- Tested critical paths
+
+#### **Day 5 (Nov 3): Courier Credentials System** ✅ COMPLETED
+**Critical Missing Functionality Discovered & Implemented:**
+- ✅ Per-merchant courier API credentials management
+- ✅ Database: Extended merchant_courier_selections table
+- ✅ Database: Created vw_merchant_courier_credentials view
+- ✅ Database: Added triggers for auto-status updates
+- ✅ Frontend: Enhanced MerchantCourierSettings.tsx
+- ✅ Frontend: Added credentials modal with test functionality
+- ✅ Frontend: Added status indicators (✅ configured / ⚠️ missing)
+- ✅ Security: RLS policies for credential isolation
+- ✅ Documentation: 205 KB comprehensive docs
+- ✅ Business Model: Clarified direct billing approach
+
+**Why This Was Critical:**
+- Merchants need to add their own courier API credentials
+- Direct billing between merchant and courier (Performile not middleman)
+- Enables immediate merchant onboarding with existing accounts
+- Eliminates need for Performile-courier partnerships
+- Zero financial liability for Performile
+
+**Status:** 70% complete, needs navigation fix + API verification (30 min)
 
 #### **Day 3-4: Plugin Testing**
 **Shopify Plugin:**
@@ -96,29 +133,40 @@
 
 ---
 
-### **WEEK 2: POLISH & OPTIMIZE (Nov 11-15)**
+### **WEEK 2: POLISH & OPTIMIZE (Nov 4-8)** 🔄 IN PROGRESS
 
-#### **Essential Features Only:**
+#### **Day 1 (Nov 3): Completed** ✅
+- Courier credentials system (from Week 1 carryover)
+- Comprehensive documentation
+- Spec-driven framework enforcement
 
-**1. Checkout Experience (2 days)**
+#### **Day 2 (Nov 4): Planned**
+**Morning:**
+- Complete courier credentials (fix navigation + API verification)
+- Test end-to-end flow
+- Create merchant onboarding guide
+
+**Afternoon:**
+- Audit checkout flow
+- Identify optimization opportunities
+- Create checkout improvement plan
+
+#### **Day 3-4 (Nov 5-6): Checkout Polish**
 - Streamline checkout flow
-- Add courier selection
-- Add delivery time selection
-- Add special instructions
+- Improve courier selection UX
+- Add progress indicators
+- Optimize for mobile
 - Test payment flow
-- Mobile-responsive checkout
 
-**2. Ratings & Reviews (2 days)**
+#### **Day 5-6 (Nov 7-8): Reviews & TrustScore**
+**Reviews Optimization:**
 - Simplify review submission
-- Add photo upload
-- Email review requests
 - Display reviews prominently
-- Review moderation tools
+- Email review requests
 
-**3. TrustScore Display (1 day)**
+**TrustScore Display:**
 - Prominent TrustScore badges
-- TrustScore explanation page
-- Courier TrustScore on selection
+- TrustScore on courier selection
 - Store TrustScore display
 
 **Deliverable:** Polished user experience ✅
