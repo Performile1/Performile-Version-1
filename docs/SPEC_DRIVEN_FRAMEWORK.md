@@ -909,8 +909,115 @@ Status: COMPLETE ✅
 
 ---
 
-**Last Updated:** November 3, 2025 (End of Day)  
-**Version:** 1.27 (added RULE #31 - Mandatory Documentation)  
-**Previous Version:** 1.26  
-**Total Rules:** 31 (19 Hard, 8 Medium, 4 Soft)  
+### **Rule #32: END-OF-WEEK PLAYWRIGHT TESTING (HARD)**
+
+**🎯 PURPOSE:**
+Every week MUST end with comprehensive Playwright E2E testing of all features developed that week. No exceptions.
+
+**📅 SCHEDULE:**
+- **Frequency:** Every Friday (end of week)
+- **Scope:** All features developed during the week
+- **Environment:** Vercel deployment (production-like)
+- **Framework:** Playwright E2E tests
+
+**✅ REQUIRED TEST COVERAGE:**
+1. ✅ Navigation tests
+2. ✅ UI component rendering
+3. ✅ Form validation
+4. ✅ API endpoint integration
+5. ✅ User flow completion
+6. ✅ Error handling
+7. ✅ Cross-browser (Chromium, Firefox, WebKit)
+8. ✅ Mobile responsive (Mobile Chrome, Mobile Safari, iPad)
+
+**📁 REQUIRED DELIVERABLES:**
+
+**1. Test File:**
+- Location: `tests/e2e/[feature-name].spec.ts`
+- Template structure with helper functions
+- Minimum 5 tests per feature
+- All 6 browser configurations
+
+**2. Test Script:**
+- Location: `scripts/test-[feature].ps1`
+- Interactive menu (run all, specific, headed, debug)
+- Easy execution for team members
+
+**3. Test Documentation:**
+- Test guide: `docs/daily/[date]/PLAYWRIGHT_TEST_GUIDE.md`
+- Test results summary
+- Known issues documented
+
+**🔧 TEST CONFIGURATION:**
+
+```typescript
+// Required configuration
+const BASE_URL = process.env.BASE_URL || 'https://frontend-two-swart-31.vercel.app';
+const TEST_TIMEOUT = 60000; // 60 seconds for Vercel cold starts
+
+// Required browsers
+- Chromium
+- Firefox
+- WebKit
+- Mobile Chrome
+- Mobile Safari
+- iPad
+```
+
+**📋 END-OF-WEEK CHECKLIST:**
+
+**Every Friday:**
+- [ ] Run all Playwright tests for week's features
+- [ ] Document test results (pass/fail counts)
+- [ ] Fix critical failures before weekend
+- [ ] Document known issues for non-critical failures
+- [ ] Update test suite for next week
+- [ ] Commit test files to repository
+
+**🚨 TEST FAILURE PROTOCOL:**
+
+**If tests fail:**
+1. Verify components are deployed to Vercel
+2. Check for timeout issues (increase if needed)
+3. Verify test selectors match actual UI
+4. Check test user data exists
+5. Document issue if not critical
+6. Fix before next deployment if critical
+
+**❌ FORBIDDEN:**
+- Skipping end-of-week testing
+- Deploying without tests
+- Ignoring test failures
+- Not documenting test results
+- Writing tests without running them
+
+**✅ BENEFITS:**
+- Catch regressions early
+- Verify deployments work
+- Document feature functionality
+- Automated quality assurance
+- Cross-browser compatibility verified
+- Confidence in production deployments
+
+**📊 EXAMPLE (Courier Credentials - Nov 4, 2025):**
+
+```
+Tests Created: 10 tests × 6 browsers = 60 total tests
+File: tests/e2e/courier-credentials.spec.ts
+Script: scripts/test-courier-credentials.ps1
+Guide: docs/daily/2025-11-04/PLAYWRIGHT_TEST_GUIDE.md
+Results: Components deployed ✅, Tests ready ✅, Minor adjustments needed
+```
+
+**💡 KEY LESSON:**
+Components can be deployed but tests may need selector/timeout adjustments. This is normal and expected. Document and fix iteratively.
+
+**REMEMBER:** End-of-week testing is not optional. It's a hard requirement for quality assurance.
+
+---
+
+**Last Updated:** November 4, 2025 (Week 2 Day 1)  
+**Version:** 1.28 (added RULE #32 - End-of-Week Playwright Testing)  
+**Previous Version:** 1.27  
+**Total Rules:** 32 (20 Hard, 8 Medium, 4 Soft)  
 **Status:** Active
