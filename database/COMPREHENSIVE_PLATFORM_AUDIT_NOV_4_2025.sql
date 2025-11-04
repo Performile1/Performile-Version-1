@@ -15,8 +15,7 @@ SELECT
     COUNT(*) as count
 FROM information_schema.tables 
 WHERE table_schema = 'public' 
-  AND table_type = 'BASE TABLE'
-ORDER BY table_name;
+  AND table_type = 'BASE TABLE';
 
 -- List all tables
 SELECT 
