@@ -129,8 +129,8 @@ LIMIT 10;
 -- 12. UNUSED INDEXES
 -- ============================================
 SELECT 
-    tablename,
-    indexname,
+    relname as tablename,
+    indexrelname as indexname,
     idx_scan as times_used,
     pg_size_pretty(pg_relation_size(indexrelid)) as index_size
 FROM pg_stat_user_indexes
