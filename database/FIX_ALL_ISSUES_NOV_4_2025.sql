@@ -45,15 +45,23 @@ FOR INSERT
 WITH CHECK (auth.role() = 'authenticated');
 
 -- ============================================
--- PART 2: REMOVE UNUSED INDEXES (5 indexes)
+-- PART 2: REMOVE UNUSED INDEXES (3 indexes)
 -- ============================================
 
--- These indexes are never used and waste 80 kB total
-DROP INDEX IF EXISTS public.users_stripe_customer_id_key;
+-- Note: After review, only drop truly unused indexes
+-- Keep UNIQUE constraint indexes (users_stripe_customer_id_key, users_api_key_key)
+-- as they enforce data integrity
+
+-- Drop only regular unused indexes (not constraints)
 DROP INDEX IF EXISTS public.idx_reviews_store_id;
-DROP INDEX IF EXISTS public.users_api_key_key;
 DROP INDEX IF EXISTS public.idx_users_api_key;
 DROP INDEX IF EXISTS public.idx_leads_status;
+
+-- KEEP these (they're UNIQUE constraints, needed for data integrity):
+-- - users_stripe_customer_id_key (ensures unique Stripe IDs)
+-- - users_api_key_key (ensures unique API keys)
+
+-- Total space saved: ~48 kB (3 indexes × 16 kB)
 
 -- ============================================
 -- PART 3: FIX DUPLICATE FUNCTIONS
