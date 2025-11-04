@@ -78,15 +78,25 @@ ORDER BY p.proname;
 
 -- Verify only one version remains for each function
 SELECT 
-    proname as function_name,
-    COUNT(*) as version_count,
-    string_agg(pg_get_function_identity_arguments(oid), ' | ') as all_signatures
+    p.proname as function_name,
+    COUNT(*) as version_count
 FROM pg_proc p
 JOIN pg_namespace n ON p.pronamespace = n.oid
 WHERE n.nspname = 'public'
   AND p.proname IN ('evaluate_rule_conditions', 'get_available_couriers_for_merchant')
-GROUP BY proname;
+GROUP BY p.proname;
 
 -- Should show count = 1 for each function after cleanup
+
+-- List remaining versions
+SELECT 
+    p.proname as function_name,
+    p.oid,
+    pg_get_function_identity_arguments(p.oid) as signature
+FROM pg_proc p
+JOIN pg_namespace n ON p.pronamespace = n.oid
+WHERE n.nspname = 'public'
+  AND p.proname IN ('evaluate_rule_conditions', 'get_available_couriers_for_merchant')
+ORDER BY p.proname, p.oid;
 
 SELECT 'DUPLICATE FUNCTION CHECK COMPLETE' as status, NOW() as timestamp;
