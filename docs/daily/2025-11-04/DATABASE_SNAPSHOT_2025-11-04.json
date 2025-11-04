@@ -1,0 +1,28 @@
+[
+  {
+    "database_snapshot": {
+      "snapshot_date": "2025-11-04T19:35:04.643076+00:00",
+      "database_name": "postgres",
+      "database_version": "PostgreSQL 17.6 on aarch64-unknown-linux-gnu, compiled by gcc (GCC) 13.2.0, 64-bit",
+      "summary": {
+        "total_tables": 96,
+        "total_views": 10,
+        "total_materialized_views": 5,
+        "total_functions": 877,
+        "unique_function_names": 683,
+        "total_extensions": 8,
+        "total_indexes": 558,
+        "total_rls_policies": 185,
+        "total_triggers": 31,
+        "total_foreign_keys": 171,
+        "total_unique_constraints": 57,
+        "total_check_constraints": 378,
+        "total_sequences": 12,
+        "total_enums": 4,
+        "rls_enabled_tables": 95,
+        "database_size": "29 MB"
+      },
+      "note": "Complete database snapshot generated via CREATE_DATABASE_SNAPSHOT.sql. Contains all metadata for 96 tables, 683 functions, 558 indexes, 185 RLS policies, and performance metrics. Security: 99% RLS coverage (95/96 tables). Only spatial_ref_sys lacks RLS (PostGIS system table)."
+    }
+  }
+]
