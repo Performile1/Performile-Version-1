@@ -229,8 +229,8 @@ SELECT json_build_object(
         'total_indexes', (SELECT COUNT(*) FROM pg_indexes WHERE schemaname = 'public'),
         'unused_indexes', (
             SELECT json_agg(json_build_object(
-                'table_name', schemaname || '.' || tablename,
-                'index_name', indexname
+                'table_name', schemaname || '.' || relname,
+                'index_name', indexrelname
             ))
             FROM pg_stat_user_indexes
             WHERE schemaname = 'public' AND idx_scan = 0
@@ -238,8 +238,8 @@ SELECT json_build_object(
         ),
         'most_used_indexes', (
             SELECT json_agg(json_build_object(
-                'table_name', schemaname || '.' || tablename,
-                'index_name', indexname,
+                'table_name', schemaname || '.' || relname,
+                'index_name', indexrelname,
                 'times_used', idx_scan
             ) ORDER BY idx_scan DESC)
             FROM pg_stat_user_indexes
