@@ -95,16 +95,16 @@ ORDER BY p.proname;
 -- 7. FIND DUPLICATE/SIMILAR FUNCTIONS
 -- ============================================
 SELECT 
-    proname as function_name,
+    p.proname as function_name,
     COUNT(*) as occurrences,
-    string_agg(pg_get_function_arguments(oid), ' | ') as all_signatures
+    string_agg(pg_get_function_arguments(p.oid), ' | ') as all_signatures
 FROM pg_proc p
 JOIN pg_namespace n ON p.pronamespace = n.oid
 WHERE n.nspname = 'public'
   AND p.prokind = 'f'
-GROUP BY proname
+GROUP BY p.proname
 HAVING COUNT(*) > 1
-ORDER BY COUNT(*) DESC, proname;
+ORDER BY COUNT(*) DESC, p.proname;
 
 -- ============================================
 -- 8. COUNT ALL VIEWS
