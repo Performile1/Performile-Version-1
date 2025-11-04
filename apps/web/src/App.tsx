@@ -59,6 +59,7 @@ import Home from './pages/Home';
 import Contact from './pages/Contact';
 import Info from './pages/Info';
 import { ComingSoon } from './components/ComingSoon';
+import { CheckoutDemo } from './pages/CheckoutDemo';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -201,6 +202,7 @@ const App: React.FC = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/info" element={<Info />} />
+            <Route path="/checkout-demo" element={<CheckoutDemo />} />
             <Route path="/review/:token" element={<PublicReview />} />
             <Route path="/track/:trackingNumber?" element={<TrackingPage />} />
             {/* Public subscription plans page (for non-logged-in users) */}
