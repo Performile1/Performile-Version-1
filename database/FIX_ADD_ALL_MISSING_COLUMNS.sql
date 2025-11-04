@@ -224,7 +224,7 @@ CREATE POLICY parcel_location_cache_update
 ON parcel_location_cache FOR UPDATE 
 USING (true);
 
-RAISE NOTICE '✅ RLS policies created';
+-- RLS policies created successfully
 
 -- Final verification
 DO $$
