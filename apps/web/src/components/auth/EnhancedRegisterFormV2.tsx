@@ -361,14 +361,14 @@ export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ on
             <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
               {subscriptionPlans.filter(p => p.user_type === userRole).map((plan) => (
                 <Card
-                  key={plan.subscription_plan_id}
+                  key={plan.plan_id}
                   sx={{
-                    border: selectedPlanId === plan.subscription_plan_id ? '2px solid' : '1px solid',
-                    borderColor: selectedPlanId === plan.subscription_plan_id ? 'primary.main' : 'divider',
+                    border: selectedPlanId === plan.plan_id ? '2px solid' : '1px solid',
+                    borderColor: selectedPlanId === plan.plan_id ? 'primary.main' : 'divider',
                     cursor: 'pointer',
                     '&:hover': { borderColor: 'primary.main' }
                   }}
-                  onClick={() => setSelectedPlanId(plan.subscription_plan_id)}
+                  onClick={() => setSelectedPlanId(plan.plan_id)}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
