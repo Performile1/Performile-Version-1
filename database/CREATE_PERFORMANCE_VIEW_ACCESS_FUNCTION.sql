@@ -26,17 +26,14 @@ RETURNS TABLE (
 DECLARE
     v_plan_name VARCHAR(50);
     v_user_role VARCHAR(50);
-    v_user_country VARCHAR(2);
 BEGIN
     -- Get user's subscription plan and role
     SELECT 
         sp.plan_name,
-        u.user_role,
-        u.country
+        u.user_role
     INTO 
         v_plan_name,
-        v_user_role,
-        v_user_country
+        v_user_role
     FROM users u
     LEFT JOIN user_subscriptions us ON u.user_id = us.user_id
     LEFT JOIN subscription_plans sp ON us.plan_id = sp.plan_id
@@ -51,15 +48,15 @@ BEGIN
     IF v_user_role = 'merchant' THEN
         CASE v_plan_name
             WHEN 'Starter' THEN
-                -- Starter: Own country only, 30 days, 100 rows
+                -- Starter: Nordic countries only, 30 days, 100 rows
                 RETURN QUERY SELECT 
-                    (p_country_code = v_user_country AND p_days_back <= 30)::BOOLEAN,
+                    (p_country_code IN ('NO', 'SE', 'DK', 'FI') AND p_days_back <= 30)::BOOLEAN,
                     CASE 
-                        WHEN p_country_code != v_user_country THEN 'Upgrade to Professional for multi-country access'
+                        WHEN p_country_code NOT IN ('NO', 'SE', 'DK', 'FI') THEN 'Upgrade to Professional for global access'
                         WHEN p_days_back > 30 THEN 'Upgrade to Professional for 90-day history'
                         ELSE 'Access granted'
                     END,
-                    1, -- max countries
+                    4, -- max countries (Nordic)
                     30, -- max days
                     100; -- max rows
                     
@@ -88,9 +85,9 @@ BEGIN
             ELSE
                 -- Default to Starter limits
                 RETURN QUERY SELECT 
-                    (p_country_code = v_user_country AND p_days_back <= 30)::BOOLEAN,
-                    'Free plan - limited access',
-                    1, 30, 100;
+                    (p_country_code IN ('NO', 'SE', 'DK', 'FI') AND p_days_back <= 30)::BOOLEAN,
+                    'Free plan - limited to Nordic countries',
+                    4, 30, 100;
         END CASE;
         
     -- COURIER LIMITS
