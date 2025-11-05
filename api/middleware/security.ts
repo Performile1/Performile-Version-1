@@ -10,7 +10,8 @@ const CORS_WHITELIST = [
   'https://www.performile.com',
   'https://performile.vercel.app',
   'http://localhost:3000',
-  'http://localhost:5173'
+  'http://localhost:5173',
+  'http://127.0.0.1:49392'
 ];
 
 // Rate limiting configuration
@@ -79,6 +80,7 @@ export const corsMiddleware = (req: VercelRequest, res: VercelResponse): boolean
 
   // Allow all origins in development
   res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   return true;
