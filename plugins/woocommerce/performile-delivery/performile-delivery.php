@@ -3,7 +3,7 @@
  * Plugin Name: Performile Delivery Ratings
  * Plugin URI: https://performile.com
  * Description: Show top-rated couriers in checkout based on customer location. Increase trust and conversions with verified delivery ratings.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Performile
  * Author URI: https://performile.com
  * License: GPL v2 or later
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('PERFORMILE_VERSION', '1.0.0');
+define('PERFORMILE_VERSION', '1.1.0');
 define('PERFORMILE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PERFORMILE_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('PERFORMILE_API_URL', 'https://frontend-two-swart-31.vercel.app/api');
@@ -66,6 +66,9 @@ function performile_activate() {
     add_option('performile_num_couriers', '3');
     add_option('performile_position', 'before_payment');
     add_option('performile_title', 'Top Rated Couriers in Your Area');
+    add_option('performile_show_logos', '1');
+    add_option('performile_margin_type', 'percentage');
+    add_option('performile_margin_value', '0');
 }
 
 // Deactivation hook

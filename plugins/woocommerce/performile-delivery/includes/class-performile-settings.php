@@ -38,6 +38,9 @@ class Performile_Settings {
         register_setting('performile_settings', 'performile_num_couriers');
         register_setting('performile_settings', 'performile_position');
         register_setting('performile_settings', 'performile_title');
+        register_setting('performile_settings', 'performile_show_logos');
+        register_setting('performile_settings', 'performile_margin_type');
+        register_setting('performile_settings', 'performile_margin_value');
     }
     
     /**
@@ -137,6 +140,72 @@ class Performile_Settings {
                                     <?php _e('Before Order Notes', 'performile-delivery'); ?>
                                 </option>
                             </select>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th scope="row">
+                            <label for="performile_show_logos"><?php _e('Show Courier Logos', 'performile-delivery'); ?></label>
+                        </th>
+                        <td>
+                            <label>
+                                <input type="checkbox" 
+                                       id="performile_show_logos" 
+                                       name="performile_show_logos" 
+                                       value="1" 
+                                       <?php checked(get_option('performile_show_logos', '1'), '1'); ?>>
+                                <?php _e('Display courier logos in checkout', 'performile-delivery'); ?>
+                            </label>
+                            <p class="description"><?php _e('Show professional courier logos for better brand recognition', 'performile-delivery'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+                
+                <h2><?php _e('Pricing Settings', 'performile-delivery'); ?></h2>
+                <p><?php _e('Add your margin on top of courier prices to cover handling fees and profit.', 'performile-delivery'); ?></p>
+                
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">
+                            <label for="performile_margin_type"><?php _e('Margin Type', 'performile-delivery'); ?></label>
+                        </th>
+                        <td>
+                            <select id="performile_margin_type" name="performile_margin_type">
+                                <option value="percentage" <?php selected(get_option('performile_margin_type', 'percentage'), 'percentage'); ?>>
+                                    <?php _e('Percentage (%)', 'performile-delivery'); ?>
+                                </option>
+                                <option value="fixed" <?php selected(get_option('performile_margin_type'), 'fixed'); ?>>
+                                    <?php _e('Fixed Amount', 'performile-delivery'); ?>
+                                </option>
+                            </select>
+                            <p class="description"><?php _e('Choose how to calculate your margin', 'performile-delivery'); ?></p>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th scope="row">
+                            <label for="performile_margin_value"><?php _e('Margin Value', 'performile-delivery'); ?></label>
+                        </th>
+                        <td>
+                            <input type="number" 
+                                   id="performile_margin_value" 
+                                   name="performile_margin_value" 
+                                   value="<?php echo esc_attr(get_option('performile_margin_value', '0')); ?>" 
+                                   step="0.01"
+                                   min="0"
+                                   class="small-text">
+                            <span id="performile_margin_unit">%</span>
+                            <p class="description">
+                                <?php _e('Example: 15% margin on $100 = $115 final price', 'performile-delivery'); ?>
+                            </p>
+                            <script>
+                                jQuery(document).ready(function($) {
+                                    $('#performile_margin_type').on('change', function() {
+                                        var unit = $(this).val() === 'percentage' ? '%' : '<?php echo get_woocommerce_currency_symbol(); ?>';
+                                        $('#performile_margin_unit').text(unit);
+                                    }).trigger('change');
+                                });
+                            </script>
                         </td>
                     </tr>
                 </table>
