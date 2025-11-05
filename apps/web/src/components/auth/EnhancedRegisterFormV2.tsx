@@ -371,18 +371,81 @@ export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ on
                   onClick={() => setSelectedPlanId(plan.plan_id)}
                 >
                   <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      {plan.plan_name}
-                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', mb: 1 }}>
+                      <Typography variant="h6" gutterBottom>
+                        {plan.plan_name}
+                      </Typography>
+                      {plan.is_popular && (
+                        <Chip label="Popular" color="primary" size="small" />
+                      )}
+                    </Box>
                     <Typography variant="h4" color="primary" gutterBottom>
                       ${plan.monthly_price || plan.price_per_month || 0}
                       <Typography component="span" variant="body2" color="text.secondary">
                         /month
                       </Typography>
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    {plan.annual_price > 0 && (
+                      <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
+                        or ${plan.annual_price}/year (save ${(plan.monthly_price * 12 - plan.annual_price).toFixed(0)})
+                      </Typography>
+                    )}
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                       {plan.description || 'Perfect for getting started'}
                     </Typography>
+                    
+                    <Divider sx={{ my: 1.5 }} />
+                    
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="caption" fontWeight="bold" display="block" sx={{ mb: 1 }}>
+                        INCLUDES:
+                      </Typography>
+                      {plan.max_orders_per_month && (
+                        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                          • {plan.max_orders_per_month === 999999 ? 'Unlimited' : plan.max_orders_per_month} orders/month
+                        </Typography>
+                      )}
+                      {!plan.max_orders_per_month && (
+                        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                          • Unlimited orders
+                        </Typography>
+                      )}
+                      {userRole === 'merchant' && plan.max_couriers && (
+                        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                          • Up to {plan.max_couriers} couriers
+                        </Typography>
+                      )}
+                      {userRole === 'merchant' && !plan.max_couriers && plan.tier >= 3 && (
+                        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                          • Unlimited couriers
+                        </Typography>
+                      )}
+                      {userRole === 'merchant' && plan.max_shops && (
+                        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                          • {plan.max_shops} shop{plan.max_shops > 1 ? 's' : ''}
+                        </Typography>
+                      )}
+                      {userRole === 'merchant' && !plan.max_shops && plan.tier >= 3 && (
+                        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                          • Unlimited shops
+                        </Typography>
+                      )}
+                      {plan.max_emails_per_month && plan.max_emails_per_month < 999999 && (
+                        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                          • {plan.max_emails_per_month} emails/month
+                        </Typography>
+                      )}
+                      {plan.tier >= 2 && (
+                        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                          • Priority support
+                        </Typography>
+                      )}
+                      {plan.tier >= 3 && (
+                        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                          • API access
+                        </Typography>
+                      )}
+                    </Box>
                   </CardContent>
                 </Card>
               ))}
