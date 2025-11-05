@@ -10,6 +10,7 @@ UPDATE subscription_plans
 SET 
     monthly_price = 0.00,
     annual_price = 0.00,
+    max_couriers = 2,
     description = 'Perfect for small businesses getting started with delivery management',
     updated_at = NOW()
 WHERE plan_slug = 'merchant-starter';
