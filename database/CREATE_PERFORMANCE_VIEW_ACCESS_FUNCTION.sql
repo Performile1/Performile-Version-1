@@ -26,14 +26,17 @@ RETURNS TABLE (
 DECLARE
     v_plan_name VARCHAR(50);
     v_user_role VARCHAR(50);
+    v_user_country VARCHAR(2);
 BEGIN
-    -- Get user's subscription plan and role
+    -- Get user's subscription plan, role, and country
     SELECT 
         sp.plan_name,
-        u.user_role
+        u.user_role,
+        u.country
     INTO 
         v_plan_name,
-        v_user_role
+        v_user_role,
+        v_user_country
     FROM users u
     LEFT JOIN user_subscriptions us ON u.user_id = us.user_id
     LEFT JOIN subscription_plans sp ON us.plan_id = sp.plan_id
@@ -48,15 +51,15 @@ BEGIN
     IF v_user_role = 'merchant' THEN
         CASE v_plan_name
             WHEN 'Starter' THEN
-                -- Starter: Nordic countries only, 30 days, 100 rows
+                -- Starter: Own country OR Nordic countries, 30 days, 100 rows
                 RETURN QUERY SELECT 
-                    (p_country_code IN ('NO', 'SE', 'DK', 'FI') AND p_days_back <= 30)::BOOLEAN,
+                    ((p_country_code = v_user_country OR p_country_code IN ('NO', 'SE', 'DK', 'FI')) AND p_days_back <= 30)::BOOLEAN,
                     CASE 
-                        WHEN p_country_code NOT IN ('NO', 'SE', 'DK', 'FI') THEN 'Upgrade to Professional for global access'
+                        WHEN p_country_code != v_user_country AND p_country_code NOT IN ('NO', 'SE', 'DK', 'FI') THEN 'Upgrade to Professional for multi-country access'
                         WHEN p_days_back > 30 THEN 'Upgrade to Professional for 90-day history'
                         ELSE 'Access granted'
                     END,
-                    4, -- max countries (Nordic)
+                    CASE WHEN v_user_country IN ('NO', 'SE', 'DK', 'FI') THEN 4 ELSE 1 END, -- max countries
                     30, -- max days
                     100; -- max rows
                     
@@ -85,9 +88,10 @@ BEGIN
             ELSE
                 -- Default to Starter limits
                 RETURN QUERY SELECT 
-                    (p_country_code IN ('NO', 'SE', 'DK', 'FI') AND p_days_back <= 30)::BOOLEAN,
-                    'Free plan - limited to Nordic countries',
-                    4, 30, 100;
+                    ((p_country_code = v_user_country OR p_country_code IN ('NO', 'SE', 'DK', 'FI')) AND p_days_back <= 30)::BOOLEAN,
+                    'Free plan - limited to own country and Nordic region',
+                    CASE WHEN v_user_country IN ('NO', 'SE', 'DK', 'FI') THEN 4 ELSE 1 END,
+                    30, 100;
         END CASE;
         
     -- COURIER LIMITS
