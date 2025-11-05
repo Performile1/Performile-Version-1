@@ -60,10 +60,13 @@ export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ on
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/public/subscription-plans`);
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const response = await fetch(`${apiUrl}/api/public/subscription-plans`);
         if (response.ok) {
           const data = await response.json();
           setSubscriptionPlans(data.plans || []);
+        } else {
+          console.error('Failed to fetch plans:', response.status, response.statusText);
         }
       } catch (err) {
         console.error('Failed to fetch plans:', err);
