@@ -375,7 +375,7 @@ export const EnhancedRegisterFormV2: React.FC<EnhancedRegisterFormProps> = ({ on
                       {plan.plan_name}
                     </Typography>
                     <Typography variant="h4" color="primary" gutterBottom>
-                      ${plan.price_per_month}
+                      ${plan.monthly_price || plan.price_per_month || 0}
                       <Typography component="span" variant="body2" color="text.secondary">
                         /month
                       </Typography>
