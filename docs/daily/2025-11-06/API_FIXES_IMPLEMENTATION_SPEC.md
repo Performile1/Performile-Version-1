@@ -13,22 +13,30 @@ Fix 3 critical API errors that are blocking testing and production readiness.
 
 ---
 
-## 🐛 ERRORS TO FIX
+## 🐛 ERRORS TO FIX (ACTUAL PRODUCTION ERRORS)
 
 ### **Error 1: My Subscription - 404 Error**
 **Endpoint:** `/api/subscriptions/my-subscription`  
-**Issue:** Users missing subscriptions  
-**Impact:** Users can't view subscription status
+**Issue:** Users missing subscriptions (15 users confirmed)  
+**Impact:** Users can't view subscription status  
+**Error:** `Resource not found`
 
-### **Error 2: My Subscription - Column Mismatch**
+### **Error 2: Public Plans - 500 Error** ⚠️ CRITICAL
+**Endpoint:** `/api/subscriptions/public?user_type=merchant`  
+**Issue:** Using wrong column name `subscription_plan_id` (should be `plan_id`)  
+**Impact:** Subscription plans page completely broken  
+**Error:** `Internal Server Error`
+
+### **Error 3: My Subscription - Column Mismatch**
 **Endpoint:** `/api/subscriptions/my-subscription`  
 **Issue:** Using wrong column name in JOIN  
 **Impact:** Query fails even when subscription exists
 
-### **Error 3: Merchant Analytics - 500 Error**
+### **Error 4: Merchant Analytics - 500 Error**
 **Endpoint:** `/api/merchant/analytics`  
 **Issue:** Using connection pool instead of Supabase client  
-**Impact:** Serverless function fails
+**Impact:** Serverless function fails  
+**Status:** ⏳ DEFER to later (not blocking)
 
 ---
 
@@ -157,7 +165,49 @@ if (!subscription) {
 
 ---
 
-### **Fix 4: Merchant Analytics - NOT NEEDED**
+### **Fix 4: Public Plans API - Column Name (10 min)**
+
+**File:** `api/subscriptions/public.ts`
+
+**Current Code (WRONG):**
+```typescript
+let query = supabase
+  .from('subscription_plans')
+  .select(`
+    subscription_plan_id,  // ❌ WRONG - column doesn't exist
+    plan_name,
+    ...
+  `)
+```
+
+**Fixed Code:**
+```typescript
+let query = supabase
+  .from('subscription_plans')
+  .select(`
+    plan_id,  // ✅ CORRECT
+    plan_name,
+    ...
+  `)
+```
+
+**Also fix transformation (line 86):**
+```typescript
+// OLD (WRONG):
+plan_id: plan.subscription_plan_id,
+
+// NEW (CORRECT):
+plan_id: plan.plan_id,
+```
+
+**Impact:**
+- ✅ Fixes 500 error on public plans page
+- ✅ Subscription plans page works
+- ✅ Users can browse plans
+
+---
+
+### **Fix 5: Merchant Analytics - NOT NEEDED**
 
 **Status:** ⏳ DEFER to later
 
@@ -180,9 +230,10 @@ if (!subscription) {
 3. Copy contents
 4. Paste and run
 5. Verify: SELECT COUNT(*) FROM user_subscriptions;
+   Expected: 15 new subscriptions created
 ```
 
-### **Step 2: Fix Column Name (5 min)**
+### **Step 2: Fix My Subscription Column Name (5 min)**
 ```bash
 1. Open: api/subscriptions/my-subscription.ts
 2. Find line ~45: subscription_plans!subscription_plan_id
@@ -190,7 +241,17 @@ if (!subscription) {
 4. Save file
 ```
 
-### **Step 3: Add Fallback Logic (10 min)**
+### **Step 3: Fix Public Plans Column Name (5 min)**
+```bash
+1. Open: api/subscriptions/public.ts
+2. Find line 45: subscription_plan_id,
+3. Change to: plan_id,
+4. Find line 86: plan_id: plan.subscription_plan_id,
+5. Change to: plan_id: plan.plan_id,
+6. Save file
+```
+
+### **Step 4: Add Fallback Logic (10 min)**
 ```bash
 1. Open: api/subscriptions/my-subscription.ts
 2. Find: if (!subscription)
@@ -198,12 +259,16 @@ if (!subscription) {
 4. Save file
 ```
 
-### **Step 4: Test (10 min)**
+### **Step 5: Test (15 min)**
 ```bash
-1. Deploy to Vercel (auto-deploy on push)
-2. Test endpoint: GET /api/subscriptions/my-subscription
-3. Verify: Returns subscription data
-4. Verify: No 404 errors
+1. Commit and push (auto-deploy to Vercel)
+2. Test: GET /api/subscriptions/my-subscription
+   Expected: 200 OK with subscription data
+3. Test: GET /api/subscriptions/public?user_type=merchant
+   Expected: 200 OK with 3 merchant plans
+4. Test: GET /api/subscriptions/public?user_type=courier
+   Expected: 200 OK with 4 courier plans
+5. Verify: No 404 or 500 errors
 ```
 
 ---
@@ -339,11 +404,12 @@ WHERE us.subscription_id IS NULL
 
 ## 🎯 ESTIMATED TIME
 
-**Total: 30 minutes**
+**Total: 40 minutes**
 - SQL script: 5 min
-- Column fix: 5 min
+- My Subscription column fix: 5 min
+- Public Plans column fix: 5 min
 - Fallback logic: 10 min
-- Testing: 10 min
+- Testing: 15 min
 
 ---
 
