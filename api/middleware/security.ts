@@ -9,6 +9,7 @@ const CORS_WHITELIST = [
   'https://performile.com',
   'https://www.performile.com',
   'https://performile.vercel.app',
+  'https://frontend-two-swart-31.vercel.app', // Current Vercel deployment
   'http://localhost:3000',
   'http://localhost:5173',
   'http://127.0.0.1:49392'

@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
+import { corsMiddleware } from '../middleware/security';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -11,10 +12,10 @@ const supabase = createClient(
  * Used by registration form - NO AUTHENTICATION REQUIRED
  */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Apply CORS middleware
+  if (!corsMiddleware(req, res)) {
+    return; // CORS check failed
+  }
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
