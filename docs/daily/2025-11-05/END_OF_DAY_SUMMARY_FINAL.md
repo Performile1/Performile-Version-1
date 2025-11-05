@@ -367,10 +367,12 @@ Documentation:   [██████████] 100% Complete
    - Check actual column names in checkout_courier_analytics
    - Update Performance Limits spec if needed
 
-2. **Fix API Errors** (30 min) - P0
-   - Run `FIX_MISSING_SUBSCRIPTIONS.sql` (15 users)
-   - Fix column names in my-subscription API
-   - Add error logging
+2. **Fix API Errors** (40 min) - P0 CRITICAL
+   - Run `FIX_MISSING_SUBSCRIPTIONS.sql` (15 users confirmed)
+   - Fix my-subscription API column name (subscription_plan_id → plan_id)
+   - Fix public plans API column name (subscription_plan_id → plan_id) ⭐ NEW
+   - Add fallback subscription creation
+   - **Fixes 4 production errors:** My Subscription 404, Public Plans 500, Column mismatches
 
 3. **Performance Limits Integration** (2 hours) - P0
    - Update analytics API endpoint
@@ -395,15 +397,17 @@ Documentation:   [██████████] 100% Complete
 ## 🎯 KNOWN ISSUES
 
 ### **Critical (Fix Tomorrow):**
-1. **API Errors** (3 endpoints failing)
-   - `/api/merchant/analytics` - 500 error
-   - `/api/subscriptions/my-subscription` - 404 error
-   - `/api/couriers/merchant-preferences` - 500 error
+1. **API Errors** (4 endpoints failing - TESTED IN PRODUCTION)
+   - `/api/subscriptions/my-subscription` - 404 error (15 users without subscriptions)
+   - `/api/subscriptions/public?user_type=merchant` - 500 error (wrong column name) ⭐ NEW
+   - Both APIs using `subscription_plan_id` instead of `plan_id`
+   - **Impact:** Subscription pages completely broken, revenue blocked
 
 2. **Performance Limits** (Not integrated)
    - Function created ✅
    - API integration needed
    - Frontend needed
+   - Analytics table column names need verification
 
 ### **High (Fix This Week):**
 3. **Shopify Plugin** (80% complete)

@@ -515,22 +515,32 @@ Checkout integrations are a way to show Performile courier ratings in third-part
 
 ## 🐛 KNOWN ISSUES
 
-### **Critical (Fix Tomorrow):**
+### **Critical (Fix Day 4 - Nov 6):**
 
-**1. API Errors (3 endpoints)**
-- `/api/merchant/analytics` - 500 error
-  - Issue: Using connection pool instead of Supabase
-  - Fix: Convert to Supabase client (2 hours)
-  
-- `/api/subscriptions/my-subscription` - 404 error
-  - Issue: Users missing subscriptions
-  - Fix: Run `FIX_MISSING_SUBSCRIPTIONS.sql` (15 min)
-  
-- `/api/couriers/merchant-preferences` - 500 error
-  - Issue: Database connection
-  - Fix: Update to Supabase (30 min)
+**1. Subscription API Errors (4 endpoints - PRODUCTION TESTED)**
 
-**Documentation:** `API_ERRORS_FIX_CRITICAL.md`
+**Error 1:** `/api/subscriptions/my-subscription` - 404 error
+- Issue: 15 users without subscriptions (confirmed)
+- Fix: Run `FIX_MISSING_SUBSCRIPTIONS.sql` (5 min)
+
+**Error 2:** `/api/subscriptions/public?user_type=merchant` - 500 error
+- Issue: Using `subscription_plan_id` (column doesn't exist)
+- Should be: `plan_id`
+- Fix: Update column name in public.ts (5 min)
+- **Impact:** Subscription plans page completely broken
+
+**Error 3:** `/api/subscriptions/my-subscription` - Column mismatch
+- Issue: Using `subscription_plan_id` in JOIN
+- Should be: `plan_id`
+- Fix: Update column name in my-subscription.ts (5 min)
+
+**Error 4:** Fallback subscription creation
+- Issue: No auto-creation for new users
+- Fix: Add fallback logic (10 min)
+
+**Total Fix Time:** 40 minutes  
+**Impact:** HIGH - Blocks subscription system and revenue  
+**Documentation:** `API_FIXES_IMPLEMENTATION_SPEC.md`
 
 ### **High (Fix This Week):**
 
