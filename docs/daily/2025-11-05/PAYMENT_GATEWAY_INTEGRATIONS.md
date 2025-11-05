@@ -6,7 +6,84 @@
 
 ---
 
+## 📖 INTEGRATION STRATEGY EXPLAINED
+
+### **Two Types of Merchants:**
+
+**Type 1: E-Commerce Platform Merchants**
+- Use WooCommerce, Shopify, Magento, etc.
+- Install Performile plugin
+- Couriers shown in platform's checkout
+- **Solution:** E-commerce plugins ✅
+
+**Type 2: Payment Gateway Merchants**
+- Use Klarna Checkout, Walley, Qliro directly
+- No e-commerce platform (custom site or simple store)
+- Checkout is provided by payment gateway
+- **Solution:** Payment gateway integration ⭐
+
+### **Example Scenarios:**
+
+**Scenario A: WooCommerce Merchant**
+```
+Merchant has: WordPress + WooCommerce
+Checkout: WooCommerce checkout
+Solution: Install Performile WooCommerce plugin
+Result: Couriers shown in WooCommerce checkout
+```
+
+**Scenario B: Klarna-Only Merchant**
+```
+Merchant has: Custom website (no e-commerce platform)
+Checkout: Klarna Checkout (embedded iframe)
+Solution: Integrate Performile via Klarna Checkout API
+Result: Couriers shown INSIDE Klarna checkout iframe
+```
+
+**Scenario C: Shopify Merchant**
+```
+Merchant has: Shopify store
+Checkout: Shopify checkout
+Solution: Install Performile Shopify app
+Result: Couriers shown in Shopify checkout
+```
+
+### **Why Payment Gateway Integration Matters:**
+
+**Market Coverage:**
+- Not all merchants use e-commerce platforms
+- Many Nordic merchants use Klarna/Walley directly
+- Especially small/medium businesses
+- Custom websites with payment gateway checkout
+
+**Example:**
+- Small Swedish boutique with custom website
+- Uses Klarna Checkout for payments
+- No WooCommerce/Shopify
+- Needs Performile courier ratings
+- **Solution:** Klarna Checkout integration
+
+---
+
 ## 🎯 NORDIC PAYMENT GATEWAYS (Priority)
+
+### **IMPORTANT: Payment Gateway Integration Purpose**
+
+**NOT for payment processing** - Payment gateways already handle payments.
+
+**FOR courier selection integration:**
+- Merchants who use Klarna/Walley/Qliro checkout (not WooCommerce/Shopify)
+- Display Performile courier ratings INSIDE their checkout
+- Alternative to e-commerce platform plugins
+- Same courier selection experience
+
+**Use Case:**
+- Merchant uses Klarna Checkout (not WooCommerce)
+- Can't install WooCommerce plugin (no WooCommerce)
+- Integrates Performile via Klarna Checkout API
+- Couriers shown in Klarna's checkout flow
+
+---
 
 ### **1. Klarna** 🇸🇪
 **Status:** Not Started  
@@ -15,10 +92,10 @@
 **Complexity:** High
 
 #### **Why Critical:**
-- #1 payment method in Nordics
-- 40% of Nordic e-commerce uses Klarna
-- Buy Now Pay Later (BNPL) leader
-- Essential for Nordic merchants
+- #1 checkout solution in Nordics
+- 40% of Nordic e-commerce uses Klarna Checkout
+- Merchants without e-commerce platforms use Klarna directly
+- Essential for non-platform merchants
 
 #### **Implementation:**
 ```
