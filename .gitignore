@@ -164,3 +164,6 @@ Thumbs.db
 .vercel
 
 .vercel
+
+# Sensitive legal documents (IP protection)
+docs/legal/TRADEMARK_APPLICATION_PACKAGE.md
