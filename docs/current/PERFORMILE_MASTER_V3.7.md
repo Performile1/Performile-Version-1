@@ -109,10 +109,6 @@ Performile is a B2B2C platform that provides verified courier ratings and perfor
 - 10-15% commission on consumer-to-consumer shipments
 - Estimated 1,000 shipments/month = $1,949 revenue
 
-**3. Payment Gateway Fees (Future)**
-- Small percentage on transactions
-- Volume-based pricing
-
 ### **Revenue Projections:**
 
 **Month 1-3 (Launch Phase):**
