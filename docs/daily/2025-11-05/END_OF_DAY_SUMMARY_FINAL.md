@@ -92,21 +92,36 @@
 
 ---
 
-### **3. PAYMENT GATEWAY INTEGRATION PLAN** (1 hour)
+### **3. CHECKOUT INTEGRATIONS PLAN** (1 hour)
 
-#### **Nordic Payment Gateways (Week 3):**
-1. **Klarna** (P0) - 40% Nordic market
-2. **Walley** (P0) - 15% Nordic market
-3. **Qliro** (P1) - 10% Nordic market
-4. **Adyen** (P0) - Global platform
+#### **IMPORTANT CLARIFICATION:**
+Checkout integrations are a way to show Performile courier ratings in third-party checkout solutions (Klarna Checkout, Walley, Qliro, Adyen) for merchants who don't use e-commerce platforms like WooCommerce/Shopify.
+
+**What it is:**
+- Integration with checkout solutions (not payment processing)
+- Shows Performile couriers INSIDE checkout flow
+- Alternative to e-commerce platform plugins
+- Same courier selection experience
+
+**Use Case:**
+- Merchant has custom website (no e-commerce platform)
+- Uses Klarna Checkout (third-party checkout solution)
+- Integrates Performile via Klarna Checkout API
+- Couriers shown inside Klarna checkout iframe
+
+#### **Nordic Checkout Solutions (Week 3):**
+1. **Klarna Checkout** (P0) - 40% Nordic checkout market
+2. **Walley Checkout** (P0) - 15% Nordic checkout market
+3. **Qliro One** (P1) - 10% Nordic checkout market
+4. **Adyen** (P0) - Global checkout platform
 5. **Kustom** (P2) - Custom integrations
 
 #### **Timeline:**
 - Week 3: Klarna, Walley, Qliro, Adyen (5 days)
-- Expected coverage: 65% of Nordic e-commerce
+- Expected coverage: 65% of Nordic merchants using third-party checkout solutions
 
 #### **Documentation:**
-- `PAYMENT_GATEWAY_INTEGRATIONS.md` (479 lines)
+- `CHECKOUT_INTEGRATIONS.md` (550+ lines with clarifications)
 
 ---
 

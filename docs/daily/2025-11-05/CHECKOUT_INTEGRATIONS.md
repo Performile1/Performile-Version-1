@@ -1,4 +1,4 @@
-# PAYMENT GATEWAY INTEGRATIONS
+# CHECKOUT INTEGRATIONS (Klarna, Walley, Qliro, Adyen)
 
 **Date:** November 5, 2025, 6:04 PM  
 **Priority:** HIGH - Nordic Market Focus  
@@ -8,6 +8,15 @@
 
 ## 📖 INTEGRATION STRATEGY EXPLAINED
 
+### **What Are Checkout Integrations?**
+
+Checkout integrations are a way to show Performile courier ratings in third-party checkout solutions (Klarna Checkout, Walley, Qliro, Adyen) for merchants who don't use e-commerce platforms.
+
+**NOT payment processing** - These checkouts already handle payments.  
+**YES courier selection** - Show Performile couriers inside their checkout flow.
+
+---
+
 ### **Two Types of Merchants:**
 
 **Type 1: E-Commerce Platform Merchants**
@@ -16,11 +25,11 @@
 - Couriers shown in platform's checkout
 - **Solution:** E-commerce plugins ✅
 
-**Type 2: Payment Gateway Merchants**
+**Type 2: Checkout Solution Merchants**
 - Use Klarna Checkout, Walley, Qliro directly
 - No e-commerce platform (custom site or simple store)
-- Checkout is provided by payment gateway
-- **Solution:** Payment gateway integration ⭐
+- Checkout is provided by third-party checkout solution
+- **Solution:** Checkout integration ⭐
 
 ### **Example Scenarios:**
 
@@ -48,40 +57,44 @@ Solution: Install Performile Shopify app
 Result: Couriers shown in Shopify checkout
 ```
 
-### **Why Payment Gateway Integration Matters:**
+### **Why Checkout Integrations Matter:**
 
 **Market Coverage:**
 - Not all merchants use e-commerce platforms
-- Many Nordic merchants use Klarna/Walley directly
+- Many Nordic merchants use Klarna/Walley/Qliro checkout directly
 - Especially small/medium businesses
-- Custom websites with payment gateway checkout
+- Custom websites with third-party checkout solutions
 
 **Example:**
 - Small Swedish boutique with custom website
-- Uses Klarna Checkout for payments
-- No WooCommerce/Shopify
+- Uses Klarna Checkout (not WooCommerce)
+- No e-commerce platform
 - Needs Performile courier ratings
 - **Solution:** Klarna Checkout integration
 
 ---
 
-## 🎯 NORDIC PAYMENT GATEWAYS (Priority)
+## 🎯 NORDIC CHECKOUT SOLUTIONS (Priority)
 
-### **IMPORTANT: Payment Gateway Integration Purpose**
+### **Integration Approach:**
 
-**NOT for payment processing** - Payment gateways already handle payments.
+**What we integrate with:**
+- Klarna Checkout (checkout solution)
+- Walley Checkout (checkout solution)
+- Qliro One (checkout solution)
+- Adyen (checkout solution)
 
-**FOR courier selection integration:**
-- Merchants who use Klarna/Walley/Qliro checkout (not WooCommerce/Shopify)
-- Display Performile courier ratings INSIDE their checkout
-- Alternative to e-commerce platform plugins
-- Same courier selection experience
+**What we show:**
+- Performile courier ratings
+- Courier selection interface
+- Delivery options
+- Same experience as e-commerce plugins
 
-**Use Case:**
-- Merchant uses Klarna Checkout (not WooCommerce)
-- Can't install WooCommerce plugin (no WooCommerce)
-- Integrates Performile via Klarna Checkout API
-- Couriers shown in Klarna's checkout flow
+**How it works:**
+- Merchant embeds checkout (Klarna/Walley/Qliro)
+- Performile integrates via checkout API
+- Couriers shown inside checkout iframe
+- Consumer selects courier during checkout
 
 ---
 

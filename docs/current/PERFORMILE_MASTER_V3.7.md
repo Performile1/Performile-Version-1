@@ -222,33 +222,55 @@ Performile is a B2B2C platform that provides verified courier ratings and perfor
 
 ---
 
-## 💳 PAYMENT GATEWAY INTEGRATIONS
+## 🛒 CHECKOUT INTEGRATIONS (Klarna, Walley, Qliro, Adyen)
+
+### **What Are Checkout Integrations?**
+
+Checkout integrations are a way to show Performile courier ratings in third-party checkout solutions (Klarna Checkout, Walley, Qliro, Adyen) for merchants who don't use e-commerce platforms.
+
+**Purpose:**
+- Show Performile couriers INSIDE third-party checkout flows
+- Alternative to e-commerce platform plugins
+- For merchants using checkout solutions directly
+- Same courier selection experience
+
+**Example:**
+- Merchant: Custom website with Klarna Checkout
+- Solution: Integrate Performile via Klarna Checkout API
+- Result: Couriers shown inside Klarna checkout iframe
+- Consumer: Selects courier during checkout
+
+---
 
 ### **Week 3 Plan (Nov 11-15)**
 
 **Nordic Focus:**
 
-**1. Klarna (P0 - CRITICAL)**
-- Market share: 40% Nordic
+**1. Klarna Checkout (P0 - CRITICAL)**
+- Market share: 40% Nordic checkout market
 - Timeline: 2 days
-- Features: Checkout API, shipping widget, webhooks
+- Features: Checkout API integration, shipping widget, webhooks
+- For: Merchants using Klarna Checkout (not WooCommerce)
 
-**2. Walley (P0 - CRITICAL)**
-- Market share: 15% Nordic
+**2. Walley Checkout (P0 - CRITICAL)**
+- Market share: 15% Nordic checkout market
 - Timeline: 1 day
-- Features: Checkout API, courier selection
+- Features: Checkout API, courier selection module
+- For: Merchants using Walley Checkout
 
-**3. Qliro (P1 - HIGH)**
-- Market share: 10% Nordic
+**3. Qliro One (P1 - HIGH)**
+- Market share: 10% Nordic checkout market
 - Timeline: 1 day
 - Features: Qliro One API, shipping module
+- For: Merchants using Qliro One checkout
 
 **4. Adyen (P0 - CRITICAL)**
 - Market share: Global
 - Timeline: 2 days
 - Features: Multiple payment methods, shipping integration
+- For: Merchants using Adyen checkout
 
-**Total Coverage:** 65% of Nordic e-commerce payments
+**Total Coverage:** 65% of Nordic merchants using payment gateway checkouts
 
 **Budget:** $2,500
 
