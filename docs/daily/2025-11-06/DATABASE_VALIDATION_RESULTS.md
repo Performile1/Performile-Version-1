@@ -13,19 +13,22 @@ All validation queries executed successfully. Database is ready for Day 4 implem
 
 ---
 
-## 📊 KEY FINDINGS
+## 📊 KEY FINDINGS (ACTUAL DATA)
 
-### **1. Analytics Table** ✅
-- `checkout_courier_analytics` table exists
-- Has proper columns for geographic data
-- Contains data for testing
-- Ready for performance limits integration
-
-### **2. Subscription System** ✅
+### **1. Subscription System** ✅ VALIDATED
 - `users` table has `country` column (added Day 3)
-- `subscription_plans` table has all plans
-- `user_subscriptions` table exists
-- Some users may be missing subscriptions (to be fixed Day 4)
+- `subscription_plans` table has 7 plans:
+  - Merchant: Starter ($0), Professional ($29), Enterprise ($99)
+  - Courier: Basic ($0), Pro ($19), Premium ($59), Enterprise ($99)
+- `user_subscriptions` table structure confirmed
+- **Column name:** `plan_id` (NOT `subscription_plan_id`)
+- **CRITICAL:** 15 users without subscriptions (need to create)
+
+### **2. Analytics Table** ⚠️ NEEDS VERIFICATION
+- `checkout_courier_analytics` table exists
+- **Issue:** Column name `displayed_at` does not exist
+- Need to verify actual column names tomorrow morning
+- Will update Performance Limits spec accordingly
 
 ### **3. Performance Function** ✅
 - `check_performance_view_access()` function exists (created Day 3)
