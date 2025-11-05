@@ -165,5 +165,62 @@ Thumbs.db
 
 .vercel
 
-# Sensitive legal documents (IP protection)
+# ===================================
+# INTELLECTUAL PROPERTY PROTECTION
+# ===================================
+
+# Legal Documents
 docs/legal/TRADEMARK_APPLICATION_PACKAGE.md
+docs/legal/TRADEMARK_ERRORS_AUDIT.md
+docs/legal/*.md
+
+# Technical Specifications (Contains proprietary algorithms)
+docs/daily/2025-11-03/TECHNICAL_SPECIFICATION.md
+docs/daily/2025-11-03/COURIER_API_INTEGRATION_GUIDE.md
+docs/daily/2025-11-03/UNIFIED_COURIER_SETTINGS_IMPLEMENTATION.md
+
+# Database Architecture (Proprietary schema)
+docs/daily/2025-11-04/DATABASE_SNAPSHOT_NOV_4_2025.md
+docs/daily/2025-11-04/DATABASE_SNAPSHOT_2025-11-04.json
+docs/daily/2025-11-04/DATABASE_AUDIT_SUMMARY.md
+database/VALIDATE_DATABASE_*.sql
+
+# Business Intelligence
+docs/investors/INVESTOR_UPDATE_*.md
+docs/daily/*/INVESTOR_UPDATE_*.md
+docs/daily/2025-11-03/BUSINESS_MODEL_COURIER_CREDENTIALS.md
+docs/daily/2025-11-05/SUBSCRIPTION_PLANS_DATA.md
+
+# Strategic Plans
+docs/daily/2025-11-05/REVISED_LAUNCH_PLAN_WITH_APPS.md
+docs/daily/2025-11-05/WEEK_3_PLAN_PAYMENT_GATEWAYS.md
+docs/daily/2025-11-05/CHECKOUT_INTEGRATIONS.md
+docs/daily/2025-11-05/CONSUMER_PORTAL_SPECIFICATION.md
+docs/planning/DEVELOPMENT_ROADMAP.md
+
+# Master Documents (Contains all IP)
+docs/archive/PERFORMILE_MASTER.md
+docs/current/PERFORMILE_MASTER_V3.*.md
+docs/current/PLATFORM_STATUS_MASTER.md
+
+# Investor Materials
+docs/investors/INVESTOR_EXECUTIVE_SUMMARY.md
+docs/investors/INVESTOR_MASTER_V1.0.md
+docs/investors/LAST_MILE_TRUSTSCORE.md
+
+# Checkout Enhancement Plans (Patent-pending)
+docs/daily/2025-11-04/CHECKOUT_ENHANCEMENT_PLAN.md
+docs/daily/2025-11-04/CHECKOUT_CUSTOMIZATION_SPEC.md
+
+# Performance & Analytics (Proprietary metrics)
+docs/daily/2025-11-05/PERFORMANCE_VIEW_SUBSCRIPTION_LIMITS.md
+docs/daily/2025-11-06/PERFORMANCE_LIMITS_INTEGRATION_SPEC.md
+
+# Implementation Specs (Detailed technical plans)
+docs/daily/2025-11-06/API_FIXES_IMPLEMENTATION_SPEC.md
+docs/daily/2025-11-06/SERVICE_SECTIONS_UI_SPEC.md
+docs/daily/2025-11-06/MASTER_DOCUMENT_AUDIT.md
+
+# Audit Documents
+docs/SENSITIVE_DOCUMENTS_AUDIT.md
+docs/daily/2025-11-06/WEEK_2_PLAN_STATUS.md
