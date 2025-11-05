@@ -52,11 +52,11 @@ export const EnhancedRegisterForm: React.FC<EnhancedRegisterFormProps> = ({ onSw
 
   const navigate = useNavigate();
 
-  // Fetch subscription plans
+  // Fetch subscription plans (public endpoint - no auth required)
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const response = await fetch('/api/admin/subscriptions');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/public/subscription-plans`);
         if (response.ok) {
           const data = await response.json();
           setSubscriptionPlans(data.plans || []);

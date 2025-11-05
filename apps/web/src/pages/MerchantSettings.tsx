@@ -22,12 +22,14 @@ import {
   Settings as SettingsIcon,
   Security as SecurityIcon,
   Language as LanguageIcon,
+  AttachMoney as PricingIcon,
 } from '@mui/icons-material';
 
 // Import sub-components
 import { ShopsSettings } from '@/components/settings/merchant/ShopsSettings';
 import { CouriersSettings } from '@/components/settings/merchant/CouriersSettings';
 import { TrackingPageSettings } from '@/components/settings/merchant/TrackingPageSettings';
+import { MerchantPricingSettings } from '@/pages/settings/MerchantPricingSettings';
 // TODO: Create these components
 // import { RatingSettings } from '@/components/settings/merchant/RatingSettings';
 // import { EmailTemplatesSettings } from '@/components/settings/merchant/EmailTemplatesSettings';
@@ -72,15 +74,16 @@ const MerchantSettings: React.FC = () => {
       'shops': 0,
       'couriers': 1,
       'tracking': 2,
-      'ratings': 3,
-      'emails': 4,
-      'returns': 5,
-      'payments': 6,
-      'notifications': 7,
-      'api': 8,
-      'general': 9,
-      'security': 10,
-      'preferences': 11,
+      'pricing': 3,
+      'ratings': 4,
+      'emails': 5,
+      'returns': 6,
+      'payments': 7,
+      'notifications': 8,
+      'api': 9,
+      'general': 10,
+      'security': 11,
+      'preferences': 12,
     };
     
     if (hash && tabMap[hash] !== undefined) {
@@ -93,7 +96,7 @@ const MerchantSettings: React.FC = () => {
     
     // Update URL hash
     const tabNames = [
-      'shops', 'couriers', 'tracking', 'ratings', 'emails', 'returns',
+      'shops', 'couriers', 'tracking', 'pricing', 'ratings', 'emails', 'returns',
       'payments', 'notifications', 'api', 'general', 'security', 'preferences'
     ];
     window.location.hash = tabNames[newValue];
@@ -179,6 +182,11 @@ const MerchantSettings: React.FC = () => {
             iconPosition="start"
           />
           <Tab 
+            icon={<PricingIcon />} 
+            label="Pricing & Margins" 
+            iconPosition="start"
+          />
+          <Tab 
             icon={<RatingIcon />} 
             label="Rating Settings" 
             iconPosition="start"
@@ -242,38 +250,42 @@ const MerchantSettings: React.FC = () => {
       </TabPanel>
 
       <TabPanel value={tabValue} index={3}>
-        <Typography>Rating Settings - Coming Soon</Typography>
+        <MerchantPricingSettings />
       </TabPanel>
 
       <TabPanel value={tabValue} index={4}>
-        <Typography>Email Templates - Coming Soon</Typography>
+        <Typography>Rating Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={5}>
-        <Typography>Returns Settings - Coming Soon</Typography>
+        <Typography>Email Templates - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={6}>
-        <Typography>Payment Settings - Coming Soon</Typography>
+        <Typography>Returns Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={7}>
-        <Typography>Notification Settings - Coming Soon</Typography>
+        <Typography>Payment Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={8}>
-        <Typography>API Settings - Coming Soon</Typography>
+        <Typography>Notification Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={9}>
-        <Typography>General Settings - Coming Soon</Typography>
+        <Typography>API Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={10}>
-        <Typography>Security Settings - Coming Soon</Typography>
+        <Typography>General Settings - Coming Soon</Typography>
       </TabPanel>
 
       <TabPanel value={tabValue} index={11}>
+        <Typography>Security Settings - Coming Soon</Typography>
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={12}>
         <Typography>Preferences Settings - Coming Soon</Typography>
       </TabPanel>
     </Container>
