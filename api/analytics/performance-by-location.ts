@@ -126,13 +126,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    // Check subscription limits using database function
-    const { data: accessCheck, error: accessError } = await supabase
-      .rpc('check_performance_view_access', {
-        p_user_id: user.userId,
-        p_country_code: country,
-        p_days_back: days
-      });
+    // Admin bypass: Check if user is admin
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('user_role')
+      .eq('user_id', user.userId)
+      .single();
+
+    const isAdmin = userData?.user_role === 'admin';
+
+    // Check subscription limits using database function (skip for admin)
+    let accessCheck: any;
+    let accessError: any;
+
+    if (!isAdmin) {
+      const result = await supabase
+        .rpc('check_performance_view_access', {
+          p_user_id: user.userId,
+          p_country_code: country,
+          p_days_back: days
+        });
+      accessCheck = result.data;
+      accessError = result.error;
+    } else {
+      // Admin has unlimited access
+      accessCheck = [{
+        has_access: true,
+        reason: 'Admin access - unlimited',
+        max_countries: 999,
+        max_days: 999,
+        max_rows: 999999
+      }];
+    }
 
     if (accessError) {
       console.error('Access check error:', accessError);
