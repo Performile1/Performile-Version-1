@@ -73,7 +73,7 @@ BEGIN
       o.delivery_country,
       o.order_date,
       o.store_id,
-      s.merchant_id
+      s.owner_user_id as merchant_id
     FROM orders o
     JOIN stores s ON s.store_id = o.store_id
     WHERE o.delivery_country IS NOT NULL
