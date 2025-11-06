@@ -65,11 +65,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const user = verifyToken(req.headers.authorization);
     
     if (!user || !user.userId) {
+      console.error('[Markets Summary] Authentication failed');
       return res.status(401).json({
         success: false,
         error: 'Authentication required'
       });
     }
+
+    console.log('[Markets Summary] Fetching data for user:', user.userId);
 
     // Query to get market summary statistics
     const { data: marketData, error: marketError } = await supabase
@@ -78,19 +81,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         delivery_country,
         order_id,
         courier_id,
-        status,
-        delivered_at,
-        estimated_delivery_date
+        order_status,
+        delivery_date,
+        estimated_delivery
       `)
       .not('delivery_country', 'is', null);
 
     if (marketError) {
-      console.error('Market data error:', marketError);
+      console.error('[Markets Summary] Supabase error:', marketError);
       return res.status(500).json({ 
         success: false,
-        error: 'Failed to fetch market data' 
+        error: 'Failed to fetch market data',
+        details: marketError.message
       });
     }
+
+    console.log('[Markets Summary] Fetched orders:', marketData?.length || 0);
 
     // Aggregate data by country
     const marketStats: { [key: string]: any } = {};
@@ -114,13 +120,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         marketStats[country].unique_couriers.add(order.courier_id);
       }
 
-      if (order.status === 'delivered') {
+      if (order.order_status === 'delivered') {
         marketStats[country].delivered_orders++;
         
         // Check if delivered on time
-        if (order.delivered_at && order.estimated_delivery_date) {
-          const deliveredDate = new Date(order.delivered_at);
-          const estimatedDate = new Date(order.estimated_delivery_date);
+        if (order.delivery_date && order.estimated_delivery) {
+          const deliveredDate = new Date(order.delivery_date);
+          const estimatedDate = new Date(order.estimated_delivery);
           
           if (deliveredDate <= estimatedDate) {
             marketStats[country].on_time_orders++;
@@ -146,17 +152,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       };
     });
 
+    console.log('[Markets Summary] Returning markets:', markets.length);
+
     return res.status(200).json({
       success: true,
       data: markets
     });
 
   } catch (error: any) {
-    console.error('Markets summary error:', error);
+    console.error('[Markets Summary] Unexpected error:', error);
+    console.error('[Markets Summary] Error stack:', error.stack);
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
-      message: error.message
+      message: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 }
