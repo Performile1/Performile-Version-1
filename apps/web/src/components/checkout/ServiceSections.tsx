@@ -138,8 +138,16 @@ export const ServiceSections: React.FC<ServiceSectionsProps> = ({
             icon={<Clock size={14} />}
             label="Same Day"
             size="small"
-            color="error"
-            sx={{ ml: 1, height: 24 }}
+            sx={{ 
+              ml: 1, 
+              height: 24,
+              backgroundColor: '#d32f2f',
+              color: '#ffffff',
+              fontWeight: 600,
+              '& .MuiChip-icon': {
+                color: '#ffffff'
+              }
+            }}
           />
         );
       case 'next_day':
@@ -148,8 +156,16 @@ export const ServiceSections: React.FC<ServiceSectionsProps> = ({
             icon={<Calendar size={14} />}
             label="Next Day"
             size="small"
-            color="warning"
-            sx={{ ml: 1, height: 24 }}
+            sx={{ 
+              ml: 1, 
+              height: 24,
+              backgroundColor: '#ed6c02',
+              color: '#ffffff',
+              fontWeight: 600,
+              '& .MuiChip-icon': {
+                color: '#ffffff'
+              }
+            }}
           />
         );
       case 'weekend':
@@ -157,8 +173,13 @@ export const ServiceSections: React.FC<ServiceSectionsProps> = ({
           <Chip
             label="Weekend"
             size="small"
-            color="info"
-            sx={{ ml: 1, height: 24 }}
+            sx={{ 
+              ml: 1, 
+              height: 24,
+              backgroundColor: '#0288d1',
+              color: '#ffffff',
+              fontWeight: 600
+            }}
           />
         );
       default:

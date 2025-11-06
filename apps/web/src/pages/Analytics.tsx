@@ -39,6 +39,7 @@ import { AnalyticsFilters } from '@/types/analytics';
 import { useAuthStore } from '@/store/authStore';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
+import { PerformanceByLocation } from '@/components/analytics/PerformanceByLocation';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // import { TimeFilter } from '../components/analytics/TimeFilter';
 
@@ -829,17 +830,8 @@ export const Analytics: React.FC = () => {
                   </Card>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Geographic Performance
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Interactive map showing performance by location would be here
-                      </Typography>
-                    </CardContent>
-                  </Card>
+                <Grid item xs={12}>
+                  <PerformanceByLocation />
                 </Grid>
               </Grid>
             </TabPanel>
