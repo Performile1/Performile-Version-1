@@ -71,7 +71,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .from('user_subscriptions')
       .select(`
         subscription_id,
-        subscription_plan_id,
+        plan_id,
         status,
         current_period_start,
         current_period_end,
@@ -83,8 +83,91 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .eq('status', 'active')
       .single();
 
+    // If no subscription found, create default Starter subscription
     if (subError || !userSubscription) {
-      console.error('No active subscription found:', subError);
+      console.log('No active subscription found, creating default Starter subscription');
+      
+      // Get user role to determine which Starter plan
+      const { data: userData } = await supabase
+        .from('users')
+        .select('user_role')
+        .eq('user_id', user.userId)
+        .single();
+      
+      const userRole = userData?.user_role || 'merchant';
+      
+      // Get Starter plan for this user type
+      const { data: starterPlan } = await supabase
+        .from('subscription_plans')
+        .select('plan_id')
+        .eq('plan_name', 'Starter')
+        .eq('user_type', userRole)
+        .single();
+
+      if (starterPlan) {
+        // Create default subscription
+        const { data: newSubscription, error: createError } = await supabase
+          .from('user_subscriptions')
+          .insert({
+            user_id: user.userId,
+            plan_id: starterPlan.plan_id,
+            status: 'active',
+            start_date: new Date().toISOString(),
+            current_period_start: new Date().toISOString(),
+            current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+          })
+          .select(`
+            subscription_id,
+            plan_id,
+            status,
+            current_period_start,
+            current_period_end,
+            orders_used_this_month,
+            cancel_at_period_end,
+            stripe_subscription_id
+          `)
+          .single();
+
+        if (!createError && newSubscription) {
+          // Use the newly created subscription
+          const { data: plan } = await supabase
+            .from('subscription_plans')
+            .select('*')
+            .eq('plan_id', newSubscription.plan_id)
+            .single();
+
+          if (plan) {
+            const subscriptionData = {
+              plan_name: plan.plan_name,
+              plan_slug: plan.plan_slug,
+              user_type: plan.user_type,
+              tier: plan.tier,
+              monthly_price: plan.monthly_price,
+              annual_price: plan.annual_price,
+              status: newSubscription.status,
+              billing_cycle: 'monthly',
+              current_period_start: newSubscription.current_period_start,
+              current_period_end: newSubscription.current_period_end,
+              cancel_at_period_end: newSubscription.cancel_at_period_end || false,
+              max_orders_per_month: plan.max_orders_per_month,
+              max_emails_per_month: plan.max_emails_per_month,
+              max_sms_per_month: plan.max_sms_per_month,
+              max_shops: plan.max_shops,
+              max_couriers: plan.max_couriers,
+              max_team_members: plan.max_team_members,
+              orders_used_this_month: newSubscription.orders_used_this_month || 0,
+              features: plan.features || [],
+            };
+
+            return res.status(200).json({
+              success: true,
+              subscription: subscriptionData
+            });
+          }
+        }
+      }
+      
+      // If fallback creation failed, return 404
       return res.status(404).json({
         success: false,
         error: 'No active subscription found',
@@ -96,7 +179,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { data: plan, error: planError } = await supabase
       .from('subscription_plans')
       .select('*')
-      .eq('subscription_plan_id', userSubscription.subscription_plan_id)
+      .eq('plan_id', userSubscription.plan_id)
       .single();
 
     if (planError || !plan) {

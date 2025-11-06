@@ -28,12 +28,12 @@ import {
 import ServiceAnalytics from './admin/ServiceAnalytics';
 
 // Import sub-components
+import { AdminSubscriptionsSettings } from '../components/settings/admin/AdminSubscriptionsSettings';
 // TODO: Create these components
 // import { AdminPlatformSettings } from '@/components/settings/admin/AdminPlatformSettings';
 // import { AdminUsersSettings } from '@/components/settings/admin/AdminUsersSettings';
 // import { AdminMerchantsSettings } from '@/components/settings/admin/AdminMerchantsSettings';
 // import { AdminCouriersSettings } from '@/components/settings/admin/AdminCouriersSettings';
-// import { AdminSubscriptionsSettings } from '@/components/settings/admin/AdminSubscriptionsSettings';
 // import { AdminAnalyticsSettings } from '@/components/settings/admin/AdminAnalyticsSettings';
 // import { AdminEmailSettings } from '@/components/settings/admin/AdminEmailSettings';
 // import { AdminNotificationSettings } from '@/components/settings/admin/AdminNotificationSettings';
@@ -247,7 +247,7 @@ const AdminSettings: React.FC = () => {
       </TabPanel>
 
       <TabPanel value={tabValue} index={4}>
-        <Typography>Subscriptions Settings - Coming Soon</Typography>
+        <AdminSubscriptionsSettings platformStats={platformStats} />
       </TabPanel>
 
       <TabPanel value={tabValue} index={5}>

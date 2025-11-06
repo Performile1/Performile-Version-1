@@ -42,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let query = supabase
       .from('subscription_plans')
       .select(`
-        subscription_plan_id,
+        plan_id,
         plan_name,
         plan_slug,
         plan_description,
@@ -83,7 +83,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Transform plans to match frontend expectations (alias columns)
     const transformedPlans = (plans || []).map(plan => ({
       ...plan,
-      plan_id: plan.subscription_plan_id,
       description: plan.plan_description
     }));
 

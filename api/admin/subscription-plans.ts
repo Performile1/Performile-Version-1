@@ -40,7 +40,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Get all subscription plans
       const result = await pool.query(`
         SELECT 
-          subscription_plan_id as plan_id,
+          plan_id,
           plan_name,
           plan_slug,
           user_type,
@@ -112,7 +112,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           is_popular = COALESCE($13, is_popular),
           is_active = COALESCE($14, is_active),
           updated_at = NOW()
-        WHERE subscription_plan_id = $15
+        WHERE plan_id = $15
         RETURNING *
       `, [
         plan_name,
