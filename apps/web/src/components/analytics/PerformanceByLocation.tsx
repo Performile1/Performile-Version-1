@@ -20,6 +20,8 @@ import {
   Button,
   CircularProgress,
   Chip,
+  ToggleButton,
+  ToggleButtonGroup,
   Table,
   TableBody,
   TableCell,
@@ -27,7 +29,8 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Grid
+  Grid,
+  Divider
 } from '@mui/material';
 import { useAuthStore } from '@/store/authStore';
 import { apiClient } from '@/services/apiClient';
@@ -59,9 +62,14 @@ interface SubscriptionInfo {
   reason: string;
 }
 
-export const PerformanceByLocation: React.FC = () => {
+interface PerformanceByLocationProps {
+  selectedCountry?: string;
+}
+
+export const PerformanceByLocation: React.FC<PerformanceByLocationProps> = ({ selectedCountry }) => {
   const { user, tokens } = useAuthStore();
-  const [country, setCountry] = useState('NO');
+  const [country, setCountry] = useState(selectedCountry || 'NO');
+  const [viewMode, setViewMode] = useState<'table' | 'heatmap'>('table');
   const [daysBack, setDaysBack] = useState(30);
   const [data, setData] = useState<PerformanceData[]>([]);
   const [limits, setLimits] = useState<Limits | null>(null);
@@ -120,6 +128,13 @@ export const PerformanceByLocation: React.FC = () => {
     }
   };
 
+  // Update country when selectedCountry prop changes
+  useEffect(() => {
+    if (selectedCountry && selectedCountry !== country) {
+      setCountry(selectedCountry);
+    }
+  }, [selectedCountry]);
+
   useEffect(() => {
     if (user) {
       fetchData();
@@ -130,12 +145,31 @@ export const PerformanceByLocation: React.FC = () => {
     <Box>
       <Card>
         <CardContent>
-          <Typography variant="h5" gutterBottom>
-            Performance by Location
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Analyze courier performance across different postal codes and cities
-          </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Box>
+              <Typography variant="h5" gutterBottom>
+                Performance by Location
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Analyze courier performance across different postal codes and cities
+              </Typography>
+            </Box>
+            
+            {/* View Mode Toggle */}
+            <ToggleButtonGroup
+              value={viewMode}
+              exclusive
+              onChange={(e, newMode) => newMode && setViewMode(newMode)}
+              size="small"
+            >
+              <ToggleButton value="table">
+                Table
+              </ToggleButton>
+              <ToggleButton value="heatmap">
+                Heatmap
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
 
           {/* Filters */}
           <Grid container spacing={2} sx={{ mb: 3 }}>
@@ -265,8 +299,8 @@ export const PerformanceByLocation: React.FC = () => {
             </Alert>
           )}
 
-          {/* Data Display - Table */}
-          {!loading && !error && !accessDenied && data.length > 0 && (
+          {/* Data Display - Table View */}
+          {!loading && !error && !accessDenied && data.length > 0 && viewMode === 'table' && (
             <TableContainer component={Paper} variant="outlined">
               <Table>
                 <TableHead>
@@ -299,6 +333,75 @@ export const PerformanceByLocation: React.FC = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+          )}
+
+          {/* Data Display - Heatmap View */}
+          {!loading && !error && !accessDenied && data.length > 0 && viewMode === 'heatmap' && (
+            <Box>
+              <Paper variant="outlined" sx={{ p: 3 }}>
+                <Typography variant="h6" gutterBottom>
+                  Performance Heatmap
+                </Typography>
+                <Grid container spacing={2}>
+                  {data.map((row, index) => {
+                    const intensity = row.selectionRate;
+                    const color = intensity >= 75 ? '#4caf50' : 
+                                 intensity >= 50 ? '#8bc34a' : 
+                                 intensity >= 25 ? '#ffc107' : 
+                                 intensity >= 10 ? '#ff9800' : '#f44336';
+                    
+                    return (
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={`${row.courierId}-${row.postalCode}-${index}`}>
+                        <Paper 
+                          elevation={2}
+                          sx={{ 
+                            p: 2, 
+                            backgroundColor: color,
+                            color: 'white',
+                            transition: 'transform 0.2s',
+                            '&:hover': {
+                              transform: 'scale(1.05)',
+                              cursor: 'pointer'
+                            }
+                          }}
+                        >
+                          <Typography variant="h6" fontWeight="bold">
+                            {row.postalCode}
+                          </Typography>
+                          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                            {row.city}
+                          </Typography>
+                          <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.3)' }} />
+                          <Typography variant="body2">
+                            <strong>{row.courierName}</strong>
+                          </Typography>
+                          <Box display="flex" justifyContent="space-between" mt={1}>
+                            <Typography variant="caption">
+                              {row.displayCount} displays
+                            </Typography>
+                            <Typography variant="caption">
+                              {row.selectionCount} selections
+                            </Typography>
+                          </Box>
+                          <Typography variant="h5" fontWeight="bold" textAlign="center" mt={1}>
+                            {row.selectionRate}%
+                          </Typography>
+                        </Paper>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+                
+                {/* Legend */}
+                <Box mt={3} display="flex" gap={2} flexWrap="wrap" justifyContent="center">
+                  <Chip label="Excellent (75%+)" sx={{ backgroundColor: '#4caf50', color: 'white' }} />
+                  <Chip label="Good (50-74%)" sx={{ backgroundColor: '#8bc34a', color: 'white' }} />
+                  <Chip label="Average (25-49%)" sx={{ backgroundColor: '#ffc107', color: 'white' }} />
+                  <Chip label="Below Average (10-24%)" sx={{ backgroundColor: '#ff9800', color: 'white' }} />
+                  <Chip label="Poor (<10%)" sx={{ backgroundColor: '#f44336', color: 'white' }} />
+                </Box>
+              </Paper>
+            </Box>
           )}
 
           {/* No Data */}

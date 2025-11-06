@@ -40,6 +40,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { PerformanceByLocation } from '@/components/analytics/PerformanceByLocation';
+import { AvailableMarketsList } from '@/components/analytics/AvailableMarketsList';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 // import { TimeFilter } from '../components/analytics/TimeFilter';
 
@@ -63,6 +64,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
 export const Analytics: React.FC = () => {
   const { user } = useAuthStore();
   const [activeTab, setActiveTab] = useState(0);
+  const [selectedMarket, setSelectedMarket] = useState<string>('NO'); // Default to Norway
   const [filters, setFilters] = useState<AnalyticsFilters>({
     timeRange: 'month',
     city: '',
@@ -822,19 +824,17 @@ export const Analytics: React.FC = () => {
                         </>
                       )}
                       
-                      {/* Future feature: Market selection and comparison */}
-                      <Typography variant="body2" color="text.secondary" paragraph>
-                        Market selection and comparison features coming soon.
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        View your performance data by location below.
-                      </Typography>
+                      {/* Market List Component */}
+                      <AvailableMarketsList 
+                        onMarketSelect={setSelectedMarket}
+                        selectedMarket={selectedMarket}
+                      />
                     </CardContent>
                   </Card>
                 </Grid>
 
                 <Grid item xs={12}>
-                  <PerformanceByLocation />
+                  <PerformanceByLocation selectedCountry={selectedMarket} />
                 </Grid>
               </Grid>
             </TabPanel>
