@@ -23,6 +23,7 @@ import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { Line, Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement } from 'chart.js';
+import { PerformanceByLocation } from '@/components/analytics/PerformanceByLocation';
 
 ChartJS.register(ArcElement);
 
@@ -339,6 +340,11 @@ export const MerchantAnalytics: React.FC = () => {
               </Grid>
             </CardContent>
           </Card>
+        </Grid>
+
+        {/* Performance by Location */}
+        <Grid item xs={12}>
+          <PerformanceByLocation />
         </Grid>
       </Grid>
     </Box>

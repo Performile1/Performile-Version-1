@@ -20,6 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { Line, Doughnut } from 'react-chartjs-2';
 import { useAuthStore } from '@/store/authStore';
+import { PerformanceByLocation } from '@/components/analytics/PerformanceByLocation';
 
 interface MetricCardProps {
   title: string;
@@ -370,6 +371,11 @@ export const CourierAnalytics: React.FC = () => {
               </Grid>
             </CardContent>
           </Card>
+        </Grid>
+
+        {/* Performance by Location */}
+        <Grid item xs={12}>
+          <PerformanceByLocation />
         </Grid>
       </Grid>
     </Box>
