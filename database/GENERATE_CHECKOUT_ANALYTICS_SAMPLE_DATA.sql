@@ -72,8 +72,10 @@ BEGIN
       o.delivery_city,
       o.delivery_country,
       o.order_date,
-      o.store_id
+      o.store_id,
+      s.merchant_id
     FROM orders o
+    JOIN stores s ON s.store_id = o.store_id
     WHERE o.delivery_country IS NOT NULL
       AND o.courier_id IS NOT NULL
     ORDER BY o.order_date DESC
@@ -115,7 +117,7 @@ BEGIN
         created_at
       ) VALUES (
         gen_random_uuid(),
-        (SELECT merchant_id FROM stores WHERE store_id = v_order.store_id LIMIT 1),  -- Get merchant from store
+        v_order.merchant_id,  -- From JOIN with stores table
         v_courier.courier_id,
         v_session_id::TEXT,  -- checkout_session_id is VARCHAR
         floor(random() * v_display_count + 1)::INTEGER,  -- position_shown
