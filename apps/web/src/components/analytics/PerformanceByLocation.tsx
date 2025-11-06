@@ -182,18 +182,20 @@ export const PerformanceByLocation: React.FC = () => {
                 <Typography variant="body2" sx={{ mr: 1 }}>
                   Your plan includes:
                 </Typography>
+              </Box>
+              <Box display="flex" gap={1} flexWrap="wrap">
                 <Chip 
-                  label={`${limits.maxCountries} countries`} 
+                  label={limits.maxCountries >= 999 ? 'Unlimited countries' : `${limits.maxCountries} countries`}
                   size="small" 
                   color="primary" 
                 />
                 <Chip 
-                  label={`${limits.maxDays} days history`} 
+                  label={limits.maxDays >= 999 ? 'Unlimited history' : `${limits.maxDays} days history`}
                   size="small" 
                   color="primary" 
                 />
                 <Chip 
-                  label={`${limits.maxRows} rows max`} 
+                  label={limits.maxRows >= 999999 ? 'Unlimited data' : `${limits.maxRows} rows max`}
                   size="small" 
                   color="primary" 
                 />
