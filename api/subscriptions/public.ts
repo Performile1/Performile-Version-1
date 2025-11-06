@@ -38,14 +38,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const { user_type } = req.query;
 
-    // Build query - select specific columns with aliases
+    // Build query - select specific columns
     let query = supabase
       .from('subscription_plans')
       .select(`
         plan_id,
         plan_name,
         plan_slug,
-        plan_description,
+        description,
         user_type,
         tier,
         monthly_price,
@@ -80,17 +80,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw error;
     }
 
-    // Transform plans to match frontend expectations (alias columns)
-    const transformedPlans = (plans || []).map(plan => ({
-      ...plan,
-      description: plan.plan_description
-    }));
-
     // Return plans
     return res.status(200).json({
       success: true,
-      plans: transformedPlans,
-      count: transformedPlans.length,
+      plans: plans || [],
+      count: (plans || []).length,
     });
 
   } catch (error: any) {
