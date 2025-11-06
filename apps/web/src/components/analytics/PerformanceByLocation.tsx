@@ -30,6 +30,7 @@ import {
   Grid
 } from '@mui/material';
 import { useAuthStore } from '@/store/authStore';
+import { apiClient } from '@/services/apiClient';
 
 interface PerformanceData {
   courierId: string;
@@ -88,42 +89,32 @@ export const PerformanceByLocation: React.FC = () => {
     setAccessDenied(false);
 
     try {
-      // Use tokens from Zustand store instead of localStorage
-      if (!tokens?.accessToken) {
-        setError('Not authenticated. Please log in again.');
-        return;
-      }
-
-      const response = await fetch(
-        `/api/analytics/performance-by-location?country=${country}&daysBack=${daysBack}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${tokens.accessToken}`
-          }
+      // Use apiClient which handles auth automatically
+      const response = await apiClient.get('/analytics/performance-by-location', {
+        params: {
+          country,
+          daysBack
         }
-      );
+      });
 
-      if (response.status === 403) {
-        // Access denied - show upgrade prompt
-        const errorData = await response.json();
+      // Success - set data
+      setData(response.data.data || []);
+      setLimits(response.data.limits);
+      setSubscription(response.data.subscription);
+      setAccessDenied(false);
+    } catch (err: any) {
+      // Handle 403 (access denied) separately
+      if (err.response?.status === 403) {
+        const errorData = err.response.data;
         setAccessDenied(true);
         setUpgradeMessage(errorData.reason);
         setLimits(errorData.limits);
         setCurrentPlan(errorData.currentPlan || 'Starter');
         setData([]);
-      } else if (response.ok) {
-        const result = await response.json();
-        setData(result.data || []);
-        setLimits(result.limits);
-        setSubscription(result.subscription);
-        setAccessDenied(false);
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch data');
+        setError(err.response?.data?.error || err.message || 'Failed to load performance data');
+        console.error(err);
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to load performance data');
-      console.error(err);
     } finally {
       setLoading(false);
     }
