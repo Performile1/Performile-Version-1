@@ -27,6 +27,7 @@ import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { PublicHeader } from '@/components/layout/PublicHeader';
 
 interface SubscriptionPlan {
   subscription_plan_id: number;
@@ -147,8 +148,11 @@ export const SubscriptionPlans: React.FC = () => {
   }
 
   return (
-    <Box sx={{ py: 8, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', minHeight: '100vh' }}>
-      <Container maxWidth="lg">
+    <Box sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', minHeight: '100vh' }}>
+      {/* Public Header */}
+      <PublicHeader />
+      
+      <Container maxWidth="lg" sx={{ py: 8 }}>
         {/* Header */}
         <Box sx={{ textAlign: 'center', mb: 6 }}>
           <Typography variant="h3" sx={{ color: 'white', fontWeight: 'bold', mb: 2 }}>
