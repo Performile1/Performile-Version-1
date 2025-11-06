@@ -29,7 +29,7 @@ import {
   Paper,
   Grid
 } from '@mui/material';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuthStore } from '@/store/authStore';
 
 interface PerformanceData {
   courierId: string;
@@ -59,7 +59,7 @@ interface SubscriptionInfo {
 }
 
 export const PerformanceByLocation: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const [country, setCountry] = useState('NO');
   const [daysBack, setDaysBack] = useState(30);
   const [data, setData] = useState<PerformanceData[]>([]);
