@@ -102,28 +102,28 @@ BEGIN
       -- Insert checkout analytics event
       INSERT INTO checkout_courier_analytics (
         analytics_id,
-        session_id,
-        store_id,
+        merchant_id,
         courier_id,
+        checkout_session_id,
+        position_shown,
+        total_couriers_shown,
+        was_selected,
         delivery_postal_code,
         delivery_city,
         delivery_country,
-        was_displayed,
-        was_selected,
-        display_position,
         event_timestamp,
         created_at
       ) VALUES (
         gen_random_uuid(),
-        v_session_id,
-        v_order.store_id,
+        (SELECT merchant_id FROM stores WHERE store_id = v_order.store_id LIMIT 1),  -- Get merchant from store
         v_courier.courier_id,
+        v_session_id::TEXT,  -- checkout_session_id is VARCHAR
+        floor(random() * v_display_count + 1)::INTEGER,  -- position_shown
+        v_display_count,  -- total_couriers_shown
+        v_courier.courier_id = v_order.selected_courier_id,  -- was_selected
         v_order.delivery_postal_code,
         v_order.delivery_city,
         v_order.delivery_country,
-        true,  -- was_displayed
-        v_courier.courier_id = v_order.selected_courier_id,  -- was_selected
-        floor(random() * v_display_count + 1)::INTEGER,  -- display_position
         v_event_time + (random() * INTERVAL '2 minutes'),  -- slight variation
         v_event_time
       );
@@ -153,11 +153,11 @@ SELECT
   COUNT(*) as total_events,
   COUNT(DISTINCT courier_id) as unique_couriers,
   COUNT(DISTINCT delivery_postal_code) as unique_postal_codes,
-  COUNT(*) FILTER (WHERE was_displayed) as displays,
+  COUNT(*) as displays,
   COUNT(*) FILTER (WHERE was_selected) as selections,
   ROUND(
     (COUNT(*) FILTER (WHERE was_selected)::NUMERIC / 
-     NULLIF(COUNT(*) FILTER (WHERE was_displayed), 0)) * 100, 
+     NULLIF(COUNT(*), 0)) * 100, 
     1
   ) as selection_rate_pct
 FROM checkout_courier_analytics
