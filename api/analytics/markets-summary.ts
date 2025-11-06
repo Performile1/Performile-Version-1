@@ -130,14 +130,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     // Transform to array and calculate percentages
-    const markets = Object.values(marketStats).map((market: any) => ({
-      country: market.country,
-      total_orders: market.total_orders,
-      total_couriers: market.unique_couriers.size,
-      avg_on_time_rate: market.delivered_orders > 0 
-        ? (market.on_time_orders / market.delivered_orders) * 100 
-        : 0
-    }));
+    const markets = Object.values(marketStats).map((market: any) => {
+      // Convert Set to size before returning
+      const courierCount = market.unique_couriers instanceof Set 
+        ? market.unique_couriers.size 
+        : 0;
+      
+      return {
+        country: market.country,
+        total_orders: market.total_orders,
+        total_couriers: courierCount,
+        avg_on_time_rate: market.delivered_orders > 0 
+          ? (market.on_time_orders / market.delivered_orders) * 100 
+          : 0
+      };
+    });
 
     return res.status(200).json({
       success: true,
