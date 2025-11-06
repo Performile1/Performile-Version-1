@@ -59,7 +59,7 @@ interface SubscriptionInfo {
 }
 
 export const PerformanceByLocation: React.FC = () => {
-  const { user } = useAuthStore();
+  const { user, tokens } = useAuthStore();
   const [country, setCountry] = useState('NO');
   const [daysBack, setDaysBack] = useState(30);
   const [data, setData] = useState<PerformanceData[]>([]);
@@ -88,11 +88,9 @@ export const PerformanceByLocation: React.FC = () => {
     setAccessDenied(false);
 
     try {
-      const token = localStorage.getItem('performile-auth');
-      const authData = token ? JSON.parse(token) : null;
-
-      if (!authData?.accessToken) {
-        setError('Not authenticated');
+      // Use tokens from Zustand store instead of localStorage
+      if (!tokens?.accessToken) {
+        setError('Not authenticated. Please log in again.');
         return;
       }
 
@@ -100,7 +98,7 @@ export const PerformanceByLocation: React.FC = () => {
         `/api/analytics/performance-by-location?country=${country}&daysBack=${daysBack}`,
         {
           headers: {
-            'Authorization': `Bearer ${authData.accessToken}`
+            'Authorization': `Bearer ${tokens.accessToken}`
           }
         }
       );
