@@ -822,9 +822,12 @@ export const Analytics: React.FC = () => {
                         </>
                       )}
                       
-                      {/* Market cards would be rendered here */}
+                      {/* Future feature: Market selection and comparison */}
+                      <Typography variant="body2" color="text.secondary" paragraph>
+                        Market selection and comparison features coming soon.
+                      </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Market analysis data would be displayed here based on subscription tier
+                        View your performance data by location below.
                       </Typography>
                     </CardContent>
                   </Card>
