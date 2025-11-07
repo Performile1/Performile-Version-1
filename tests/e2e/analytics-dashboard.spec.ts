@@ -16,7 +16,7 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-const BASE_URL = process.env.BASE_URL || 'https://frontend-two-swart-31.vercel.app';
+const BASE_URL = process.env.BASE_URL || 'https://performile-platform-main.vercel.app';
 const TEST_TIMEOUT = 60000;
 
 // Test user credentials

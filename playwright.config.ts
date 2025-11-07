@@ -37,7 +37,7 @@ export default defineConfig({
   // Shared settings for all projects
   use: {
     // Base URL
-    baseURL: process.env.BASE_URL || 'https://frontend-two-swart-31.vercel.app',
+    baseURL: process.env.BASE_URL || 'https://performile-platform-main.vercel.app',
     
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
