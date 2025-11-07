@@ -22,7 +22,7 @@ const TEST_TIMEOUT = 60000;
 // Test user credentials
 const ADMIN_USER = {
   email: 'admin@performile.com',
-  password: 'Admin123!'
+  password: 'Test1234!'
 };
 
 // Helper: Login
