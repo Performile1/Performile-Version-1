@@ -16,6 +16,7 @@ const BASE_URL = process.env.BASE_URL || 'https://performile-platform-main.verce
 const TEST_TIMEOUT = 60000;
 
 // Test user credentials
+// All accounts use password: Test1234!
 const USERS = {
   admin: {
     email: 'admin@performile.com',
