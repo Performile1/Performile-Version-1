@@ -33,8 +33,8 @@ async function login(page: Page, email: string, password: string) {
   await page.fill('input[type="password"]', password);
   await page.click('button[type="submit"]');
   
-  // Wait for redirect to dashboard
-  await page.waitForURL(/\/(dashboard|analytics)/, { timeout: TEST_TIMEOUT });
+  // Wait for redirect to dashboard (login always redirects to /dashboard)
+  await page.waitForURL(/\/dashboard/, { timeout: TEST_TIMEOUT });
 }
 
 // Helper: Navigate to Analytics
