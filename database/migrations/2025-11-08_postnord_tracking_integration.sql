@@ -143,9 +143,9 @@ CREATE INDEX IF NOT EXISTS idx_tracking_cache_order_id
     ON courier_tracking_cache(order_id) 
     WHERE order_id IS NOT NULL;
 
+-- Index for non-expired cache entries (no WHERE clause due to NOW() immutability)
 CREATE INDEX IF NOT EXISTS idx_tracking_cache_expires 
-    ON courier_tracking_cache(expires_at) 
-    WHERE expires_at > NOW();
+    ON courier_tracking_cache(expires_at);
 
 CREATE INDEX IF NOT EXISTS idx_tracking_cache_courier 
     ON courier_tracking_cache(courier_id, tracking_number);
