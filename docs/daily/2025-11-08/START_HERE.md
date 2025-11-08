@@ -48,27 +48,38 @@ Preparing for Week 3 (Payment Gateway Integrations) by:
 
 ## 🚀 TODAY'S PRIORITY (Saturday)
 
-### **STEP 1: Deploy Shopify App** (40 min)
-```bash
-cd apps/shopify/performile-delivery
-npm install
-vercel
-```
+### **OPTION A: Courier API Integration** ⭐ **RECOMMENDED**
 
-### **STEP 2: Test Compatibility** (3-4 hours)
-- Shopify + Stripe (baseline)
-- Shopify + Klarna (Week 3 Day 1)
-- Shopify + Adyen (Week 3 Day 4)
+**STEP 1: Set Up Courier API Accounts** (60 min)
+- PostNord developer account
+- Bring developer account
+- Budbee developer account
 
-### **STEP 3: Set Up Accounts** (90 min)
-- Klarna test account
-- Walley test account
-- Qliro test account
+**STEP 2: Design Database Schema** (60 min)
+- courier_api_credentials table
+- courier_api_requests table
+- courier_tracking_events table
 
-### **STEP 4: Document Results** (60 min)
-- Create compatibility report
-- Take screenshots
-- Note issues
+**STEP 3: Build PostNord Integration** (4 hours)
+- Create courier API service layer
+- Implement tracking API
+- Implement rates API
+- Test integration
+
+**STEP 4: Build Bring Integration** (2 hours)
+- Implement Bring API
+- Test integration
+
+**Why This First:** Real courier APIs benefit ALL features (payment gateways, consumer app, merchant dashboard)
+
+---
+
+### **OPTION B: Payment Gateway Testing**
+
+**STEP 1: Deploy Shopify App** (40 min)
+**STEP 2: Test Compatibility** (3-4 hours)
+**STEP 3: Set Up Accounts** (90 min)
+**STEP 4: Document Results** (60 min)
 
 ---
 
@@ -96,20 +107,21 @@ vercel
 
 ---
 
-## ✅ SUCCESS = WEEK 3 READY
+## ✅ SUCCESS = WEEK 3 & 4 READY
 
 ### **By Sunday Evening:**
-- ✅ Shopify app deployed
-- ✅ 3-4 payment providers tested
-- ✅ 3 test accounts created
-- ✅ Database schema ready
-- ✅ API endpoints specified
+- ✅ **Courier APIs integrated** (PostNord + Bring) 🆕
+- ✅ Real-time tracking working 🆕
+- ✅ Accurate shipping rates 🆕
+- ✅ Payment gateway test accounts created
+- ✅ Payment gateway schemas ready
+- ✅ Consumer app designed
 - ✅ Development environment ready
 
 ### **Monday Morning:**
+- ✅ Real courier data in checkout
 - ✅ Start coding immediately
 - ✅ No setup delays
-- ✅ No account waiting
 - ✅ Clear implementation path
 
 ---
