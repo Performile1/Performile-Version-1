@@ -76,10 +76,19 @@ Preparing for Week 3 (Payment Gateway Integrations) by:
 
 ### **OPTION B: Payment Gateway Testing**
 
-**STEP 1: Deploy Shopify App** (40 min)
+**STEP 1: Verify Shopify App** (10 min)
+- ✅ Already deployed: `performile-delivery` on Vercel
+- Just verify it's working
+
 **STEP 2: Test Compatibility** (3-4 hours)
+- Shopify + Stripe, Klarna, Adyen
+- Test checkout flow
+
 **STEP 3: Set Up Accounts** (90 min)
+- Klarna, Walley, Qliro test accounts
+
 **STEP 4: Document Results** (60 min)
+- Compatibility report
 
 ---
 
