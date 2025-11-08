@@ -16,6 +16,8 @@ import {
   Alert,
   CircularProgress,
   Divider,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import {
   LocalShipping,
@@ -23,9 +25,11 @@ import {
   Schedule,
   LocationOn,
   Refresh,
+  Search,
 } from '@mui/icons-material';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { UnifiedTrackingSearch } from '../components/tracking/UnifiedTrackingSearch';
 
 interface TrackingEvent {
   eventTime: string;
@@ -49,6 +53,7 @@ interface TrackingData {
 }
 
 export const TrackingPage: React.FC = () => {
+  const [tabValue, setTabValue] = useState(0);
   const [trackingNumber, setTrackingNumber] = useState('');
   const [trackingData, setTrackingData] = useState<TrackingData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -111,33 +116,46 @@ export const TrackingPage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Paper sx={{ p: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Track Your Shipment
-        </Typography>
-        <Typography variant="body2" color="text.secondary" paragraph>
-          Enter your tracking number to see real-time delivery status
-        </Typography>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        📦 Track Your Shipments
+      </Typography>
+      <Typography variant="body2" color="text.secondary" paragraph>
+        Track shipments across all couriers in one place
+      </Typography>
 
-        <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
-          <TextField
-            fullWidth
-            label="Tracking Number"
-            value={trackingNumber}
-            onChange={(e) => setTrackingNumber(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleTrack()}
-            placeholder="Enter tracking number"
-          />
-          <Button
-            variant="contained"
-            onClick={handleTrack}
-            disabled={loading}
-            sx={{ minWidth: 120 }}
-          >
-            {loading ? <CircularProgress size={24} /> : 'Track'}
-          </Button>
-        </Box>
+      <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)} sx={{ mb: 3 }}>
+        <Tab icon={<Search />} label="Quick Track" />
+        <Tab icon={<LocalShipping />} label="Advanced Search" />
+      </Tabs>
+
+      {tabValue === 0 ? (
+        <Paper sx={{ p: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Quick Track by Number
+          </Typography>
+          <Typography variant="body2" color="text.secondary" paragraph>
+            Enter your tracking number to see real-time delivery status
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 2, mb: 4 }}>
+            <TextField
+              fullWidth
+              label="Tracking Number"
+              value={trackingNumber}
+              onChange={(e) => setTrackingNumber(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleTrack()}
+              placeholder="Enter tracking number"
+            />
+            <Button
+              variant="contained"
+              onClick={handleTrack}
+              disabled={loading}
+              sx={{ minWidth: 120 }}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Track'}
+            </Button>
+          </Box>
 
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>
@@ -247,12 +265,15 @@ export const TrackingPage: React.FC = () => {
           </>
         )}
 
-        {!trackingData && !error && !loading && (
-          <Alert severity="info">
-            Enter a tracking number above to see delivery status
-          </Alert>
-        )}
-      </Paper>
+          {!trackingData && !error && !loading && (
+            <Alert severity="info">
+              Enter a tracking number above to see delivery status
+            </Alert>
+          )}
+        </Paper>
+      ) : (
+        <UnifiedTrackingSearch />
+      )}
     </Container>
   );
 };
