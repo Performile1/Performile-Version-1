@@ -278,6 +278,70 @@ curl -X GET "https://api2.postnord.com/rest/shipment/v7/trackandtrace/customernu
 
 ---
 
+## 🔗 TRACKING URL API
+
+**Get a direct link to PostNord's tracking page**
+
+### **Endpoint:**
+```
+GET /v1/tracking/{country}/{id}
+```
+
+### **Base URL:**
+```
+https://api2.postnord.com/rest/links
+```
+
+### **Full URL:**
+```
+https://api2.postnord.com/rest/links/v1/tracking/{country}/{id}
+```
+
+### **Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `country` | string | ✅ Yes | Country code: SE, NO, FI, DK |
+| `id` | string | ✅ Yes | Shipment or Item identifier (10-35 characters) |
+
+### **Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `apikey` | string | ✅ Yes | 32-character API key |
+| `language` | string | ❌ No | Language: en, sv, no, da, fi |
+
+### **Example Request:**
+```bash
+curl -X GET "https://api2.postnord.com/rest/links/v1/tracking/SE/SHIPMENT123?apikey=YOUR_API_KEY&language=en"
+```
+
+### **Response:**
+```json
+{
+  "url": "https://tracking.postnord.com/se/tracking/SHIPMENT123?locale=en"
+}
+```
+
+### **Use Cases:**
+
+**1. Consumer Tracking Link:**
+- Generate tracking URL for email notifications
+- Send SMS with tracking link
+- Display "Track Package" button in consumer app
+
+**2. Merchant Dashboard:**
+- Quick link to PostNord tracking page
+- Share tracking link with customers
+- Embed tracking iframe
+
+**3. Email Templates:**
+```html
+<a href="{{tracking_url}}">Track Your Package</a>
+```
+
+---
+
 ## 🚚 SHIPPING GUIDE API (RATES)
 
 **Note:** This is a separate API endpoint
