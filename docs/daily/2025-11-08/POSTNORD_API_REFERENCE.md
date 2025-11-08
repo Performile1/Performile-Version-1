@@ -85,27 +85,73 @@ curl -X GET "https://api2.postnord.com/rest/location/v2/address/search?apikey=YO
 
 ## 📦 TRACKING & TRACE API v7
 
-### **Endpoint:**
+### **Two Tracking Endpoints Available:**
+
+---
+
+### **Option 1: Track by Shipment/Item ID** ⭐ **RECOMMENDED**
+
+**Endpoint:**
 ```
-GET /v7/trackandtrace/customernumber/{customerNumber}/reference/{reference}/public
+GET /v7/trackandtrace/id/{id}/public
 ```
 
-### **Base URL:**
+**Base URL:**
 ```
 https://api2.postnord.com/rest/shipment
 ```
 
-### **Full URL:**
+**Full URL:**
+```
+https://api2.postnord.com/rest/shipment/v7/trackandtrace/id/{id}/public
+```
+
+**Path Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | ✅ Yes | Shipment or Item identifier (10-35 characters) |
+
+**Query Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `apikey` | string | ✅ Yes | 32-character API key |
+| `locale` | string | ❌ No | Language: en, sv, no, da, fi (default: en) |
+| `callback` | string | ❌ No | Return JSON-P response |
+
+**Example Request:**
+```bash
+curl -X GET "https://api2.postnord.com/rest/shipment/v7/trackandtrace/id/SHIPMENT123/public?apikey=YOUR_API_KEY&locale=en"
+```
+
+**Use Case:** Simple tracking by shipment ID (most common)
+
+---
+
+### **Option 2: Track by Customer Number + Reference**
+
+**Endpoint:**
+```
+GET /v7/trackandtrace/customernumber/{customerNumber}/reference/{reference}/public
+```
+
+**Base URL:**
+```
+https://api2.postnord.com/rest/shipment
+```
+
+**Full URL:**
 ```
 https://api2.postnord.com/rest/shipment/v7/trackandtrace/customernumber/{customerNumber}/reference/{reference}/public
 ```
 
-### **Path Parameters:**
+**Path Parameters:**
 
 | Parameter | Type | Required | Description | Example |
 |-----------|------|----------|-------------|---------|
 | `customerNumber` | string | ✅ Yes | PostNord customer number | 80068059 |
-| `reference` | string | ✅ Yes | Customer reference on shipment | dk2238532288565/dk80059/0 |
+| `reference` | string | ✅ Yes | Customer reference on shipment | ORDER123 |
 
 ### **Query Parameters:**
 
@@ -119,6 +165,24 @@ https://api2.postnord.com/rest/shipment/v7/trackandtrace/customernumber/{custome
 ```bash
 curl -X GET "https://api2.postnord.com/rest/shipment/v7/trackandtrace/customernumber/80068059/reference/ORDER123/public?apikey=YOUR_API_KEY&locale=en"
 ```
+
+**Use Case:** Track by merchant's order reference
+
+---
+
+### **Which Endpoint to Use?**
+
+**Use Option 1 (Track by ID)** when:
+- ✅ You have the PostNord tracking number
+- ✅ Consumer tracking (simplest)
+- ✅ Most common use case
+
+**Use Option 2 (Track by Reference)** when:
+- ✅ You only have your internal order reference
+- ✅ Merchant lookup by their own order number
+- ✅ Need to find PostNord tracking number
+
+---
 
 ### **Response Structure:**
 
