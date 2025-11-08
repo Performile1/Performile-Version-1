@@ -357,7 +357,7 @@ Response: { received: true }
 
 ---
 
-### **AFTERNOON (2:00 PM - 5:00 PM): Week 3 Detailed Planning**
+### **AFTERNOON (2:00 PM - 8:00 PM): Week 3 Planning + Consumer App** ⭐ **EXTENDED**
 
 #### **Task 12: Create Week 3 Implementation Checklist** (60 min)
 **Priority:** 🔴 HIGH
@@ -409,77 +409,81 @@ ADYEN_MERCHANT_ACCOUNT=
 
 ---
 
-#### **Task 14: Create API Endpoint Templates** (60 min)
-**Priority:** 🟡 MEDIUM - Speeds up Week 3
+#### **Task 14: Consumer App - Design UI** (90 min) 🆕
+**Priority:** 🟡 MEDIUM - Week 4 preparation
 
-**Create Template Files:**
-```
-api/payment-gateways/
-  ├── klarna/
-  │   ├── create-session.ts (template)
-  │   ├── update-shipping.ts (template)
-  │   └── webhook.ts (template)
-  ├── walley/
-  │   ├── initialize.ts (template)
-  │   ├── update-cart.ts (template)
-  │   └── webhook.ts (template)
-  ├── qliro/
-  │   ├── create-order.ts (template)
-  │   ├── update-order.ts (template)
-  │   └── webhook.ts (template)
-  └── adyen/
-      ├── sessions.ts (template)
-      ├── payments.ts (template)
-      └── webhook.ts (template)
-```
+**Create Wireframes:**
+1. Landing page (magic link entry)
+2. Order tracking view
+3. Rating form
+4. Claims form
+5. Returns view
 
-**Template Structure:**
-```typescript
-import { createClient } from '@supabase/supabase-js';
-import { Request, Response } from 'express';
+**Deliverable:** ✅ 5 consumer app wireframes
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+**⚠️ WEEK 4 BENEFIT:** Consumer app is Week 4 feature, preparing now saves time later.
 
-export default async function handler(req: Request, res: Response) {
-  try {
-    // Validate request
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
-    }
-
-    // TODO: Implement gateway-specific logic
-
-    return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-}
-```
-
-**Deliverable:** ✅ 12 API endpoint templates ready
-
-**⚠️ WEEK 3 BENEFIT:** Copy-paste and fill in gateway logic, saves 2-3 hours.
+**See:** `CONSUMER_APP_WEEKEND_PREP.md` for detailed specs
 
 ---
 
-#### **Task 15: Wrap Up Week 2 Documentation** (60 min)
-**Priority:** 🟡 MEDIUM - Clean closure
+#### **Task 15: Consumer App - Database Schema** (60 min) 🆕
+**Priority:** 🟡 MEDIUM - Week 4 preparation
 
-**Create:** `END_OF_WEEK_2_SUMMARY.md`
+**Design Tables:**
+1. `consumer_tracking_sessions` - Magic link sessions
+2. `consumer_reviews` - Courier ratings
+3. `consumer_claims` - Delivery issues
 
-**Include:**
-- Week 2 accomplishments
-- Features delivered
-- Tests created (21 E2E tests, 90%+ pass rate)
-- Issues resolved
-- Platform status (93% complete)
-- Ready for Week 3
+**Deliverable:** ✅ Consumer app database schema SQL scripts
 
-**Deliverable:** ✅ Week 2 properly closed
+---
+
+#### **Task 16: Consumer App - API Endpoints** (60 min) 🆕
+**Priority:** 🟡 MEDIUM - Week 4 preparation
+
+**Specify Endpoints:**
+1. Generate magic link
+2. Validate token
+3. Get order tracking
+4. Submit review
+5. Submit claim
+6. Get courier info
+
+**Deliverable:** ✅ 6 consumer app API endpoint specs
+
+---
+
+#### **Task 17: Consumer App - Project Structure** (60 min) 🆕 **OPTIONAL**
+**Priority:** 🟢 LOW - If time allows
+
+**Create:**
+```
+apps/consumer/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── hooks/
+│   └── App.tsx
+├── package.json
+└── README.md
+```
+
+**Deliverable:** ✅ Consumer app project ready to code
+
+---
+
+#### **Task 18: Consumer App - Basic Build** (90 min) 🆕 **OPTIONAL**
+**Priority:** 🟢 LOW - Stretch goal
+
+**Build:**
+- Tracking page with timeline
+- Map view
+- Courier info display
+
+**Deliverable:** ✅ Basic consumer app working
+
+**⚠️ NOTE:** This is optional. Only if you have time and energy!
 
 ---
 
@@ -496,13 +500,17 @@ export default async function handler(req: Request, res: Response) {
 - ✅ All minimum items
 - ✅ 4 payment providers tested
 - ✅ Development environment set up
-- ✅ API endpoint templates created
 - ✅ Week 3 checklist created
+- ✅ Consumer app wireframes designed 🆕
+- ✅ Consumer app database schema ready 🆕
+- ✅ Consumer app API endpoints specified 🆕
 
 ### **Stretch Success (Nice to Have):**
 - ✅ All target items
 - ✅ WooCommerce testing complete
 - ✅ Complete compatibility documentation
+- ✅ Consumer app project structure created 🆕
+- ✅ Basic consumer app built 🆕
 - ✅ Week 2 documentation wrapped up
 
 ---
@@ -522,12 +530,15 @@ export default async function handler(req: Request, res: Response) {
 - [ ] `PAYMENT_GATEWAY_COMPATIBILITY_RESULTS.md` created
 
 ### **Sunday Deliverables:**
-- [ ] Database schema SQL scripts
+- [ ] Database schema SQL scripts (payment gateways)
 - [ ] `WEEK_3_API_ENDPOINTS_SPEC.md` created
 - [ ] `WEEK_3_DAILY_CHECKLIST.md` created
 - [ ] Development environment set up
-- [ ] API endpoint templates created
-- [ ] `END_OF_WEEK_2_SUMMARY.md` created
+- [ ] Consumer app wireframes (5 designs) 🆕
+- [ ] Consumer app database schema SQL scripts 🆕
+- [ ] Consumer app API endpoints specification 🆕
+- [ ] Consumer app project structure (optional) 🆕
+- [ ] Basic consumer app built (optional) 🆕
 
 ---
 
@@ -592,16 +603,20 @@ export default async function handler(req: Request, res: Response) {
 5:45 - 6:45   Document findings (60 min)
 ```
 
-### **SUNDAY (4-6 hours):**
+### **SUNDAY (6-8 hours):** 🆕 **EXTENDED FOR CONSUMER APP**
 ```
-10:00 - 11:30 Design database schema (90 min)
-11:30 - 1:00  Design API endpoints (90 min)
+10:00 - 11:30 Design payment gateway database schema (90 min)
+11:30 - 1:00  Design payment gateway API endpoints (90 min)
 1:00 - 2:00   Lunch (60 min)
 2:00 - 3:00   Create Week 3 checklist (60 min)
 3:00 - 4:00   Set up development environment (60 min)
-4:00 - 5:00   Create API templates (60 min)
-5:00 - 6:00   Wrap up Week 2 docs (60 min)
+4:00 - 5:30   Consumer app: Design UI wireframes (90 min) 🆕
+5:30 - 6:30   Consumer app: Design database schema (60 min) 🆕
+6:30 - 7:30   Consumer app: Design API endpoints (60 min) 🆕
+7:30 - 8:00   Consumer app: Create project structure (30 min) [OPTIONAL] 🆕
 ```
+
+**Total:** 6-8 hours (4 hours payment gateways + 4 hours consumer app)
 
 ---
 
