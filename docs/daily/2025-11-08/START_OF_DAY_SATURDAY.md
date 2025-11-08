@@ -463,8 +463,14 @@ curl -X POST "http://localhost:3000/api/courier-api/rates" \
 - `docs/daily/2025-11-08/START_HERE.md` - Quick overview
 
 **PostNord Documentation:**
+- `docs/daily/2025-11-08/POSTNORD_API_REFERENCE.md` ⭐ **API REFERENCE**
 - https://developer.postnord.com/docs - Official API docs
 - https://developer.postnord.com/api - API reference
+
+**PostNord APIs Available:**
+1. **Postal Code & Address Search** - `/rest/location/v2/address/search`
+2. **Tracking & Trace** - `/rest/businesslocation/v5/trackandtrace/findByIdentifier.json`
+3. **Shipping Guide (Rates)** - `/rest/businesslocation/v1/shippingguide`
 
 **Bring Documentation:**
 - https://developer.bring.com/ - Official docs
