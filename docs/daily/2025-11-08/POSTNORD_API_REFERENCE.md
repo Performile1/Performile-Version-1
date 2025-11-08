@@ -83,32 +83,134 @@ curl -X GET "https://api2.postnord.com/rest/location/v2/address/search?apikey=YO
 
 ---
 
-## 📦 TRACKING & TRACE API
-
-**Note:** This is a separate API endpoint (not in the provided Swagger)
+## 📦 TRACKING & TRACE API v7
 
 ### **Endpoint:**
 ```
-GET /rest/businesslocation/v5/trackandtrace/findByIdentifier.json
+GET /v7/trackandtrace/customernumber/{customerNumber}/reference/{reference}/public
 ```
 
 ### **Base URL:**
 ```
-https://api2.postnord.com/rest/businesslocation/v5
+https://api2.postnord.com/rest/shipment
 ```
+
+### **Full URL:**
+```
+https://api2.postnord.com/rest/shipment/v7/trackandtrace/customernumber/{customerNumber}/reference/{reference}/public
+```
+
+### **Path Parameters:**
+
+| Parameter | Type | Required | Description | Example |
+|-----------|------|----------|-------------|---------|
+| `customerNumber` | string | ✅ Yes | PostNord customer number | 80068059 |
+| `reference` | string | ✅ Yes | Customer reference on shipment | dk2238532288565/dk80059/0 |
 
 ### **Query Parameters:**
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `apikey` | string | ✅ Yes | API key |
-| `id` | string | ✅ Yes | Tracking number |
-| `locale` | string | ❌ No | Language (en, sv, no, fi, da) |
+| `apikey` | string | ✅ Yes | 32-character API key |
+| `locale` | string | ❌ No | Language: en, sv, no, da, fi (default: en) |
+| `callback` | string | ❌ No | Return JSON-P response |
 
 ### **Example Request:**
 ```bash
-curl -X GET "https://api2.postnord.com/rest/businesslocation/v5/trackandtrace/findByIdentifier.json?apikey=YOUR_API_KEY&id=TRACKING123&locale=en"
+curl -X GET "https://api2.postnord.com/rest/shipment/v7/trackandtrace/customernumber/80068059/reference/ORDER123/public?apikey=YOUR_API_KEY&locale=en"
 ```
+
+### **Response Structure:**
+
+```json
+{
+  "TrackingInformationResponse": {
+    "shipments": [
+      {
+        "shipmentId": "SHIPMENT123",
+        "status": "EN_ROUTE",
+        "estimatedTimeOfArrival": "2025-11-09T14:00:00Z",
+        "publicTimeOfArrival": "2025-11-09T14:00:00Z",
+        "deliveryDate": null,
+        "consignor": {
+          "name": "Store Name",
+          "address": {
+            "street1": "Street 1",
+            "city": "Stockholm",
+            "postCode": "11122",
+            "countryCode": "SE"
+          }
+        },
+        "consignee": {
+          "name": "Customer Name",
+          "address": {
+            "street1": "Customer Street",
+            "city": "Gothenburg",
+            "postCode": "41301",
+            "countryCode": "SE"
+          }
+        },
+        "items": [
+          {
+            "itemId": "ITEM123",
+            "status": "EN_ROUTE",
+            "estimatedTimeOfArrival": "2025-11-09T14:00:00Z",
+            "events": [
+              {
+                "eventTime": "2025-11-08T10:00:00Z",
+                "eventCode": "COLLECTED",
+                "eventDescription": "Package picked up",
+                "location": {
+                  "name": "Stockholm Terminal",
+                  "city": "Stockholm",
+                  "countryCode": "SE"
+                }
+              },
+              {
+                "eventTime": "2025-11-08T12:00:00Z",
+                "eventCode": "IN_TRANSIT",
+                "eventDescription": "Package in transit",
+                "location": {
+                  "name": "Distribution Center",
+                  "city": "Gothenburg",
+                  "countryCode": "SE"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### **Item Status Values:**
+
+| Status | Description |
+|--------|-------------|
+| `CREATED` | Shipment created |
+| `INFORMED` | Information received |
+| `EN_ROUTE` | Package in transit |
+| `AVAILABLE_FOR_DELIVERY` | Ready for delivery |
+| `AVAILABLE_FOR_DELIVERY_PAR_LOC` | Available at parcel locker |
+| `DELIVERED` | Package delivered |
+| `DELAYED` | Delivery delayed |
+| `EXPECTED_DELAY` | Expected delay |
+| `DELIVERY_IMPOSSIBLE` | Cannot deliver |
+| `DELIVERY_REFUSED` | Delivery refused |
+| `RETURNED` | Package returned |
+| `STOPPED` | Shipment stopped |
+
+### **Event Codes:**
+
+| Code | Description |
+|------|-------------|
+| `COLLECTED` | Package picked up |
+| `IN_TRANSIT` | Package in transit |
+| `ARRIVED_AT_DELIVERY_POINT` | Arrived at delivery location |
+| `DELIVERED` | Package delivered |
+| `RETURNED` | Package returned to sender |
 
 ---
 
