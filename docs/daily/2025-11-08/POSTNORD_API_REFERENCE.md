@@ -535,3 +535,17 @@ For today's courier API integration:
 **Status:** ✅ Ready to implement  
 **Priority:** 🔴 CRITICAL for postal code validation  
 **Use in:** Checkout, merchant settings, courier selection
+
+---
+
+## 📚 ADDITIONAL POSTNORD APIS DOCUMENTED
+
+**For Week 3 (Checkout Integration):**
+- **Service Points V5 API** - See `POSTNORD_SERVICE_POINTS_API.md`
+- **Delivery Options API** - See `POSTNORD_DELIVERY_OPTIONS_API.md` ⭐ **CRITICAL**
+
+**APIs NOT needed for current integration:**
+- Shipment Delivery Modification API (not creating shipments)
+- Proof of Delivery API (future feature)
+- Booking API (not creating shipments)
+- Returns API (future RMA feature)
