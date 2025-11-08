@@ -66,15 +66,30 @@ export default async function handler(req: Request, res: Response) {
       p_cache_duration_minutes: 60
     });
 
-    // Update order if orderId provided
+    // Update order if orderId provided (unified approach with courier_metadata)
     if (orderId) {
+      // Get current order
+      const { data: order } = await supabase
+        .from('orders')
+        .select('courier_metadata')
+        .eq('order_id', orderId)
+        .single();
+
+      // Merge PostNord data into courier_metadata
+      const courierMetadata = order?.courier_metadata || {};
+      courierMetadata.postnord = {
+        shipment_id: shipmentId,
+        tracking_status: trackingData.status,
+        estimated_delivery: trackingData.estimatedDelivery,
+        last_tracking_update: new Date().toISOString(),
+        events_count: trackingData.events.length
+      };
+
       await supabase
         .from('orders')
         .update({
-          postnord_shipment_id: shipmentId,
-          postnord_tracking_status: trackingData.status,
-          postnord_estimated_delivery: trackingData.estimatedDelivery,
-          postnord_last_tracking_update: new Date().toISOString()
+          courier_metadata: courierMetadata,
+          estimated_delivery: trackingData.estimatedDelivery // Update unified field
         })
         .eq('order_id', orderId);
     }

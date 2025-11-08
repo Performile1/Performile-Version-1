@@ -46,14 +46,26 @@ export default async function handler(req: Request, res: Response) {
       (countryCode as string) || 'SE'
     );
 
-    // Update order if orderId provided
+    // Update order if orderId provided (unified approach with courier_metadata)
     if (orderId) {
+      // Get current order
+      const { data: order } = await supabase
+        .from('orders')
+        .select('courier_metadata')
+        .eq('order_id', orderId)
+        .single();
+
+      // Merge PostNord data into courier_metadata
+      const courierMetadata = order?.courier_metadata || {};
+      if (!courierMetadata.postnord) {
+        courierMetadata.postnord = {};
+      }
+      courierMetadata.postnord.tracking_url = trackingUrl;
+      courierMetadata.postnord.shipment_id = shipmentId;
+
       await supabase
         .from('orders')
-        .update({
-          postnord_tracking_url: trackingUrl,
-          postnord_shipment_id: shipmentId
-        })
+        .update({ courier_metadata: courierMetadata })
         .eq('order_id', orderId);
     }
 
