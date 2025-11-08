@@ -193,7 +193,7 @@ const handleGetOrders = async (req: VercelRequest, res: VercelResponse) => {
       FROM orders o
       LEFT JOIN stores s ON o.store_id = s.store_id
       LEFT JOIN couriers c ON o.courier_id = c.courier_id
-      LEFT JOIN users u ON o.customer_id = u.user_id
+      LEFT JOIN users u ON o.consumer_id = u.user_id
       WHERE ${whereClause}
       ORDER BY ${orderByColumn} ${sortDirection}
       LIMIT $${limitParam} OFFSET $${offsetParam}
@@ -621,7 +621,7 @@ const handleGetSingleOrder = async (req: VercelRequest, res: VercelResponse, ord
       FROM orders o
       LEFT JOIN stores s ON o.store_id = s.store_id
       LEFT JOIN couriers c ON o.courier_id = c.courier_id
-      LEFT JOIN users u ON o.customer_id = u.user_id
+      LEFT JOIN users u ON o.consumer_id = u.user_id
       WHERE o.order_id = $1
     `;
 

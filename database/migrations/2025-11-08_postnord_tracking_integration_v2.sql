@@ -256,7 +256,7 @@ CREATE POLICY "Users can view tracking cache"
             WHERE o.order_id = courier_tracking_cache.order_id
             AND (
                 s.owner_user_id = auth.uid()  -- Merchant owns the store
-                OR o.customer_id = auth.uid()  -- Customer placed the order
+                OR o.consumer_id = auth.uid()  -- Consumer placed the order
                 OR EXISTS (
                     SELECT 1 FROM users
                     WHERE users.user_id = auth.uid()
