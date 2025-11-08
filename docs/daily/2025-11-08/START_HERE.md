@@ -2,7 +2,8 @@
 
 **Today:** Saturday, November 8, 2025  
 **Tomorrow:** Sunday, November 9, 2025  
-**Week 3 Starts:** Monday, November 10, 2025
+**Week 3 Starts:** Monday, November 10, 2025  
+**Launch Date:** December 15, 2025 (37 days remaining)
 
 ---
 
