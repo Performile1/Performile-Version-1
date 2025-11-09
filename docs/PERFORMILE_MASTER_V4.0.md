@@ -614,15 +614,14 @@ Performile is a **global lastmile delivery platform** that connects merchants, c
   - Admin configuration
   - Marketplace submission
 
-**Courier API Integrations (Parallel):**
-- PostNord API (4h)
-- Bring API (4h)
-- DHL Express API (4h)
-- FedEx API (4h)
-- UPS API (4h)
-- Helthjem API (4h)
-- Porterbuddy API (4h)
-- Budbee API (4h)
+**Courier API Integrations:**
+
+**Nordic Couriers (5):**
+- PostNord 🇸🇪🇩🇰🇳🇴🇫🇮 (4h)
+- Bring 🇳🇴 (4h)
+- Helthjem 🇳🇴 (4h)
+- Porterbuddy 🇳🇴🇸🇪 (4h)
+- Budbee 🇸🇪🇳🇴🇩🇰🇫🇮 (4h)
 
 **Each courier integration includes:**
 - Quote/pricing endpoint
@@ -631,101 +630,105 @@ Performile is a **global lastmile delivery platform** that connects merchants, c
 - Tracking
 - Cancellation
 - Pickup scheduling
+- Unified interface
 
 **Deliverables:**
-- 3 e-commerce integrations live
-- 8 courier APIs fully integrated
+- 5 e-commerce integrations (Shopify, WooCommerce, Magento, PrestaShop, BigCommerce)
+- 5 Nordic courier APIs
 - Unified courier interface
 - Complete documentation
 
 ---
 
-### **Week 5 (Nov 24-28): More Platforms + Mobile Apps Start** 🎯
+### **Week 5 (Nov 24-28): European + American Couriers + Wix** 🌍
 **Status:** Planned
 
-**E-Commerce Platforms:**
-- **Monday:** PrestaShop module (8h)
-- **Tuesday:** BigCommerce app (8h)
-- **Wednesday:** Wix app (8h)
-- **Thursday:** Universal JavaScript widget (8h)
-  - Works on ANY website
-  - Zero dependencies
-  - CDN hosted
+**European Couriers (6):**
+- **Monday:** DHL Express 🌍 + DPD 🇪🇺 (8h)
+- **Tuesday:** GLS 🇪🇺 + Hermes (Evri) 🇬🇧🇪🇺 (8h)
+- **Wednesday:** Royal Mail 🇬🇧 + La Poste 🇫🇷 (8h)
 
-**Mobile Development:**
-- **Friday:** iOS merchant app start (8h)
-  - React Native setup
-  - Navigation structure
-  - API integration
-  - Core screens
+**American Couriers (3):**
+- **Thursday:** FedEx 🇺🇸 + UPS 🇺🇸 (8h)
+- **Friday:** USPS 🇺🇸 + Wix app (8h)
+
+**Market Coverage:**
+- DHL Express: 220+ countries
+- FedEx: 220+ countries
+- UPS: 220+ countries
+- DPD: 40+ European countries
+- GLS: 41 European countries
+- Royal Mail: UK + International
+- La Poste: France + Europe
+- Hermes: UK, Germany, Europe
+- USPS: USA + International
 
 **Deliverables:**
-- 4 more e-commerce integrations
-- Universal widget (CDN)
-- iOS app foundation
-- 7 total platform integrations
+- 9 European/American courier APIs
+- Wix app integration
+- Global shipping coverage
+- 14 total couriers (5 Nordic + 9 Global)
 
 ---
 
-### **Week 6 (Dec 1-5): Mobile Apps Completion** 📱
+### **Week 6 (Dec 1-5): Chinese Couriers + Universal Widget + Mobile Start** 🇨🇳
 **Status:** Planned
 
-**iOS Development:**
-- **Monday-Tuesday:** iOS merchant app (16h)
+**Chinese Couriers (5):**
+- **Monday:** SF Express (顺丰速运) 🇨🇳 + China Post (中国邮政) 🇨🇳 (8h)
+- **Tuesday:** YTO Express (圆通速递) 🇨🇳 + ZTO Express (中通快递) 🇨🇳 (8h)
+- **Wednesday:** J&T Express 🇨🇳🇮🇩 + Universal JavaScript widget (8h)
+
+**Mobile Development:**
+- **Thursday-Friday:** iOS merchant app start (16h)
+  - React Native setup
+  - Core features
+  - Navigation
+  - API integration
+
+**Market Coverage:**
+- SF Express: China, Asia, Global
+- China Post: China, International
+- YTO Express: China domestic
+- ZTO Express: China domestic
+- J&T Express: China, Southeast Asia
+
+**Deliverables:**
+- 5 Chinese courier APIs
+- Universal JavaScript widget (CDN)
+- iOS app foundation
+- 19 total couriers (5 Nordic + 9 European/American + 5 Chinese)
+
+---
+
+### **Week 7 (Dec 8-12): Mobile Apps + Testing & Launch** 🚀
+**Status:** Planned
+
+**Mobile Development:**
+- **Monday-Tuesday:** iOS merchant app completion (16h)
   - Complete all features
   - Push notifications
   - Biometric auth
-  - Testing
   - App Store submission
 
-**Android Development:**
 - **Wednesday-Thursday:** Android merchant app (16h)
   - Port from iOS
   - Material Design
   - Google Play submission
 
-**Consumer Apps:**
-- **Friday:** Consumer mobile apps (8h)
-  - iOS consumer app
-  - Android consumer app
-  - Track packages
-  - C2C shipping
+**Testing & Launch:**
+- **Friday:** Integration testing + Launch prep (8h)
+  - E-commerce platform testing
+  - Courier API testing
+  - Beta testing (10 merchants)
+  - Launch materials
+  - Documentation finalization
 
 **Deliverables:**
-- 2 merchant apps (iOS + Android)
-- 2 consumer apps (iOS + Android)
-- 4 total mobile apps
-- App store submissions
-
----
-
-### **Week 7 (Dec 8-12): Testing & Launch Prep** 🚀
-**Status:** Planned
-
-**Integration Testing:**
-- E-commerce platform testing
-- Mobile app testing
-- Courier API testing
-- End-to-end workflows
-
-**Beta Testing:**
-- 10 beta merchants
-- 100 test shipments
-- User feedback
-- Bug fixes
-
-**Launch Preparation:**
-- Marketing materials
-- Demo videos
-- Sales deck
-- Documentation finalization
-- Support team training
-
-**Deliverables:**
+- 2 mobile apps (iOS + Android)
 - All integrations tested
 - Beta feedback implemented
-- Launch materials ready
-- Support team ready
+- **PUBLIC LAUNCH: December 12, 2025** 🎉
 
 ---
 
@@ -735,12 +738,23 @@ Performile is a **global lastmile delivery platform** that connects merchants, c
 
 **What's Included:**
 - ✅ Core platform (100%)
-- ✅ 7 e-commerce integrations
-- ✅ 4 mobile apps
-- ✅ 8 courier APIs
-- ✅ Universal widget
+- ✅ 7 e-commerce integrations (Shopify, WooCommerce, Magento, PrestaShop, BigCommerce, Wix, Universal Widget)
+- ✅ 2 mobile apps (iOS + Android merchant apps)
+- ✅ **19 global courier APIs:**
+  - 5 Nordic (PostNord, Bring, Helthjem, Porterbuddy, Budbee)
+  - 6 European (DHL Express, DPD, GLS, Hermes, Royal Mail, La Poste)
+  - 3 American (FedEx, UPS, USPS)
+  - 5 Chinese (SF Express, China Post, YTO, ZTO, J&T)
+- ✅ Universal JavaScript widget
 - ✅ Complete documentation
 - ✅ Beta tested
+
+**Market Coverage:**
+- 🌍 Global: 220+ countries (via DHL/FedEx/UPS)
+- 🇪🇺 Europe: 85%+ coverage
+- 🇺🇸 USA: 90%+ coverage
+- 🇨🇳 China: 80%+ coverage
+- 🇳🇴🇸🇪🇩🇰🇫🇮 Nordic: 100% coverage
 
 **Launch Strategy:**
 - Soft launch to beta users (Dec 12)

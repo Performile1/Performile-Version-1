@@ -331,38 +331,45 @@ Intelligent platform that:
 - Parcel shops
 - Notifications
 
-**November 17-21, 2025:** E-Commerce Integrations 🛒
+**November 17-21, 2025:** E-Commerce + Nordic Couriers 🛒
 - Shopify app
 - WooCommerce plugin
 - Magento extension
-- 8 courier API integrations
-- Unified courier interface
-
-**November 24-28, 2025:** More Platforms + Mobile Start 📱
 - PrestaShop module
 - BigCommerce app
+- 5 Nordic courier APIs (PostNord, Bring, Helthjem, Porterbuddy, Budbee)
+
+**November 24-28, 2025:** European + American Couriers 🌍
+- 6 European couriers (DHL Express, DPD, GLS, Hermes, Royal Mail, La Poste)
+- 3 American couriers (FedEx, UPS, USPS)
 - Wix app
+- Global coverage: 220+ countries
+
+**December 1-5, 2025:** Chinese Couriers + Widget + Mobile 🇨🇳
+- 5 Chinese couriers (SF Express, China Post, YTO, ZTO, J&T)
 - Universal JavaScript widget
-- iOS app foundation
+- iOS merchant app start
+- Android merchant app start
 
-**December 1-5, 2025:** Mobile Apps 📱
-- iOS merchant app (App Store)
-- Android merchant app (Google Play)
-- iOS consumer app
-- Android consumer app
-
-**December 8-12, 2025:** Testing & Launch Prep 🚀
+**December 8-12, 2025:** Mobile Apps + Testing & Launch 🚀
+- iOS merchant app completion
+- Android merchant app completion
 - Integration testing
 - Beta testing (10 merchants)
-- 100 test shipments
 - Launch materials
 
 **December 12, 2025:** Public Launch 🎉
 - Core platform (100%)
 - 7 e-commerce integrations
-- 4 mobile apps
-- 8 courier APIs
+- 2 mobile apps (iOS + Android)
+- **19 global courier APIs:**
+  - 5 Nordic
+  - 6 European
+  - 3 American
+  - 5 Chinese
+- Universal widget
 - Complete documentation
+- **Global coverage: 220+ countries**
 
 **January 2026:** Scale 📈
 - 50 paying merchants
