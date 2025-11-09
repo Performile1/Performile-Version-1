@@ -55,7 +55,7 @@ import SubscriptionCancel from './pages/SubscriptionCancel';
 import MySubscription from './pages/MySubscription';
 import ResetPassword from './pages/ResetPassword';
 import BillingPortal from './pages/BillingPortal';
-import Home from './pages/Home';
+// import Home from './pages/Home'; // Replaced with LandingPage
 import Contact from './pages/Contact';
 import Info from './pages/Info';
 import { ComingSoon } from './components/ComingSoon';
@@ -228,7 +228,7 @@ const App: React.FC = () => {
             />
             {/* Public Pages */}
             <Route path="/" element={<LandingPage />} />
-            <Route path="/home" element={<Home />} />
+            <Route path="/home" element={<Navigate to="/" replace />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/info" element={<Info />} />
             <Route path="/knowledge-base" element={<KnowledgeBase />} />

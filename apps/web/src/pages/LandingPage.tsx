@@ -21,14 +21,58 @@ import {
   DollarSign,
   BarChart3,
   Plug,
+  Award,
+  Lock,
+  Mail,
+  Play,
+  Calculator,
+  FileText,
+  Newspaper,
 } from 'lucide-react';
+import { Testimonials } from '../components/landing/Testimonials';
+import { Newsletter } from '../components/landing/Newsletter';
+import { TrustBadges } from '../components/landing/TrustBadges';
+import { PartnerLogos } from '../components/landing/PartnerLogos';
+import { DemoVideo } from '../components/landing/DemoVideo';
+import { PricingComparison } from '../components/landing/PricingComparison';
+import { ROICalculator } from '../components/landing/ROICalculator';
+import { CaseStudies } from '../components/landing/CaseStudies';
+import { CoverageMap } from '../components/landing/CoverageMap';
+import { BlogSection } from '../components/landing/BlogSection';
+import { AppStoreLinks } from '../components/landing/AppStoreLinks';
+import { GoogleAnalytics } from '../components/analytics/GoogleAnalytics';
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [email, setEmail] = useState('');
+  const [showROI, setShowROI] = useState(false);
+  const [roiInputs, setRoiInputs] = useState({
+    monthlyOrders: 1000,
+    avgOrderValue: 50,
+    currentFees: 5,
+  });
+
+  const calculateROI = () => {
+    const monthlyRevenue = roiInputs.monthlyOrders * roiInputs.avgOrderValue;
+    const currentCosts = (monthlyRevenue * roiInputs.currentFees) / 100;
+    const performileCosts = (monthlyRevenue * 2.5) / 100;
+    const monthlySavings = currentCosts - performileCosts;
+    const annualSavings = monthlySavings * 12;
+    return { monthlySavings, annualSavings };
+  };
+
+  const handleNewsletterSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    alert(`Thanks for subscribing! We'll send updates to ${email}`);
+    setEmail('');
+  };
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Google Analytics */}
+      <GoogleAnalytics measurementId="G-XXXXXXXXXX" />
+      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
         <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]" />
@@ -313,22 +357,7 @@ export default function LandingPage() {
                   </div>
                 ))}
               </div>
-              <div className="flex gap-4">
-                <button className="flex items-center gap-3 bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900 transition-colors">
-                  <Download className="h-5 w-5" />
-                  <div className="text-left">
-                    <div className="text-xs">Download on the</div>
-                    <div className="text-sm font-semibold">App Store</div>
-                  </div>
-                </button>
-                <button className="flex items-center gap-3 bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-900 transition-colors">
-                  <Download className="h-5 w-5" />
-                  <div className="text-left">
-                    <div className="text-xs">GET IT ON</div>
-                    <div className="text-sm font-semibold">Google Play</div>
-                  </div>
-                </button>
-              </div>
+              <AppStoreLinks variant="dark" size="md" />
             </div>
             <div className="relative">
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
@@ -414,6 +443,36 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Trust Badges */}
+      <TrustBadges />
+
+      {/* Partner Logos */}
+      <PartnerLogos />
+
+      {/* Demo Video */}
+      <DemoVideo />
+
+      {/* Testimonials */}
+      <Testimonials />
+
+      {/* Pricing Comparison */}
+      <PricingComparison />
+
+      {/* ROI Calculator */}
+      <ROICalculator />
+
+      {/* Case Studies */}
+      <CaseStudies />
+
+      {/* Coverage Map */}
+      <CoverageMap />
+
+      {/* Blog Section */}
+      <BlogSection />
+
+      {/* Newsletter */}
+      <Newsletter />
 
       {/* FAQ Section */}
       <section className="py-20 bg-white">
