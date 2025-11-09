@@ -60,6 +60,11 @@ import Contact from './pages/Contact';
 import Info from './pages/Info';
 import { ComingSoon } from './components/ComingSoon';
 import { CheckoutDemo } from './pages/CheckoutDemo';
+import LandingPage from './pages/LandingPage';
+import KnowledgeBase from './pages/KnowledgeBase';
+import ConsumerDashboard from './pages/consumer/Dashboard';
+import ConsumerOrders from './pages/consumer/Orders';
+import C2CCreate from './pages/consumer/C2CCreate';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -222,9 +227,11 @@ const App: React.FC = () => {
               }
             />
             {/* Public Pages */}
+            <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<Home />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/info" element={<Info />} />
+            <Route path="/knowledge-base" element={<KnowledgeBase />} />
             <Route path="/checkout-demo" element={<CheckoutDemo />} />
             <Route path="/review/:token" element={<PublicReview />} />
             <Route path="/track/:trackingNumber?" element={<TrackingPage />} />
@@ -293,6 +300,31 @@ const App: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <Orders />
+                </ProtectedRoute>
+              }
+            />
+            {/* Consumer Routes */}
+            <Route
+              path="/consumer/dashboard"
+              element={
+                <ProtectedRoute requiredRoles={['consumer']}>
+                  <ConsumerDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/consumer/orders"
+              element={
+                <ProtectedRoute requiredRoles={['consumer']}>
+                  <ConsumerOrders />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/consumer/c2c/create"
+              element={
+                <ProtectedRoute requiredRoles={['consumer']}>
+                  <C2CCreate />
                 </ProtectedRoute>
               }
             />
