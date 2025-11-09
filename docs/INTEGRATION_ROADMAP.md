@@ -335,113 +335,178 @@ iOS App Structure:
 
 ### **Priority Couriers (Week 4-5)**
 
-#### **3.1 PostNord API**
+### **NORDIC COURIERS (Priority 1 - Week 4)**
+
+#### **3.1 PostNord API** 🇸🇪🇩🇰🇳🇴🇫🇮
 **Timeline:** Week 4, Day 1 (Nov 17)  
 **Time:** 4 hours  
+**Market:** Nordic (Sweden, Denmark, Norway, Finland)  
 **Status:** NOT STARTED
 
-**What to Build:**
+#### **3.2 Bring (Posten Norge)** 🇳🇴
+**Timeline:** Week 4, Day 1 (Nov 17)  
+**Time:** 4 hours  
+**Market:** Norway, Nordic  
+**Status:** NOT STARTED
+
+#### **3.3 Helthjem** 🇳🇴
+**Timeline:** Week 4, Day 3 (Nov 19)  
+**Time:** 4 hours  
+**Market:** Norway  
+**Status:** NOT STARTED
+
+#### **3.4 Porterbuddy** 🇳🇴🇸🇪
+**Timeline:** Week 4, Day 4 (Nov 20)  
+**Time:** 4 hours  
+**Market:** Norway, Sweden (same-day delivery)  
+**Status:** NOT STARTED
+
+#### **3.5 Budbee** 🇸🇪🇳🇴🇩🇰🇫🇮
+**Timeline:** Week 4, Day 4 (Nov 20)  
+**Time:** 4 hours  
+**Market:** Nordic (e-commerce focus)  
+**Status:** NOT STARTED
+
+---
+
+### **EUROPEAN COURIERS (Priority 2 - Week 5)**
+
+#### **3.6 DHL Express** 🌍
+**Timeline:** Week 5, Day 1 (Nov 24)  
+**Time:** 4 hours  
+**Market:** Global (220+ countries)  
+**Status:** NOT STARTED
+
+#### **3.7 DPD (Dynamic Parcel Distribution)** 🇪🇺
+**Timeline:** Week 5, Day 1 (Nov 24)  
+**Time:** 4 hours  
+**Market:** Europe (40+ countries)  
+**Status:** NOT STARTED
+
+#### **3.8 GLS (General Logistics Systems)** 🇪🇺
+**Timeline:** Week 5, Day 2 (Nov 25)  
+**Time:** 4 hours  
+**Market:** Europe (41 countries)  
+**Status:** NOT STARTED
+
+#### **3.9 Hermes (Evri)** 🇬🇧🇪🇺
+**Timeline:** Week 5, Day 2 (Nov 25)  
+**Time:** 4 hours  
+**Market:** UK, Germany, Europe  
+**Status:** NOT STARTED
+
+#### **3.10 Royal Mail** 🇬🇧
+**Timeline:** Week 5, Day 3 (Nov 26)  
+**Time:** 4 hours  
+**Market:** UK, International  
+**Status:** NOT STARTED
+
+#### **3.11 La Poste (Colissimo)** 🇫🇷
+**Timeline:** Week 5, Day 3 (Nov 26)  
+**Time:** 4 hours  
+**Market:** France, Europe  
+**Status:** NOT STARTED
+
+---
+
+### **AMERICAN COURIERS (Priority 3 - Week 5)**
+
+#### **3.12 FedEx** 🇺🇸
+**Timeline:** Week 5, Day 4 (Nov 27)  
+**Time:** 4 hours  
+**Market:** USA, Global (220+ countries)  
+**Status:** NOT STARTED
+
+#### **3.13 UPS** 🇺🇸
+**Timeline:** Week 5, Day 4 (Nov 27)  
+**Time:** 4 hours  
+**Market:** USA, Global (220+ countries)  
+**Status:** NOT STARTED
+
+#### **3.14 USPS** 🇺🇸
+**Timeline:** Week 5, Day 5 (Nov 28)  
+**Time:** 4 hours  
+**Market:** USA, International  
+**Status:** NOT STARTED
+
+---
+
+### **ASIAN COURIERS (Priority 4 - Week 6)**
+
+#### **3.15 SF Express (顺丰速运)** 🇨🇳
+**Timeline:** Week 6, Day 1 (Dec 1)  
+**Time:** 4 hours  
+**Market:** China, Asia, Global  
+**Status:** NOT STARTED
+
+#### **3.16 China Post (中国邮政)** 🇨🇳
+**Timeline:** Week 6, Day 1 (Dec 1)  
+**Time:** 4 hours  
+**Market:** China, International  
+**Status:** NOT STARTED
+
+#### **3.17 YTO Express (圆通速递)** 🇨🇳
+**Timeline:** Week 6, Day 2 (Dec 2)  
+**Time:** 4 hours  
+**Market:** China  
+**Status:** NOT STARTED
+
+#### **3.18 ZTO Express (中通快递)** 🇨🇳
+**Timeline:** Week 6, Day 2 (Dec 2)  
+**Time:** 4 hours  
+**Market:** China  
+**Status:** NOT STARTED
+
+#### **3.19 J&T Express** 🇨🇳🇮🇩
+**Timeline:** Week 6, Day 3 (Dec 3)  
+**Time:** 4 hours  
+**Market:** China, Southeast Asia  
+**Status:** NOT STARTED
+
+---
+
+### **UNIFIED COURIER INTERFACE**
+
+**All couriers implement the same interface:**
+
 ```typescript
-// api/couriers/postnord.ts
-export class PostNordAPI {
-  async getQuote(params: QuoteParams): Promise<Quote> {
-    // Get shipping quote
-  }
+// api/couriers/interface.ts
+export interface CourierAPI {
+  // Pricing
+  getQuote(params: QuoteParams): Promise<Quote>;
   
-  async createShipment(params: ShipmentParams): Promise<Shipment> {
-    // Create shipment
-  }
+  // Shipment Management
+  createShipment(params: ShipmentParams): Promise<Shipment>;
+  getLabel(shipmentId: string): Promise<Label>;
+  cancelShipment(shipmentId: string): Promise<void>;
   
-  async getLabel(shipmentId: string): Promise<Label> {
-    // Get shipping label
-  }
+  // Tracking
+  trackShipment(trackingNumber: string): Promise<TrackingInfo>;
   
-  async trackShipment(trackingNumber: string): Promise<TrackingInfo> {
-    // Track shipment
-  }
+  // Pickup
+  schedulePickup(params: PickupParams): Promise<Pickup>;
   
-  async cancelShipment(shipmentId: string): Promise<void> {
-    // Cancel shipment
-  }
+  // Validation
+  validateAddress(address: Address): Promise<AddressValidation>;
+  
+  // Service Points (if supported)
+  findServicePoints?(location: Location): Promise<ServicePoint[]>;
 }
+
+// Example implementations
+export class PostNordAPI implements CourierAPI { ... }
+export class DHLExpressAPI implements CourierAPI { ... }
+export class FedExAPI implements CourierAPI { ... }
+export class SFExpressAPI implements CourierAPI { ... }
+// etc.
 ```
 
-**Endpoints:**
-- ✅ Quote/pricing
-- ✅ Shipment creation
-- ✅ Label generation
-- ✅ Tracking
-- ✅ Cancellation
-- ✅ Pickup scheduling
-
-**Documentation:**
-- API credentials setup
-- Rate limits
-- Error handling
-- Testing guide
-
----
-
-#### **3.2 Bring API**
-**Timeline:** Week 4, Day 1 (Nov 17)  
-**Time:** 4 hours  
-**Status:** NOT STARTED
-
-**Same structure as PostNord**
-
----
-
-#### **3.3 DHL Express API**
-**Timeline:** Week 4, Day 2 (Nov 18)  
-**Time:** 4 hours  
-**Status:** NOT STARTED
-
-**Same structure as PostNord**
-
----
-
-#### **3.4 FedEx API**
-**Timeline:** Week 4, Day 2 (Nov 18)  
-**Time:** 4 hours  
-**Status:** NOT STARTED
-
-**Same structure as PostNord**
-
----
-
-#### **3.5 UPS API**
-**Timeline:** Week 4, Day 3 (Nov 19)  
-**Time:** 4 hours  
-**Status:** NOT STARTED
-
-**Same structure as PostNord**
-
----
-
-#### **3.6 Helthjem API**
-**Timeline:** Week 4, Day 3 (Nov 19)  
-**Time:** 4 hours  
-**Status:** NOT STARTED
-
-**Same structure as PostNord**
-
----
-
-#### **3.7 Porterbuddy API**
-**Timeline:** Week 4, Day 4 (Nov 20)  
-**Time:** 4 hours  
-**Status:** NOT STARTED
-
-**Same structure as PostNord**
-
----
-
-#### **3.8 Budbee API**
-**Timeline:** Week 4, Day 4 (Nov 20)  
-**Time:** 4 hours  
-**Status:** NOT STARTED
-
-**Same structure as PostNord**
+**Benefits:**
+- ✅ Consistent interface across all couriers
+- ✅ Easy to add new couriers
+- ✅ Type-safe TypeScript
+- ✅ Testable and maintainable
+- ✅ Plug-and-play architecture
 
 ---
 
@@ -477,68 +542,84 @@ export class DHLAPI implements CourierAPI { ... }
 
 ## 📊 INTEGRATION SUMMARY
 
-### **Week 4 (Nov 17-21): E-Commerce + Couriers**
+### **Week 4 (Nov 17-21): E-Commerce + Nordic Couriers**
 **Monday (Nov 17):**
-- Morning: Shopify app (8h)
-- Afternoon: PostNord + Bring APIs (8h)
+- Morning: Shopify app completion (4h)
+- Afternoon: PostNord + Bring APIs (4h)
 
 **Tuesday (Nov 18):**
-- Morning: Shopify app completion (8h)
-- Afternoon: DHL + FedEx APIs (8h)
+- Morning: Submit Shopify & WooCommerce (4h)
+- Afternoon: Helthjem + Porterbuddy APIs (4h)
 
 **Wednesday (Nov 19):**
-- Morning: WooCommerce plugin (8h)
-- Afternoon: UPS + Helthjem APIs (8h)
+- Morning: Magento extension start (4h)
+- Afternoon: Budbee API (4h)
 
 **Thursday (Nov 20):**
-- Morning: WooCommerce plugin completion (8h)
-- Afternoon: Porterbuddy + Budbee APIs (8h)
+- Morning: Magento extension completion (4h)
+- Afternoon: Testing & documentation (4h)
 
 **Friday (Nov 21):**
-- Morning: Magento extension (8h)
-- Afternoon: Testing & documentation (8h)
+- Morning: PrestaShop module (4h)
+- Afternoon: BigCommerce app (4h)
+
+**Week 4 Result:** 3 platforms + 5 Nordic couriers ✅
 
 ---
 
-### **Week 5 (Nov 24-28): More Platforms + Mobile**
+### **Week 5 (Nov 24-28): European + American Couriers + Wix**
 **Monday (Nov 24):**
-- PrestaShop module (8h)
+- Morning: DHL Express API (4h)
+- Afternoon: DPD API (4h)
 
 **Tuesday (Nov 25):**
-- BigCommerce app (8h)
+- Morning: GLS API (4h)
+- Afternoon: Hermes API (4h)
 
 **Wednesday (Nov 26):**
-- Wix app (8h)
+- Morning: Royal Mail API (4h)
+- Afternoon: La Poste API (4h)
 
 **Thursday (Nov 27):**
-- Universal JavaScript widget (8h)
+- Morning: FedEx API (4h)
+- Afternoon: UPS API (4h)
 
 **Friday (Nov 28):**
-- iOS app start (8h)
+- Morning: USPS API (4h)
+- Afternoon: Wix app (4h)
+
+**Week 5 Result:** 9 European/American couriers + Wix ✅
 
 ---
 
-### **Week 6 (Dec 1-5): Mobile Apps**
+### **Week 6 (Dec 1-5): Chinese Couriers + Universal Widget + Mobile Start**
 **Monday (Dec 1):**
-- iOS app (8h)
+- Morning: SF Express API (4h)
+- Afternoon: China Post API (4h)
 
 **Tuesday (Dec 2):**
-- iOS app completion (8h)
+- Morning: YTO Express API (4h)
+- Afternoon: ZTO Express API (4h)
 
 **Wednesday (Dec 3):**
-- Android app (8h)
+- Morning: J&T Express API (4h)
+- Afternoon: Universal JavaScript widget (4h)
 
 **Thursday (Dec 4):**
-- Android app completion (8h)
+- Morning: iOS merchant app start (4h)
+- Afternoon: iOS merchant app (4h)
 
 **Friday (Dec 5):**
-- Consumer mobile app (8h)
+- Morning: iOS merchant app completion (4h)
+- Afternoon: Android merchant app start (4h)
+
+**Week 6 Result:** 5 Chinese couriers + Universal widget + iOS app foundation ✅
 
 ---
 
 ## 🎯 DELIVERABLES
 
-### **E-Commerce Integrations:**
+### **E-Commerce Integrations (7 platforms):**
 - ✅ Shopify app (App Store)
 - ✅ WooCommerce plugin (WordPress.org)
 - ✅ Magento extension (Marketplace)
@@ -547,21 +628,38 @@ export class DHLAPI implements CourierAPI { ... }
 - ✅ Wix app (App Market)
 - ✅ Universal JavaScript widget (CDN)
 
-### **Mobile Apps:**
+### **Mobile Apps (2 apps - Week 7):**
 - ✅ iOS merchant app (App Store)
 - ✅ Android merchant app (Google Play)
-- ✅ iOS consumer app (App Store)
-- ✅ Android consumer app (Google Play)
 
-### **Courier Integrations:**
-- ✅ PostNord API
-- ✅ Bring API
-- ✅ DHL Express API
-- ✅ FedEx API
-- ✅ UPS API
-- ✅ Helthjem API
-- ✅ Porterbuddy API
-- ✅ Budbee API
+### **Courier Integrations (19 couriers):**
+
+**Nordic (5):**
+- ✅ PostNord 🇸🇪🇩🇰🇳🇴🇫🇮
+- ✅ Bring 🇳🇴
+- ✅ Helthjem 🇳🇴
+- ✅ Porterbuddy 🇳🇴🇸🇪
+- ✅ Budbee 🇸🇪🇳🇴🇩🇰🇫🇮
+
+**European (6):**
+- ✅ DHL Express 🌍
+- ✅ DPD 🇪🇺
+- ✅ GLS 🇪🇺
+- ✅ Hermes (Evri) 🇬🇧🇪🇺
+- ✅ Royal Mail 🇬🇧
+- ✅ La Poste 🇫🇷
+
+**American (3):**
+- ✅ FedEx 🇺🇸
+- ✅ UPS 🇺🇸
+- ✅ USPS 🇺🇸
+
+**Asian (5):**
+- ✅ SF Express 🇨🇳
+- ✅ China Post 🇨🇳
+- ✅ YTO Express 🇨🇳
+- ✅ ZTO Express 🇨🇳
+- ✅ J&T Express 🇨🇳🇮🇩
 
 ### **Documentation:**
 - ✅ Integration guides (all platforms)
