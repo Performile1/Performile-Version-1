@@ -2,18 +2,17 @@
  * Public Header Component
  * Week 2 Day 4 - Public Pages Navigation
  * 
- * Simple header for public pages (subscription plans, landing, etc.)
- * Created: November 6, 2025
+ * Unified header for all public pages (landing, subscription plans, knowledge base, etc.)
+ * Updated: November 9, 2025 - Matches landing page navigation
  */
 
 import React from 'react';
 import {
   AppBar,
   Toolbar,
-  Typography,
   Button,
   Box,
-  Container,
+  Stack,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
@@ -24,113 +23,77 @@ export const PublicHeader: React.FC = () => {
 
   return (
     <AppBar 
-      position="static" 
-      elevation={0}
+      position="sticky" 
       sx={{ 
-        background: 'transparent',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(255,255,255,0.1)'
+        bgcolor: 'white', 
+        color: 'text.primary',
+        boxShadow: 1
       }}
     >
-      <Container maxWidth="lg">
-        <Toolbar sx={{ justifyContent: 'space-between', px: { xs: 0 } }}>
-          {/* Logo */}
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              cursor: 'pointer'
-            }}
-            onClick={() => navigate('/')}
-          >
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                fontWeight: 'bold',
-                color: 'white',
-                letterSpacing: '-0.5px'
-              }}
-            >
-              Performile
-            </Typography>
-          </Box>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        {/* Logo */}
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            cursor: 'pointer'
+          }}
+          onClick={() => navigate('/')}
+        >
+          <img 
+            src="/logo.png" 
+            alt="Performile" 
+            style={{ height: 40, marginRight: 12 }} 
+          />
+        </Box>
 
-          {/* Navigation */}
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            {!user ? (
-              <>
-                <Button
-                  color="inherit"
-                  onClick={() => navigate('/subscription-plans')}
-                  sx={{ 
-                    color: 'white',
-                    '&:hover': {
-                      background: 'rgba(255,255,255,0.1)'
-                    }
-                  }}
-                >
-                  Pricing
-                </Button>
-                <Button
-                  color="inherit"
-                  onClick={() => navigate('/login')}
-                  sx={{ 
-                    color: 'white',
-                    '&:hover': {
-                      background: 'rgba(255,255,255,0.1)'
-                    }
-                  }}
-                >
-                  Login
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => navigate('/register')}
-                  sx={{ 
-                    background: 'white',
-                    color: '#667eea',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      background: 'rgba(255,255,255,0.9)'
-                    }
-                  }}
-                >
-                  Get Started
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  color="inherit"
-                  onClick={() => navigate('/dashboard')}
-                  sx={{ 
-                    color: 'white',
-                    '&:hover': {
-                      background: 'rgba(255,255,255,0.1)'
-                    }
-                  }}
-                >
-                  Dashboard
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => navigate('/my-subscription')}
-                  sx={{ 
-                    background: 'white',
-                    color: '#667eea',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      background: 'rgba(255,255,255,0.9)'
-                    }
-                  }}
-                >
-                  My Subscription
-                </Button>
-              </>
-            )}
-          </Box>
-        </Toolbar>
-      </Container>
+        {/* Navigation */}
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Button 
+            color="inherit" 
+            onClick={() => navigate('/subscription/plans')}
+          >
+            Pricing
+          </Button>
+          <Button 
+            color="inherit" 
+            onClick={() => navigate('/knowledge-base')}
+          >
+            Knowledge Base
+          </Button>
+          {!user ? (
+            <>
+              <Button 
+                color="inherit" 
+                onClick={() => navigate('/login')}
+              >
+                Login
+              </Button>
+              <Button 
+                variant="contained" 
+                onClick={() => navigate('/register')}
+              >
+                Get Started
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button 
+                color="inherit" 
+                onClick={() => navigate('/dashboard')}
+              >
+                Dashboard
+              </Button>
+              <Button 
+                variant="contained" 
+                onClick={() => navigate('/my-subscription')}
+              >
+                My Subscription
+              </Button>
+            </>
+          )}
+        </Stack>
+      </Toolbar>
     </AppBar>
   );
 };
