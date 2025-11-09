@@ -60,7 +60,8 @@ import Contact from './pages/Contact';
 import Info from './pages/Info';
 import { ComingSoon } from './components/ComingSoon';
 import { CheckoutDemo } from './pages/CheckoutDemo';
-import LandingPage from './pages/LandingPage';
+// import LandingPage from './pages/LandingPage'; // Old Tailwind version
+import LandingPageMUI from './pages/LandingPageMUI'; // New MUI version
 import KnowledgeBase from './pages/KnowledgeBase';
 import ConsumerDashboard from './pages/consumer/Dashboard';
 import ConsumerOrders from './pages/consumer/Orders';
@@ -227,7 +228,7 @@ const App: React.FC = () => {
               }
             />
             {/* Public Pages */}
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<LandingPageMUI />} />
             <Route path="/home" element={<Navigate to="/" replace />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/info" element={<Info />} />

@@ -8,6 +8,7 @@ import {
   Grid,
   Card,
   CardContent,
+  CardMedia,
   TextField,
   AppBar,
   Toolbar,
@@ -701,12 +702,57 @@ export default function LandingPageMUI() {
         <Typography variant="body1" color="text.secondary" fontWeight="600" gutterBottom>
           Trusted by leading Nordic courier companies
         </Typography>
-        <Grid container spacing={4} sx={{ mt: 2, opacity: 0.6 }}>
-          {['Bring', 'PostNord', 'DHL', 'Budbee', 'Porterbuddy', 'Helthjem', 'Instabox', 'Best Transport'].map((partner) => (
-            <Grid item xs={6} md={3} key={partner}>
-              <Typography variant="h5" fontWeight="bold" color="text.secondary">
-                {partner}
-              </Typography>
+        <Grid container spacing={4} sx={{ mt: 2 }} alignItems="center" justifyContent="center">
+          {[
+            { name: 'Bring', logo: '/courier-logos/bring_logo.jpeg' },
+            { name: 'PostNord', logo: '/courier-logos/postnord_logo.jpeg' },
+            { name: 'DHL', logo: '/courier-logos/dhl_logo.jpeg' },
+            { name: 'Budbee', logo: '/courier-logos/budbee_logo.jpeg' },
+            { name: 'Porterbuddy', logo: '/courier-logos/porterbuddy_logo.jpeg' },
+            { name: 'Helthjem', logo: '/courier-logos/helthjem_logo.jpeg' },
+            { name: 'Instabox', logo: '/courier-logos/instabox_logo.jpeg' },
+            { name: 'Best Transport', logo: '/courier-logos/best_transport_logo.jpeg' },
+          ].map((partner) => (
+            <Grid item xs={6} sm={4} md={3} key={partner.name}>
+              <Box
+                sx={{
+                  p: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: 80,
+                  transition: 'all 0.3s',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                  },
+                }}
+              >
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  style={{
+                    maxHeight: '60px',
+                    maxWidth: '100%',
+                    objectFit: 'contain',
+                    filter: 'grayscale(100%)',
+                    opacity: 0.6,
+                    transition: 'all 0.3s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.filter = 'grayscale(0%)';
+                    e.currentTarget.style.opacity = '1';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.filter = 'grayscale(100%)';
+                    e.currentTarget.style.opacity = '0.6';
+                  }}
+                  onError={(e) => {
+                    // Fallback to text if image fails to load
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement!.innerHTML = `<Typography variant="h6" color="text.secondary">${partner.name}</Typography>`;
+                  }}
+                />
+              </Box>
             </Grid>
           ))}
         </Grid>
@@ -761,6 +807,154 @@ export default function LandingPageMUI() {
         </Container>
       </Box>
 
+      {/* Product Screenshots - Real Platform */}
+      <Container maxWidth="lg" sx={{ py: 12 }}>
+        <Typography variant="h3" fontWeight="bold" textAlign="center" gutterBottom>
+          See the Platform in Action
+        </Typography>
+        <Typography variant="h6" textAlign="center" color="text.secondary" sx={{ mb: 6 }}>
+          Real screenshots from our live platform
+        </Typography>
+
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: '100%', '&:hover': { boxShadow: 8 }, transition: 'box-shadow 0.3s' }}>
+              <CardMedia
+                component="img"
+                image="/screenshots/analytics-dashboard.png"
+                alt="Analytics Dashboard"
+                sx={{ 
+                  borderBottom: 1, 
+                  borderColor: 'grey.200',
+                  objectFit: 'cover',
+                  height: 300,
+                }}
+                onError={(e) => {
+                  // Fallback if screenshot doesn't exist
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+              <CardContent>
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+                  <Assessment sx={{ color: 'primary.main' }} />
+                  <Typography variant="h6" fontWeight="bold">
+                    Advanced Analytics Dashboard
+                  </Typography>
+                </Stack>
+                <Typography color="text.secondary" paragraph>
+                  Real-time performance metrics with heatmap visualization. See courier performance by postal code, market, and time period.
+                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap">
+                  <Chip label="Heatmap View" size="small" />
+                  <Chip label="Market Analysis" size="small" />
+                  <Chip label="Real-Time Data" size="small" />
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: '100%', '&:hover': { boxShadow: 8 }, transition: 'box-shadow 0.3s' }}>
+              <CardMedia
+                component="img"
+                image="/screenshots/subscription-management.png"
+                alt="Subscription Management"
+                sx={{ 
+                  borderBottom: 1, 
+                  borderColor: 'grey.200',
+                  objectFit: 'cover',
+                  height: 300,
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+              <CardContent>
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+                  <Business sx={{ color: 'success.main' }} />
+                  <Typography variant="h6" fontWeight="bold">
+                    Subscription Management
+                  </Typography>
+                </Stack>
+                <Typography color="text.secondary" paragraph>
+                  Easy plan management for merchants and couriers. View features, pricing, and upgrade options all in one place.
+                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap">
+                  <Chip label="Plan Comparison" size="small" />
+                  <Chip label="Easy Upgrades" size="small" />
+                  <Chip label="Feature Overview" size="small" />
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: '100%', '&:hover': { boxShadow: 8 }, transition: 'box-shadow 0.3s' }}>
+              <CardMedia
+                component="img"
+                image="/screenshots/my-subscription.png"
+                alt="My Subscription"
+                sx={{ 
+                  borderBottom: 1, 
+                  borderColor: 'grey.200',
+                  objectFit: 'cover',
+                  height: 300,
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+              <CardContent>
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+                  <Person sx={{ color: 'info.main' }} />
+                  <Typography variant="h6" fontWeight="bold">
+                    User Dashboard
+                  </Typography>
+                </Stack>
+                <Typography color="text.secondary" paragraph>
+                  Track your usage, view statistics, and manage your subscription. Clear visibility of orders, limits, and billing.
+                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap">
+                  <Chip label="Usage Stats" size="small" />
+                  <Chip label="Billing History" size="small" />
+                  <Chip label="Order Tracking" size="small" />
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: '100%', bgcolor: 'primary.main', color: 'white' }}>
+              <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', p: 4 }}>
+                <Smartphone sx={{ fontSize: 60, mb: 3, opacity: 0.9 }} />
+                <Typography variant="h5" fontWeight="bold" gutterBottom>
+                  Mobile Apps Coming Soon
+                </Typography>
+                <Typography variant="body1" paragraph sx={{ opacity: 0.9 }}>
+                  Native iOS and Android apps with QR code scanning, real-time tracking, and C2C shipping.
+                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap">
+                  <Chip label="QR Scanner" sx={{ bgcolor: 'white', color: 'primary.main' }} size="small" />
+                  <Chip label="Push Notifications" sx={{ bgcolor: 'white', color: 'primary.main' }} size="small" />
+                  <Chip label="Offline Mode" sx={{ bgcolor: 'white', color: 'primary.main' }} size="small" />
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        <Box sx={{ textAlign: 'center', mt: 6 }}>
+          <Alert severity="info" sx={{ maxWidth: 600, mx: 'auto' }}>
+            <Typography fontWeight="600" gutterBottom>
+              All Features Included
+            </Typography>
+            <Typography variant="body2">
+              These are real screenshots from our production platform. What you see is what you get!
+            </Typography>
+          </Alert>
+        </Box>
+      </Container>
+
       {/* Testimonials */}
       <Container maxWidth="lg" sx={{ py: 10 }}>
         <Typography variant="h3" fontWeight="bold" textAlign="center" gutterBottom>
@@ -805,7 +999,7 @@ export default function LandingPageMUI() {
         </Box>
       </Container>
 
-      {/* Pricing Comparison */}
+      {/* Feature Comparison - What Competitors Are Missing */}
       <Box sx={{ bgcolor: 'grey.50', py: 10 }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center', mb: 2 }}>
@@ -817,67 +1011,140 @@ export default function LandingPageMUI() {
             />
           </Box>
           <Typography variant="h3" fontWeight="bold" textAlign="center" gutterBottom>
-            Why Pay More?
+            What Competitors Are Missing
           </Typography>
           <Typography variant="h6" textAlign="center" color="text.secondary" sx={{ mb: 6 }}>
-            Compare Performile with traditional solutions
+            See why Performile is the only complete solution
           </Typography>
 
-          <Grid container spacing={4}>
+          {/* Feature Comparison Table */}
+          <TableContainer component={Paper} sx={{ mb: 6 }}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: 'primary.main' }}>
+                  <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: '1.1rem' }}>Feature</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Traditional Courier</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>ShipStation</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold', bgcolor: 'primary.dark' }}>Performile</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {[
+                  { feature: 'Dynamic Checkout (Changes by Postal Code)', traditional: false, shipstation: false, performile: true, highlight: true },
+                  { feature: 'Real-Time LMT Score & Ratings', traditional: false, shipstation: false, performile: true, highlight: true },
+                  { feature: 'Postal Code-Specific ETA', traditional: false, shipstation: false, performile: true, highlight: true },
+                  { feature: 'Predictive Delivery Times (14:00-17:00)', traditional: false, shipstation: false, performile: true, highlight: true },
+                  { feature: 'Consumer Choice at Checkout', traditional: false, shipstation: false, performile: true, highlight: true },
+                  { feature: 'Weighted Courier List', traditional: false, shipstation: false, performile: true, highlight: true },
+                  { feature: 'Multi-Courier Support', traditional: false, shipstation: true, performile: true },
+                  { feature: 'Nordic Courier Integrations', traditional: false, shipstation: false, performile: true },
+                  { feature: 'C2C Shipping Platform', traditional: false, shipstation: false, performile: true },
+                  { feature: 'Claims & RMA System', traditional: false, shipstation: false, performile: true },
+                  { feature: 'Mobile Apps (iOS & Android)', traditional: false, shipstation: false, performile: true },
+                  { feature: 'Advanced Analytics', traditional: false, shipstation: false, performile: true },
+                  { feature: 'Lead Generation (B2B)', traditional: false, shipstation: false, performile: true },
+                  { feature: 'Consumer Dashboard', traditional: false, shipstation: false, performile: true },
+                ].map((row, index) => (
+                  <TableRow 
+                    key={index}
+                    sx={{ 
+                      bgcolor: row.highlight ? 'warning.50' : 'white',
+                      '&:hover': { bgcolor: row.highlight ? 'warning.100' : 'grey.50' }
+                    }}
+                  >
+                    <TableCell sx={{ fontWeight: row.highlight ? 'bold' : 'normal' }}>
+                      {row.feature}
+                      {row.highlight && <Chip label="UNIQUE" size="small" color="warning" sx={{ ml: 1 }} />}
+                    </TableCell>
+                    <TableCell align="center">
+                      {row.traditional ? (
+                        <CheckCircle sx={{ color: 'success.main' }} />
+                      ) : (
+                        <Close sx={{ color: 'error.main' }} />
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      {row.shipstation ? (
+                        <CheckCircle sx={{ color: 'success.main' }} />
+                      ) : (
+                        <Close sx={{ color: 'error.main' }} />
+                      )}
+                    </TableCell>
+                    <TableCell align="center" sx={{ bgcolor: row.highlight ? 'success.50' : 'success.100' }}>
+                      <CheckCircle sx={{ color: 'success.main', fontSize: 28 }} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+                <TableRow sx={{ bgcolor: 'grey.900' }}>
+                  <TableCell sx={{ color: 'white', fontWeight: 'bold', fontSize: '1.1rem' }}>Monthly Price</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>$199/mo</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>$149/mo</TableCell>
+                  <TableCell align="center" sx={{ color: 'success.light', fontWeight: 'bold', fontSize: '1.2rem' }}>$29/mo</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* Key Differentiators */}
+          <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom sx={{ mt: 6, mb: 4 }}>
+            Our Unique Advantages
+          </Typography>
+          
+          <Grid container spacing={3}>
             {[
-              { name: 'Traditional Courier', price: '$199/mo', features: ['Single courier', 'Manual labels', 'Basic tracking', 'No multi-courier', 'No real-time rates', 'No mobile apps', 'No analytics', 'No API'] },
-              { name: 'ShipStation', price: '$149/mo', features: ['Multi-carrier', 'Label printing', 'Basic tracking', 'No Nordic couriers', 'Real-time rates', 'No mobile apps', 'No advanced analytics', 'No C2C'] },
-              { name: 'Performile', price: '$29/mo', features: ['Multi-courier', 'Automated labels', 'Real-time tracking', 'Nordic specialists', 'Dynamic pricing', 'Native mobile apps', 'Advanced analytics', 'C2C shipping'], highlight: true, savings: '$120/mo' },
-            ].map((plan, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Card
-                  sx={{
-                    height: '100%',
-                    ...(plan.highlight && {
-                      border: 4,
-                      borderColor: 'primary.main',
-                      transform: 'scale(1.05)',
-                      boxShadow: 8,
-                    }),
-                  }}
-                >
+              {
+                title: 'Dynamic Checkout',
+                desc: 'Checkout changes in real-time based on postal code. Shows different couriers, ratings, and ETAs for each location.',
+                icon: '🔄',
+                color: 'primary.main'
+              },
+              {
+                title: 'LMT Score Integration',
+                desc: 'Real-time courier ratings displayed at checkout. Consumers see performance data before choosing.',
+                icon: '⭐',
+                color: 'warning.main'
+              },
+              {
+                title: 'Predictive ETA',
+                desc: 'Shows "Usually delivered 14:00-17:00" based on postal code history. No competitor does this.',
+                icon: '🕐',
+                color: 'success.main'
+              },
+              {
+                title: 'Consumer Choice',
+                desc: 'Weighted list lets consumers choose their preferred courier. Transparent, fair, increases conversion.',
+                icon: '✅',
+                color: 'info.main'
+              },
+            ].map((item, index) => (
+              <Grid item xs={12} md={6} key={index}>
+                <Card sx={{ height: '100%', borderLeft: 4, borderColor: item.color }}>
                   <CardContent>
-                    {plan.highlight && (
-                      <Chip label="BEST VALUE" color="warning" sx={{ mb: 2, fontWeight: 'bold' }} />
-                    )}
-                    <Typography variant="h5" fontWeight="bold" gutterBottom>
-                      {plan.name}
-                    </Typography>
-                    <Typography variant="h3" fontWeight="bold" color="primary" gutterBottom>
-                      {plan.price}
-                    </Typography>
-                    {plan.savings && (
-                      <Typography variant="body2" color="success.main" fontWeight="600" gutterBottom>
-                        Save {plan.savings}
+                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                      <Typography variant="h3">{item.icon}</Typography>
+                      <Typography variant="h6" fontWeight="bold">
+                        {item.title}
                       </Typography>
-                    )}
-                    <Divider sx={{ my: 2 }} />
-                    <Stack spacing={1}>
-                      {plan.features.map((feature, idx) => (
-                        <Stack key={idx} direction="row" spacing={1} alignItems="center">
-                          <CheckCircle sx={{ fontSize: 20, color: 'success.main' }} />
-                          <Typography variant="body2">{feature}</Typography>
-                        </Stack>
-                      ))}
                     </Stack>
-                    <Button
-                      variant={plan.highlight ? 'contained' : 'outlined'}
-                      fullWidth
-                      sx={{ mt: 3 }}
-                      disabled={!plan.highlight}
-                    >
-                      {plan.highlight ? 'Start Free Trial' : 'Not Available'}
-                    </Button>
+                    <Typography color="text.secondary">
+                      {item.desc}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
+
+          <Box sx={{ textAlign: 'center', mt: 6 }}>
+            <Alert severity="success" sx={{ maxWidth: 600, mx: 'auto', fontSize: '1.1rem' }}>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Only Performile Has It All
+              </Typography>
+              <Typography>
+                Dynamic checkout + Real-time ratings + Predictive ETA + Consumer choice = Better conversion rates
+              </Typography>
+            </Alert>
+          </Box>
         </Container>
       </Box>
 
