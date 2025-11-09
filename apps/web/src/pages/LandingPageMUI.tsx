@@ -158,7 +158,7 @@ export default function LandingPageMUI() {
             The Complete Delivery Platform
           </Typography>
           <Typography variant="h5" sx={{ mb: 1, opacity: 0.9 }}>
-            for the Nordic Region
+            Global Delivery Intelligence
           </Typography>
           <Typography variant="h6" sx={{ mb: 4, opacity: 0.8, maxWidth: 800, mx: 'auto' }}>
             Connect merchants, couriers, and consumers with AI-powered logistics,
@@ -217,7 +217,7 @@ export default function LandingPageMUI() {
           {[
             { icon: <Smartphone />, title: 'Mobile Apps', description: 'Native iOS & Android apps for consumers with real-time tracking', color: '#2196f3' },
             { icon: <Store />, title: 'Checkout Plugins', description: 'WooCommerce & Shopify integrations for instant setup', color: '#9c27b0' },
-            { icon: <AttachMoney />, title: 'Multi-Payment Support', description: 'Vipps, Swish, MobilePay, Stripe - all major Nordic payments', color: '#4caf50' },
+            { icon: <AttachMoney />, title: 'Multi-Payment Support', description: 'Vipps, Swish, MobilePay, Stripe - supporting global payment methods', color: '#4caf50' },
             { icon: <Map />, title: 'Real-Time Tracking', description: 'Live GPS tracking with ETA predictions and notifications', color: '#f44336' },
             { icon: <LocalShipping />, title: 'C2C Shipping', description: 'Consumer-to-consumer shipping with integrated payments', color: '#ff9800' },
             { icon: <Assessment />, title: 'Advanced Analytics', description: 'Real-time insights, performance metrics, and revenue tracking', color: '#673ab7' },
@@ -304,7 +304,7 @@ export default function LandingPageMUI() {
                 </Card>
 
                 <Alert severity="success" sx={{ fontWeight: 600 }}>
-                  🏆 The most accurate courier rating in the Nordic region
+                  🏆 The most accurate courier rating system globally
                 </Alert>
               </Stack>
             </Grid>
@@ -717,7 +717,7 @@ export default function LandingPageMUI() {
       {/* Partner Logos */}
       <Container maxWidth="lg" sx={{ py: 6, textAlign: 'center' }}>
         <Typography variant="body1" color="text.secondary" fontWeight="600" gutterBottom>
-          Trusted by leading Nordic courier companies
+          Trusted by leading courier companies worldwide
         </Typography>
         <Grid container spacing={4} sx={{ mt: 2 }} alignItems="center" justifyContent="center">
           {[
@@ -983,7 +983,7 @@ export default function LandingPageMUI() {
 
         <Grid container spacing={4}>
           {[
-            { name: 'Sarah Johnson', role: 'CEO, Nordic Fashion', rating: 5, text: 'Performile transformed our delivery operations. We reduced shipping costs by 35% and customer satisfaction increased to 98%.' },
+            { name: 'Sarah Johnson', role: 'CEO, Fashion Retailer', rating: 5, text: 'Performile transformed our delivery operations. We reduced shipping costs by 35% and customer satisfaction increased to 98%.' },
             { name: 'Lars Andersson', role: 'Operations Manager, SwiftDelivery', rating: 5, text: 'As a courier company, Performile\'s route optimization saved us 30% in fuel costs. Best investment we\'ve made.' },
             { name: 'Emma Nielsen', role: 'Founder, Copenhagen Electronics', rating: 5, text: 'The WooCommerce plugin installed in 5 minutes. Revenue increased 25% in 3 months!' },
           ].map((testimonial, index) => (
@@ -1054,7 +1054,7 @@ export default function LandingPageMUI() {
                   { feature: 'Consumer Choice at Checkout', traditional: false, shipstation: false, performile: true, highlight: true },
                   { feature: 'Weighted Courier List', traditional: false, shipstation: false, performile: true, highlight: true },
                   { feature: 'Multi-Courier Support', traditional: false, shipstation: true, performile: true },
-                  { feature: 'Nordic Courier Integrations', traditional: false, shipstation: false, performile: true },
+                  { feature: 'Global Courier Integrations', traditional: false, shipstation: false, performile: true },
                   { feature: 'C2C Shipping Platform', traditional: false, shipstation: false, performile: true },
                   { feature: 'Claims & RMA System', traditional: false, shipstation: false, performile: true },
                   { feature: 'Mobile Apps (iOS & Android)', traditional: false, shipstation: false, performile: true },
@@ -1336,7 +1336,7 @@ export default function LandingPageMUI() {
 
         {[
           { q: 'How quickly can I get started?', a: 'You can start shipping in less than 10 minutes! Sign up, install our plugin (if using e-commerce), and you\'re ready to go.' },
-          { q: 'What payment methods do you support?', a: 'We support all major Nordic payment methods including Vipps, Swish, MobilePay, and Stripe for global coverage.' },
+          { q: 'What payment methods do you support?', a: 'We support global payment methods including Vipps, Swish, MobilePay, Stripe, and more. Easy integration with your preferred payment provider.' },
           { q: 'Do you offer mobile apps?', a: 'Yes! We have native iOS and Android apps for consumers with features like real-time tracking, C2C shipping, claims, and returns.' },
           { q: 'How does pricing work?', a: 'We offer flexible subscription plans starting at $29/month. Consumers can use the platform for free. C2C shipping has transparent per-shipment fees.' },
         ].map((faq, index) => (
