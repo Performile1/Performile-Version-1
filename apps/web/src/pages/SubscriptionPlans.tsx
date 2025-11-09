@@ -234,7 +234,7 @@ export const SubscriptionPlans: React.FC = () => {
 
         {/* Plans Grid */}
         {plans && plans.length > 0 ? (
-          <Grid container spacing={4} justifyContent="center">
+          <Grid container spacing={4} justifyContent="center" sx={{ mt: 4, pt: 2 }}>
             {plans.map((plan: SubscriptionPlan) => {
               const savings = getSavings(plan);
               const isPopular = plan.is_popular;
