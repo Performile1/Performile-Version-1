@@ -327,26 +327,56 @@ Intelligent platform that:
 - Shipment booking
 - Label generation
 - Real-time tracking
+- Merchant rules
+- Parcel shops
+- Notifications
 
-**December 2025:** Beta Launch 🚀
-- 10 beta merchants
-- 100 shipments processed
-- User feedback collection
-- Feature iteration
+**November 17-21, 2025:** E-Commerce Integrations 🛒
+- Shopify app
+- WooCommerce plugin
+- Magento extension
+- 8 courier API integrations
+- Unified courier interface
 
-**January 2026:** Public Launch 🎉
+**November 24-28, 2025:** More Platforms + Mobile Start 📱
+- PrestaShop module
+- BigCommerce app
+- Wix app
+- Universal JavaScript widget
+- iOS app foundation
+
+**December 1-5, 2025:** Mobile Apps 📱
+- iOS merchant app (App Store)
+- Android merchant app (Google Play)
+- iOS consumer app
+- Android consumer app
+
+**December 8-12, 2025:** Testing & Launch Prep 🚀
+- Integration testing
+- Beta testing (10 merchants)
+- 100 test shipments
+- Launch materials
+
+**December 12, 2025:** Public Launch 🎉
+- Core platform (100%)
+- 7 e-commerce integrations
+- 4 mobile apps
+- 8 courier APIs
+- Complete documentation
+
+**January 2026:** Scale 📈
 - 50 paying merchants
 - $10K MRR
 - Marketing campaign
 - Customer support
 
-**March 2026:** Scale 📈
+**March 2026:** Growth 📈
 - 100 merchants
 - $25K MRR
 - Break even
 - Team expansion
 
-**June 2026:** Growth 🚀
+**June 2026:** Profitability 🚀
 - 500 merchants
 - $100K MRR
 - Profitable

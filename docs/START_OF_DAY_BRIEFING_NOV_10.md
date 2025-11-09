@@ -375,6 +375,29 @@ Moved courier pricing from Wednesday to Monday (today) because it's the critical
 
 ---
 
+## 🗓️ WEEK 4-7: INTEGRATION ROADMAP
+
+**Week 4 (Nov 17-21):** E-Commerce + Couriers 🛒
+- Shopify, WooCommerce, Magento
+- 8 courier API integrations
+
+**Week 5 (Nov 24-28):** More Platforms + Mobile 📱
+- PrestaShop, BigCommerce, Wix
+- Universal widget + iOS start
+
+**Week 6 (Dec 1-5):** Mobile Apps 📱
+- iOS + Android merchant apps
+- Consumer apps
+
+**Week 7 (Dec 8-12):** Testing & Launch 🚀
+- Integration testing
+- Beta testing
+- PUBLIC LAUNCH: December 12!
+
+**Total:** 7 platforms + 4 apps + 8 couriers + universal widget
+
+---
+
 ## 🎉 LET'S DO THIS!
 
 **You're about to build the most critical piece of the platform!**

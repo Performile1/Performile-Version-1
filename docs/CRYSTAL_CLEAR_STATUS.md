@@ -404,37 +404,75 @@
 
 ---
 
-## 📅 NEXT STEPS (REVISED)
+## 📅 REVISED NEXT STEPS
 
-### **Monday, Nov 10:** 🎯 PRIORITY CHANGED
-- **Courier Pricing (8h)** - MOVED TO MONDAY (CRITICAL!)
+### **Week 3 (Nov 10-14): CORE FUNCTIONS** 🎯
 
-### **Tuesday, Nov 11:**
-- Dynamic Ranking (3h)
-- Shipment Booking (3h)
+**Monday, Nov 10:** Courier Pricing (PRIORITY)  
+**Tuesday, Nov 11:** Dynamic Ranking + Shipment Booking  
+**Wednesday, Nov 12:** Label Generation + Real-Time Tracking  
+**Thursday, Nov 13:** Merchant Rules + Parcel Shops  
+**Friday, Nov 14:** Notifications + Testing
 
-### **Wednesday, Nov 12:**
-- Label Generation (3h)
-- Real-Time Tracking (4h)
+**Result:** MVP READY by Friday, November 14 ✅
 
-### **Thursday, Nov 13:**
-- Merchant Rules (4h)
-- Parcel Shops (4h)
+---
 
-### **Friday, Nov 14:**
-- Notifications (3h)
-- Testing (4h)
+### **Week 4 (Nov 17-21): E-COMMERCE + COURIERS** 🛒
 
-**Total:** 40 hours over 5 days = MVP READY
+**E-Commerce Integrations:**
+- Shopify app (16h)
+- WooCommerce plugin (16h)
+- Magento extension (8h)
 
-**WHY PRICING FIRST?** Without pricing, we can't:
-- Show costs in checkout
-- Compare couriers
-- Process payments
-- Book shipments
-- Calculate margins
+**Courier API Integrations (Parallel):**
+- PostNord, Bring, DHL, FedEx, UPS, Helthjem, Porterbuddy, Budbee
+- Each: Quote, shipment, label, tracking, cancellation, pickup
+- Unified interface for all couriers
 
-**See:** `docs/REVISED_WEEK_3_PLAN.md` for detailed Monday plan
+**Result:** 3 platforms + 8 couriers integrated ✅
+
+---
+
+### **Week 5 (Nov 24-28): MORE PLATFORMS + MOBILE** 📱
+
+**E-Commerce:**
+- PrestaShop module (8h)
+- BigCommerce app (8h)
+- Wix app (8h)
+- Universal JavaScript widget (8h)
+
+**Mobile:**
+- iOS merchant app start (8h)
+
+**Result:** 7 total platforms + mobile foundation ✅
+
+---
+
+### **Week 6 (Dec 1-5): MOBILE APPS** 📱
+
+**Apps:**
+- iOS merchant app (16h)
+- Android merchant app (16h)
+- iOS consumer app (8h)
+- Android consumer app (8h)
+
+**Result:** 4 mobile apps ready ✅
+
+---
+
+### **Week 7 (Dec 8-12): TESTING & LAUNCH** 🚀
+
+**Tasks:**
+- Integration testing
+- Beta testing (10 merchants, 100 shipments)
+- Launch materials
+
+**Result:** PUBLIC LAUNCH December 12, 2025 🎉
+
+---
+
+**See:** `docs/INTEGRATION_ROADMAP.md` for complete details
 
 ---
 
