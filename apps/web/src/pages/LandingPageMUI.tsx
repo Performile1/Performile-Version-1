@@ -492,11 +492,11 @@ export default function LandingPageMUI() {
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <Card sx={{ height: '100%', bgcolor: 'primary.main', color: 'white' }}>
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" gutterBottom>
+              <CardContent sx={{ textAlign: 'center' }}>
+                <Typography variant="h4" fontWeight="bold" gutterBottom>
                   8 Claim Types Supported
                 </Typography>
-                <Stack spacing={2} sx={{ mt: 3 }}>
+                <Stack spacing={2.5} sx={{ mt: 4 }}>
                   {[
                     { type: 'Lost Package', icon: '📦' },
                     { type: 'Damaged Package', icon: '💔' },
@@ -507,9 +507,9 @@ export default function LandingPageMUI() {
                     { type: 'Return Request', icon: '↩️' },
                     { type: 'Refund Request', icon: '💰' },
                   ].map((claim) => (
-                    <Stack key={claim.type} direction="row" spacing={2} alignItems="center">
-                      <Typography variant="h6">{claim.icon}</Typography>
-                      <Typography>{claim.type}</Typography>
+                    <Stack key={claim.type} direction="row" spacing={2} alignItems="center" justifyContent="center">
+                      <Typography variant="h5">{claim.icon}</Typography>
+                      <Typography variant="h6" fontWeight="500">{claim.type}</Typography>
                     </Stack>
                   ))}
                 </Stack>
@@ -568,88 +568,94 @@ export default function LandingPageMUI() {
         </Box>
       </Container>
 
-      {/* C2C Shipping - REVENUE DRIVER */}
+      {/* C2C Shipping - Consumer Feature */}
       <Box sx={{ bgcolor: 'grey.900', color: 'white', py: 12 }}>
         <Container maxWidth="lg">
           <Typography variant="h3" fontWeight="bold" textAlign="center" gutterBottom>
             Consumer-to-Consumer Shipping
           </Typography>
-          <Typography variant="h6" textAlign="center" sx={{ mb: 2, opacity: 0.9 }}>
-            Send packages to friends, family, or sell online
-          </Typography>
-          <Typography variant="h5" textAlign="center" color="success.light" fontWeight="bold" sx={{ mb: 6 }}>
-            €6M ARR Potential by Year 5
+          <Typography variant="h6" textAlign="center" sx={{ mb: 6, opacity: 0.9 }}>
+            Send packages to friends, family, or sell online - Quick, easy, and affordable
           </Typography>
 
           <Grid container spacing={4} alignItems="center">
             <Grid item xs={12} md={6}>
-              <Stack spacing={3}>
-                <Card sx={{ bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
-                  <CardContent>
-                    <Typography variant="h6" fontWeight="bold" sx={{ color: 'white' }} gutterBottom>
-                      How It Works
-                    </Typography>
-                    <Stack spacing={2} sx={{ mt: 2 }}>
-                      {[
-                        'Consumer creates shipment on Performile',
-                        'Pays upfront (Performile keeps 20-30% margin)',
-                        'Gets PDF label with QR code',
-                        'Drops off at courier location',
-                        'Real-time tracking included',
-                        'Performile pays courier',
-                      ].map((step, idx) => (
-                        <Stack key={idx} direction="row" spacing={2} alignItems="center">
-                          <Chip label={idx + 1} sx={{ bgcolor: 'success.main', color: 'white' }} size="small" />
-                          <Typography sx={{ color: 'white' }}>{step}</Typography>
-                        </Stack>
-                      ))}
-                    </Stack>
-                  </CardContent>
-                </Card>
-
-                <Alert severity="success">
-                  <Typography fontWeight="600" gutterBottom>High-Margin Revenue Stream</Typography>
-                  <Typography variant="body2">
-                    20-30% margin on every shipment. Transaction-based revenue that scales with volume.
+              <Card sx={{ bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
+                <CardContent>
+                  <Typography variant="h5" fontWeight="bold" sx={{ color: 'white' }} gutterBottom>
+                    Simple 3-Step Process
                   </Typography>
-                </Alert>
-              </Stack>
+                  <Stack spacing={3} sx={{ mt: 3 }}>
+                    {[
+                      { step: '1', title: 'Create Shipment', desc: 'Enter sender and recipient details online' },
+                      { step: '2', title: 'Get Your Label', desc: 'Download PDF label or use QR code on your phone' },
+                      { step: '3', title: 'Drop Off & Track', desc: 'Drop at courier location and track in real-time' },
+                    ].map((item) => (
+                      <Stack key={item.step} direction="row" spacing={2} alignItems="flex-start">
+                        <Chip 
+                          label={item.step} 
+                          sx={{ 
+                            bgcolor: 'success.main', 
+                            color: 'white', 
+                            fontWeight: 'bold',
+                            minWidth: 40,
+                            height: 40,
+                            fontSize: '1.2rem'
+                          }} 
+                        />
+                        <Box>
+                          <Typography variant="h6" fontWeight="bold" sx={{ color: 'white' }}>
+                            {item.title}
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                            {item.desc}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                    ))}
+                  </Stack>
+                </CardContent>
+              </Card>
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <Paper sx={{ p: 4 }}>
-                <Typography variant="h6" fontWeight="bold" gutterBottom>
-                  Example Pricing
-                </Typography>
-                <Divider sx={{ my: 2 }} />
-                <Stack spacing={2}>
-                  <Stack direction="row" justifyContent="space-between">
-                    <Typography>Courier Base Price:</Typography>
-                    <Typography fontWeight="bold">€10.00</Typography>
-                  </Stack>
-                  <Stack direction="row" justifyContent="space-between">
-                    <Typography>Performile Margin (25%):</Typography>
-                    <Typography fontWeight="bold" color="success.main">+€2.50</Typography>
-                  </Stack>
-                  <Divider />
-                  <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="h6" fontWeight="bold">Consumer Pays:</Typography>
-                    <Typography variant="h6" fontWeight="bold" color="primary">€12.50</Typography>
-                  </Stack>
-                </Stack>
+              <Stack spacing={3}>
+                <Card sx={{ bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
+                  <CardContent>
+                    <Star sx={{ fontSize: 48, color: 'warning.light', mb: 2 }} />
+                    <Typography variant="h6" fontWeight="bold" sx={{ color: 'white' }} gutterBottom>
+                      Choose Rated Couriers
+                    </Typography>
+                    <Typography sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                      See LMT Scores and customer reviews for each courier. Compare prices and ratings to make the best choice for your shipment.
+                    </Typography>
+                  </CardContent>
+                </Card>
 
-                <Box sx={{ mt: 4 }}>
-                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                    Revenue Projections:
-                  </Typography>
-                  <Stack spacing={1}>
-                    <Typography variant="body2">Year 1: €30K ARR</Typography>
-                    <Typography variant="body2">Year 2: €300K ARR</Typography>
-                    <Typography variant="body2">Year 3: €1.5M ARR</Typography>
-                    <Typography variant="body2" fontWeight="bold" color="success.main">Year 5: €6M ARR</Typography>
-                  </Stack>
-                </Box>
-              </Paper>
+                <Card sx={{ bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
+                  <CardContent>
+                    <Assessment sx={{ fontSize: 48, color: 'info.light', mb: 2 }} />
+                    <Typography variant="h6" fontWeight="bold" sx={{ color: 'white' }} gutterBottom>
+                      Track All Your Shipments
+                    </Typography>
+                    <Typography sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                      View all your shipments in one dashboard. Real-time tracking updates, delivery notifications, and complete shipment history.
+                    </Typography>
+                  </CardContent>
+                </Card>
+
+                <Card sx={{ bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
+                  <CardContent>
+                    <CheckCircle sx={{ fontSize: 48, color: 'success.light', mb: 2 }} />
+                    <Typography variant="h6" fontWeight="bold" sx={{ color: 'white' }} gutterBottom>
+                      Easy Claims Process
+                    </Typography>
+                    <Typography sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                      Lost or damaged package? File claims directly from your dashboard. Fast resolution and full support throughout the process.
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Stack>
             </Grid>
           </Grid>
 
@@ -661,7 +667,7 @@ export default function LandingPageMUI() {
               { icon: '📍', title: 'Real-Time Tracking', desc: 'Track every shipment' },
             ].map((feature) => (
               <Grid item xs={6} md={3} key={feature.title}>
-                <Card sx={{ textAlign: 'center', bgcolor: 'rgba(255,255,255,0.05)' }}>
+                <Card sx={{ textAlign: 'center', bgcolor: 'rgba(255,255,255,0.05)', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }, transition: 'all 0.3s' }}>
                   <CardContent>
                     <Typography variant="h3" sx={{ mb: 1 }}>{feature.icon}</Typography>
                     <Typography variant="subtitle2" fontWeight="bold" sx={{ color: 'white' }} gutterBottom>
@@ -675,6 +681,17 @@ export default function LandingPageMUI() {
               </Grid>
             ))}
           </Grid>
+
+          <Box sx={{ textAlign: 'center', mt: 6 }}>
+            <Button
+              variant="contained"
+              size="large"
+              sx={{ bgcolor: 'white', color: 'grey.900', '&:hover': { bgcolor: 'grey.100' }, px: 6, py: 2 }}
+              onClick={() => navigate('/register')}
+            >
+              Start Shipping Now
+            </Button>
+          </Box>
         </Container>
       </Box>
 
