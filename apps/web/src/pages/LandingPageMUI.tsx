@@ -217,7 +217,7 @@ export default function LandingPageMUI() {
           {[
             { icon: <Smartphone />, title: 'Mobile Apps', description: 'Native iOS & Android apps for consumers with real-time tracking', color: '#2196f3' },
             { icon: <Store />, title: 'Checkout Plugins', description: 'WooCommerce & Shopify integrations for instant setup', color: '#9c27b0' },
-            { icon: <AttachMoney />, title: 'Multi-Payment Support', description: 'Vipps, Swish, MobilePay, Stripe - supporting global payment methods', color: '#4caf50' },
+            { icon: <AttachMoney />, title: 'Multi-Payment Support', description: 'Vipps, Swish, MobilePay, Stripe, Klarna, Qliro, Adyen, Worldpay - supporting global payment methods', color: '#4caf50' },
             { icon: <Map />, title: 'Real-Time Tracking', description: 'Live GPS tracking with ETA predictions and notifications', color: '#f44336' },
             { icon: <LocalShipping />, title: 'C2C Shipping', description: 'Consumer-to-consumer shipping with integrated payments', color: '#ff9800' },
             { icon: <Assessment />, title: 'Advanced Analytics', description: 'Real-time insights, performance metrics, and revenue tracking', color: '#673ab7' },
@@ -1336,7 +1336,7 @@ export default function LandingPageMUI() {
 
         {[
           { q: 'How quickly can I get started?', a: 'You can start shipping in less than 10 minutes! Sign up, install our plugin (if using e-commerce), and you\'re ready to go.' },
-          { q: 'What payment methods do you support?', a: 'We support global payment methods including Vipps, Swish, MobilePay, Stripe, and more. Easy integration with your preferred payment provider.' },
+          { q: 'What payment methods do you support?', a: 'We support global payment methods including Vipps, Swish, MobilePay, Stripe, Klarna, Qliro, Adyen, Worldpay, and more. Easy integration with your preferred payment provider.' },
           { q: 'Do you offer mobile apps?', a: 'Yes! We have native iOS and Android apps for consumers with features like real-time tracking, C2C shipping, claims, and returns.' },
           { q: 'How does pricing work?', a: 'We offer flexible subscription plans starting at $29/month. Consumers can use the platform for free. C2C shipping has transparent per-shipment fees.' },
         ].map((faq, index) => (
