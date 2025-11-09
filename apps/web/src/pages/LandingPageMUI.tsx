@@ -533,12 +533,12 @@ export default function LandingPageMUI() {
 
               <Card>
                 <CardContent>
-                  <LocalShipping sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
+                  <Assessment sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
                   <Typography variant="h6" fontWeight="bold" gutterBottom>
-                    Pickup Scheduling
+                    Track Orders & Claims
                   </Typography>
                   <Typography color="text.secondary">
-                    Schedule courier pickup for returns. No need to go to drop-off location. Convenient for consumers.
+                    Keep track of all your orders, file claims for issues, and create returns - all from one dashboard. Complete visibility and control.
                   </Typography>
                 </CardContent>
               </Card>
