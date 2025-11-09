@@ -400,18 +400,18 @@
 
 ---
 
-## 📅 NEXT STEPS
+## 📅 NEXT STEPS (REVISED)
 
-### **Monday, Nov 10:**
+### **Monday, Nov 10:** 🎯 PRIORITY CHANGED
+- **Courier Pricing (8h)** - MOVED TO MONDAY (CRITICAL!)
+
+### **Tuesday, Nov 11:**
 - Dynamic Ranking (3h)
 - Shipment Booking (3h)
 
-### **Tuesday, Nov 11:**
+### **Wednesday, Nov 12:**
 - Label Generation (3h)
 - Real-Time Tracking (4h)
-
-### **Wednesday, Nov 12:**
-- Courier Pricing (5h)
 
 ### **Thursday, Nov 13:**
 - Merchant Rules (4h)
@@ -421,7 +421,16 @@
 - Notifications (3h)
 - Testing (4h)
 
-**Total:** 33 hours over 5 days = MVP READY
+**Total:** 40 hours over 5 days = MVP READY
+
+**WHY PRICING FIRST?** Without pricing, we can't:
+- Show costs in checkout
+- Compare couriers
+- Process payments
+- Book shipments
+- Calculate margins
+
+**See:** `docs/REVISED_WEEK_3_PLAN.md` for detailed Monday plan
 
 ---
 
