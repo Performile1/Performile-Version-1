@@ -251,39 +251,28 @@ export default function LandingPageMUI() {
         </Grid>
       </Container>
 
-      {/* TrustScore™ System - CORE USP */}
+      {/* LMT Lastmile Trust Score - CORE USP */}
       <Box sx={{ bgcolor: 'primary.main', color: 'white', py: 12 }}>
         <Container maxWidth="lg">
           <Typography variant="h3" fontWeight="bold" textAlign="center" gutterBottom>
-            TrustScore™ - The Industry's Most Accurate Courier Rating
+            LMT Lastmile Trust Score
           </Typography>
           <Typography variant="h6" textAlign="center" sx={{ mb: 6, opacity: 0.9 }}>
-            Postal code-specific performance data you can actually trust
+            Data-driven courier ratings based on real performance
           </Typography>
 
           <Grid container spacing={4} alignItems="center">
             <Grid item xs={12} md={6}>
-              <Paper sx={{ p: 4, bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)' }}>
-                <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: 'white' }}>
-                  The Algorithm
+              <Paper sx={{ p: 6, bgcolor: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', textAlign: 'center' }}>
+                <Typography variant="h1" fontWeight="bold" sx={{ color: 'white', mb: 2 }}>
+                  LMT
                 </Typography>
-                <Stack spacing={2} sx={{ mt: 3 }}>
-                  {[
-                    { label: 'Customer Reviews', weight: '30%', desc: 'With non-response scoring' },
-                    { label: 'Completion Rate', weight: '25%', desc: 'Fair in-transit logic' },
-                    { label: 'On-Time Delivery', weight: '20%', desc: 'Postal code-specific' },
-                    { label: 'First-Attempt Success', weight: '15%', desc: 'Reduces redeliveries' },
-                    { label: 'Low Claim Rate', weight: '10%', desc: 'Quality indicator' },
-                  ].map((item) => (
-                    <Box key={item.label}>
-                      <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Typography fontWeight="600" sx={{ color: 'white' }}>{item.label}</Typography>
-                        <Chip label={item.weight} sx={{ bgcolor: 'success.main', color: 'white', fontWeight: 'bold' }} />
-                      </Stack>
-                      <Typography variant="body2" sx={{ opacity: 0.8, mt: 0.5 }}>{item.desc}</Typography>
-                    </Box>
-                  ))}
-                </Stack>
+                <Typography variant="h5" fontWeight="bold" sx={{ color: 'white', mb: 3 }}>
+                  Lastmile Trust Score
+                </Typography>
+                <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.9)' }}>
+                  Comprehensive performance rating based on customer reviews, delivery success, on-time performance, and claim rates.
+                </Typography>
               </Paper>
             </Grid>
 
@@ -291,30 +280,30 @@ export default function LandingPageMUI() {
               <Stack spacing={3}>
                 <Card sx={{ bgcolor: 'rgba(255,255,255,0.95)' }}>
                   <CardContent>
-                    <Star sx={{ fontSize: 40, color: 'warning.main', mb: 1 }} />
+                    <Map sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
                     <Typography variant="h6" fontWeight="bold" gutterBottom>
-                      Unique Innovation: Non-Response Scoring
+                      Postal Code-Specific
                     </Typography>
                     <Typography color="text.secondary">
-                      Most platforms only count submitted reviews (biased). We track ALL review requests and count non-responses as 75% satisfaction. More accurate, more fair.
+                      Same courier performs differently in different areas. We show performance for YOUR postal code, not national averages.
                     </Typography>
                   </CardContent>
                 </Card>
 
                 <Card sx={{ bgcolor: 'rgba(255,255,255,0.95)' }}>
                   <CardContent>
-                    <Map sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
+                    <Star sx={{ fontSize: 40, color: 'warning.main', mb: 1 }} />
                     <Typography variant="h6" fontWeight="bold" gutterBottom>
-                      Postal Code-Specific Data
+                      Real Customer Data
                     </Typography>
                     <Typography color="text.secondary">
-                      Same courier performs differently in different areas. We show performance for YOUR postal code, not national averages. More relevant, actionable insights.
+                      Based on actual delivery performance, customer reviews, and verified tracking data. Transparent and fair scoring.
                     </Typography>
                   </CardContent>
                 </Card>
 
                 <Alert severity="success" sx={{ fontWeight: 600 }}>
-                  🏆 Amazon doesn't even do postal code-level scoring!
+                  🏆 The most accurate courier rating in the Nordic region
                 </Alert>
               </Stack>
             </Grid>
@@ -328,7 +317,7 @@ export default function LandingPageMUI() {
           Dynamic Checkout - Let Consumers Choose
         </Typography>
         <Typography variant="h6" textAlign="center" color="text.secondary" sx={{ mb: 6 }}>
-          Weighted courier list based on postal code-specific TrustScore
+          Weighted courier list based on postal code-specific LMT Score
         </Typography>
 
         <Grid container spacing={4} alignItems="center">
@@ -353,7 +342,7 @@ export default function LandingPageMUI() {
                       <Box>
                         <Typography variant="h6" fontWeight="bold">{option.courier}</Typography>
                         <Stack direction="row" spacing={1} alignItems="center">
-                          <Chip label={`TrustScore: ${option.score}`} size="small" color="primary" />
+                          <Chip label={`LMT: ${option.score}`} size="small" color="primary" />
                           <Rating value={option.rating} precision={0.1} size="small" readOnly />
                         </Stack>
                       </Box>
@@ -382,7 +371,7 @@ export default function LandingPageMUI() {
                   {[
                     'Consumer enters postal code at checkout',
                     'System calculates weighted score for each courier',
-                    'Shows TrustScore, reviews, and pricing',
+                    'Shows LMT Score, reviews, and pricing',
                     'Consumer sees data from THEIR postal code',
                     'Best option automatically recommended',
                     'Consumer makes informed choice',
