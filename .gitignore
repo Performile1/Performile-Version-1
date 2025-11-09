@@ -169,10 +169,34 @@ Thumbs.db
 # INTELLECTUAL PROPERTY PROTECTION
 # ===================================
 
-# Legal Documents
-docs/legal/TRADEMARK_APPLICATION_PACKAGE.md
-docs/legal/TRADEMARK_ERRORS_AUDIT.md
+# Legal Documents - NEVER COMMIT
+docs/legal/
 docs/legal/*.md
+docs/legal/*.pdf
+docs/legal/*.docx
+docs/legal/*.doc
+
+# Patent Documents - NEVER COMMIT
+docs/patents/
+docs/patent/
+**/PATENT_*.md
+**/PATENT_*.pdf
+**/patent_application*.pdf
+**/provisional_patent*.pdf
+
+# Trademark Documents - NEVER COMMIT
+docs/trademarks/
+docs/trademark/
+**/TRADEMARK_*.md
+**/TRADEMARK_*.pdf
+**/trademark_application*.pdf
+**/trademark_registration*.pdf
+
+# IP Strategy Documents - NEVER COMMIT
+docs/ip/
+**/IP_STRATEGY*.md
+**/INTELLECTUAL_PROPERTY*.md
+**/TRADE_SECRETS*.md
 
 # Technical Specifications (Contains proprietary algorithms)
 docs/daily/2025-11-03/TECHNICAL_SPECIFICATION.md

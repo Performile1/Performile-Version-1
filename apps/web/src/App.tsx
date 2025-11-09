@@ -163,6 +163,29 @@ const App: React.FC = () => {
     validateTokens();
   }, []); // Run once on mount
 
+  // Proactive token refresh - check every 50 minutes
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    console.log('[App] Setting up proactive token refresh (every 50 minutes)');
+    
+    const refreshInterval = setInterval(async () => {
+      console.log('[App] Proactive token refresh triggered');
+      try {
+        await validateStoredToken();
+      } catch (error) {
+        console.error('[App] Proactive token refresh failed:', error);
+      }
+    }, 50 * 60 * 1000); // 50 minutes
+
+    return () => {
+      console.log('[App] Clearing token refresh interval');
+      clearInterval(refreshInterval);
+    };
+  }, [isAuthenticated, validateStoredToken]);
+
   // Listen for authentication errors
   React.useEffect(() => {
     const handleAuthError = () => {
