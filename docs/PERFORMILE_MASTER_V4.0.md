@@ -30,7 +30,7 @@ Performile is a **global lastmile delivery platform** that connects merchants, c
 ### **Current Status:**
 - **Completion:** 82% (MVP ready by Nov 14)
 - **Frontend:** 98% complete
-- **Backend:** 40% complete (core functions in progress)
+- **Backend:** 60% complete (11 systems working, 8 shipping functions missing)
 - **Testing:** 100% coverage (110 E2E tests)
 - **Security:** 100% (no confidential data exposed)
 - **Documentation:** 100% complete
@@ -158,19 +158,22 @@ Performile is a **global lastmile delivery platform** that connects merchants, c
 
 ---
 
-#### **Backend: 40% Complete** ⚠️
+#### **Backend: 60% Complete** ⚠️
 
-**What's Working:**
+**What's Working (11 Core Systems):**
 - ✅ Authentication (JWT)
-- ✅ User management
+- ✅ User management (CRUD)
 - ✅ Subscription management (Stripe)
-- ✅ Order management (basic)
+- ✅ Order management (basic CRUD)
 - ✅ Analytics data collection
 - ✅ TrustScore calculation
-- ✅ Claims system
+- ✅ Claims system (8 types)
 - ✅ Team management
+- ✅ Postal code validation
 - ✅ Database schema (complete)
 - ✅ RLS policies (basic)
+
+**Backend Completion:** 11 working systems out of 19 total = ~60%
 
 **What's Missing (CRITICAL):**
 - ❌ Dynamic courier ranking
