@@ -47,25 +47,25 @@ POST /api/couriers/get-base-price
   "pricing": {
     "base_price": 89.00,
     "weight_cost": 60.00,
-    "distance_cost": 250.00,
+    "distance_cost": 180.00,
     "zone_multiplier": 1.0,
-    "subtotal": 399.00,
+    "subtotal": 329.00,
     "surcharges": [
       {
         "type": "fuel",
         "name": "Fuel Surcharge",
-        "amount": 15.00,
-        "method": "fixed"
+        "amount": 39.48,
+        "method": "percentage"
       }
     ],
-    "total_surcharges": 15.00,
-    "total_base_price": 414.00,
+    "total_surcharges": 39.48,
+    "total_base_price": 368.48,
     "currency": "SEK"
   },
   "weight_details": {
     "actual_weight": 5.0,
-    "volumetric_weight": 6.72,
-    "chargeable_weight": 6.72,
+    "volumetric_weight": 5.0,
+    "chargeable_weight": 5.0,
     "dimensions_provided": true
   },
   "shipment_details": {
@@ -76,12 +76,12 @@ POST /api/couriers/get-base-price
   "calculation_breakdown": {
     "base_price": 89.00,
     "weight_cost": 60.00,
-    "distance_cost": 250.00,
-    "before_zone": 399.00,
+    "distance_cost": 180.00,
+    "before_zone": 329.00,
     "zone_multiplier": 1.0,
-    "after_zone": 399.00,
-    "surcharges": 15.00,
-    "total": 414.00,
+    "after_zone": 329.00,
+    "surcharges": 39.48,
+    "total": 368.48,
     "currency": "SEK"
   }
 }
@@ -104,7 +104,7 @@ POST /api/couriers/get-base-price
 }
 ```
 **Expected:** Volumetric weight (35 kg) > Actual weight (3 kg)  
-**Charged on:** 35 kg
+**Charged on:** 35 kg (fuel surcharge = 12% of updated subtotal)
 
 #### **Test 1.2: Heavy but small package**
 ```json
@@ -121,7 +121,7 @@ POST /api/couriers/get-base-price
 }
 ```
 **Expected:** Actual weight (15 kg) > Volumetric weight (3.36 kg)  
-**Charged on:** 15 kg
+**Charged on:** 15 kg (fuel surcharge still percentage-based)
 
 #### **Test 1.3: Remote area (Northern Norway)**
 ```json
@@ -135,7 +135,7 @@ POST /api/couriers/get-base-price
 }
 ```
 **Expected:** Zone multiplier 1.3 (Tromsø)  
-**Surcharge:** Remote area fee applies
+**Surcharge:** Remote area fee (75 SEK fixed) + 12% fuel surcharge on post-zone subtotal
 
 ---
 
@@ -174,31 +174,38 @@ POST /api/couriers/calculate-price
   "base_pricing": {
     "base_price": 89.00,
     "weight_cost": 60.00,
-    "distance_cost": 250.00,
+    "distance_cost": 180.00,
     "zone_multiplier": 1.0,
-    "surcharges": [...],
-    "total_surcharges": 15.00,
-    "subtotal": 399.00,
-    "total_base_price": 414.00,
+    "surcharges": [
+      {
+        "type": "fuel",
+        "name": "Fuel Surcharge",
+        "amount": 39.48,
+        "method": "percentage"
+      }
+    ],
+    "total_surcharges": 39.48,
+    "subtotal": 329.00,
+    "total_base_price": 368.48,
     "currency": "SEK"
   },
   "merchant_markup": {
     "margin_type": "percentage",
     "margin_value": 15.00,
-    "margin_amount": 62.10,
+    "margin_amount": 55.27,
     "has_markup": true
   },
   "final_pricing": {
-    "before_markup": 414.00,
-    "markup_amount": 62.10,
-    "after_markup": 476.10,
-    "rounded_price": 480.00,
+    "before_markup": 368.48,
+    "markup_amount": 55.27,
+    "after_markup": 423.75,
+    "rounded_price": 425.00,
     "currency": "SEK"
   },
   "weight_details": {
     "actual_weight": 5.0,
-    "volumetric_weight": 6.72,
-    "chargeable_weight": 6.72
+    "volumetric_weight": 5.0,
+    "chargeable_weight": 5.0
   },
   "shipment_details": {
     "distance": 100,
@@ -216,7 +223,7 @@ POST /api/couriers/calculate-price
 
 #### **Test 2.1: Merchant with 15% markup**
 **Setup:** Merchant has 15% margin in `merchant_pricing_settings`  
-**Expected:** Final price = Base price × 1.15
+**Expected:** Final price = Base price × 1.15 (e.g. 368.48 × 1.15 ≈ 423.75 before rounding)
 
 #### **Test 2.2: Merchant with no markup**
 **Setup:** Merchant has no pricing settings  
@@ -267,7 +274,7 @@ POST /api/couriers/compare-prices
     "sorted_by": "price",
     "cheapest": {
       "courier_name": "PostNord",
-      "rounded_price": 480.00
+      "rounded_price": 425.00
     },
     "most_expensive": {
       "courier_name": "DHL",
@@ -286,17 +293,24 @@ POST /api/couriers/compare-prices
       "courier_name": "PostNord",
       "logo_url": "...",
       "service_type": "express",
-      "base_price": 414.00,
-      "merchant_markup": 62.10,
-      "final_price": 476.10,
-      "rounded_price": 480.00,
+      "base_price": 368.48,
+      "merchant_markup": 55.27,
+      "final_price": 423.75,
+      "rounded_price": 425.00,
       "currency": "SEK",
-      "chargeable_weight": 6.72,
+      "chargeable_weight": 5.0,
       "trust_score": 92,
       "ranking_score": 8.5,
       "recommended": true,
-      "surcharges": [...],
-      "total_surcharges": 15.00,
+      "surcharges": [
+        {
+          "type": "fuel",
+          "name": "Fuel Surcharge",
+          "amount": 39.48,
+          "method": "percentage"
+        }
+      ],
+      "total_surcharges": 39.48,
       "calculation_breakdown": {...}
     },
     {

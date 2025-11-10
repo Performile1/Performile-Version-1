@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
+import { updateRankingScoresForCouriers } from '../lib/ranking-updates';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -129,6 +130,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         error: 'Failed to log courier displays',
         message: error.message
       });
+    }
+
+    // Trigger ranking recalculation for displayed couriers (real-time update)
+    try {
+      await updateRankingScoresForCouriers(supabase, {
+        courierIds: couriers.map(courier => courier.courier_id),
+        postalCode: delivery_location?.postal_code || null,
+        context: 'checkout:display'
+      });
+    } catch (rankingError) {
+      console.error('Error triggering ranking update after display logging:', rankingError);
     }
 
     // Return success

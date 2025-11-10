@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -95,6 +95,40 @@ export default function LandingPageMUI() {
 
   const results = calculateROI();
 
+  const roleSegments = useMemo(
+    () => [
+      {
+        title: 'Merchants',
+        description: 'Launch dynamic checkout, configure couriers, and get actionable revenue analytics.',
+        cta: 'Merchant Success Guide',
+        icon: <Store sx={{ fontSize: 32, color: 'primary.main' }} />,
+        navigateTo: '/knowledge-base?role=merchant',
+      },
+      {
+        title: 'Couriers',
+        description: 'Optimize routes, manage fleets, and turn lead marketplace insights into bookings.',
+        cta: 'Courier Success Guide',
+        icon: <LocalShipping sx={{ fontSize: 32, color: 'success.main' }} />,
+        navigateTo: '/knowledge-base?role=courier',
+      },
+      {
+        title: 'Consumers',
+        description: 'Select the best drop-off points, track parcels in real-time, and manage returns effortlessly.',
+        cta: 'Consumer Success Guide',
+        icon: <Smartphone sx={{ fontSize: 32, color: 'secondary.main' }} />,
+        navigateTo: '/knowledge-base?role=consumer',
+      },
+      {
+        title: 'Admins',
+        description: 'Oversee platform health, enforce role-based access, and monitor compliance from one hub.',
+        cta: 'Admin Success Guide',
+        icon: <Security sx={{ fontSize: 32, color: 'warning.main' }} />,
+        navigateTo: '/knowledge-base?role=admin',
+      },
+    ],
+    [navigate]
+  );
+
   const handleNewsletterSignup = (e: React.FormEvent) => {
     e.preventDefault();
     setNewsletterSuccess(true);
@@ -187,6 +221,56 @@ export default function LandingPageMUI() {
             ✓ No credit card required ✓ 14-day free trial ✓ Cancel anytime
           </Typography>
 
+          {/* Role-specific entry points */}
+          <Grid container spacing={3} sx={{ mt: 6 }}>
+            {roleSegments.map((segment) => (
+              <Grid item xs={12} sm={6} md={3} key={segment.title}>
+                <Card
+                  sx={{
+                    height: '100%',
+                    bgcolor: 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    backdropFilter: 'blur(6px)',
+                    cursor: 'pointer',
+                    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+                    '&:hover': {
+                      transform: 'translateY(-6px)',
+                      boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
+                    },
+                  }}
+                  onClick={() => navigate(segment.navigateTo)}
+                >
+                  <CardContent>
+                    <Stack spacing={2}>
+                      <Box>{segment.icon}</Box>
+                      <Typography variant="h6" fontWeight="bold" color="white">
+                        {segment.title}
+                      </Typography>
+                      <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                        {segment.description}
+                      </Typography>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        sx={{
+                          borderColor: 'rgba(255,255,255,0.6)',
+                          color: 'white',
+                          alignSelf: 'flex-start',
+                          '&:hover': {
+                            borderColor: 'white',
+                            bgcolor: 'rgba(255,255,255,0.12)',
+                          },
+                        }}
+                      >
+                        {segment.cta}
+                      </Button>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+
           {/* Stats */}
           <Grid container spacing={4} sx={{ mt: 6 }}>
             {[
@@ -203,6 +287,60 @@ export default function LandingPageMUI() {
           </Grid>
         </Container>
       </Box>
+
+      {/* Guided tour preview */}
+      <Container maxWidth="lg" sx={{ mt: -8, zIndex: 2, position: 'relative' }}>
+        <Card
+          sx={{
+            px: { xs: 3, md: 6 },
+            py: { xs: 4, md: 6 },
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            alignItems: 'center',
+            gap: 4,
+            boxShadow: '0 18px 45px rgba(80, 56, 160, 0.15)',
+          }}
+        >
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="overline" color="primary" fontWeight={700}>
+              Guided Tour Preview
+            </Typography>
+            <Typography variant="h4" fontWeight="bold" sx={{ mt: 1, mb: 2 }}>
+              Explore the onboarding journey before you sign up
+            </Typography>
+            <Typography color="text.secondary" sx={{ mb: 3 }}>
+              Watch a 90-second walkthrough of the merchant dashboard tour powered by Shepherd.js. See how we
+              guide new teams through courier setup, drop-off filtering, and analytics in-app.
+            </Typography>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <Button
+                variant="contained"
+                startIcon={<PlayArrow />}
+                onClick={() => window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')}
+              >
+                Watch Guided Tour
+              </Button>
+              <Button variant="outlined" onClick={() => navigate('/knowledge-base?article=guided-tour')}>
+                Read Tour Setup Docs
+              </Button>
+            </Stack>
+          </Box>
+          <CardMedia
+            component="img"
+            image="/assets/merchant-tour-preview.gif"
+            alt="Performile Guided Tour Preview"
+            sx={{
+              width: { xs: '100%', md: 360 },
+              borderRadius: 3,
+              boxShadow: '0 12px 30px rgba(102,126,234,0.25)',
+              border: '1px solid rgba(102,126,234,0.2)',
+            }}
+            onError={(event) => {
+              (event.target as HTMLImageElement).src = '/images/dashboard-preview.png';
+            }}
+          />
+        </Card>
+      </Container>
 
       {/* Features Overview */}
       <Container maxWidth="lg" sx={{ py: 10 }}>
@@ -477,6 +615,95 @@ export default function LandingPageMUI() {
               </Typography>
             </Paper>
           </Box>
+        </Container>
+      </Box>
+
+      {/* Analytics trust signal */}
+      <Box sx={{ py: 12, bgcolor: 'background.default' }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <Typography variant="overline" color="primary" fontWeight={700}>
+                Real-time courier insights
+              </Typography>
+              <Typography variant="h3" fontWeight="bold" sx={{ mt: 1, mb: 2 }}>
+                Analytics that react the moment customers choose a courier
+              </Typography>
+              <Typography color="text.secondary" sx={{ mb: 3 }}>
+                Powered by our checkout analytics implementation, Performile logs every courier impression and
+                selection to update rankings instantly. Merchants can see which delivery options convert, and
+                couriers understand how their performance impacts placement.
+              </Typography>
+              <Stack spacing={1.5}>
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Assessment sx={{ color: 'primary.main' }} />
+                  <Typography variant="body1">Session-level display & selection logging</Typography>
+                </Stack>
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <TrendingUp sx={{ color: 'success.main' }} />
+                  <Typography variant="body1">Automatic ranking recalculations per postal code</Typography>
+                </Stack>
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <Speed sx={{ color: 'secondary.main' }} />
+                  <Typography variant="body1"><strong>&lt; 300ms</strong> analytics write latency to keep dashboards live</Typography>
+                </Stack>
+              </Stack>
+              <Button
+                variant="text"
+                sx={{ mt: 3 }}
+                onClick={() => navigate('/knowledge-base?article=checkout-analytics')}
+              >
+                Read the analytics deep dive
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Card sx={{ p: 4, height: '100%' }}>
+                <Typography variant="subtitle1" fontWeight={600} color="primary" gutterBottom>
+                  Snapshot · Last 24 hours
+                </Typography>
+                <Stack spacing={3}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Box>
+                      <Typography variant="h4" fontWeight="bold">+18%</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Checkout conversions when QR-ready drop-off shown first
+                      </Typography>
+                    </Box>
+                    <Chip label="Live" color="success" size="small" />
+                  </Stack>
+                  <Divider />
+                  <Stack spacing={2}>
+                    {[
+                      {
+                        courier: 'PostNord',
+                        impression: '73,421 displays',
+                        selection: '31,204 selections',
+                      },
+                      {
+                        courier: 'Bring',
+                        impression: '52,908 displays',
+                        selection: '22,110 selections',
+                      },
+                      {
+                        courier: 'Porterbuddy',
+                        impression: '18,564 displays',
+                        selection: '9,441 selections',
+                      },
+                    ].map((row) => (
+                      <Box key={row.courier}>
+                        <Typography variant="subtitle1" fontWeight={600}>
+                          {row.courier}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {row.impression} · {row.selection}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Stack>
+                </Stack>
+              </Card>
+            </Grid>
+          </Grid>
         </Container>
       </Box>
 

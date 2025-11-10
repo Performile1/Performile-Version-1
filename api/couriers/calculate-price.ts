@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
+import { rateLimitMiddleware } from '../middleware/security';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -44,6 +45,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  if (!rateLimitMiddleware(req, res, 'pricing')) {
+    return;
+  }
+
   try {
     const {
       merchant_id,
@@ -58,11 +63,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       to_postal
     } = req.body;
 
-    // Validate required fields
-    if (!merchant_id || !courier_id || !service_type || !actual_weight) {
+    const parseOptionalNumber = (value: unknown): number | null => {
+      if (value === null || value === undefined || value === '') return null;
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : null;
+    };
+
+    const actualWeightValue = Number(actual_weight);
+    const lengthValue = parseOptionalNumber(length_cm);
+    const widthValue = parseOptionalNumber(width_cm);
+    const heightValue = parseOptionalNumber(height_cm);
+    const distanceValue = parseOptionalNumber(distance) ?? 0;
+
+    if (!merchant_id || !courier_id || !service_type || Number.isNaN(actualWeightValue)) {
       return res.status(400).json({
-        error: 'Missing required fields',
+        error: 'Missing or invalid required fields',
         required: ['merchant_id', 'courier_id', 'service_type', 'actual_weight']
+      });
+    }
+
+    if (actualWeightValue <= 0) {
+      return res.status(400).json({
+        error: 'Actual weight must be greater than zero'
       });
     }
 
@@ -85,11 +107,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .rpc('calculate_courier_base_price', {
         p_courier_id: courier_id,
         p_service_type: service_type,
-        p_actual_weight: actual_weight,
-        p_length_cm: length_cm || null,
-        p_width_cm: width_cm || null,
-        p_height_cm: height_cm || null,
-        p_distance: distance || 0,
+        p_actual_weight: actualWeightValue,
+        p_length_cm: lengthValue,
+        p_width_cm: widthValue,
+        p_height_cm: heightValue,
+        p_distance: distanceValue,
         p_from_postal: from_postal || null,
         p_to_postal: to_postal || null
       });
@@ -162,7 +184,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         weight_cost: parseFloat(base.weight_cost || 0),
         distance_cost: parseFloat(base.distance_cost || 0),
         zone_multiplier: parseFloat(base.zone_multiplier || 1),
-        surcharges: base.surcharges || [],
+        surcharges: Array.isArray(base.surcharges) ? base.surcharges : [],
         total_surcharges: parseFloat(base.total_surcharges || 0),
         subtotal: parseFloat(base.subtotal || 0),
         total_base_price: basePriceAmount,
@@ -187,7 +209,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         chargeable_weight: parseFloat(base.chargeable_weight || 0)
       },
       shipment_details: {
-        distance: distance || 0,
+        distance: distanceValue,
         from_postal: from_postal || null,
         to_postal: to_postal || null
       },

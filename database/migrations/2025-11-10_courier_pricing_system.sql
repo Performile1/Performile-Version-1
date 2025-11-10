@@ -47,10 +47,26 @@ CREATE INDEX IF NOT EXISTS idx_courier_base_prices_effective ON courier_base_pri
 -- RLS
 ALTER TABLE courier_base_prices ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "courier_base_prices_select" ON courier_base_prices FOR SELECT USING (true);
-CREATE POLICY "courier_base_prices_insert" ON courier_base_prices FOR INSERT WITH CHECK (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_base_prices_update" ON courier_base_prices FOR UPDATE USING (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_base_prices_delete" ON courier_base_prices FOR DELETE USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "courier_base_prices_select" ON courier_base_prices;
+DROP POLICY IF EXISTS "courier_base_prices_insert" ON courier_base_prices;
+DROP POLICY IF EXISTS "courier_base_prices_update" ON courier_base_prices;
+DROP POLICY IF EXISTS "courier_base_prices_delete" ON courier_base_prices;
+
+CREATE POLICY "courier_base_prices_select" 
+ON courier_base_prices FOR SELECT 
+USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "courier_base_prices_insert" 
+ON courier_base_prices FOR INSERT 
+WITH CHECK (auth.role() = 'service_role');
+
+CREATE POLICY "courier_base_prices_update" 
+ON courier_base_prices FOR UPDATE 
+USING (auth.role() = 'service_role');
+
+CREATE POLICY "courier_base_prices_delete" 
+ON courier_base_prices FOR DELETE 
+USING (auth.role() = 'service_role');
 
 COMMENT ON TABLE courier_base_prices IS 'Base prices per courier and service type';
 
@@ -90,10 +106,26 @@ CREATE INDEX IF NOT EXISTS idx_courier_weight_pricing_range ON courier_weight_pr
 -- RLS
 ALTER TABLE courier_weight_pricing ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "courier_weight_pricing_select" ON courier_weight_pricing FOR SELECT USING (true);
-CREATE POLICY "courier_weight_pricing_insert" ON courier_weight_pricing FOR INSERT WITH CHECK (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_weight_pricing_update" ON courier_weight_pricing FOR UPDATE USING (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_weight_pricing_delete" ON courier_weight_pricing FOR DELETE USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "courier_weight_pricing_select" ON courier_weight_pricing;
+DROP POLICY IF EXISTS "courier_weight_pricing_insert" ON courier_weight_pricing;
+DROP POLICY IF EXISTS "courier_weight_pricing_update" ON courier_weight_pricing;
+DROP POLICY IF EXISTS "courier_weight_pricing_delete" ON courier_weight_pricing;
+
+CREATE POLICY "courier_weight_pricing_select" 
+ON courier_weight_pricing FOR SELECT 
+USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "courier_weight_pricing_insert" 
+ON courier_weight_pricing FOR INSERT 
+WITH CHECK (auth.role() = 'service_role');
+
+CREATE POLICY "courier_weight_pricing_update" 
+ON courier_weight_pricing FOR UPDATE 
+USING (auth.role() = 'service_role');
+
+CREATE POLICY "courier_weight_pricing_delete" 
+ON courier_weight_pricing FOR DELETE 
+USING (auth.role() = 'service_role');
 
 COMMENT ON TABLE courier_weight_pricing IS 'Weight-based pricing tiers per courier';
 
@@ -133,10 +165,26 @@ CREATE INDEX IF NOT EXISTS idx_courier_distance_pricing_range ON courier_distanc
 -- RLS
 ALTER TABLE courier_distance_pricing ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "courier_distance_pricing_select" ON courier_distance_pricing FOR SELECT USING (true);
-CREATE POLICY "courier_distance_pricing_insert" ON courier_distance_pricing FOR INSERT WITH CHECK (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_distance_pricing_update" ON courier_distance_pricing FOR UPDATE USING (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_distance_pricing_delete" ON courier_distance_pricing FOR DELETE USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "courier_distance_pricing_select" ON courier_distance_pricing;
+DROP POLICY IF EXISTS "courier_distance_pricing_insert" ON courier_distance_pricing;
+DROP POLICY IF EXISTS "courier_distance_pricing_update" ON courier_distance_pricing;
+DROP POLICY IF EXISTS "courier_distance_pricing_delete" ON courier_distance_pricing;
+
+CREATE POLICY "courier_distance_pricing_select" 
+ON courier_distance_pricing FOR SELECT 
+USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "courier_distance_pricing_insert" 
+ON courier_distance_pricing FOR INSERT 
+WITH CHECK (auth.role() = 'service_role');
+
+CREATE POLICY "courier_distance_pricing_update" 
+ON courier_distance_pricing FOR UPDATE 
+USING (auth.role() = 'service_role');
+
+CREATE POLICY "courier_distance_pricing_delete" 
+ON courier_distance_pricing FOR DELETE 
+USING (auth.role() = 'service_role');
 
 COMMENT ON TABLE courier_distance_pricing IS 'Distance-based pricing tiers per courier';
 
@@ -179,10 +227,26 @@ CREATE INDEX IF NOT EXISTS idx_postal_code_zones_remote ON postal_code_zones(is_
 -- RLS
 ALTER TABLE postal_code_zones ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "postal_code_zones_select" ON postal_code_zones FOR SELECT USING (true);
-CREATE POLICY "postal_code_zones_insert" ON postal_code_zones FOR INSERT WITH CHECK (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "postal_code_zones_update" ON postal_code_zones FOR UPDATE USING (auth.jwt() ->> 'role' = 'admin');
-CREATE POLICY "postal_code_zones_delete" ON postal_code_zones FOR DELETE USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "postal_code_zones_select" ON postal_code_zones;
+DROP POLICY IF EXISTS "postal_code_zones_insert" ON postal_code_zones;
+DROP POLICY IF EXISTS "postal_code_zones_update" ON postal_code_zones;
+DROP POLICY IF EXISTS "postal_code_zones_delete" ON postal_code_zones;
+
+CREATE POLICY "postal_code_zones_select" 
+ON postal_code_zones FOR SELECT 
+USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "postal_code_zones_insert" 
+ON postal_code_zones FOR INSERT 
+WITH CHECK (auth.role() = 'service_role');
+
+CREATE POLICY "postal_code_zones_update" 
+ON postal_code_zones FOR UPDATE 
+USING (auth.role() = 'service_role');
+
+CREATE POLICY "postal_code_zones_delete" 
+ON postal_code_zones FOR DELETE 
+USING (auth.role() = 'service_role');
 
 COMMENT ON TABLE postal_code_zones IS 'Postal code zones with pricing multipliers for remote/special areas';
 
@@ -231,10 +295,26 @@ CREATE INDEX IF NOT EXISTS idx_courier_surcharge_rules_effective ON courier_surc
 -- RLS
 ALTER TABLE courier_surcharge_rules ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "courier_surcharge_rules_select" ON courier_surcharge_rules FOR SELECT USING (true);
-CREATE POLICY "courier_surcharge_rules_insert" ON courier_surcharge_rules FOR INSERT WITH CHECK (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_surcharge_rules_update" ON courier_surcharge_rules FOR UPDATE USING (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_surcharge_rules_delete" ON courier_surcharge_rules FOR DELETE USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "courier_surcharge_rules_select" ON courier_surcharge_rules;
+DROP POLICY IF EXISTS "courier_surcharge_rules_insert" ON courier_surcharge_rules;
+DROP POLICY IF EXISTS "courier_surcharge_rules_update" ON courier_surcharge_rules;
+DROP POLICY IF EXISTS "courier_surcharge_rules_delete" ON courier_surcharge_rules;
+
+CREATE POLICY "courier_surcharge_rules_select" 
+ON courier_surcharge_rules FOR SELECT 
+USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "courier_surcharge_rules_insert" 
+ON courier_surcharge_rules FOR INSERT 
+WITH CHECK (auth.role() = 'service_role');
+
+CREATE POLICY "courier_surcharge_rules_update" 
+ON courier_surcharge_rules FOR UPDATE 
+USING (auth.role() = 'service_role');
+
+CREATE POLICY "courier_surcharge_rules_delete" 
+ON courier_surcharge_rules FOR DELETE 
+USING (auth.role() = 'service_role');
 
 COMMENT ON TABLE courier_surcharge_rules IS 'Surcharge rules and fees per courier';
 
@@ -273,10 +353,26 @@ CREATE INDEX IF NOT EXISTS idx_courier_volumetric_rules_active ON courier_volume
 -- RLS
 ALTER TABLE courier_volumetric_rules ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "courier_volumetric_rules_select" ON courier_volumetric_rules FOR SELECT USING (true);
-CREATE POLICY "courier_volumetric_rules_insert" ON courier_volumetric_rules FOR INSERT WITH CHECK (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_volumetric_rules_update" ON courier_volumetric_rules FOR UPDATE USING (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "courier_volumetric_rules_delete" ON courier_volumetric_rules FOR DELETE USING (auth.jwt() ->> 'role' = 'admin');
+DROP POLICY IF EXISTS "courier_volumetric_rules_select" ON courier_volumetric_rules;
+DROP POLICY IF EXISTS "courier_volumetric_rules_insert" ON courier_volumetric_rules;
+DROP POLICY IF EXISTS "courier_volumetric_rules_update" ON courier_volumetric_rules;
+DROP POLICY IF EXISTS "courier_volumetric_rules_delete" ON courier_volumetric_rules;
+
+CREATE POLICY "courier_volumetric_rules_select" 
+ON courier_volumetric_rules FOR SELECT 
+USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "courier_volumetric_rules_insert" 
+ON courier_volumetric_rules FOR INSERT 
+WITH CHECK (auth.role() = 'service_role');
+
+CREATE POLICY "courier_volumetric_rules_update" 
+ON courier_volumetric_rules FOR UPDATE 
+USING (auth.role() = 'service_role');
+
+CREATE POLICY "courier_volumetric_rules_delete" 
+ON courier_volumetric_rules FOR DELETE 
+USING (auth.role() = 'service_role');
 
 COMMENT ON TABLE courier_volumetric_rules IS 'Volumetric weight calculation rules per courier';
 
@@ -324,9 +420,26 @@ CREATE INDEX IF NOT EXISTS idx_pricing_csv_uploads_date ON pricing_csv_uploads(u
 -- RLS
 ALTER TABLE pricing_csv_uploads ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "pricing_csv_uploads_select" ON pricing_csv_uploads FOR SELECT USING (auth.jwt() ->> 'role' IN ('admin', 'courier') OR uploaded_by = auth.uid());
-CREATE POLICY "pricing_csv_uploads_insert" ON pricing_csv_uploads FOR INSERT WITH CHECK (auth.jwt() ->> 'role' IN ('admin', 'courier'));
-CREATE POLICY "pricing_csv_uploads_update" ON pricing_csv_uploads FOR UPDATE USING (auth.jwt() ->> 'role' IN ('admin', 'courier'));
+DROP POLICY IF EXISTS "pricing_csv_uploads_select" ON pricing_csv_uploads;
+DROP POLICY IF EXISTS "pricing_csv_uploads_insert" ON pricing_csv_uploads;
+DROP POLICY IF EXISTS "pricing_csv_uploads_update" ON pricing_csv_uploads;
+DROP POLICY IF EXISTS "pricing_csv_uploads_delete" ON pricing_csv_uploads;
+
+CREATE POLICY "pricing_csv_uploads_select" 
+ON pricing_csv_uploads FOR SELECT 
+USING (auth.role() = 'service_role' OR uploaded_by = auth.uid());
+
+CREATE POLICY "pricing_csv_uploads_insert" 
+ON pricing_csv_uploads FOR INSERT 
+WITH CHECK (auth.role() = 'service_role');
+
+CREATE POLICY "pricing_csv_uploads_update" 
+ON pricing_csv_uploads FOR UPDATE 
+USING (auth.role() = 'service_role' OR uploaded_by = auth.uid());
+
+CREATE POLICY "pricing_csv_uploads_delete" 
+ON pricing_csv_uploads FOR DELETE 
+USING (auth.role() = 'service_role' OR uploaded_by = auth.uid());
 
 COMMENT ON TABLE pricing_csv_uploads IS 'Track CSV file uploads for courier pricing data';
 

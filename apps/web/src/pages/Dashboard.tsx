@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   Grid,
@@ -30,6 +30,15 @@ import {
   ClaimsManagementWidget,
 } from '@/components/dashboard';
 import { CourierLogo } from '@/components/courier/CourierLogo';
+import { useMerchantDashboardTour } from '@/hooks/useMerchantDashboardTour';
+
+const TOUR_ANCHORS = {
+  welcome: 'merchant-tour-welcome',
+  kpis: 'merchant-tour-kpis',
+  orders: 'merchant-tour-orders',
+  quickActions: 'merchant-tour-quick-actions',
+  tracking: 'merchant-tour-tracking',
+} as const;
 
 interface DashboardStats {
   total_couriers: number;
@@ -84,6 +93,9 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, trend, s
 export const Dashboard: React.FC = () => {
   console.log('🚀 Dashboard v3.0 - Role-based data filtering enabled!');
   const { user } = useAuthStore();
+  const isMerchant = user?.user_role === 'merchant';
+  const [tourEnabled, setTourEnabled] = React.useState<boolean>(false);
+  const { startTour } = useMerchantDashboardTour(tourEnabled);
 
   // Get role-specific dashboard endpoint
   // UNIFIED APPROACH: All roles use the same endpoint
@@ -112,6 +124,44 @@ export const Dashboard: React.FC = () => {
     const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
     return `${greeting}, ${user?.first_name || 'there'}!`;
   };
+
+  React.useEffect(() => {
+    if (!isMerchant) {
+      setTourEnabled(false);
+      return;
+    }
+
+    setTourEnabled(true);
+
+    const handleKeydown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        startTour();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeydown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    };
+  }, [isMerchant, startTour]);
+
+  const renderTourStartButton = useMemo(() => {
+    if (!isMerchant) {
+      return null;
+    }
+
+    return (
+      <Chip
+        label="Replay guided tour"
+        color="primary"
+        size="small"
+        sx={{ ml: 2, cursor: 'pointer' }}
+        onClick={() => startTour()}
+      />
+    );
+  }, [isMerchant, startTour]);
 
   const getRoleDashboard = () => {
     switch (user?.user_role) {
@@ -185,6 +235,7 @@ export const Dashboard: React.FC = () => {
                 value={stats?.avg_on_time_rate ? `${Number(stats.avg_on_time_rate).toFixed(1)}%` : '0%'}
                 icon={<Schedule />}
                 color="success.main"
+                id={TOUR_ANCHORS.kpis}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
@@ -209,6 +260,7 @@ export const Dashboard: React.FC = () => {
               <OrderTrendsChart 
                 entityType="merchant"
                 subscriptionTier={user?.subscription_tier || 'tier1'}
+                id={TOUR_ANCHORS.orders}
               />
             </Grid>
 
@@ -240,12 +292,16 @@ export const Dashboard: React.FC = () => {
 
             {/* Tracking Widget */}
             <Grid item xs={12} md={6}>
-              <TrackingWidget />
+              <Box id={TOUR_ANCHORS.tracking}>
+                <TrackingWidget />
+              </Box>
             </Grid>
 
             {/* Quick Actions */}
             <Grid item xs={12} md={6}>
-              <QuickActionsPanel />
+              <Box id={TOUR_ANCHORS.quickActions}>
+                <QuickActionsPanel />
+              </Box>
             </Grid>
           </Grid>
         );
@@ -367,9 +423,12 @@ export const Dashboard: React.FC = () => {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>
-        {getWelcomeMessage()}
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+        <Typography variant="h4" gutterBottom id={TOUR_ANCHORS.welcome}>
+          {getWelcomeMessage()}
+        </Typography>
+        {renderTourStartButton}
+      </Box>
       <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
         Here's what's happening with your logistics performance today.
       </Typography>

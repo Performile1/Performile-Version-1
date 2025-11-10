@@ -318,12 +318,20 @@ SELECT
     courier_id,
     'fuel',
     'Fuel Surcharge',
-    15.00,
-    'fixed',
+    12.00,
+    'percentage',
     'SEK',
     'all',
-    'Fixed fuel surcharge applied to all shipments'
-FROM temp_courier_ids WHERE courier_name = 'PostNord';
+    'Fuel surcharge calculated as 12% of subtotal'
+FROM temp_courier_ids t
+WHERE courier_name = 'PostNord'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM courier_surcharge_rules csr
+    WHERE csr.courier_id = t.courier_id
+      AND csr.surcharge_type = 'fuel'
+      AND csr.surcharge_name = 'Fuel Surcharge'
+  );
 
 INSERT INTO courier_surcharge_rules (courier_id, surcharge_type, surcharge_name, amount, amount_type, currency, applies_to, min_weight, description)
 SELECT 
@@ -336,7 +344,15 @@ SELECT
     'all',
     20.00,
     'Fee for packages over 20kg'
-FROM temp_courier_ids WHERE courier_name = 'PostNord';
+FROM temp_courier_ids t
+WHERE courier_name = 'PostNord'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM courier_surcharge_rules csr
+    WHERE csr.courier_id = t.courier_id
+      AND csr.surcharge_type = 'oversized'
+      AND csr.surcharge_name = 'Oversized Package Fee'
+  );
 
 INSERT INTO courier_surcharge_rules (courier_id, surcharge_type, surcharge_name, amount, amount_type, currency, applies_to, postal_code_pattern, description)
 SELECT 
@@ -349,7 +365,15 @@ SELECT
     'all',
     '9%',
     'Surcharge for deliveries to Northern Norway'
-FROM temp_courier_ids WHERE courier_name = 'PostNord';
+FROM temp_courier_ids t
+WHERE courier_name = 'PostNord'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM courier_surcharge_rules csr
+    WHERE csr.courier_id = t.courier_id
+      AND csr.surcharge_type = 'remote_area'
+      AND csr.surcharge_name = 'Remote Area Surcharge'
+  );
 
 -- Bring Surcharges
 INSERT INTO courier_surcharge_rules (courier_id, surcharge_type, surcharge_name, amount, amount_type, applies_to, description)
@@ -357,11 +381,19 @@ SELECT
     courier_id,
     'fuel',
     'Fuel Surcharge',
-    18.00,
-    'fixed',
+    10.00,
+    'percentage',
     'all',
-    'Fixed fuel surcharge applied to all shipments'
-FROM temp_courier_ids WHERE courier_name = 'Bring';
+    'Fuel surcharge calculated as 10% of subtotal'
+FROM temp_courier_ids t
+WHERE courier_name = 'Bring'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM courier_surcharge_rules csr
+    WHERE csr.courier_id = t.courier_id
+      AND csr.surcharge_type = 'fuel'
+      AND csr.surcharge_name = 'Fuel Surcharge'
+  );
 
 INSERT INTO courier_surcharge_rules (courier_id, surcharge_type, surcharge_name, amount, amount_type, applies_to, min_weight, description)
 SELECT 
@@ -373,7 +405,15 @@ SELECT
     'all',
     25.00,
     'Handling fee for packages over 25kg'
-FROM temp_courier_ids WHERE courier_name = 'Bring';
+FROM temp_courier_ids t
+WHERE courier_name = 'Bring'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM courier_surcharge_rules csr
+    WHERE csr.courier_id = t.courier_id
+      AND csr.surcharge_type = 'handling'
+      AND csr.surcharge_name = 'Heavy Package Handling'
+  );
 
 -- DHL Surcharges
 INSERT INTO courier_surcharge_rules (courier_id, surcharge_type, surcharge_name, amount, amount_type, applies_to, description)
@@ -385,7 +425,15 @@ SELECT
     'percentage',
     'all',
     '12% fuel surcharge on base price'
-FROM temp_courier_ids WHERE courier_name = 'DHL';
+FROM temp_courier_ids t
+WHERE courier_name = 'DHL'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM courier_surcharge_rules csr
+    WHERE csr.courier_id = t.courier_id
+      AND csr.surcharge_type = 'fuel'
+      AND csr.surcharge_name = 'Fuel Surcharge'
+  );
 
 INSERT INTO courier_surcharge_rules (courier_id, surcharge_type, surcharge_name, amount, amount_type, applies_to, description)
 SELECT 
@@ -396,7 +444,15 @@ SELECT
     'fixed',
     'express',
     'Additional fee for express service'
-FROM temp_courier_ids WHERE courier_name = 'DHL';
+FROM temp_courier_ids t
+WHERE courier_name = 'DHL'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM courier_surcharge_rules csr
+    WHERE csr.courier_id = t.courier_id
+      AND csr.surcharge_type = 'express_fee'
+      AND csr.surcharge_name = 'Express Service Fee'
+  );
 
 -- ============================================================================
 -- TABLE 6: courier_volumetric_rules

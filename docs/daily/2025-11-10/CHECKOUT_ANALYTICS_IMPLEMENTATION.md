@@ -102,6 +102,7 @@ SELECT update_courier_ranking_scores('0150', 'courier-uuid');
 - ✅ Records order context (value, items, weight)
 - ✅ Stores delivery location (postal code, city, country)
 - ✅ CORS enabled for cross-origin requests
+- ✅ **Triggers on-demand ranking update** via `update_courier_ranking_scores` for all displayed couriers (uses postal code when provided)
 
 ---
 
@@ -152,6 +153,7 @@ SELECT update_courier_ranking_scores('0150', 'courier-uuid');
 - ✅ Updates `was_selected = false` for others (handles re-selection)
 - ✅ Returns selection position and total couriers
 - ✅ Idempotent (can call multiple times safely)
+- ✅ **Recalculates rankings in real time** for every courier in the session after a selection event
 
 ---
 

@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
+import { updateRankingScoresForCouriers } from '../lib/ranking-updates';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -134,6 +135,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         console.error('Error updating other couriers:', updateOthersError);
         // Don't fail the request, selection was logged successfully
       }
+    }
+
+    // Trigger ranking recalculation for selected courier and participants
+    try {
+      await updateRankingScoresForCouriers(supabase, {
+        courierIds: existingRecords.map(record => record.courier_id),
+        postalCode: null,
+        context: 'checkout:selection'
+      });
+    } catch (rankingError) {
+      console.error('Error triggering ranking update after selection logging:', rankingError);
     }
 
     // Get updated analytics for response

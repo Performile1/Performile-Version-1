@@ -18,6 +18,7 @@ const CORS_WHITELIST = [
 // Rate limiting configuration
 const RATE_LIMITS = {
   default: { requests: 100, windowMs: 15 * 60 * 1000 }, // 100 requests per 15 minutes
+  pricing: { requests: 60, windowMs: 60 * 1000 }, // 60 pricing requests per minute
   auth: { requests: 5, windowMs: 15 * 60 * 1000 }, // 5 auth attempts per 15 minutes
   upload: { requests: 10, windowMs: 60 * 1000 }, // 10 uploads per minute
   payment: { requests: 3, windowMs: 60 * 1000 }, // 3 payments per minute

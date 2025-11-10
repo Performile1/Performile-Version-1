@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
+import { rateLimitMiddleware } from '../middleware/security';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -45,6 +46,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  if (!rateLimitMiddleware(req, res, 'pricing')) {
+    return;
+  }
+
   try {
     const {
       merchant_id,
@@ -60,16 +65,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       sort_by = 'price'
     } = req.body;
 
-    // Validate required fields
-    if (!merchant_id || !service_type || !actual_weight) {
+    const parseOptionalNumber = (value: unknown): number | null => {
+      if (value === null || value === undefined || value === '') return null;
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : null;
+    };
+
+    const actualWeightValue = Number(actual_weight);
+    const lengthValue = parseOptionalNumber(length_cm);
+    const widthValue = parseOptionalNumber(width_cm);
+    const heightValue = parseOptionalNumber(height_cm);
+    const distanceValue = parseOptionalNumber(distance) ?? 0;
+    const toPostalValue = typeof to_postal === 'string' && to_postal.length > 0 ? to_postal : null;
+
+    if (!merchant_id || !service_type || Number.isNaN(actualWeightValue)) {
       return res.status(400).json({
-        error: 'Missing required fields',
+        error: 'Missing or invalid required fields',
         required: ['merchant_id', 'service_type', 'actual_weight']
       });
     }
 
+    if (actualWeightValue <= 0) {
+      return res.status(400).json({
+        error: 'Actual weight must be greater than zero'
+      });
+    }
+
     // Get courier IDs to compare
-    let courierIdsToCompare = courier_ids;
+    let courierIdsToCompare: string[] | undefined = Array.isArray(courier_ids)
+      ? courier_ids.filter((id: unknown): id is string => typeof id === 'string' && id.length > 0)
+      : undefined;
 
     // If no courier IDs provided, get all active merchant couriers
     if (!courierIdsToCompare || courierIdsToCompare.length === 0) {
@@ -113,7 +138,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Calculate prices for each courier
     const priceComparisons = await Promise.all(
-      courierIdsToCompare.map(async (courierId) => {
+      courierIdsToCompare.map(async (courierId: string) => {
         try {
           const courier = couriers?.find(c => c.courier_id === courierId);
           
@@ -126,13 +151,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             .rpc('calculate_courier_base_price', {
               p_courier_id: courierId,
               p_service_type: service_type,
-              p_actual_weight: actual_weight,
-              p_length_cm: length_cm || null,
-              p_width_cm: width_cm || null,
-              p_height_cm: height_cm || null,
-              p_distance: distance || 0,
-              p_from_postal: from_postal || null,
-              p_to_postal: to_postal || null
+              p_actual_weight: actualWeightValue,
+              p_length_cm: lengthValue,
+              p_width_cm: widthValue,
+              p_height_cm: heightValue,
+              p_distance: distanceValue,
+              p_from_postal: typeof from_postal === 'string' && from_postal.length > 0 ? from_postal : null,
+              p_to_postal: toPostalValue
             });
 
           if (basePriceError || !basePrice || basePrice.length === 0) {
@@ -166,7 +191,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             .from('courier_ranking_scores')
             .select('final_ranking_score')
             .eq('courier_id', courierId)
-            .eq('postal_area', to_postal?.substring(0, 2) || '')
+            .eq('postal_area', toPostalValue ? toPostalValue.substring(0, 2) : '')
             .single();
 
           // Get TrustScore
@@ -189,7 +214,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             chargeable_weight: parseFloat(base.chargeable_weight || 0),
             trust_score: trustScoreData?.trust_score || null,
             ranking_score: rankingData?.final_ranking_score || null,
-            surcharges: base.surcharges || [],
+            surcharges: Array.isArray(base.surcharges) ? base.surcharges : [],
             total_surcharges: parseFloat(base.total_surcharges || 0),
             calculation_breakdown: base.calculation_breakdown
           };
@@ -252,11 +277,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const response = {
       shipment_details: {
         service_type,
-        actual_weight,
-        distance: distance || 0,
-        from_postal: from_postal || null,
-        to_postal: to_postal || null,
-        dimensions_provided: !!(length_cm && width_cm && height_cm)
+        actual_weight: actualWeightValue,
+        distance: distanceValue,
+        from_postal: typeof from_postal === 'string' && from_postal.length > 0 ? from_postal : null,
+        to_postal: toPostalValue,
+        dimensions_provided: lengthValue !== null && widthValue !== null && heightValue !== null
       },
       comparison: {
         total_couriers: sortedComparisons.length,

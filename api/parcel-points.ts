@@ -94,7 +94,9 @@ async function handleSearch(req: VercelRequest, res: VercelResponse) {
       pps.hours_type,
       pps.total_compartments,
       pps.available_compartments,
-      pps.updated_at
+      pps.updated_at,
+      pps.supports_qr,
+      pps.supports_printed_label
     FROM parcel_points_summary pps
     WHERE pps.is_active = true
   `;
@@ -158,7 +160,9 @@ async function handleNearby(req: VercelRequest, res: VercelResponse) {
     longitude,
     radius_km = '5.0',
     courier_id,
-    point_type
+    point_type,
+    requires_qr,
+    requires_printed_label
   } = req.query;
 
   if (!latitude || !longitude) {
@@ -187,14 +191,31 @@ async function handleNearby(req: VercelRequest, res: VercelResponse) {
 
   const result = await pool.query(query, params);
 
+  const qrRequired = typeof requires_qr === 'string' ? requires_qr.toLowerCase() === 'true' : false;
+  const labelRequired = typeof requires_printed_label === 'string'
+    ? requires_printed_label.toLowerCase() === 'true'
+    : false;
+
+  const filtered = result.rows.filter((row) => {
+    if (qrRequired && !row.supports_qr) {
+      return false;
+    }
+    if (labelRequired && !row.supports_printed_label) {
+      return false;
+    }
+    return true;
+  });
+
   return res.status(200).json({
     success: true,
-    data: result.rows,
-    count: result.rows.length,
+    data: filtered,
+    count: filtered.length,
     search_params: {
       latitude: parseFloat(latitude as string),
       longitude: parseFloat(longitude as string),
-      radius_km: parseFloat(radius_km as string)
+      radius_km: parseFloat(radius_km as string),
+      requires_qr: qrRequired,
+      requires_printed_label: labelRequired
     }
   });
 }
@@ -240,20 +261,21 @@ async function handleCoverage(req: VercelRequest, res: VercelResponse) {
   // Get nearby parcel points for this postal code
   const parcelPointsQuery = `
     SELECT 
-      pp.parcel_point_id,
-      pp.point_name,
-      pp.point_type,
-      pp.street_address,
-      pp.city,
-      c.courier_name,
-      pp.latitude,
-      pp.longitude
-    FROM parcel_points pp
-    JOIN couriers c ON pp.courier_id = c.courier_id
-    WHERE pp.postal_code = $1
-      AND pp.is_active = true
-      ${courier_id ? 'AND pp.courier_id = $2' : ''}
-    ORDER BY pp.point_type, pp.point_name
+      pps.parcel_point_id,
+      pps.point_name,
+      pps.point_type,
+      pps.street_address,
+      pps.city,
+      pps.courier_name,
+      pps.latitude,
+      pps.longitude,
+      pps.supports_qr,
+      pps.supports_printed_label
+    FROM parcel_points_summary pps
+    WHERE pps.postal_code = $1
+      AND pps.is_active = true
+      ${courier_id ? 'AND pps.courier_id = $2' : ''}
+    ORDER BY pps.point_type, pps.point_name
     LIMIT 10
   `;
 

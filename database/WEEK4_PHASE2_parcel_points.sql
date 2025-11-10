@@ -315,7 +315,28 @@ SELECT
     pp.is_temporarily_closed,
     
     -- Aggregated facilities
-    ARRAY_AGG(DISTINCT ppf.facility_type) FILTER (WHERE ppf.facility_type IS NOT NULL) as facilities,
+    COALESCE(
+        (ARRAY_AGG(DISTINCT ppf.facility_type) FILTER (WHERE ppf.facility_type IS NOT NULL))::text[],
+        ARRAY[]::text[]
+    ) as facilities,
+
+    -- Capability flags derived from facilities/point type
+    (
+        pp.point_type = 'parcel_locker'
+        OR ARRAY['qr_dropoff', 'qr_pickup', 'qr_code', 'digital_token']::text[]
+            && COALESCE(
+                (ARRAY_AGG(DISTINCT ppf.facility_type) FILTER (WHERE ppf.facility_type IS NOT NULL))::text[],
+                ARRAY[]::text[]
+            )
+    ) AS supports_qr,
+    (
+        pp.point_type IN ('parcel_shop', 'service_point', 'pickup_point')
+        OR ARRAY['label_printing', 'printing_service', 'staff_assistance', 'counter_service']::text[]
+            && COALESCE(
+                (ARRAY_AGG(DISTINCT ppf.facility_type) FILTER (WHERE ppf.facility_type IS NOT NULL))::text[],
+                ARRAY[]::text[]
+            )
+    ) AS supports_printed_label,
     
     -- Opening hours (simplified)
     CASE 
@@ -388,7 +409,9 @@ RETURNS TABLE (
     latitude DECIMAL,
     longitude DECIMAL,
     distance_km DECIMAL,
-    facilities TEXT[]
+    facilities TEXT[],
+    supports_qr BOOLEAN,
+    supports_printed_label BOOLEAN
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -409,7 +432,9 @@ BEGIN
             ) / 1000.0, 
             2
         )::DECIMAL as distance_km,
-        pps.facilities
+        pps.facilities,
+        pps.supports_qr,
+        pps.supports_printed_label
     FROM parcel_points_summary pps
     WHERE pps.is_active = true
       AND (p_courier_id IS NULL OR pps.courier_id = p_courier_id)

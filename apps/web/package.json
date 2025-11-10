@@ -41,6 +41,7 @@
     "react-router-dom": "^6.20.0",
     "recharts": "^2.15.4",
     "resend": "^2.1.0",
+    "shepherd.js": "^9.1.1",
     "stripe": "^14.9.0",
     "typescript": "5.9.2",
     "vite": "^7.1.7",
