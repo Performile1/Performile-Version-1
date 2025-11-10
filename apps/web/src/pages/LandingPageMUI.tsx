@@ -228,14 +228,13 @@ export default function LandingPageMUI() {
                 <Card
                   sx={{
                     height: '100%',
-                    bgcolor: 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(255,255,255,0.15)',
-                    backdropFilter: 'blur(6px)',
+                    bgcolor: 'white',
+                    border: 'none',
                     cursor: 'pointer',
                     transition: 'transform 0.25s ease, box-shadow 0.25s ease',
                     '&:hover': {
                       transform: 'translateY(-6px)',
-                      boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
+                      boxShadow: '0 16px 32px rgba(102, 126, 234, 0.25)',
                     },
                   }}
                   onClick={() => navigate(segment.navigateTo)}
@@ -243,22 +242,22 @@ export default function LandingPageMUI() {
                   <CardContent>
                     <Stack spacing={2}>
                       <Box>{segment.icon}</Box>
-                      <Typography variant="h6" fontWeight="bold" color="white">
+                      <Typography variant="h6" fontWeight="bold" color="text.primary">
                         {segment.title}
                       </Typography>
-                      <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                      <Typography variant="body2" color="text.secondary">
                         {segment.description}
                       </Typography>
                       <Button
                         variant="outlined"
                         size="small"
                         sx={{
-                          borderColor: 'rgba(255,255,255,0.6)',
-                          color: 'white',
+                          borderColor: 'rgba(102, 126, 234, 0.3)',
+                          color: 'primary.main',
                           alignSelf: 'flex-start',
                           '&:hover': {
-                            borderColor: 'white',
-                            bgcolor: 'rgba(255,255,255,0.12)',
+                            borderColor: 'primary.main',
+                            bgcolor: 'rgba(102, 126, 234, 0.08)',
                           },
                         }}
                       >
@@ -327,7 +326,7 @@ export default function LandingPageMUI() {
           </Box>
           <CardMedia
             component="img"
-            image="/assets/merchant-tour-preview.gif"
+            image="/screenshots/analytics-dashboard.png"
             alt="Performile Guided Tour Preview"
             sx={{
               width: { xs: '100%', md: 360 },
@@ -336,7 +335,7 @@ export default function LandingPageMUI() {
               border: '1px solid rgba(102,126,234,0.2)',
             }}
             onError={(event) => {
-              (event.target as HTMLImageElement).src = '/images/dashboard-preview.png';
+              (event.target as HTMLImageElement).src = '/logo.png';
             }}
           />
         </Card>
