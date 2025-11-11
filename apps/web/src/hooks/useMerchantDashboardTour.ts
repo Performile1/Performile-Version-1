@@ -9,20 +9,22 @@ type ShepherdTour = any;
 export function useMerchantDashboardTour(enabled: boolean) {
   const tourRef = useRef<ShepherdTour | null>(null);
 
+  const safelyDestroyTour = (tour: ShepherdTour | null) => {
+    if (tour && typeof tour.destroy === 'function') {
+      tour.destroy();
+    }
+  };
+
   useEffect(() => {
     if (!enabled) {
-      if (tourRef.current) {
-        tourRef.current.destroy();
-        tourRef.current = null;
-      }
+      safelyDestroyTour(tourRef.current);
+      tourRef.current = null;
       return;
     }
 
     // Destroy existing tour before creating a new instance (strict mode safety)
-    if (tourRef.current) {
-      tourRef.current.destroy();
-      tourRef.current = null;
-    }
+    safelyDestroyTour(tourRef.current);
+    tourRef.current = null;
 
     const tour = new Shepherd.Tour({
       useModalOverlay: true,
@@ -174,7 +176,7 @@ export function useMerchantDashboardTour(enabled: boolean) {
       if (autoStartTimer) {
         window.clearTimeout(autoStartTimer);
       }
-      tour.destroy();
+      safelyDestroyTour(tour);
       tourRef.current = null;
     };
   }, [enabled]);
@@ -184,11 +186,13 @@ export function useMerchantDashboardTour(enabled: boolean) {
       return;
     }
 
-    if (tourRef.current) {
+    if (tourRef.current && typeof tourRef.current.start === 'function') {
       tourRef.current.start();
       if (typeof window !== 'undefined') {
         window.localStorage.setItem(TOUR_STORAGE_KEY, 'true');
       }
+    } else {
+      console.warn('[MerchantTour] Attempted to start tour before initialization.');
     }
   };
 

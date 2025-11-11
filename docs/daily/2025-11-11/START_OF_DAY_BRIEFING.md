@@ -1,3 +1,4 @@
+
 # 🌅 START OF DAY BRIEFING — TUESDAY, NOVEMBER 11, 2025
 
 **Date:** Tuesday, November 11, 2025  
@@ -24,6 +25,9 @@
 3. **Analytics Alignment & Documentation**
    - Sync dashboard visuals with landing hero analytics.
    - Capture logging checklist + update master notes.
+4. **Resolve TypeScript Build Failures (carryover)**
+   - Fix relation typing in notifications + tracking search, normalise webhook headers.
+   - Reference `docs/daily/2025-11-11/TYPESCRIPT_ERRORS_TO_FIX.md` for full plan.
 
 Success Criteria:
 - [ ] Checkout drop-off selector filters correctly for QR vs. printed flows.
@@ -31,6 +35,7 @@ Success Criteria:
 - [ ] Ranking function spec + initial implementation committed.
 - [ ] Analytics hero parity documented with screenshots.
 - [ ] Daily documentation (plan, progress, decisions) updated before EOD.
+- [ ] TypeScript build succeeds locally after fixes (no TS2339/TS2345 errors).
 
 ---
 

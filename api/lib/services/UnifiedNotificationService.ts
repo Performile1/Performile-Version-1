@@ -194,8 +194,16 @@ export class UnifiedNotificationService {
 
       if (!order) return;
 
-      const merchantEmail = order.stores.users.email;
-      const merchantName = order.stores.users.full_name;
+      const resolveRelation = <T>(relation: T | T[] | null | undefined): T | null => {
+        if (!relation) return null;
+        return Array.isArray(relation) ? relation[0] ?? null : relation;
+      };
+
+      const storeRecord = resolveRelation(order?.stores);
+      const storeUser = resolveRelation(storeRecord?.users);
+
+      const merchantEmail = storeUser?.email;
+      const merchantName = storeUser?.full_name;
 
       // TODO: Send email via email service (SendGrid, AWS SES, etc.)
       console.log('📧 Merchant email:', {

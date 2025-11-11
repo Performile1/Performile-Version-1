@@ -227,20 +227,22 @@ export class WebhookRouter {
       });
 
       // Calculate OTD status
+      const actualDelivery = event.actual_delivery ?? null;
+
       const otdStatus = this.calculateOTDStatus(
         order.created_at,
         order.estimated_delivery,
-        event.actual_delivery,
+        actualDelivery,
         newStatus
       );
 
       // If delivered, calculate performance metrics
-      if (newStatus === 'delivered' && event.actual_delivery) {
+      if (newStatus === 'delivered' && actualDelivery) {
         await this.updatePerformanceMetrics(
           order.courier_id,
           order.order_id,
           order.estimated_delivery,
-          event.actual_delivery,
+          actualDelivery,
           otdStatus
         );
       }
@@ -279,9 +281,14 @@ export class WebhookRouter {
           .single();
 
         if (orderDetails && orderDetails.stores && orderDetails.couriers) {
-          const store: any = Array.isArray(orderDetails.stores) ? orderDetails.stores[0] : orderDetails.stores;
-          const courier: any = Array.isArray(orderDetails.couriers) ? orderDetails.couriers[0] : orderDetails.couriers;
-          const user: any = store && Array.isArray(store.users) ? store.users[0] : store?.users;
+          const resolveRelation = <T>(relation: T | T[] | null | undefined): T | null => {
+            if (!relation) return null;
+            return Array.isArray(relation) ? relation[0] ?? null : relation;
+          };
+
+          const store = resolveRelation(orderDetails.stores);
+          const courier = resolveRelation(orderDetails.couriers);
+          const user = resolveRelation(store?.users);
 
           await UnifiedNotificationService.sendNotifications({
             order_id: order.order_id,

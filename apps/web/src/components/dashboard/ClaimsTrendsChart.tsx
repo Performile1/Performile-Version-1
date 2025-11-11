@@ -6,7 +6,7 @@
  * Created: October 18, 2025, 6:54 PM
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   Card,
   CardContent,
@@ -44,6 +44,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { apiClient } from '@/services/apiClient';
 import { useAuthStore } from '@/store/authStore';
+import { useTheme } from '@mui/material/styles';
 
 interface ClaimsTrendsChartProps {
   entityType: 'courier' | 'merchant';
@@ -70,6 +71,7 @@ export const ClaimsTrendsChart: React.FC<ClaimsTrendsChartProps> = ({
   const { user } = useAuthStore();
   const [period, setPeriod] = useState<string>('30d');
   const [chartType, setChartType] = useState<'bar' | 'line'>('bar');
+  const theme = useTheme();
 
   // Determine available periods based on subscription tier
   const getAvailablePeriods = () => {
@@ -182,6 +184,53 @@ export const ClaimsTrendsChart: React.FC<ClaimsTrendsChartProps> = ({
     Total: item.total_claims,
   })) || [];
 
+  const tooltipCursor = useMemo(
+    () => ({
+      fill: theme.palette.primary.main,
+      fillOpacity: 0.08,
+    }),
+    [theme.palette.primary.main],
+  );
+
+  const renderTooltip = useCallback(({ active, payload, label }: any) => {
+    if (!active || !payload || payload.length === 0) {
+      return null;
+    }
+
+    const visiblePayload = payload.filter((entry: any) => typeof entry?.value === 'number' && entry.value > 0);
+    if (visiblePayload.length === 0) {
+      return null;
+    }
+
+    return (
+      <Box
+        sx={{
+          bgcolor: theme.palette.background.paper,
+          borderRadius: 1,
+          boxShadow: theme.shadows[4],
+          border: `1px solid ${theme.palette.divider}`,
+          px: 1.5,
+          py: 1,
+          minWidth: 140,
+        }}
+      >
+        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+          {label}
+        </Typography>
+        {visiblePayload.map((entry: any) => (
+          <Box key={entry.dataKey} sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, mt: 0.5 }}>
+            <Typography variant="body2" sx={{ color: entry.color }}>
+              {entry.name}
+            </Typography>
+            <Typography variant="body2" color="text.primary">
+              {entry.value}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    );
+  }, [theme.palette.background.paper, theme.palette.divider, theme.shadows]);
+
   return (
     <Card>
       <CardContent>
@@ -286,7 +335,11 @@ export const ClaimsTrendsChart: React.FC<ClaimsTrendsChartProps> = ({
                   height={60}
                 />
                 <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
+                <Tooltip
+                  content={renderTooltip}
+                  cursor={tooltipCursor}
+                  wrapperStyle={{ outline: 'none' }}
+                />
                 <Legend />
                 <Bar dataKey="Open" fill="#ffc658" stackId="a" />
                 <Bar dataKey="In Review" fill="#8884d8" stackId="a" />
@@ -309,7 +362,11 @@ export const ClaimsTrendsChart: React.FC<ClaimsTrendsChartProps> = ({
                   height={60}
                 />
                 <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip />
+                <Tooltip
+                  content={renderTooltip}
+                  cursor={tooltipCursor}
+                  wrapperStyle={{ outline: 'none' }}
+                />
                 <Legend />
                 <Line type="monotone" dataKey="Total" stroke="#8884d8" strokeWidth={2} />
                 <Line type="monotone" dataKey="Open" stroke="#ffc658" strokeWidth={2} />

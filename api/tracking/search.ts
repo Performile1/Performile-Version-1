@@ -6,6 +6,45 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+type MaybeArray<T> = T | T[] | null | undefined;
+
+interface StoreRecord {
+  store_id: string;
+  store_name: string;
+  owner_user_id: string;
+}
+
+interface CourierRecord {
+  courier_id: string;
+  courier_name: string;
+  courier_code: string;
+  logo_url: string | null;
+}
+
+interface OrderRecord {
+  order_id: string;
+  tracking_number: string;
+  order_status: string;
+  customer_name: string;
+  customer_email: string;
+  delivery_address: string;
+  postal_code: string;
+  city: string;
+  country: string;
+  estimated_delivery: string | null;
+  created_at: string;
+  courier_metadata: Record<string, any> | null;
+  store_id: string;
+  courier_id: string;
+  stores: MaybeArray<StoreRecord>;
+  couriers: MaybeArray<CourierRecord>;
+}
+
+const resolveRelation = <T>(relation: MaybeArray<T>): T | null => {
+  if (!relation) return null;
+  return Array.isArray(relation) ? relation[0] ?? null : relation;
+};
+
 /**
  * Unified Tracking Search API
  * Search tracking across ALL couriers, merchants, stores
@@ -168,11 +207,18 @@ export default async function handler(req: Request, res: Response) {
       }
     });
 
+    const ordersData = (orders ?? []) as OrderRecord[];
+
     // Format results
-    const results = orders?.map(order => {
+    const results = ordersData.map(order => {
       const latestEvent = latestEventMap.get(order.order_id);
       const courierMetadata = order.courier_metadata || {};
-      const courierSpecificData = courierMetadata[order.couriers.courier_code.toLowerCase()] || {};
+
+      const store = resolveRelation(order.stores);
+      const courier = resolveRelation(order.couriers);
+
+      const courierCode = courier?.courier_code?.toLowerCase();
+      const courierSpecificData = courierCode ? courierMetadata[courierCode] || {} : {};
 
       return {
         order_id: order.order_id,
@@ -188,17 +234,17 @@ export default async function handler(req: Request, res: Response) {
         },
         estimated_delivery: order.estimated_delivery,
         created_at: order.created_at,
-        store: {
-          store_id: order.stores.store_id,
-          store_name: order.stores.store_name
-        },
-        courier: {
-          courier_id: order.couriers.courier_id,
-          courier_name: order.couriers.courier_name,
-          courier_code: order.couriers.courier_code,
-          logo_url: order.couriers.logo_url,
+        store: store ? {
+          store_id: store.store_id,
+          store_name: store.store_name
+        } : null,
+        courier: courier ? {
+          courier_id: courier.courier_id,
+          courier_name: courier.courier_name,
+          courier_code: courier.courier_code,
+          logo_url: courier.logo_url,
           tracking_url: courierSpecificData.tracking_url || null
-        },
+        } : null,
         last_event: latestEvent ? {
           timestamp: latestEvent.event_timestamp,
           description: latestEvent.event_description,

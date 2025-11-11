@@ -623,28 +623,28 @@ export default function LandingPageMUI() {
           <Grid container spacing={4} alignItems="center">
             <Grid item xs={12} md={6}>
               <Typography variant="overline" color="primary" fontWeight={700}>
-                Real-time courier insights
+                Ecommerce checkout analytics
               </Typography>
               <Typography variant="h3" fontWeight="bold" sx={{ mt: 1, mb: 2 }}>
-                Analytics that react the moment customers choose a courier
+                Understand every courier choice your shoppers make
               </Typography>
               <Typography color="text.secondary" sx={{ mb: 3 }}>
-                Powered by our checkout analytics implementation, Performile logs every courier impression and
-                selection to update rankings instantly. Merchants can see which delivery options convert, and
-                couriers understand how their performance impacts placement.
+                Performile captures impressions and selections directly inside the ecommerce checkout, updating courier
+                rankings in real time. Merchants see which delivery promises convert, while couriers measure how
+                performance impacts placement.
               </Typography>
               <Stack spacing={1.5}>
                 <Stack direction="row" spacing={1.5} alignItems="center">
                   <Assessment sx={{ color: 'primary.main' }} />
-                  <Typography variant="body1">Session-level display & selection logging</Typography>
+                  <Typography variant="body1">Session-level checkout telemetry for every delivery option</Typography>
                 </Stack>
                 <Stack direction="row" spacing={1.5} alignItems="center">
                   <TrendingUp sx={{ color: 'success.main' }} />
-                  <Typography variant="body1">Automatic ranking recalculations per postal code</Typography>
+                  <Typography variant="body1">Automatic ranking recalculations by postal code and segment</Typography>
                 </Stack>
                 <Stack direction="row" spacing={1.5} alignItems="center">
                   <Speed sx={{ color: 'secondary.main' }} />
-                  <Typography variant="body1"><strong>&lt; 300ms</strong> analytics write latency to keep dashboards live</Typography>
+                  <Typography variant="body1"><strong>&lt; 300ms</strong> write latency keeps checkout dashboards live</Typography>
                 </Stack>
               </Stack>
               <Button
@@ -656,51 +656,100 @@ export default function LandingPageMUI() {
               </Button>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Card sx={{ p: 4, height: '100%' }}>
-                <Typography variant="subtitle1" fontWeight={600} color="primary" gutterBottom>
-                  Snapshot · Last 24 hours
-                </Typography>
-                <Stack spacing={3}>
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Box>
-                      <Typography variant="h4" fontWeight="bold">+18%</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Checkout conversions when QR-ready drop-off shown first
-                      </Typography>
-                    </Box>
-                    <Chip label="Live" color="success" size="small" />
-                  </Stack>
-                  <Divider />
-                  <Stack spacing={2}>
-                    {[
-                      {
-                        courier: 'PostNord',
-                        impression: '73,421 displays',
-                        selection: '31,204 selections',
-                      },
-                      {
-                        courier: 'Bring',
-                        impression: '52,908 displays',
-                        selection: '22,110 selections',
-                      },
-                      {
-                        courier: 'Porterbuddy',
-                        impression: '18,564 displays',
-                        selection: '9,441 selections',
-                      },
-                    ].map((row) => (
-                      <Box key={row.courier}>
-                        <Typography variant="subtitle1" fontWeight={600}>
-                          {row.courier}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {row.impression} · {row.selection}
+              <Stack spacing={3}>
+                <Card sx={{ p: 4 }}>
+                  <Typography variant="subtitle1" fontWeight={600} color="primary" gutterBottom>
+                    Snapshot · Last 7 days
+                  </Typography>
+                  <Stack spacing={3}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                      <Box>
+                        <Typography variant="h4" fontWeight="bold">PostNord · 32%</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Top couriers chosen by shoppers this week
                         </Typography>
                       </Box>
-                    ))}
+                      <Chip label="Live" color="success" size="small" />
+                    </Stack>
+                    <Divider />
+                    <Stack spacing={2}>
+                      {[
+                        {
+                          courier: 'PostNord',
+                          share: '32% of selections',
+                          metric: 'On-time delivery 95%',
+                        },
+                        {
+                          courier: 'Bring',
+                          share: '27% of selections',
+                          metric: 'On-time delivery 92%',
+                        },
+                        {
+                          courier: 'Porterbuddy',
+                          share: '18% of selections',
+                          metric: 'First-attempt delivery 98%',
+                        },
+                      ].map((row) => (
+                        <Box key={row.courier}>
+                          <Typography variant="subtitle1" fontWeight={600}>
+                            {row.courier}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {row.share} · {row.metric}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Stack>
                   </Stack>
-                </Stack>
-              </Card>
+                </Card>
+
+                <Card sx={{ p: 4 }}>
+                  <Stack spacing={3}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                      <Box>
+                        <Typography variant="subtitle1" fontWeight={600} color="primary">
+                          Courier insight · Consumer feedback
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Performile gives receivers more choice while helping couriers understand shoppers better.
+                        </Typography>
+                      </Box>
+                      <Chip label="Live" color="info" size="small" />
+                    </Stack>
+                    <Divider />
+                    <Stack spacing={2}>
+                      {[
+                        {
+                          courier: 'PostNord',
+                          checkoutShare: '32% checkout share',
+                          rating: '4.7 consumer rating',
+                        },
+                        {
+                          courier: 'Bring',
+                          checkoutShare: '27% checkout share',
+                          rating: '4.5 consumer rating',
+                        },
+                        {
+                          courier: 'Porterbuddy',
+                          checkoutShare: '18% checkout share',
+                          rating: '4.8 consumer rating',
+                        },
+                      ].map((row) => (
+                        <Box key={row.courier}>
+                          <Typography variant="subtitle1" fontWeight={600}>{row.courier}</Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {row.checkoutShare} · {row.rating}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Stack>
+                    <Typography variant="caption" color="text.secondary">
+                      Metrics combine checkout impression share with verified post-delivery ratings to spotlight courier
+                      performance.
+                    </Typography>
+                  </Stack>
+                </Card>
+              </Stack>
             </Grid>
           </Grid>
         </Container>
