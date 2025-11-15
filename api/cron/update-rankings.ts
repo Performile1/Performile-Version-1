@@ -44,7 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log('📊 Updating ranking scores...');
     const { data: updateResult, error: updateError } = await supabase
       .rpc('update_courier_ranking_scores', {
-        p_postal_area: null,
+        p_postal_code: null,
         p_courier_id: null
       });
 

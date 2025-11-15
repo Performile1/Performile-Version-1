@@ -94,7 +94,7 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 
 CREATE OR REPLACE FUNCTION update_courier_ranking_scores(
-  p_postal_code VARCHAR DEFAULT NULL,
+  p_postal_area VARCHAR DEFAULT NULL,
   p_courier_id UUID DEFAULT NULL
 )
 RETURNS INTEGER AS $$
@@ -104,11 +104,11 @@ DECLARE
   v_selection_data RECORD;
   v_performance_score NUMERIC;
   v_conversion_score NUMERIC;
-  v_activity_score NUMERIC;
+  v_activity_level NUMERIC;
   v_recent_performance NUMERIC;
   v_position_performance NUMERIC;
   v_final_score NUMERIC;
-  v_effective_postal VARCHAR;
+  v_effective_area VARCHAR;
 BEGIN
   -- Loop through all active couriers (with optional filter)
   FOR v_courier IN 
@@ -117,15 +117,18 @@ BEGIN
     WHERE c.is_active = true
       AND (p_courier_id IS NULL OR c.courier_id = p_courier_id)  -- ADDED: Filter
   LOOP
-    -- Get selection rate data
+    -- Determine effective postal-area bucket (first 3 characters, uppercase)
+    v_effective_area := COALESCE(
+      NULLIF(SUBSTRING(UPPER(TRIM(p_postal_area)) FROM 1 FOR 3), ''),
+      'ALL'
+    );
+
+    -- Get selection rate data scoped to area (use area prefix for LIKE)
     SELECT * INTO v_selection_data
-    FROM calculate_courier_selection_rate(v_courier.courier_id, p_postal_code, 30);
-    
-    -- Determine effective postal code bucket
-    v_effective_postal := COALESCE(p_postal_code, 'ALL');
+    FROM calculate_courier_selection_rate(v_courier.courier_id, v_effective_area, 30);
     
     -- Calculate position performance (1.0 = expected performance)
-    v_position_performance := calculate_position_performance(v_courier.courier_id, p_postal_code, 30);
+    v_position_performance := calculate_position_performance(v_courier.courier_id, v_effective_area, 30);
     
     -- Calculate final ranking score
     SELECT 
@@ -175,7 +178,7 @@ BEGIN
       ELSE NULL
     END;
 
-    v_activity_score := CASE 
+    v_activity_level := CASE 
       WHEN v_selection_data.total_displays >= 50 THEN 1.0
       WHEN v_selection_data.total_displays >= 20 THEN 0.7
       WHEN v_selection_data.total_displays >= 10 THEN 0.5
@@ -195,64 +198,70 @@ BEGIN
     -- Insert or update ranking score using current schema
     INSERT INTO courier_ranking_scores (
       courier_id,
-      postal_code,
+      postal_area,
       trust_score,
       on_time_rate,
       avg_delivery_days,
       completion_rate,
-      performance_score,
+      total_displays,
+      total_selections,
       selection_rate,
+      avg_position_shown,
+      avg_position_selected,
       position_performance,
       conversion_trend,
-      conversion_score,
+      performance_trend,
       recent_performance,
       activity_level,
-      activity_score,
-      final_score,
-      rank_position,
+      final_ranking_score,
       last_calculated,
-      created_at,
-      updated_at
+      calculation_period_start,
+      calculation_period_end
     )
     SELECT 
       v_courier.courier_id,
-      v_effective_postal,
+      v_effective_area,
       ca.trust_score,
       ca.on_time_rate,
       ca.avg_delivery_days,
       ca.completion_rate,
-      v_performance_score,
-      v_selection_data.selection_rate,
-      v_position_performance,
-      NULL,
-      v_conversion_score,
-      v_recent_performance,
       COALESCE(v_selection_data.total_displays, 0),
-      v_activity_score,
+      COALESCE(v_selection_data.total_selections, 0),
+      COALESCE(v_selection_data.selection_rate, 0),
+      COALESCE(v_selection_data.avg_position_shown, 0),
+      COALESCE(v_selection_data.avg_position_selected, 0),
+      COALESCE(v_selection_data.selection_rate, 0),
+      v_position_performance,
+      0, -- TODO: conversion trend
+      0, -- TODO: performance trend
+      v_recent_performance,
+      v_activity_level,
       v_final_score,
-      NULL,
       NOW(),
-      NOW(),
+      NOW() - INTERVAL '30 days',
       NOW()
     FROM courier_analytics ca
     WHERE ca.courier_id = v_courier.courier_id
-    ON CONFLICT (courier_id, postal_code) 
+    ON CONFLICT (courier_id, postal_area) 
     DO UPDATE SET
       trust_score = EXCLUDED.trust_score,
       on_time_rate = EXCLUDED.on_time_rate,
       avg_delivery_days = EXCLUDED.avg_delivery_days,
       completion_rate = EXCLUDED.completion_rate,
+      total_displays = EXCLUDED.total_displays,
+      total_selections = EXCLUDED.total_selections,
       selection_rate = EXCLUDED.selection_rate,
+      avg_position_shown = EXCLUDED.avg_position_shown,
+      avg_position_selected = EXCLUDED.avg_position_selected,
       position_performance = EXCLUDED.position_performance,
       conversion_trend = EXCLUDED.conversion_trend,
+      performance_trend = EXCLUDED.performance_trend,
       recent_performance = EXCLUDED.recent_performance,
       activity_level = EXCLUDED.activity_level,
-      performance_score = EXCLUDED.performance_score,
-      conversion_score = EXCLUDED.conversion_score,
-      activity_score = EXCLUDED.activity_score,
-      final_score = EXCLUDED.final_score,
-      rank_position = EXCLUDED.rank_position,
+      final_ranking_score = EXCLUDED.final_ranking_score,
       last_calculated = NOW(),
+      calculation_period_start = EXCLUDED.calculation_period_start,
+      calculation_period_end = EXCLUDED.calculation_period_end,
       updated_at = NOW();
     
     v_updated_count := v_updated_count + 1;
@@ -262,16 +271,20 @@ BEGIN
   WITH ranked AS (
     SELECT 
       courier_id,
-      postal_code,
-      ROW_NUMBER() OVER (PARTITION BY postal_code ORDER BY final_score DESC NULLS LAST) AS computed_rank
+      postal_area,
+      ROW_NUMBER() OVER (PARTITION BY postal_area ORDER BY final_ranking_score DESC NULLS LAST) AS computed_rank
     FROM courier_ranking_scores
-    WHERE postal_code = COALESCE(p_postal_code, 'ALL')
+    WHERE (
+      p_postal_area IS NULL
+      OR postal_area = v_effective_area
+    )
   )
   UPDATE courier_ranking_scores crs
-  SET rank_position = ranked.computed_rank
+  SET rank_position = ranked.computed_rank,
+      updated_at = NOW()
   FROM ranked
   WHERE crs.courier_id = ranked.courier_id
-    AND crs.postal_code = ranked.postal_code;
+    AND crs.postal_area = ranked.postal_area;
   
   RETURN v_updated_count;
 END;
@@ -285,36 +298,39 @@ DECLARE
 BEGIN
   INSERT INTO courier_ranking_history (
     courier_id,
-    postal_code,
-    performance_score,
-    conversion_score,
-    activity_score,
-    final_score,
+    postal_area,
+    ranking_score,
     rank_position,
+    trust_score,
+    selection_rate,
+    total_displays,
+    total_selections,
     snapshot_date,
     created_at
   )
   SELECT
     courier_id,
-    postal_code,
-    performance_score,
-    conversion_score,
-    activity_score,
-    final_score,
+    postal_area,
+    final_ranking_score,
     ROW_NUMBER() OVER (
-      PARTITION BY postal_code
-      ORDER BY final_score DESC NULLS LAST
+      PARTITION BY postal_area
+      ORDER BY final_ranking_score DESC NULLS LAST
     ) AS rank_position,
+    trust_score,
+    selection_rate,
+    total_displays,
+    total_selections,
     CURRENT_DATE,
     NOW()
   FROM courier_ranking_scores
-  ON CONFLICT (courier_id, postal_code, snapshot_date)
+  ON CONFLICT (courier_id, postal_area, snapshot_date)
   DO UPDATE SET
-    performance_score = EXCLUDED.performance_score,
-    conversion_score = EXCLUDED.conversion_score,
-    activity_score = EXCLUDED.activity_score,
-    final_score = EXCLUDED.final_score,
+    ranking_score = EXCLUDED.ranking_score,
     rank_position = EXCLUDED.rank_position,
+    trust_score = EXCLUDED.trust_score,
+    selection_rate = EXCLUDED.selection_rate,
+    total_displays = EXCLUDED.total_displays,
+    total_selections = EXCLUDED.total_selections,
     created_at = NOW();
 
   GET DIAGNOSTICS v_saved_count = ROW_COUNT;

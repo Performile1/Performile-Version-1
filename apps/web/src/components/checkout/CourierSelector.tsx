@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Card,
@@ -20,6 +20,7 @@ import {
   Star,
 } from '@mui/icons-material';
 import { CourierLogo } from '@/components/courier/CourierLogo';
+import { isFeatureEnabled } from '@/lib/analytics';
 
 interface Courier {
   courier_id: string;
@@ -32,6 +33,10 @@ interface Courier {
   avg_delivery_time: string;
   on_time_percentage: number;
   badge: 'excellent' | 'very_good' | 'good' | 'average';
+  final_score?: number | null;
+  selection_rate?: number | null;
+  rank_position?: number | null;
+  eta_minutes?: number | null;
 }
 
 interface CourierSelectorProps {
@@ -47,6 +52,74 @@ const badgeConfig = {
   average: { label: 'Average', color: '#ff9800' },
 };
 
+const DYNAMIC_RANKING_FLAG_KEY = 'dynamic_courier_ranking';
+const DEFAULT_LIMIT = 5;
+
+const determineBadge = (trustScore: number): Courier['badge'] => {
+  if (trustScore >= 4.5) return 'excellent';
+  if (trustScore >= 4.0) return 'very_good';
+  if (trustScore >= 3.5) return 'good';
+  return 'average';
+};
+
+const formatDeliveryWindow = (avgDays?: number | null, etaMinutes?: number | null): string => {
+  if (etaMinutes && etaMinutes > 0) {
+    const approxHours = Math.max(1, Math.round(etaMinutes / 60));
+    const upperHours = approxHours + 1;
+    return `${approxHours}-${upperHours} hours`;
+  }
+
+  if (avgDays && avgDays > 0) {
+    const rounded = Math.max(1, Math.round(avgDays));
+    return `${rounded}-${rounded + 1} days`;
+  }
+
+  return 'N/A';
+};
+
+const mapDynamicCouriers = (items: any[]): Courier[] =>
+  items.map((courier) => {
+    const trustScore = Number(courier.trust_score ?? 0);
+    const totalReviews = Number(courier.total_reviews ?? 0);
+    const onTimeRate = Number(
+      courier.on_time_rate ?? courier.on_time_percentage ?? courier.on_time ?? 0
+    );
+
+    return {
+      courier_id: courier.courier_id,
+      courier_name: courier.courier_name ?? 'Unknown Courier',
+      courier_code: courier.courier_code ?? courier.courier_name ?? undefined,
+      company_name: courier.company_name ?? '',
+      logo_url: courier.logo_url ?? null,
+      trust_score: trustScore,
+      total_reviews: totalReviews,
+      avg_delivery_time: formatDeliveryWindow(courier.avg_delivery_days, courier.eta_minutes),
+      on_time_percentage: onTimeRate,
+      badge: determineBadge(trustScore),
+      final_score: courier.final_score ?? courier.final_ranking_score ?? null,
+      selection_rate: courier.selection_rate ?? null,
+      rank_position: courier.rank_position ?? null,
+      eta_minutes: courier.eta_minutes ?? null,
+    };
+  });
+
+const mapLegacyCouriers = (items: any[]): Courier[] =>
+  items.map((courier) => {
+    const trustScore = Number(courier.trust_score ?? 0);
+    return {
+      courier_id: courier.courier_id,
+      courier_name: courier.courier_name ?? 'Unknown Courier',
+      courier_code: courier.courier_code ?? courier.courier_name ?? undefined,
+      company_name: courier.company_name ?? '',
+      logo_url: courier.logo_url ?? null,
+      trust_score: trustScore,
+      total_reviews: Number(courier.total_reviews ?? 0),
+      avg_delivery_time: courier.avg_delivery_time ?? 'N/A',
+      on_time_percentage: Number(courier.on_time_percentage ?? 0),
+      badge: determineBadge(trustScore),
+    };
+  });
+
 export const CourierSelector: React.FC<CourierSelectorProps> = ({
   postalCode,
   onCourierSelect,
@@ -56,6 +129,19 @@ export const CourierSelector: React.FC<CourierSelectorProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLocalData, setIsLocalData] = useState(true);
+
+  const dynamicRankingEnabled = useMemo(() => {
+    if (import.meta.env.VITE_ENABLE_DYNAMIC_RANKING === 'true') {
+      return true;
+    }
+
+    try {
+      return isFeatureEnabled(DYNAMIC_RANKING_FLAG_KEY);
+    } catch (error) {
+      console.warn('[CourierSelector] Failed to resolve PostHog flag:', error);
+      return false;
+    }
+  }, []);
 
   useEffect(() => {
     if (postalCode) {
@@ -67,9 +153,54 @@ export const CourierSelector: React.FC<CourierSelectorProps> = ({
     setLoading(true);
     setError(null);
 
-    try {
+    const tryDynamicRanking = async (): Promise<boolean> => {
+      if (!dynamicRankingEnabled) {
+        return false;
+      }
+
+      const params = new URLSearchParams({
+        postal_code: postalCode,
+        limit: `${DEFAULT_LIMIT}`,
+      });
+
+      try {
+        const response = await fetch(`/api/couriers/rankings?${params.toString()}`);
+
+        if (!response.ok) {
+          throw new Error(`Dynamic rankings request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data?.success) {
+          return false;
+        }
+
+        const formatted = mapDynamicCouriers(data.couriers ?? []);
+
+        if (formatted.length === 0) {
+          return false;
+        }
+
+        setCouriers(formatted);
+        setIsLocalData(data.is_local_data !== false);
+
+        if (!selectedCourierId) {
+          onCourierSelect(formatted[0].courier_id);
+        }
+
+        return true;
+      } catch (error) {
+        console.warn('[CourierSelector] Dynamic ranking fetch failed:', error);
+        return false;
+      }
+    };
+
+    const tryLegacyRanking = async () => {
       const response = await fetch(
-        `/api/couriers/ratings-by-postal?postal_code=${postalCode}&limit=5`
+        `/api/couriers/ratings-by-postal?postal_code=${encodeURIComponent(
+          postalCode
+        )}&limit=${DEFAULT_LIMIT}`
       );
 
       if (!response.ok) {
@@ -77,17 +208,26 @@ export const CourierSelector: React.FC<CourierSelectorProps> = ({
       }
 
       const data = await response.json();
-      
-      if (data.success) {
-        setCouriers(data.couriers);
-        setIsLocalData(data.is_local_data);
-        
-        // Auto-select top courier if none selected
-        if (!selectedCourierId && data.couriers.length > 0) {
-          onCourierSelect(data.couriers[0].courier_id);
-        }
-      } else {
-        throw new Error(data.message || 'Failed to load couriers');
+
+      if (!data?.success) {
+        throw new Error(data?.message || 'Failed to load couriers');
+      }
+
+      const formatted = mapLegacyCouriers(data.couriers ?? []);
+
+      setCouriers(formatted);
+      setIsLocalData(data.is_local_data ?? true);
+
+      if (!selectedCourierId && formatted.length > 0) {
+        onCourierSelect(formatted[0].courier_id);
+      }
+    };
+
+    try {
+      const dynamicSucceeded = await tryDynamicRanking();
+
+      if (!dynamicSucceeded) {
+        await tryLegacyRanking();
       }
     } catch (err: any) {
       console.error('Error fetching couriers:', err);

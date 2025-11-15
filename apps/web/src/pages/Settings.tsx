@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 import {
   Box,
@@ -21,7 +21,8 @@ import {
   Grid,
   Avatar,
   Divider,
-  SelectChangeEvent
+  SelectChangeEvent,
+  Alert
 } from '@mui/material';
 import {
   Person as UserIcon,
@@ -32,11 +33,18 @@ import {
   Upload as UploadIcon,
   Visibility as EyeIcon,
   VisibilityOff as EyeOffIcon,
-  Email as EmailIcon
+  Email as EmailIcon,
+  LocalShipping as LocalShippingIcon
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 import { EmailTemplateEditor } from '@/components/settings/EmailTemplateEditor';
 import { ChangePasswordForm } from '@/components/settings/ChangePasswordForm';
+import { CheckoutPreview, CourierOption } from '@/components/checkout';
+import { useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
+
+const BASE_TAB_KEYS = ['profile', 'notifications', 'privacy', 'preferences'];
+const CHECKOUT_TAB_KEY = 'checkout-preview';
+const EMAIL_TEMPLATES_TAB_KEY = 'email-templates';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -92,6 +100,17 @@ interface UserSettings {
 
 const Settings: React.FC = () => {
   const { user } = useAuthStore();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isMerchantOrAdmin = user?.user_role === 'merchant' || user?.user_role === 'admin';
+  const tabKeys = useMemo(() => {
+    const keys = [...BASE_TAB_KEYS];
+    if (isMerchantOrAdmin) {
+      keys.push(CHECKOUT_TAB_KEY, EMAIL_TEMPLATES_TAB_KEY);
+    }
+    return keys;
+  }, [isMerchantOrAdmin]);
+
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [tabValue, setTabValue] = useState(0);
@@ -126,8 +145,24 @@ const Settings: React.FC = () => {
     }
   });
 
+  useEffect(() => {
+    const hash = location.hash ? location.hash.replace('#', '') : '';
+    const hashIndex = tabKeys.indexOf(hash);
+
+    if (hashIndex >= 0 && hashIndex !== tabValue) {
+      setTabValue(hashIndex);
+      return;
+    }
+
+    if (hashIndex === -1 && tabValue >= tabKeys.length) {
+      setTabValue(0);
+    }
+  }, [location.hash, tabKeys, tabValue]);
+
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
+    const key = tabKeys[newValue];
+    navigate({ hash: key ? `#${key}` : '' }, { replace: true });
   };
 
   const handleSaveProfile = async () => {
@@ -178,6 +213,16 @@ const Settings: React.FC = () => {
     }
   };
 
+  const checkoutTabIndex = tabKeys.indexOf(CHECKOUT_TAB_KEY);
+  const emailTemplatesTabIndex = tabKeys.indexOf(EMAIL_TEMPLATES_TAB_KEY);
+
+  const handleCheckoutContinue = (courier?: CourierOption) => {
+    if (!courier) {
+      return;
+    }
+    toast.success(`Checkout would proceed with ${courier.courier_name} at ${courier.price} ${courier.currency}`);
+  };
+
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
       <Box sx={{ mb: 4 }}>
@@ -195,8 +240,11 @@ const Settings: React.FC = () => {
           <Tab icon={<BellIcon />} label="Notifications" iconPosition="start" />
           <Tab icon={<ShieldIcon />} label="Privacy" iconPosition="start" />
           <Tab icon={<PaletteIcon />} label="Preferences" iconPosition="start" />
-          {(user?.user_role === 'merchant' || user?.user_role === 'admin') && (
-            <Tab icon={<EmailIcon />} label="Email Templates" iconPosition="start" />
+          {isMerchantOrAdmin && (
+            <>
+              <Tab icon={<LocalShippingIcon />} label="Checkout Preview" iconPosition="start" />
+              <Tab icon={<EmailIcon />} label="Email Templates" iconPosition="start" />
+            </>
           )}
         </Tabs>
       </Box>
@@ -738,9 +786,50 @@ const Settings: React.FC = () => {
         </Card>
       </TabPanel>
 
+      {/* Checkout Preview */}
+      {isMerchantOrAdmin && checkoutTabIndex >= 0 && (
+        <TabPanel value={tabValue} index={checkoutTabIndex}>
+          <Card sx={{ mb: 3 }}>
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                <LocalShippingIcon sx={{ fontSize: 24 }} />
+                <Box>
+                  <Typography variant="h5">Checkout Experience Preview</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Validate the TrustScore-first courier selector exactly as shoppers see it in Shopify and WooCommerce checkouts.
+                  </Typography>
+                </Box>
+              </Box>
+
+              <CheckoutPreview
+                showBackButton={false}
+                onContinue={handleCheckoutContinue}
+              />
+            </CardContent>
+          </Card>
+
+          <Alert severity="info" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+            <Box>
+              <Typography variant="subtitle1">Need live performance data?</Typography>
+              <Typography variant="body2">
+                Jump to Checkout Analytics to review real selection rates, conversion metrics, and postal-code level performance.
+              </Typography>
+            </Box>
+            <Button
+              component={RouterLink}
+              to="/merchant/checkout-analytics"
+              variant="outlined"
+              color="inherit"
+            >
+              View Analytics
+            </Button>
+          </Alert>
+        </TabPanel>
+      )}
+
       {/* Email Templates */}
-      {(user?.user_role === 'merchant' || user?.user_role === 'admin') && (
-        <TabPanel value={tabValue} index={4}>
+      {isMerchantOrAdmin && emailTemplatesTabIndex >= 0 && (
+        <TabPanel value={tabValue} index={emailTemplatesTabIndex}>
           <EmailTemplateEditor />
         </TabPanel>
       )}

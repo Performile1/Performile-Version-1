@@ -94,11 +94,15 @@ export const MySubscription: React.FC = () => {
   };
 
   const handleManageBilling = () => {
-    navigate('/billing-portal');
+    navigate('/billing');
   };
 
   const handleUpgrade = () => {
     navigate('/subscription/plans');
+  };
+
+  const handleViewInvoices = () => {
+    navigate('/billing');
   };
 
   if (loading) {
@@ -312,7 +316,7 @@ export const MySubscription: React.FC = () => {
                   variant="outlined"
                   fullWidth
                   startIcon={<Receipt />}
-                  onClick={() => navigate('/billing-portal')}
+                  onClick={handleViewInvoices}
                 >
                   View Invoices
                 </Button>

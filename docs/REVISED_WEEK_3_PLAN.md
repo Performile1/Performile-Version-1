@@ -430,21 +430,35 @@ export default async function handler(req: Request, res: Response) {
 
 ## 📅 REST OF WEEK 3
 
-### **TUESDAY, NOVEMBER 11 - DYNAMIC RANKING + SHIPMENT BOOKING**
+### **TUESDAY, NOVEMBER 11 - CHECKOUT VALIDATION + RANKING/BOOKING**
 **Time:** 8 hours  
-**Status:** ⏳ NOT STARTED
+**Status:** ▶︎ IN PROGRESS
 
-**9 AM - 12 PM: Dynamic Ranking (3h)**
-- Create ranking tables
-- Build ranking function
-- Integrate with API
+**9 AM - 11:30 AM: Checkout + Feature Flag Verification (2.5h)**
+- Validate `CourierSelector` against `/api/couriers/rankings` on shared Vercel project.
+- Confirm fallback to `/api/couriers/ratings-by-postal` when feature flag disabled.
+- Smoke test Shopify checkout extension (postal validation + courier list) using live merchant context.
+- Capture QA notes + screenshots for PLAN_VS_REALITY_AUDIT.
 
-**1 PM - 4 PM: Shipment Booking (3h)**
-- Create booking schema
-- Build booking endpoint
-- Test end-to-end
+**11:30 AM - 12:30 PM: Plugin/App Data Capture Review (1h)**
+- Audit Shopify + WooCommerce integrations for address, postal code, and parcel dimension payloads.
+- Verify postal validation endpoint reuse (`/api/postal-codes/validate`) to avoid duplicate customer inputs.
+- Identify gaps in parcel size capture for accurate pricing.
 
-**4 PM - 5 PM: Documentation (1h)**
+**1 PM - 3 PM: Shipment Booking API Alignment (2h)**
+- Revisit booking schema draft; confirm it leverages pricing + dynamic ranking outputs.
+- Outline end-to-end booking flow (checkout → booking entry → courier API).
+- Document outstanding tasks to connect Shopify/WooCommerce events to booking pipeline.
+
+**3 PM - 4:30 PM: Dynamic Ranking Hardening (1.5h)**
+- Add telemetry/logging notes from live checkout tests.
+- Plan cron/job trigger for `update_courier_ranking_scores` (defer coding to W3D3).
+- Record merchant override requirements for `merchant_ranking_settings` table.
+
+**4:30 PM - 5 PM: Documentation & Deployment (0.5h)**
+- Update PLAN_VS_REALITY_AUDIT and daily briefing with results.
+- Ensure commits pushed + Vercel deployment confirmed.
+- Note investor highlights if checkout demo succeeds.
 
 ---
 

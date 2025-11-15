@@ -1,11 +1,11 @@
 # PERFORMILE PLATFORM - EXECUTIVE SUMMARY FOR INVESTORS
 
-**Date:** November 4, 2025 (Updated)  
-**Platform Version:** 3.6  
-**Completion Status:** 97%  
-**Launch Date:** December 9, 2025 (34 days)  
+**Date:** November 12, 2025 (Updated)  
+**Platform Version:** 4.3  
+**Completion Status:** 98%  
+**Launch Date:** December 9, 2025 (27 days)  
 **Investment Ask:** $6,650 (5-week MVP launch)  
-**Current Status:** Week 2 Day 2 - 50% Complete, Ahead of Schedule ✅
+**Current Status:** Week 3 Day 3 - Focused on Data Hardening ✅
 
 ---
 
@@ -591,52 +591,26 @@
 
 ## 📰 RECENT UPDATES (November 4, 2025)
 
-### **Week 2 Day 2 Completion (50%)** ✅
-- ✅ **Courier Credentials Feature - 100% COMPLETE**
-  - Database: `courier_api_credentials` table with RLS
-  - Backend: 5 API endpoints (CRUD + test connection)
-  - Frontend: Complete UI with credentials modal
-  - Security: AES-256-CBC encryption, JWT auth
-  - Navigation: Settings → Couriers tab
-  - Ready for production testing
+### **Week 3 Day 3 Progress Summary (Nov 12)** ✅
+- ✅ **Postal Code Importer Hardening**
+  - Rebuilt importer module + CLI for OpenDataSoft datasets.
+  - Ingested ~10k Swedish postal codes via Supabase upsert.
+  - Added offset guard and graceful handling for API 400 limit.
 
-- ✅ **Parcel Location System - 100% COMPLETE (BONUS)**
-  - PostGIS integration working perfectly
-  - Location cache system
-  - Geographic search functions
-  - Distance calculations
-  - Coverage checking
+- ✅ **Automation & Documentation Cadence**
+  - Created daily briefings and master doc V4.3 capturing data hardening shift.
+  - Prepared automation/coverage planning tasks for credential rotation follow-up.
 
-- ✅ **Checkout Specifications - 100% COMPLETE**
-  - 5 comprehensive specifications (~3,000 lines)
-  - Pricing & Margins settings
-  - Courier selection UI
-  - TrustScore display
-  - Delivery options
-  - Order confirmation
+- ⚠️ **Credential Rotation in Progress**
+  - Supabase service-role key flagged, awaiting support-led reset.
+  - All scripts paused until new key propagates (expected Nov 13).
 
-- ✅ **Database Snapshot - COMPLETE**
-  - Full JSON snapshot captured (384 KB)
-  - 96 tables, 683 functions, 185 RLS policies
-  - 99% RLS coverage (excellent security)
-  - All 558 indexes actively used
-  - Database size: 29 MB
+### **Execution Snapshot**
+- **Velocity:** Maintaining schedule despite 1-day pause (buffer consumed).
+- **Platform Completion:** 98% (postal data pipeline stabilized).
+- **Key Blocker:** Supabase key rotation (support ticket open, response pending).
 
-### **Week 2 Progress Summary**
-- **Velocity:** 150% of planned work completed
-- **Platform:** 97% complete (was 96%)
-- **Week 2:** 50% complete (Days 1-2 done)
-- **Status:** Ahead of schedule ✅
-
-### **Technical Achievements**
-- **15+ commits** pushed to production
-- **10,000+ lines** of code/documentation
-- **2 major features** completed
-- **5 specifications** created
-- **Database snapshot** captured and documented
-- **Platform completion:** 97% (up from 96%)
-
-**Status:** Ahead of schedule for December 9, 2025 launch ✅
+**Status:** December 9, 2025 launch still on track; resume feature rollout post credential reset. ✅
 
 ---
 
