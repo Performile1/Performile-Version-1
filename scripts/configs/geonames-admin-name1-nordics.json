@@ -1,0 +1,272 @@
+{
+  "SE": [
+    {
+      "admin_name1": "Stockholm",
+      "count": 3808
+    },
+    {
+      "admin_name1": "Västra Götaland",
+      "count": 3320
+    },
+    {
+      "admin_name1": "Skåne",
+      "count": 2480
+    },
+    {
+      "admin_name1": "Östergötland",
+      "count": 787
+    },
+    {
+      "admin_name1": "Västernorrland",
+      "count": 649
+    },
+    {
+      "admin_name1": "Jönköping",
+      "count": 622
+    },
+    {
+      "admin_name1": "Västerbotten",
+      "count": 609
+    },
+    {
+      "admin_name1": "Uppsala",
+      "count": 592
+    },
+    {
+      "admin_name1": "Gävleborg",
+      "count": 586
+    },
+    {
+      "admin_name1": "Norrbotten",
+      "count": 579
+    },
+    {
+      "admin_name1": "Kalmar",
+      "count": 558
+    },
+    {
+      "admin_name1": "Örebro",
+      "count": 522
+    },
+    {
+      "admin_name1": "Dalarna",
+      "count": 521
+    },
+    {
+      "admin_name1": "Värmland",
+      "count": 491
+    },
+    {
+      "admin_name1": "Halland",
+      "count": 490
+    },
+    {
+      "admin_name1": "Jämtland",
+      "count": 460
+    },
+    {
+      "admin_name1": "Södermanland",
+      "count": 459
+    },
+    {
+      "admin_name1": "Västmanland",
+      "count": 456
+    },
+    {
+      "admin_name1": "Kronoberg",
+      "count": 369
+    },
+    {
+      "admin_name1": "Blekinge",
+      "count": 297
+    },
+    {
+      "admin_name1": "Gotland",
+      "count": 186
+    },
+    {
+      "admin_name1": null,
+      "count": 17
+    }
+  ],
+  "NO": [
+    {
+      "admin_name1": "Vestland",
+      "count": 727
+    },
+    {
+      "admin_name1": "Oslo County",
+      "count": 631
+    },
+    {
+      "admin_name1": "Trøndelag",
+      "count": 517
+    },
+    {
+      "admin_name1": "Nordland",
+      "count": 403
+    },
+    {
+      "admin_name1": "Innlandet",
+      "count": 390
+    },
+    {
+      "admin_name1": "Møre og Romsdal",
+      "count": 332
+    },
+    {
+      "admin_name1": "Akershus",
+      "count": 322
+    },
+    {
+      "admin_name1": "Rogaland",
+      "count": 312
+    },
+    {
+      "admin_name1": "Agder",
+      "count": 289
+    },
+    {
+      "admin_name1": "Troms",
+      "count": 247
+    },
+    {
+      "admin_name1": "Østfold",
+      "count": 236
+    },
+    {
+      "admin_name1": "Vestfold",
+      "count": 195
+    },
+    {
+      "admin_name1": "Buskerud",
+      "count": 192
+    },
+    {
+      "admin_name1": "Telemark",
+      "count": 189
+    },
+    {
+      "admin_name1": "Finnmark",
+      "count": 150
+    }
+  ],
+  "DK": [
+    {
+      "admin_name1": "Capital Region",
+      "count": 577
+    },
+    {
+      "admin_name1": "South Denmark",
+      "count": 164
+    },
+    {
+      "admin_name1": "Central Jutland",
+      "count": 144
+    },
+    {
+      "admin_name1": "Zealand",
+      "count": 129
+    },
+    {
+      "admin_name1": "North Denmark",
+      "count": 75
+    },
+    {
+      "admin_name1": "Region Hovedstaden",
+      "count": 64
+    },
+    {
+      "admin_name1": "Region Syddanmark",
+      "count": 3
+    },
+    {
+      "admin_name1": "Region Midtjylland",
+      "count": 2
+    },
+    {
+      "admin_name1": "Region Nordjylland",
+      "count": 1
+    }
+  ],
+  "FI": [
+    {
+      "admin_name1": "Uusimaa",
+      "count": 534
+    },
+    {
+      "admin_name1": "Lapland",
+      "count": 306
+    },
+    {
+      "admin_name1": "Pirkanmaa",
+      "count": 276
+    },
+    {
+      "admin_name1": "North Ostrobothnia Region",
+      "count": 242
+    },
+    {
+      "admin_name1": "Southwest Finland",
+      "count": 240
+    },
+    {
+      "admin_name1": "Northern Savo",
+      "count": 238
+    },
+    {
+      "admin_name1": "Central Finland Region",
+      "count": 216
+    },
+    {
+      "admin_name1": "South Ostrobothnia Region",
+      "count": 210
+    },
+    {
+      "admin_name1": "Southern Savonia",
+      "count": 198
+    },
+    {
+      "admin_name1": "North Karelia",
+      "count": 181
+    },
+    {
+      "admin_name1": "Satakunta",
+      "count": 161
+    },
+    {
+      "admin_name1": "Ostrobothnia Region",
+      "count": 144
+    },
+    {
+      "admin_name1": "Kymenlaakso",
+      "count": 135
+    },
+    {
+      "admin_name1": "Päijänne Tavastia",
+      "count": 131
+    },
+    {
+      "admin_name1": "Kanta-Häme",
+      "count": 111
+    },
+    {
+      "admin_name1": "South Karelia",
+      "count": 107
+    },
+    {
+      "admin_name1": "Kainuu",
+      "count": 92
+    },
+    {
+      "admin_name1": "Central Ostrobothnia Region",
+      "count": 54
+    }
+  ],
+  "IS": [
+    {
+      "admin_name1": null,
+      "count": 195
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "SE": [
+    { "label": "SE-Stockholm", "filters": { "admin_name1": "Stockholm" } },
+    { "label": "SE-Vastra-Gotaland", "filters": { "admin_name1": "Västra Götaland" } },
+    { "label": "SE-Skane", "filters": { "admin_name1": "Skåne" } },
+    { "label": "SE-Ostergotland", "filters": { "admin_name1": "Östergötland" } },
+    { "label": "SE-Vasternorrland", "filters": { "admin_name1": "Västernorrland" } },
+    { "label": "SE-Jonkoping", "filters": { "admin_name1": "Jönköping" } },
+    { "label": "SE-Vasterbotten", "filters": { "admin_name1": "Västerbotten" } },
+    { "label": "SE-Uppsala", "filters": { "admin_name1": "Uppsala" } },
+    { "label": "SE-Gavleborg", "filters": { "admin_name1": "Gävleborg" } },
+    { "label": "SE-Norrbotten", "filters": { "admin_name1": "Norrbotten" } },
+    { "label": "SE-Kalmar", "filters": { "admin_name1": "Kalmar" } },
+    { "label": "SE-Orebro", "filters": { "admin_name1": "Örebro" } },
+    { "label": "SE-Dalarna", "filters": { "admin_name1": "Dalarna" } },
+    { "label": "SE-Varmland", "filters": { "admin_name1": "Värmland" } },
+    { "label": "SE-Halland", "filters": { "admin_name1": "Halland" } },
+    { "label": "SE-Jamtland", "filters": { "admin_name1": "Jämtland" } },
+    { "label": "SE-Sodermanland", "filters": { "admin_name1": "Södermanland" } },
+    { "label": "SE-Vastmanland", "filters": { "admin_name1": "Västmanland" } },
+    { "label": "SE-Kronoberg", "filters": { "admin_name1": "Kronoberg" } },
+    { "label": "SE-Blekinge", "filters": { "admin_name1": "Blekinge" } },
+    { "label": "SE-Gotland", "filters": { "admin_name1": "Gotland" } }
+  ],
+  "NO": [
+    { "label": "NO-Vestland", "filters": { "admin_name1": "Vestland" } },
+    { "label": "NO-Oslo-County", "filters": { "admin_name1": "Oslo County" } },
+    { "label": "NO-Trondelag", "filters": { "admin_name1": "Trøndelag" } },
+    { "label": "NO-Nordland", "filters": { "admin_name1": "Nordland" } },
+    { "label": "NO-Innlandet", "filters": { "admin_name1": "Innlandet" } },
+    { "label": "NO-More-og-Romsdal", "filters": { "admin_name1": "Møre og Romsdal" } },
+    { "label": "NO-Akershus", "filters": { "admin_name1": "Akershus" } },
+    { "label": "NO-Rogaland", "filters": { "admin_name1": "Rogaland" } },
+    { "label": "NO-Agder", "filters": { "admin_name1": "Agder" } },
+    { "label": "NO-Troms", "filters": { "admin_name1": "Troms" } },
+    { "label": "NO-Ostfold", "filters": { "admin_name1": "Østfold" } },
+    { "label": "NO-Vestfold", "filters": { "admin_name1": "Vestfold" } },
+    { "label": "NO-Buskerud", "filters": { "admin_name1": "Buskerud" } },
+    { "label": "NO-Telemark", "filters": { "admin_name1": "Telemark" } },
+    { "label": "NO-Finnmark", "filters": { "admin_name1": "Finnmark" } }
+  ],
+  "DK": [
+    { "label": "DK-Capital-Region", "filters": { "admin_name1": "Capital Region" } },
+    { "label": "DK-South-Denmark", "filters": { "admin_name1": "South Denmark" } },
+    { "label": "DK-Central-Jutland", "filters": { "admin_name1": "Central Jutland" } },
+    { "label": "DK-Zealand", "filters": { "admin_name1": "Zealand" } },
+    { "label": "DK-North-Denmark", "filters": { "admin_name1": "North Denmark" } }
+  ],
+  "FI": [
+    { "label": "FI-Uusimaa", "filters": { "admin_name1": "Uusimaa" } },
+    { "label": "FI-Lapland", "filters": { "admin_name1": "Lapland" } },
+    { "label": "FI-Pirkanmaa", "filters": { "admin_name1": "Pirkanmaa" } },
+    { "label": "FI-North-Ostrobothnia", "filters": { "admin_name1": "North Ostrobothnia Region" } },
+    { "label": "FI-Southwest-Finland", "filters": { "admin_name1": "Southwest Finland" } },
+    { "label": "FI-Northern-Savo", "filters": { "admin_name1": "Northern Savo" } },
+    { "label": "FI-Central-Finland", "filters": { "admin_name1": "Central Finland Region" } },
+    { "label": "FI-South-Ostrobothnia", "filters": { "admin_name1": "South Ostrobothnia Region" } },
+    { "label": "FI-Southern-Savonia", "filters": { "admin_name1": "Southern Savonia" } },
+    { "label": "FI-North-Karelia", "filters": { "admin_name1": "North Karelia" } },
+    { "label": "FI-Satakunta", "filters": { "admin_name1": "Satakunta" } },
+    { "label": "FI-Ostrobothnia", "filters": { "admin_name1": "Ostrobothnia Region" } },
+    { "label": "FI-Kymenlaakso", "filters": { "admin_name1": "Kymenlaakso" } },
+    { "label": "FI-Paijanne-Tavastia", "filters": { "admin_name1": "Päijänne Tavastia" } },
+    { "label": "FI-Kanta-Hame", "filters": { "admin_name1": "Kanta-Häme" } },
+    { "label": "FI-South-Karelia", "filters": { "admin_name1": "South Karelia" } },
+    { "label": "FI-Kainuu", "filters": { "admin_name1": "Kainuu" } },
+    { "label": "FI-Central-Ostrobothnia", "filters": { "admin_name1": "Central Ostrobothnia Region" } }
+  ],
+  "IS": [
+    { "label": "IS-All", "filters": {} }
+  ]
+}
